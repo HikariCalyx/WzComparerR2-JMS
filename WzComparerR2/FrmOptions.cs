@@ -87,8 +87,8 @@ namespace WzComparerR2
 
         public string NxOpenAPIKey
         {
-            get { return txtAPIkey.Text; }
-            set { txtAPIkey.Text = value; }
+            get { return txtNxAPIkey.Text; }
+            set { txtNxAPIkey.Text = value; }
         }
         public string NxSecretKey
         {
@@ -101,7 +101,7 @@ namespace WzComparerR2
             var req = WebRequest.Create(Program.NxAPIBaseURL + "/maplestory/v1/character/list") as HttpWebRequest;
             req.Timeout = 15000;
             req.Headers.Add("Accept", "application/json");
-            req.Headers.Add("x-nxopen-api-key", txtAPIkey.Text);
+            req.Headers.Add("x-nxopen-api-key", txtNxAPIkey.Text);
             try
             {
                 string respJson = new StreamReader(req.GetResponse().GetResponseStream(), Encoding.UTF8).ReadToEnd();
@@ -118,6 +118,11 @@ namespace WzComparerR2
                 respText = "不明なエラーが発生しました：" + ex;
             }
             MessageBoxEx.Show(respText);
+        }
+
+        private void buttonXCheck2_Click(object sender, EventArgs e)
+        {
+            MessageBoxEx.Show("TBA");
         }
 
         public WzLib.WzVersionVerifyMode WzVersionVerifyMode

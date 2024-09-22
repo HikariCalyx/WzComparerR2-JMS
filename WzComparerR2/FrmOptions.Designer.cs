@@ -31,9 +31,11 @@
             this.panelEx1 = new DevComponents.DotNetBar.PanelEx();
             this.buttonX2 = new DevComponents.DotNetBar.ButtonX();
             this.buttonX1 = new DevComponents.DotNetBar.ButtonX();
-            this.txtAPIkey = new DevComponents.DotNetBar.Controls.TextBoxX();
+            this.txtNxAPIkey = new DevComponents.DotNetBar.Controls.TextBoxX();
+            this.txtGCloudTranslateAPIkey = new DevComponents.DotNetBar.Controls.TextBoxX();
             this.txtSecretkey = new DevComponents.DotNetBar.Controls.TextBoxX();
             this.buttonXCheck = new DevComponents.DotNetBar.ButtonX();
+            this.buttonXCheck2 = new DevComponents.DotNetBar.ButtonX();
             this.superTabControl1 = new DevComponents.DotNetBar.SuperTabControl();
             this.superTabControlPanel1 = new DevComponents.DotNetBar.SuperTabControlPanel();
             this.cmbWzVersionVerifyMode = new DevComponents.DotNetBar.Controls.ComboBoxEx();
@@ -50,6 +52,7 @@
             this.superTabItem2 = new DevComponents.DotNetBar.SuperTabItem();
             this.superTabControlPanel3 = new DevComponents.DotNetBar.SuperTabControlPanel();
             this.labelX4 = new DevComponents.DotNetBar.LabelX();
+            this.labelX5 = new DevComponents.DotNetBar.LabelX();
             this.superTabItem3 = new DevComponents.DotNetBar.SuperTabItem();
             this.panelEx1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.superTabControl1)).BeginInit();
@@ -105,17 +108,29 @@
             this.buttonX1.TabIndex = 0;
             this.buttonX1.Text = "OK";
             // 
-            // txtAPIkey
+            // txtNxAPIkey
             // 
             // 
             // 
             // 
-            this.txtAPIkey.Border.Class = "TextBoxBorder";
-            this.txtAPIkey.Border.CornerType = DevComponents.DotNetBar.eCornerType.Square;
-            this.txtAPIkey.Location = new System.Drawing.Point(63, 13);
-            this.txtAPIkey.Name = "txtAPIkey";
-            this.txtAPIkey.Size = new System.Drawing.Size(180, 23);
-            this.txtAPIkey.TabIndex = 10;
+            this.txtNxAPIkey.Border.Class = "TextBoxBorder";
+            this.txtNxAPIkey.Border.CornerType = DevComponents.DotNetBar.eCornerType.Square;
+            this.txtNxAPIkey.Location = new System.Drawing.Point(110, 13);
+            this.txtNxAPIkey.Name = "txtNxAPIkey";
+            this.txtNxAPIkey.Size = new System.Drawing.Size(148, 23);
+            this.txtNxAPIkey.TabIndex = 10;
+            // 
+            // txtGCloudTranslateAPIkey
+            // 
+            // 
+            // 
+            // 
+            this.txtGCloudTranslateAPIkey.Border.Class = "TextBoxBorder";
+            this.txtGCloudTranslateAPIkey.Border.CornerType = DevComponents.DotNetBar.eCornerType.Square;
+            this.txtGCloudTranslateAPIkey.Location = new System.Drawing.Point(110, 40);
+            this.txtGCloudTranslateAPIkey.Name = "txtGCloudTranslateAPIkey";
+            this.txtGCloudTranslateAPIkey.Size = new System.Drawing.Size(148, 23);
+            this.txtGCloudTranslateAPIkey.TabIndex = 10;
             // 
             // buttonXCheck
             // 
@@ -129,6 +144,19 @@
             this.buttonXCheck.TabIndex = 4;
             this.buttonXCheck.Text = "検査する";
             this.buttonXCheck.Click += new System.EventHandler(this.buttonXCheck_Click);
+            // 
+            // buttonXCheck2
+            // 
+            this.buttonXCheck2.AccessibleRole = System.Windows.Forms.AccessibleRole.PushButton;
+            this.buttonXCheck2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonXCheck2.ColorTable = DevComponents.DotNetBar.eButtonColor.OrangeWithBackground;
+            this.buttonXCheck2.Location = new System.Drawing.Point(288, 40);
+            this.buttonXCheck2.Name = "buttonXCheck2";
+            this.buttonXCheck2.Size = new System.Drawing.Size(55, 19);
+            this.buttonXCheck2.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
+            this.buttonXCheck2.TabIndex = 4;
+            this.buttonXCheck2.Text = "検査する";
+            this.buttonXCheck2.Click += new System.EventHandler(this.buttonXCheck2_Click);
             // 
             // superTabControl1
             // 
@@ -308,8 +336,11 @@
             // superTabControlPanel2
             // 
             this.superTabControlPanel2.Controls.Add(this.labelX3);
-            this.superTabControlPanel2.Controls.Add(this.txtAPIkey);
+            this.superTabControlPanel2.Controls.Add(this.txtNxAPIkey);
             this.superTabControlPanel2.Controls.Add(this.buttonXCheck);
+            this.superTabControlPanel2.Controls.Add(this.labelX5);
+            this.superTabControlPanel2.Controls.Add(this.buttonXCheck2);
+            this.superTabControlPanel2.Controls.Add(this.txtGCloudTranslateAPIkey);
             this.superTabControlPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.superTabControlPanel2.Location = new System.Drawing.Point(49, 0);
             this.superTabControlPanel2.Name = "superTabControlPanel2";
@@ -329,14 +360,27 @@
             this.labelX3.Location = new System.Drawing.Point(14, 15);
             this.labelX3.Name = "labelX3";
             this.labelX3.TabIndex = 9;
-            this.labelX3.Text = "APIキー";
+            this.labelX3.Text = "NX OpenAPIキー";
+            // 
+            // labelX5
+            // 
+            this.labelX5.AutoSize = true;
+            this.labelX5.BackColor = System.Drawing.Color.Transparent;
+            // 
+            // 
+            // 
+            this.labelX5.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
+            this.labelX5.Location = new System.Drawing.Point(14, 42);
+            this.labelX5.Name = "labelX5";
+            this.labelX5.TabIndex = 9;
+            this.labelX5.Text = "翻訳APIキー";
             // 
             // superTabItem2
             // 
             this.superTabItem2.AttachedControl = this.superTabControlPanel2;
             this.superTabItem2.GlobalItem = false;
             this.superTabItem2.Name = "superTabItem2";
-            this.superTabItem2.Text = "NX OpenAPI";
+            this.superTabItem2.Text = "API機能";
             // 
             // superTabControlPanel3
             // 
@@ -407,7 +451,8 @@
         #endregion
 
         private DevComponents.DotNetBar.PanelEx panelEx1;
-        private DevComponents.DotNetBar.Controls.TextBoxX txtAPIkey;
+        private DevComponents.DotNetBar.Controls.TextBoxX txtNxAPIkey;
+        private DevComponents.DotNetBar.Controls.TextBoxX txtGCloudTranslateAPIkey;
         private DevComponents.DotNetBar.Controls.TextBoxX txtSecretkey;
         private DevComponents.DotNetBar.SuperTabControl superTabControl1;
         private DevComponents.DotNetBar.SuperTabControlPanel superTabControlPanel1;
@@ -419,6 +464,7 @@
         private DevComponents.DotNetBar.ButtonX buttonX2;
         private DevComponents.DotNetBar.ButtonX buttonX1;
         private DevComponents.DotNetBar.ButtonX buttonXCheck;
+        private DevComponents.DotNetBar.ButtonX buttonXCheck2;
         private DevComponents.DotNetBar.Controls.CheckBoxX chkWzAutoSort;
         private DevComponents.DotNetBar.LabelX labelX1;
         private DevComponents.DotNetBar.Controls.ComboBoxEx cmbWzEncoding;
@@ -429,5 +475,6 @@
         private DevComponents.DotNetBar.LabelX labelX2;
         private DevComponents.DotNetBar.LabelX labelX3;
         private DevComponents.DotNetBar.LabelX labelX4;
+        private DevComponents.DotNetBar.LabelX labelX5;
     }
 }
