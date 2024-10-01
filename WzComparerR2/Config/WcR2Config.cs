@@ -13,11 +13,12 @@ namespace WzComparerR2.Config
     {
         public WcR2Config()
         {
-            this.MainStyle = DevComponents.DotNetBar.eStyle.Metro;
+            this.MainStyle = DevComponents.DotNetBar.eStyle.Office2016;
             this.MainStyleColor = Color.DimGray;
             this.SortWzOnOpened = true;
             this.AutoDetectExtFiles = true;
             this.NoPatcherPrompt = false;
+            this.WzVersionVerifyMode = WzLib.WzVersionVerifyMode.Fast;
         }
 
         /// <summary>
