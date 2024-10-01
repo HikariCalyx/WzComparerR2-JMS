@@ -1270,6 +1270,71 @@ namespace WzComparerR2.Avatar.UI
                     return;
             }
         }
+        private void btnTanjiroKamado_Click(object sender, EventArgs e)
+        {
+            switch (MessageBoxEx.Show("竈門炭治郎を呼びますか？", "確認", MessageBoxButtons.YesNo))
+            {
+                case DialogResult.Yes:
+                    LoadCode("2000,12000,55074,63820,1054199,1073962,1703528,1022344", 0);
+                    return;
+
+                case DialogResult.No:
+                default:
+                    return;
+            }
+        }
+        private void btnNezukoKamado_Click(object sender, EventArgs e)
+        {
+            switch (MessageBoxEx.Show("竈門禰豆子を呼びますか？", "確認", MessageBoxButtons.YesNo))
+            {
+                case DialogResult.Yes:
+                    LoadCode("2000,12000,56095,67490,1054200,1073963,1012832", 0);
+                    return;
+
+                case DialogResult.No:
+                default:
+                    return;
+            }
+        }
+        private void btnZenitsuAgatsuma_Click(object sender, EventArgs e)
+        {
+            switch (MessageBoxEx.Show("我妻善逸を呼びますか？", "確認", MessageBoxButtons.YesNo))
+            {
+                case DialogResult.Yes:
+                    LoadCode("2000,12000,55075,63830,1054201,1073964,1703529", 0);
+                    return;
+
+                case DialogResult.No:
+                default:
+                    return;
+            }
+        }
+        private void btnInosukeHashibira_Click(object sender, EventArgs e)
+        {
+            switch (MessageBoxEx.Show("嘴平伊之助を呼びますか？", "確認", MessageBoxButtons.YesNo))
+            {
+                case DialogResult.Yes:
+                    LoadCode("2000,12000,20000,30000,1006567,1050783,1073965,1103743,1703530", 0);
+                    return;
+
+                case DialogResult.No:
+                default:
+                    return;
+            }
+        }
+        private void btnLaraTheSheep_Click(object sender, EventArgs e)
+        {
+            switch (MessageBoxEx.Show("著者のララのアバターを呼びますか？", "確認", MessageBoxButtons.YesNo))
+            {
+                case DialogResult.Yes:
+                    LoadCode("2000,12000,51484,1003968,1052667,1072867,1082552,1703113", 0);
+                    return;
+
+                case DialogResult.No:
+                default:
+                    return;
+            }
+        }
         private void btnAngelicBuster_Click(object sender, EventArgs e)
         {
             switch (MessageBoxEx.Show("基本エンジェリックバスターを呼びますか？\r\n\r\nYes - 新\r\nNo - 古", "確認", MessageBoxButtons.YesNoCancel))

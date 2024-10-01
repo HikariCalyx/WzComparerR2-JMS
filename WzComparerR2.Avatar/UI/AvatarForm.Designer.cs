@@ -75,6 +75,11 @@
             this.btnHayato = new DevComponents.DotNetBar.ButtonItem();
             this.btnKanna = new DevComponents.DotNetBar.ButtonItem();
             this.btnAngelicBuster = new DevComponents.DotNetBar.ButtonItem();
+            this.btnTanjiroKamado = new DevComponents.DotNetBar.ButtonItem();
+            this.btnNezukoKamado = new DevComponents.DotNetBar.ButtonItem();
+            this.btnZenitsuAgatsuma = new DevComponents.DotNetBar.ButtonItem();
+            this.btnInosukeHashibira = new DevComponents.DotNetBar.ButtonItem();
+            this.btnLaraTheSheep = new DevComponents.DotNetBar.ButtonItem();
             this.btnReset = new DevComponents.DotNetBar.ButtonItem();
             this.btnLock = new DevComponents.DotNetBar.ButtonItem();
             this.btnSaveAsGif = new DevComponents.DotNetBar.ButtonItem();
@@ -641,6 +646,7 @@
             this.btnCharac.SubItems.AddRange(new DevComponents.DotNetBar.BaseItem[] {
             this.btnMale,
             this.btnFemale,
+            this.btnLaraTheSheep,
             this.btnHayato,
             this.btnKanna,
             this.btnZero,
@@ -648,7 +654,11 @@
             this.btnPathfinder,
             this.btnLara,
             this.btnLynn,
-            this.btnAngelicBuster});
+            this.btnAngelicBuster,
+            this.btnTanjiroKamado,
+            this.btnNezukoKamado,
+            this.btnZenitsuAgatsuma,
+            this.btnInosukeHashibira});
             this.btnCharac.Tooltip = "初期化";
             // 
             // btnMale
@@ -662,6 +672,13 @@
             this.btnFemale.Name = "btnFemale";
             this.btnFemale.Text = "女性キャラ";
             this.btnFemale.Click += new System.EventHandler(this.btnFemale_Click);
+            // 
+            // 
+            // btnLaraTheSheep
+            // 
+            this.btnLaraTheSheep.Name = "btnLaraTheSheep";
+            this.btnLaraTheSheep.Text = "光卡的拉羊羊";
+            this.btnLaraTheSheep.Click += new System.EventHandler(this.btnLaraTheSheep_Click);
             // 
             // 
             // btnHayato
@@ -716,6 +733,34 @@
             this.btnAngelicBuster.Name = "btnAngelicBuster";
             this.btnAngelicBuster.Text = "エンジェリックバスター";
             this.btnAngelicBuster.Click += new System.EventHandler(this.btnAngelicBuster_Click);
+            // 
+            // 
+            // btnTanjiroKamado
+            // 
+            this.btnTanjiroKamado.Name = "btnTanjiroKamado";
+            this.btnTanjiroKamado.Text = "竈門炭治郎";
+            this.btnTanjiroKamado.Click += new System.EventHandler(this.btnTanjiroKamado_Click);
+            // 
+            // 
+            // btnNezukoKamado
+            // 
+            this.btnNezukoKamado.Name = "btnNezukoKamado";
+            this.btnNezukoKamado.Text = "竈門禰豆子";
+            this.btnNezukoKamado.Click += new System.EventHandler(this.btnNezukoKamado_Click);
+            // 
+            // 
+            // btnZenitsuAgatsuma
+            // 
+            this.btnZenitsuAgatsuma.Name = "btnZenitsuAgatsuma";
+            this.btnZenitsuAgatsuma.Text = "我妻善逸";
+            this.btnZenitsuAgatsuma.Click += new System.EventHandler(this.btnZenitsuAgatsuma_Click);
+            // 
+            // 
+            // btnInosukeHashibira
+            // 
+            this.btnInosukeHashibira.Name = "btnInosukeHashibira";
+            this.btnInosukeHashibira.Text = "嘴平伊之助";
+            this.btnInosukeHashibira.Click += new System.EventHandler(this.btnInosukeHashibira_Click);
             // 
             // btnReset
             // 
@@ -882,6 +927,11 @@
         private DevComponents.DotNetBar.ButtonItem btnLara;
         private DevComponents.DotNetBar.ButtonItem btnLynn;
         private DevComponents.DotNetBar.ButtonItem btnAngelicBuster;
+        private DevComponents.DotNetBar.ButtonItem btnTanjiroKamado;
+        private DevComponents.DotNetBar.ButtonItem btnNezukoKamado;
+        private DevComponents.DotNetBar.ButtonItem btnZenitsuAgatsuma;
+        private DevComponents.DotNetBar.ButtonItem btnInosukeHashibira;
+        private DevComponents.DotNetBar.ButtonItem btnLaraTheSheep;
         private DevComponents.DotNetBar.ButtonItem btnSaveAsGif;
         private DevComponents.DotNetBar.Controls.ComboBoxEx cmbEar;
         private DevComponents.DotNetBar.LabelX labelX5;
