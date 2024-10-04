@@ -848,7 +848,15 @@ namespace WzComparerR2.CharaSim
                                 {
                                     try
                                     {
-                                        gear.Props.Add(type, Convert.ToInt32(subNode.Value));
+                                        if (gear.Props.ContainsKey(type))
+                                        {
+                                            // workaround for MSEA v236
+                                            gear.Props[type] = Convert.ToInt32(subNode.Value);
+                                        }
+                                        else
+                                        {
+                                            gear.Props.Add(type, Convert.ToInt32(subNode.Value));
+                                        }
                                     }
                                     finally
                                     {
