@@ -589,9 +589,9 @@ namespace WzComparerR2
             style.TextAlignment = eStyleTextAlignment.Far;
             switch (part.Type)
             {
-                case 0: node.Cells.Add(new Cell("Added", style)); break;
-                case 1: node.Cells.Add(new Cell("Modified", style)); break;
-                case 2: node.Cells.Add(new Cell("Removed", style)); break;
+                case 0: node.Cells.Add(new Cell("追加", style)); break;
+                case 1: node.Cells.Add(new Cell("変更", style)); break;
+                case 2: node.Cells.Add(new Cell("削除", style)); break;
                 default: node.Cells.Add(new Cell(part.Type.ToString(), style)); break;
             }
             node.Cells.Add(new Cell(part.NewFileLength.ToString("n0"), style));
@@ -636,8 +636,8 @@ namespace WzComparerR2
 > 最適化がないため、大きなファイルが生成されます。 ただし、ファイルが完全であることは保証されています。", "通知");
 
             SaveFileDialog dlg = new SaveFileDialog();
-            dlg.Filter = "Patch File (*.patch)|*.patch";
-            dlg.Title = "Save Patch File";
+            dlg.Filter = "パッチファイル (*.patch)|*.patch";
+            dlg.Title = "パッチファイルを保存";
             dlg.CheckFileExists = false;
             dlg.InitialDirectory = Path.GetDirectoryName(txtPatchFile2.Text);
             dlg.FileName = Path.GetFileNameWithoutExtension(txtPatchFile2.Text) + "_reverse.patch";

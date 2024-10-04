@@ -685,40 +685,40 @@
             // columnHeader1
             // 
             this.columnHeader1.Name = "columnHeader1";
-            this.columnHeader1.Text = "FileName";
+            this.columnHeader1.Text = "ファイル名";
             this.columnHeader1.Width.Absolute = 100;
             // 
             // columnHeader2
             // 
             this.columnHeader2.Editable = false;
             this.columnHeader2.Name = "columnHeader2";
-            this.columnHeader2.Text = "PatchType";
+            this.columnHeader2.Text = "ﾊﾟｯﾁの種類";
             this.columnHeader2.Width.Absolute = 70;
             // 
             // columnHeader3
             // 
             this.columnHeader3.Editable = false;
             this.columnHeader3.Name = "columnHeader3";
-            this.columnHeader3.Text = "FileLength";
+            this.columnHeader3.Text = "ﾌｧｲﾙｻｲｽﾞ";
             this.columnHeader3.Width.Absolute = 70;
             // 
             // columnHeader4
             // 
             this.columnHeader4.Editable = false;
             this.columnHeader4.Name = "columnHeader4";
-            this.columnHeader4.Text = "Checksum";
+            this.columnHeader4.Text = "ﾁｪｯｸｻﾑ";
             this.columnHeader4.Width.Absolute = 70;
             // 
             // columnHeader5
             // 
             this.columnHeader5.Name = "columnHeader5";
-            this.columnHeader5.Text = "OldChecksum";
+            this.columnHeader5.Text = "旧ﾁｪｯｸｻﾑ";
             this.columnHeader5.Width.Absolute = 70;
             // 
             // columnHeader6
             // 
             this.columnHeader6.Name = "columnHeader6";
-            this.columnHeader6.Text = "Action";
+            this.columnHeader6.Text = "ﾊﾟｯﾁ動作";
             this.columnHeader6.Width.Absolute = 150;
             // 
             // nodeConnector1
