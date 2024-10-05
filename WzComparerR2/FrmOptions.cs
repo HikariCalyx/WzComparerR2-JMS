@@ -29,7 +29,7 @@ namespace WzComparerR2
 
             cmbWzEncoding.Items.AddRange(new[]
             {
-                new ComboItem("デフォルト"){ Value = 0 },
+                new ComboItem("ｼｽﾃﾑｴﾝｺｰﾃﾞｨﾝｸﾞ"){ Value = 0 },
                 new ComboItem("Shift-JIS (JMS)"){ Value = 932 },
                 new ComboItem("GB 2312 (CMS)"){ Value = 936 },
                 new ComboItem("EUC-KR (KMS)"){ Value = 949 },
@@ -40,8 +40,8 @@ namespace WzComparerR2
 
             cmbWzVersionVerifyMode.Items.AddRange(new[]
             {
-                new ComboItem("デフォルトの方法"){ Value = WzLib.WzVersionVerifyMode.Default },
                 new ComboItem("高速な方法"){ Value = WzLib.WzVersionVerifyMode.Fast },
+                new ComboItem("従来の方法"){ Value = WzLib.WzVersionVerifyMode.Default },
             });
         }
 
