@@ -29,6 +29,13 @@ namespace WzComparerR2.Config
             set { this["showLevelOrSealed"] = value; }
         }
 
+        [ConfigurationProperty("showSoldPrice", DefaultValue = true)]
+        public bool ShowSoldPrice
+        {
+            get { return (bool)this["showSoldPrice"]; }
+            set { this["showSoldPrice"] = value; }
+        }
+
         [ConfigurationProperty("showMedalTag", DefaultValue = false)]
         public bool ShowMedalTag
         {

@@ -45,7 +45,7 @@ namespace WzComparerR2.CharaSimControl
         public bool LinkRecipeItem { get; set; }
         public bool ShowLevelOrSealed { get; set; }
         public bool ShowNickTag { get; set; }
-
+        public bool ShowSoldPrice { get; set; }
         public TooltipRender LinkRecipeInfoRender { get; set; }
         public TooltipRender LinkRecipeGearRender { get; set; }
         public TooltipRender LinkRecipeItemRender { get; set; }
@@ -955,13 +955,13 @@ namespace WzComparerR2.CharaSimControl
 
 
             // JMS exclusive pricing display
-            if (!item.Props.TryGetValue(ItemPropType.quest, out value) && !item.Props.TryGetValue(ItemPropType.notSale, out value) && (item.Props.TryGetValue(ItemPropType.price, out value) && value > 0))
+            if (!item.Props.TryGetValue(ItemPropType.quest, out value) && !item.Props.TryGetValue(ItemPropType.notSale, out value) && (item.Props.TryGetValue(ItemPropType.price, out value) && value > 0) && ShowSoldPrice)
             {
                 picH += 16;
                 GearGraphics.DrawString(g, "\r\n · 販売価額：" + value + "メル", GearGraphics.EquipDetailFont, 100, right, ref picH, 16);
             }
 
-            if (item.Props.TryGetValue(ItemPropType.autoPrice, out value))
+            if (item.Props.TryGetValue(ItemPropType.autoPrice, out value) && ShowSoldPrice)
             {
                 picH += 16;
                 GearGraphics.DrawString(g, "\r\n · 販売価額：" + (item.Level * 2) + "メル", GearGraphics.EquipDetailFont, 100, right, ref picH, 16);

@@ -53,6 +53,7 @@ namespace WzComparerR2.CharaSimControl
         public bool ShowLevelOrSealed { get; set; }
         public bool ShowMedalTag { get; set; } = true;
         public bool IsCombineProperties { get; set; } = true;
+        public bool ShowSoldPrice { get; set; }
 
         public TooltipRender SetItemRender { get; set; }
 
@@ -1005,7 +1006,7 @@ namespace WzComparerR2.CharaSimControl
             }
 
             // JMS exclusive pricing display
-            if (!Gear.Props.TryGetValue(GearPropType.notSale, out value) && (Gear.Props.TryGetValue(GearPropType.price, out value) && value > 0) && (!Gear.Cash))
+            if (!Gear.Props.TryGetValue(GearPropType.notSale, out value) && (Gear.Props.TryGetValue(GearPropType.price, out value) && value > 0) && (!Gear.Cash) && ShowSoldPrice)
             {
                 desc.Add("\r\n · 販売価額：" + value + "メル");
             }

@@ -30,6 +30,8 @@
         {
             this.superTabControl1 = new DevComponents.DotNetBar.SuperTabControl();
             this.superTabControlPanel1 = new DevComponents.DotNetBar.SuperTabControlPanel();
+            this.checkBoxX17 = new DevComponents.DotNetBar.Controls.CheckBoxX();
+            this.checkBoxX16 = new DevComponents.DotNetBar.Controls.CheckBoxX();
             this.checkBoxX15 = new DevComponents.DotNetBar.Controls.CheckBoxX();
             this.checkBoxX14 = new DevComponents.DotNetBar.Controls.CheckBoxX();
             this.checkBoxX13 = new DevComponents.DotNetBar.Controls.CheckBoxX();
@@ -137,6 +139,36 @@
             this.superTabControlPanel1.Size = new System.Drawing.Size(282, 251);
             this.superTabControlPanel1.TabIndex = 1;
             this.superTabControlPanel1.TabItem = this.superTabItem1;
+            // 
+            // checkBoxX17
+            // 
+            this.checkBoxX17.AutoSize = true;
+            this.checkBoxX17.BackColor = System.Drawing.Color.Transparent;
+            // 
+            // 
+            // 
+            this.checkBoxX17.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
+            this.checkBoxX17.Location = new System.Drawing.Point(13, 107);
+            this.checkBoxX17.Name = "checkBoxX17";
+            this.checkBoxX17.Size = new System.Drawing.Size(152, 16);
+            this.checkBoxX17.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
+            this.checkBoxX17.TabIndex = 10;
+            this.checkBoxX17.Text = "販売価額を表示";
+            // 
+            // checkBoxX16
+            // 
+            this.checkBoxX16.AutoSize = true;
+            this.checkBoxX16.BackColor = System.Drawing.Color.Transparent;
+            // 
+            // 
+            // 
+            this.checkBoxX16.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
+            this.checkBoxX16.Location = new System.Drawing.Point(13, 107);
+            this.checkBoxX16.Name = "checkBoxX16";
+            this.checkBoxX16.Size = new System.Drawing.Size(152, 16);
+            this.checkBoxX16.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
+            this.checkBoxX16.TabIndex = 10;
+            this.checkBoxX16.Text = "販売価額を表示";
             // 
             // checkBoxX15
             // 
@@ -360,6 +392,7 @@
             // 
             // superTabControlPanel2
             // 
+            this.superTabControlPanel2.Controls.Add(this.checkBoxX16);
             this.superTabControlPanel2.Controls.Add(this.checkBoxX11);
             this.superTabControlPanel2.Controls.Add(this.checkBoxX6);
             this.superTabControlPanel2.Controls.Add(this.checkBoxX4);
@@ -441,6 +474,7 @@
             // 
             // superTabControlPanel3
             // 
+            this.superTabControlPanel3.Controls.Add(this.checkBoxX17);
             this.superTabControlPanel3.Controls.Add(this.checkBoxX12);
             this.superTabControlPanel3.Controls.Add(this.checkBoxX9);
             this.superTabControlPanel3.Controls.Add(this.checkBoxX8);
@@ -670,5 +704,7 @@
         private DevComponents.DotNetBar.Controls.CheckBoxX checkBoxX13;
         private DevComponents.DotNetBar.Controls.CheckBoxX checkBoxX14;
         private DevComponents.DotNetBar.Controls.CheckBoxX checkBoxX15;
+        private DevComponents.DotNetBar.Controls.CheckBoxX checkBoxX16;
+        private DevComponents.DotNetBar.Controls.CheckBoxX checkBoxX17;
     }
 }

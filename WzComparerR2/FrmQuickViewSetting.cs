@@ -128,6 +128,12 @@ namespace WzComparerR2
             set { checkBoxX11.Checked = value; }
         }
 
+        [Link]
+        public bool Gear_ShowSoldPrice
+        {
+            get { return checkBoxX16.Checked; }
+            set { checkBoxX16.Checked = value; }
+        }
 
         [Link]
         public bool Recipe_ShowID
@@ -155,6 +161,13 @@ namespace WzComparerR2
         {
             get { return checkBoxX12.Checked; }
             set { checkBoxX12.Checked = value; }
+        }
+
+        [Link]
+        public bool Item_ShowSoldPrice
+        {
+            get { return checkBoxX17.Checked; }
+            set { checkBoxX17.Checked = value; }
         }
 
         public void Load(CharaSimConfig config)
