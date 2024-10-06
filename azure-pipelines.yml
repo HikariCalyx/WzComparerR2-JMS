@@ -14,13 +14,13 @@ variables:
   buildPlatform_anycpu: 'Any CPU'
   buildPlatform_x86: 'x86'
   buildConfiguration: 'Release'
-  outputDir_netfx_anycpu: 'WzComparerR2/bin/release/net462'
-  outputDir_netfx_x86: 'WzComparerR2/bin/x86/release/net462'
+  outputDir_netfx_anycpu: 'WzComparerR2/bin/release/net48'
+  outputDir_netfx_x86: 'WzComparerR2/bin/x86/release/net48'
   outputDir_net6_anycpu: 'WzComparerR2/bin/release/net6.0-windows'
-  outputFileName_netfx: 'WcR2_With_Plugins_$(Build.BuildNumber)'
-  outputFileName_net6: 'WcR2_With_Plugins_net6_$(Build.BuildNumber)'
+  outputFileName_netfx: 'JMS-v5.5.0_WzComparerR2_net48_$(Build.BuildNumber)'
+  outputFileName_net6: 'JMS-v5.5.0_WzComparerR2_net6.0-windows_$(Build.BuildNumber)'
   isMain: $[eq(variables['Build.SourceBranch'], 'refs/heads/master')]
-  accountName: 'wcr2publish'
+  accountName: 'hikari-calyx'
   containerName: 'ci-build'
 
 steps:
@@ -129,7 +129,7 @@ steps:
   continueOnError: true
   displayName: Delete last build
   inputs:
-    gitHubConnection: 'Kagamia'
+    gitHubConnection: 'HikariCalyx'
     repositoryName: '$(Build.Repository.Name)'
     action: 'delete'
     tag: 'ci-build'
@@ -145,7 +145,7 @@ steps:
 - task: GitHubRelease@1
   condition: and(succeeded(), eq(variables.isMain, true))
   inputs:
-    gitHubConnection: 'Kagamia'
+    gitHubConnection: 'HikariCalyx'
     repositoryName: '$(Build.Repository.Name)'
     action: 'edit'
     target: '$(Build.SourceVersion)'
@@ -154,6 +154,6 @@ steps:
     releaseNotesSource: 'inline'
     releaseNotesInline: |
       Automation build from azure-pipeline.
-      Mirror: [[WcR2.netfx.zip]($(sasurl_netfx))] | [[WcR2.net6.zip]($(sasurl_net6))]
+      Mirror: [[JMS_WzComparerR2_net48.zip]($(sasurl_netfx))] | [[JMS_WzComparerR2_net6.0-windows.zip]($(sasurl_net6))]
     isPreRelease: false
     addChangeLog: false
