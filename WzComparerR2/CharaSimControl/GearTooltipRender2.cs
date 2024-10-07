@@ -1005,12 +1005,6 @@ namespace WzComparerR2.CharaSimControl
                 }
             }
 
-            // JMS exclusive pricing display
-            if (!Gear.Props.TryGetValue(GearPropType.notSale, out value) && (Gear.Props.TryGetValue(GearPropType.price, out value) && value > 0) && (!Gear.Cash) && ShowSoldPrice)
-            {
-                desc.Add("\r\n · 販売価額：" + value + "メル");
-            }
-
             //判断是否绘制徽章
             Wz_Node medalResNode = null;
             bool willDrawMedalTag = this.ShowMedalTag
@@ -1139,6 +1133,14 @@ namespace WzComparerR2.CharaSimControl
                     picH += 5;
                     break;
                 }
+            }
+
+            // JMS exclusive pricing display
+            if (!Gear.Props.TryGetValue(GearPropType.notSale, out value) && (Gear.Props.TryGetValue(GearPropType.price, out value) && value > 0) && (!Gear.Cash) && ShowSoldPrice)
+            {
+                picH += 7;
+                GearGraphics.DrawString(g, "· 販売価額：" + value + "メル", GearGraphics.EquipDetailFont, 13, 244, ref picH, 16);
+                picH += 16;
             }
 
             picH += 2;
