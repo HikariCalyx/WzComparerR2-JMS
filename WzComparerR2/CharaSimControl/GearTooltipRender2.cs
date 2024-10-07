@@ -54,6 +54,7 @@ namespace WzComparerR2.CharaSimControl
         public bool ShowMedalTag { get; set; } = true;
         public bool IsCombineProperties { get; set; } = true;
         public bool ShowSoldPrice { get; set; }
+        public bool AutoTitleWrap { get; set; }
 
         public TooltipRender SetItemRender { get; set; }
 
@@ -195,6 +196,32 @@ namespace WzComparerR2.CharaSimControl
                 gearName += " (" + nameAdd + ")";
             }
 
+            if (AutoTitleWrap)
+            {
+                SizeF textWidth;
+                if (IsKoreanStringPresent(gearName))
+                {
+                    textWidth = TextRenderer.MeasureText(g, gearName, GearGraphics.KMSItemNameFont, new Size(int.MaxValue, int.MaxValue), TextFormatFlags.NoPrefix);
+                }
+                else
+                {
+                    textWidth = TextRenderer.MeasureText(g, gearName, GearGraphics.ItemNameFont2, new Size(int.MaxValue, int.MaxValue), TextFormatFlags.NoPrefix);
+                }
+
+                if (textWidth.Width > 264 && gearName.Length > 17)
+                {
+                    int remainingLength = gearName.Length;
+                    string newGearName = "";
+                    while (remainingLength > 17)
+                    {
+                        newGearName += gearName.Substring(gearName.Length - remainingLength, 17) + Environment.NewLine;
+                        remainingLength -= 17;
+                    }
+                    gearName = newGearName + gearName.Substring(gearName.Length - remainingLength, remainingLength);
+                }
+
+            }
+
             format.Alignment = StringAlignment.Center;
             if (IsKoreanStringPresent(gearName))
             {
@@ -207,6 +234,10 @@ namespace WzComparerR2.CharaSimControl
                     GearGraphics.GetGearNameBrush(Gear.diff, Gear.ScrollUp > 0), 130, picH, format);
             }
 
+            if (gearName.Contains(Environment.NewLine))
+            {
+                picH += 12 * Regex.Matches(gearName, Environment.NewLine).Count;
+            }
             picH += 23;
 
             //装备rank

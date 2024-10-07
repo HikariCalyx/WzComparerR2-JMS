@@ -42,5 +42,12 @@ namespace WzComparerR2.Config
             get { return (bool)this["showMedalTag"]; }
             set { this["showMedalTag"] = value; }
         }
+
+        [ConfigurationProperty("autoTitleWrap", DefaultValue = true)]
+        public bool AutoTitleWrap
+        {
+            get { return (bool)this["autoTitleWrap"]; }
+            set { this["autoTitleWrap"] = value; }
+        }
     }
 }

@@ -30,6 +30,7 @@
         {
             this.superTabControl1 = new DevComponents.DotNetBar.SuperTabControl();
             this.superTabControlPanel1 = new DevComponents.DotNetBar.SuperTabControlPanel();
+            this.checkBoxX18 = new DevComponents.DotNetBar.Controls.CheckBoxX();
             this.checkBoxX17 = new DevComponents.DotNetBar.Controls.CheckBoxX();
             this.checkBoxX16 = new DevComponents.DotNetBar.Controls.CheckBoxX();
             this.checkBoxX15 = new DevComponents.DotNetBar.Controls.CheckBoxX();
@@ -139,6 +140,21 @@
             this.superTabControlPanel1.Size = new System.Drawing.Size(282, 251);
             this.superTabControlPanel1.TabIndex = 1;
             this.superTabControlPanel1.TabItem = this.superTabItem1;
+            // 
+            // checkBoxX18
+            // 
+            this.checkBoxX18.AutoSize = true;
+            this.checkBoxX18.BackColor = System.Drawing.Color.Transparent;
+            // 
+            // 
+            // 
+            this.checkBoxX18.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
+            this.checkBoxX18.Location = new System.Drawing.Point(13, 131);
+            this.checkBoxX18.Name = "checkBoxX18";
+            this.checkBoxX18.Size = new System.Drawing.Size(152, 16);
+            this.checkBoxX18.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
+            this.checkBoxX18.TabIndex = 10;
+            this.checkBoxX18.Text = "タイトルを自動的に折り返す";
             // 
             // checkBoxX17
             // 
@@ -392,6 +408,7 @@
             // 
             // superTabControlPanel2
             // 
+            this.superTabControlPanel2.Controls.Add(this.checkBoxX18);
             this.superTabControlPanel2.Controls.Add(this.checkBoxX16);
             this.superTabControlPanel2.Controls.Add(this.checkBoxX11);
             this.superTabControlPanel2.Controls.Add(this.checkBoxX6);
@@ -706,5 +723,6 @@
         private DevComponents.DotNetBar.Controls.CheckBoxX checkBoxX15;
         private DevComponents.DotNetBar.Controls.CheckBoxX checkBoxX16;
         private DevComponents.DotNetBar.Controls.CheckBoxX checkBoxX17;
+        private DevComponents.DotNetBar.Controls.CheckBoxX checkBoxX18;
     }
 }

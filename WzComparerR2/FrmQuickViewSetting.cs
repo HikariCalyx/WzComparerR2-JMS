@@ -136,6 +136,13 @@ namespace WzComparerR2
         }
 
         [Link]
+        public bool Gear_AutoTitleWrap
+        {
+            get { return checkBoxX18.Checked; }
+            set { checkBoxX18.Checked = value; }
+        }
+
+        [Link]
         public bool Recipe_ShowID
         {
             get { return checkBoxX7.Checked; }
