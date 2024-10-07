@@ -499,7 +499,7 @@ namespace WzComparerR2.CharaSimControl
             int height = wce.Max(bmp => bmp.Rectangle.Bottom);
 
             //测试宽度
-            var font = GearGraphics.ItemDetailFont2;
+            var font = GearGraphics.JMSKunshoFont;
             var fmt = StringFormat.GenericTypographic;
             //int width = string.IsNullOrEmpty(tagName) ? 0 : (int)Math.Ceiling(g.MeasureString(tagName, font, 261, fmt).Width);
             int width = string.IsNullOrEmpty(tagName) ? 0 : TextRenderer.MeasureText(g, tagName, font, new Size(int.MaxValue, int.MaxValue), TextFormatFlags.NoPadding).Width;
