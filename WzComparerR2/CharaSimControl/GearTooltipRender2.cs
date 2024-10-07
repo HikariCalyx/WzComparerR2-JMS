@@ -1077,7 +1077,7 @@ namespace WzComparerR2.CharaSimControl
                 {
                     if (IsKoreanStringPresent(sr.Desc))
                     {
-                        GearGraphics.DrawString(g, sr.Desc.Replace("#", " #"), GearGraphics.KMSItemDetailFont, orange2FontColorTable, 10, 243, ref picH, 15);
+                        GearGraphics.DrawString(g, sr.Desc.Replace("#", " #"), GearGraphics.KMSItemDetailFont2, orange2FontColorTable, 10, 243, ref picH, 15);
                     }
                     else
                     {
