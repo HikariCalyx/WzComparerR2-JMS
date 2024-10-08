@@ -1,6 +1,7 @@
 # WzComparerR2-JMS
 - これは、JMS 用に設計されたメイプルストーリー抽出ツールです。
 - KMS、GMS、CMS などの他のクライアントで動作します。
+- このツールは、WZ ファイルの編集をサポートしていません。
 
 # Modules
 - **WzComparerR2** 主程序
@@ -41,14 +42,17 @@
 https://open.api.nexon.com/static/maplestory/ItemIcon/KEHCJAIG.png
 ```
 
-# About Game Section
+# About Kinoko Game (キノコゲーム) Section
 
-Since JMS v427 the old patch server is abandoned. Now the game can be only run with Nexon Game Manager. To make the entire procedure easier for new players, Download Game (ゲームをダウンロード) and Game Start (ゲームスタート) buttons were added to WzComparerR2-JMS v5.5.0.
+Since JMS v427 the old patch server is abandoned. Now the game can be only run with Nexon Game Manager. To make the entire procedure easier for new players, Download Game (ゲームをダウンロード) and Game Start (ゲームスタート) buttons were added as of WzComparerR2-JMS v5.5.0.
 
 If you see message says You'll need a new app to open this ngm link, please download Nexon Game Manager from either [KMS official website](https://maplestory.nexon.com/Common/PDS/Download) or [JMS official website](https://maplestory.nexon.co.jp).
 
-# Compile
-- vs2022 or higher/.net 6 SDK
+# コンパイル
+- GitHub Desktop を使用してこのリポジトリをクローンします。
+- [Visual Studio 2022 Community](https://visualstudio.microsoft.com/downloads/) を使用して WzComparerR2.sln を開きます。
+- [ビルド] - [ソリューションのビルド] を選択してコンパイルします。
+- ビルドは WzComparerR2\bin\Release ディレクトリにあります。
 
 # Credits
 - **Fiel** ([Southperry](http://www.southperry.net))  wz文件读取代码改造自WzExtract 以及WzPatcher
