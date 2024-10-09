@@ -125,7 +125,7 @@ namespace WzComparerR2.CharaSim
                 case GearPropType.accountShareTag:
                     switch (value)
                     {
-                        case 1: return "#cUse the Sharing Tag to move an item to another character on the same account once.#";
+                        case 1: return "#c シェアネームタグを使用すると1回同じアカウント内のキャラクターに移動できます。#";
                         default: return null;
                     }
                 //case GearPropType.noPotential: return value == 0 ? null : "This item cannot gain Potential.";
