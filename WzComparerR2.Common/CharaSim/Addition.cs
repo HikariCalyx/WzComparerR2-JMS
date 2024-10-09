@@ -160,12 +160,12 @@ namespace WzComparerR2.CharaSim
                     {
                         reqJobs[i] = ItemStringHelper.GetJobName(this.ConValue[i]) ?? this.ConValue[i].ToString();
                     }
-                    return "When your job is " + string.Join(" or ", reqJobs) + ",";
+                    return "職業が" + string.Join(" あるいは ", reqJobs) + "の場合";
                 case GearPropType.reqLevel:
-                    return "When your level is " + this.ConValue[0] + " or higher,";
+                    return "レベル" + this.ConValue[0] + "以上の場合";
                 case GearPropType.reqCraft:
                     int lastExp;
-					return "When Diligence EXP is " + this.ConValue[0] + " (Lv. " + getPersonalityLevel(this.ConValue[0], out lastExp) + " " + lastExp + " Points) or higher";
+					return "When Diligence EXP is " + this.ConValue[0] + " (Lv. " + getPersonalityLevel(this.ConValue[0], out lastExp) + " " + lastExp + " )以上の場合";
                 case GearPropType.reqWeekDay:
                     string[] weekdays = new string[this.ConValue.Count];
                     for (int i = 0; i < this.ConValue.Count; i++)
