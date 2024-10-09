@@ -1477,7 +1477,14 @@ namespace WzComparerR2.CharaSimControl
             }
             if (Gear.Props.TryGetValue(GearPropType.noLookChange, out value) && value != 0)
             {
-                tags.Add(ItemStringHelper.GetGearPropString(GearPropType.noLookChange, value));
+                if (Gear.type == GearType.medal)
+                {
+                    tags.Add("勲章用" + ItemStringHelper.GetGearPropString(GearPropType.noLookChange, value));
+                }
+                else
+                {
+                    tags.Add(ItemStringHelper.GetGearPropString(GearPropType.noLookChange, value));
+                }
             }
             if ((Gear.ItemID / 10000 >= 161 && Gear.ItemID / 10000 <= 165) || (Gear.ItemID / 10000 >= 194 && Gear.ItemID / 10000 <= 197))
             {
