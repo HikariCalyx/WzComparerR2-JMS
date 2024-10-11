@@ -10,6 +10,7 @@ using WzComparerR2.PluginBase;
 using WzComparerR2.WzLib;
 using WzComparerR2.Common;
 using WzComparerR2.CharaSim;
+using System.Linq;
 
 namespace WzComparerR2.CharaSimControl
 {
@@ -93,7 +94,15 @@ namespace WzComparerR2.CharaSimControl
                     name = "(null)";
                 }
 
-                int nameWidth = TextRenderer.MeasureText(g, name.Replace(Environment.NewLine, ""), GearGraphics.ItemDetailFont, new Size(int.MaxValue, int.MaxValue), TextFormatFlags.NoPadding | TextFormatFlags.NoPrefix).Width;
+                int nameWidth;
+                if (IsKoreanStringPresent(name))
+                {
+                    nameWidth = TextRenderer.MeasureText(g, name.Replace(Environment.NewLine, ""), GearGraphics.KMSItemDetailFont, new Size(int.MaxValue, int.MaxValue), TextFormatFlags.NoPadding | TextFormatFlags.NoPrefix).Width;
+                }
+                else
+                {
+                    nameWidth = TextRenderer.MeasureText(g, name.Replace(Environment.NewLine, ""), GearGraphics.ItemDetailFont, new Size(int.MaxValue, int.MaxValue), TextFormatFlags.NoPadding | TextFormatFlags.NoPrefix).Width;
+                }
                 if (commodity.Bonus == 0)
                 {
                     if (commodity.originalPrice > 0 && commodity.Price < commodity.originalPrice)
@@ -470,6 +479,11 @@ namespace WzComparerR2.CharaSimControl
                     }
                 }
             }
+        }
+
+        private bool IsKoreanStringPresent(string checkString)
+        {
+            return checkString.Any(c => (c >= '\uAC00' && c <= '\uD7A3'));
         }
     }
 }
