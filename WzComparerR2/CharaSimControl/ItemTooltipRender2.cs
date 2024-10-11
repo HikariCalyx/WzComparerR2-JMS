@@ -692,7 +692,14 @@ namespace WzComparerR2.CharaSimControl
             }
             if (!string.IsNullOrEmpty(sr.AutoDesc))
             {
-                GearGraphics.DrawString(g, sr.AutoDesc, GearGraphics.ItemDetailFont, 100, right, ref picH, 16);
+                if (IsKoreanStringPresent(sr.AutoDesc))
+                {
+                    GearGraphics.DrawString(g, sr.AutoDesc, GearGraphics.KMSItemDetailFont, 100, right, ref picH, 16);
+                }
+                else
+                {
+                    GearGraphics.DrawString(g, sr.AutoDesc, GearGraphics.ItemDetailFont, 100, right, ref picH, 16);
+                }
             }
             if (item.Props.TryGetValue(ItemPropType.tradeAvailable, out value) && value > 0)
             {
