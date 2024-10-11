@@ -97,11 +97,15 @@ namespace WzComparerR2.CharaSimControl
                 int nameWidth;
                 if (IsKoreanStringPresent(name))
                 {
-                    nameWidth = TextRenderer.MeasureText(g, name.Replace(Environment.NewLine, ""), GearGraphics.KMSItemDetailFont, new Size(int.MaxValue, int.MaxValue), TextFormatFlags.NoPadding | TextFormatFlags.NoPrefix).Width;
+                    nameWidth = TextRenderer.MeasureText(g, name.Replace(Environment.NewLine, ""), GearGraphics.KMSItemNameFont, new Size(int.MaxValue, int.MaxValue), TextFormatFlags.NoPadding | TextFormatFlags.NoPrefix).Width;
                 }
                 else
                 {
-                    nameWidth = TextRenderer.MeasureText(g, name.Replace(Environment.NewLine, ""), GearGraphics.ItemDetailFont, new Size(int.MaxValue, int.MaxValue), TextFormatFlags.NoPadding | TextFormatFlags.NoPrefix).Width;
+                    nameWidth = TextRenderer.MeasureText(g, name.Replace(Environment.NewLine, ""), GearGraphics.ItemNameFont, new Size(int.MaxValue, int.MaxValue), TextFormatFlags.NoPadding | TextFormatFlags.NoPrefix).Width;
+                }
+                if (commodityPackage.termStart > 0 || commodityPackage.termEnd != null)
+                {
+                    nameWidth = (int)(1.5 * nameWidth);
                 }
                 if (commodity.Bonus == 0)
                 {
@@ -153,7 +157,14 @@ namespace WzComparerR2.CharaSimControl
             }
 
             picH = 10;
-            TextRenderer.DrawText(g, CashPackage.name, GearGraphics.ItemNameFont2, new Point(cashBitmap.Width, picH), Color.White, TextFormatFlags.HorizontalCenter | TextFormatFlags.NoPrefix);
+            if (IsKoreanStringPresent(CashPackage.name))
+            {
+                TextRenderer.DrawText(g, CashPackage.name, GearGraphics.KMSItemNameFont, new Point(cashBitmap.Width, picH), Color.White, TextFormatFlags.HorizontalCenter | TextFormatFlags.NoPrefix);
+            }
+            else
+            {
+                TextRenderer.DrawText(g, CashPackage.name, GearGraphics.ItemNameFont, new Point(cashBitmap.Width, picH), Color.White, TextFormatFlags.HorizontalCenter | TextFormatFlags.NoPrefix);
+            }
             picH += 14;
             if (commodityPackage.termStart > 0 || commodityPackage.termEnd != null)
             {
@@ -368,7 +379,14 @@ namespace WzComparerR2.CharaSimControl
                 }
                 if (time == null)
                 {
-                    TextRenderer.DrawText(g, name.TrimEnd(Environment.NewLine.ToCharArray()), GearGraphics.ItemDetailFont, new Point(columnLeft + 55, picH + 17), Color.White, TextFormatFlags.NoPadding | TextFormatFlags.NoPrefix);
+                    if (IsKoreanStringPresent(name))
+                    {
+                        TextRenderer.DrawText(g, name.TrimEnd(Environment.NewLine.ToCharArray()), GearGraphics.KMSItemDetailFont, new Point(columnLeft + 55, picH + 17), Color.White, TextFormatFlags.NoPadding | TextFormatFlags.NoPrefix);
+                    }
+                    else
+                    {
+                        TextRenderer.DrawText(g, name.TrimEnd(Environment.NewLine.ToCharArray()), GearGraphics.ItemDetailFont, new Point(columnLeft + 55, picH + 17), Color.White, TextFormatFlags.NoPadding | TextFormatFlags.NoPrefix);
+                    }
                     if (commodity.Bonus == 0)
                     {
                         TextRenderer.DrawText(g, info, GearGraphics.ItemDetailFont, new Point(columnLeft + 55, picH + 33), Color.White, TextFormatFlags.NoPadding | TextFormatFlags.NoPrefix);
