@@ -377,6 +377,7 @@ namespace WzComparerR2.CharaSimControl
         private static string ToCJKNumberExpr(long value)
         {
             var sb = new StringBuilder(32);
+            string secondPart = value.ToString("N0");
             bool firstPart = true;
             if (value >= 1_0000_0000_0000_0000)
             {
@@ -415,7 +416,7 @@ namespace WzComparerR2.CharaSimControl
                 sb.AppendFormat("{0}", value);
             }
 
-            return sb.Length > 0 ? sb.ToString() : "0";
+            return sb.Length > 0 ? sb.ToString() + " (" + secondPart + ")" : "0";
         }
     }
 }

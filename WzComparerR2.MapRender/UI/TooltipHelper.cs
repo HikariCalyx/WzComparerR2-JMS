@@ -13,18 +13,28 @@ namespace WzComparerR2.MapRender.UI
     {
         private static string ToCJKNumberExpr(long value)
         {
-            var sb = new StringBuilder(16);
+            var sb = new StringBuilder(32);
+            string secondPart = value.ToString("N0");
             bool firstPart = true;
+            if (value >= 1_0000_0000_0000_0000)
+            {
+                long part = value / 1_0000_0000_0000_0000;
+                sb.AppendFormat("{0}京", part); // Korean: 교, Chinese+Japanese: 京
+                value -= part * 1_0000_0000_0000_0000;
+                firstPart = false;
+            }
             if (value >= 1_0000_0000_0000)
             {
-                long part = value / 1_0000_0000;
+                long part = value / 1_0000_0000_0000;
+                sb.Append(firstPart ? null : " ");
                 sb.AppendFormat("{0}兆", part); // Korean: 조, Chinese+Japanese: 兆
-                value -= part * 1_0000_0000;
+                value -= part * 1_0000_0000_0000;
                 firstPart = false;
             }
             if (value >= 1_0000_0000)
             {
                 long part = value / 1_0000_0000;
+                sb.Append(firstPart ? null : " ");
                 sb.AppendFormat("{0}億", part); // Korean: 억, TradChinese+Japanese: 億, SimpChinese: 亿
                 value -= part * 1_0000_0000;
                 firstPart = false;
@@ -43,7 +53,7 @@ namespace WzComparerR2.MapRender.UI
                 sb.AppendFormat("{0}", value);
             }
 
-            return sb.Length > 0 ? sb.ToString() : "0";
+            return sb.Length > 0 ? sb.ToString() + " (" + secondPart + ")" : "0";
         }
         public static TextBlock PrepareTextBlock(IWcR2Font font, string text, ref Vector2 pos, Color color)
         {
