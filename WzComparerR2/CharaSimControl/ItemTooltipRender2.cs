@@ -1249,6 +1249,10 @@ namespace WzComparerR2.CharaSimControl
         }
         private bool IsKoreanStringPresent(string checkString)
         {
+            if (checkString == null)
+            {
+                return false;
+            }
             return checkString.Any(c => (c >= '\uAC00' && c <= '\uD7A3'));
         }
         private bool TryGetNickResource(int nickTag, out Wz_Node resNode)
