@@ -288,7 +288,7 @@ namespace WzComparerR2
 
             if (!File.Exists(msFolder + "//MapleStory.exe") && !File.Exists(msFolder + "//MapleStoryT.exe"))
             {
-                DialogResult PatcherPromptResult = MessageBoxEx.Show("選択したディレクトリは有効なメイプルフォルダではないようです。\r\nそれでも続行しますか?", "警告", MessageBoxButtons.YesNo);
+                DialogResult PatcherPromptResult = MessageBoxEx.Show("選択したフォルダは有効なメイプルフォルダではないようです。\r\nそれでも続行しますか?", "警告", MessageBoxButtons.YesNo);
                 if (PatcherPromptResult == System.Windows.Forms.DialogResult.No)
                 {
                     return;
