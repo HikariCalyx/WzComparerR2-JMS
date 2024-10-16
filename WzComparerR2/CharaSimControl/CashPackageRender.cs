@@ -446,7 +446,10 @@ namespace WzComparerR2.CharaSimControl
                 TextRenderer.DrawText(g, totalOriginalPrice + "ポイント   " + totalPrice + "ポイント", GearGraphics.ItemDetailFont, new Point(64, picH), Color.White, TextFormatFlags.NoPadding | TextFormatFlags.NoPrefix);
                 TextRenderer.DrawText(g, totalOriginalPrice + "ポイント", GearGraphics.ItemDetailFont, new Point(64, picH), Color.Red, TextFormatFlags.NoPadding | TextFormatFlags.NoPrefix);
                 g.DrawImage(Resource.CSDiscount_arrow, 64 + TextRenderer.MeasureText(g, totalOriginalPrice + "ポイント", GearGraphics.ItemDetailFont, new Size(int.MaxValue, int.MaxValue), TextFormatFlags.NoPadding).Width + 5, picH + 1);
-                DrawDiscountNum(g, "-" + (int)((100 - 100.0 * totalPrice / totalOriginalPrice)) + "%", cashBitmap.Width - 40, picH - 1, StringAlignment.Near);
+                if ((int)((100 - 100.0 * totalPrice / totalOriginalPrice)) > 0) 
+                {
+                    DrawDiscountNum(g, "-" + (int)((100 - 100.0 * totalPrice / totalOriginalPrice)) + "%", cashBitmap.Width - 40, picH - 1, StringAlignment.Near);
+                }
             }
             picH += 11;
 
