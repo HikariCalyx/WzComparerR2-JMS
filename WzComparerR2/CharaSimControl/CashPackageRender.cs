@@ -410,7 +410,7 @@ namespace WzComparerR2.CharaSimControl
                     if (commodity.Bonus == 0)
                     {
                         TextRenderer.DrawText(g, info, GearGraphics.ItemDetailFont, new Point(columnLeft + 55, picH + 24), Color.White, TextFormatFlags.NoPadding | TextFormatFlags.NoPrefix);
-                        if (commodity.originalPrice > 0 && commodity.Price < commodity.originalPrice)
+                        if (commodity.originalPrice > 0 && commodity.Price < commodity.originalPrice && (int)(100 - 100.0 * commodity.Price / commodity.originalPrice) != 0)
                         {
                             int width = TextRenderer.MeasureText(g, info.Substring(0, info.IndexOf("    ")), GearGraphics.ItemDetailFont, new Size(int.MaxValue, int.MaxValue), TextFormatFlags.NoPadding).Width;
                             g.DrawLine(Pens.White, columnLeft + 55, picH + 24 + 4, columnLeft + 55 + width + 1, picH + 24 + 4);
