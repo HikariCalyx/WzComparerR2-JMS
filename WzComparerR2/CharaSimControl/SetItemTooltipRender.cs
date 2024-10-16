@@ -112,11 +112,11 @@ namespace WzComparerR2.CharaSimControl
             picHeight = 10;
             if (IsKoreanStringPresent(this.SetItem.SetItemName))
             {
-                TextRenderer.DrawText(g, this.SetItem.SetItemName, GearGraphics.KMSItemDetailFont2, new Point(261, 10), ((SolidBrush)GearGraphics.GreenBrush2).Color, TextFormatFlags.HorizontalCenter);
+                TextRenderer.DrawText(g, this.SetItem.SetItemName, GearGraphics.KMSItemDetailFont, new Point(261, 10), ((SolidBrush)GearGraphics.JMSGreenBrush).Color, TextFormatFlags.HorizontalCenter);
             }
             else
             {
-                TextRenderer.DrawText(g, this.SetItem.SetItemName, GearGraphics.EquipDetailFont2, new Point(261, 10), ((SolidBrush)GearGraphics.GreenBrush2).Color, TextFormatFlags.HorizontalCenter);//default value is '261' - Used for set name centered in set effect tooltip window   
+                TextRenderer.DrawText(g, this.SetItem.SetItemName, GearGraphics.ItemDetailFont2, new Point(261, 10), ((SolidBrush)GearGraphics.GreenBrush2).Color, TextFormatFlags.HorizontalCenter);//default value is '261' - Used for set name centered in set effect tooltip window   
             }
             picHeight += 25;
 
@@ -323,7 +323,7 @@ namespace WzComparerR2.CharaSimControl
             {
                 for (int i = 0; i < this.SetItem.CompleteCount; ++i)
                 {
-                    TextRenderer.DrawText(g, "(None)", GearGraphics.EquipDetailFont2, new Point(10, picHeight), ((SolidBrush)GearGraphics.GrayBrush2).Color, TextFormatFlags.NoPadding | TextFormatFlags.NoPrefix);
+                    TextRenderer.DrawText(g, "(なし)", GearGraphics.EquipDetailFont2, new Point(10, picHeight), ((SolidBrush)GearGraphics.GrayBrush2).Color, TextFormatFlags.NoPadding | TextFormatFlags.NoPrefix);
                     TextRenderer.DrawText(g, "未装備", GearGraphics.EquipDetailFont2, new Point(252 - TextRenderer.MeasureText(g, "未装備", GearGraphics.EquipDetailFont2, new Size(int.MaxValue, int.MaxValue), TextFormatFlags.NoPadding).Width, picHeight), ((SolidBrush)GearGraphics.GrayBrush2).Color, TextFormatFlags.NoPadding);
                     picHeight += 18;
                 }
@@ -405,17 +405,18 @@ namespace WzComparerR2.CharaSimControl
                 string effTitle;
                 if (this.SetItem.SetItemID < 0)
                 {
-                    effTitle = $"Active Within World({effect.Key} / {this.SetItem.CompleteCount})";
+                    effTitle = $"ワールド内重複装備効果({effect.Key} / {this.SetItem.CompleteCount})";
+                    TextRenderer.DrawText(g, effTitle, GearGraphics.ItemDetailFont2, new Point(10, picHeight), ((SolidBrush)GearGraphics.GreenBrush2).Color, TextFormatFlags.NoPadding);
                 }
                 else if (specialPetSetEffectName && this.SetItem.SetItemName.EndsWith("セット"))
                 {
                     effTitle = $"{Regex.Replace(this.SetItem.SetItemName, "セット$", "")} {effect.Key}セット効果";
+                    TextRenderer.DrawText(g, effTitle, GearGraphics.ItemDetailFont, new Point(10, picHeight), ((SolidBrush)GearGraphics.JMSGreenBrush).Color, TextFormatFlags.NoPadding);
                 }
                 else
                 {
                     effTitle = effect.Key + "セット効果";
                 }
-                TextRenderer.DrawText(g, effTitle, GearGraphics.ItemDetailFont, new Point(10, picHeight), ((SolidBrush)GearGraphics.JMSGreenBrush).Color, TextFormatFlags.NoPadding);
                 picHeight += 15;
                 //Brush brush = effect.Value.Enabled ? Brushes.White : GearGraphics.GrayBrush2;
                 var color = effect.Value.Enabled ? Color.White : GearGraphics.GrayColor2;

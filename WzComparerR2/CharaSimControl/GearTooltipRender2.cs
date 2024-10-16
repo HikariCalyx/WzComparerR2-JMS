@@ -207,15 +207,23 @@ namespace WzComparerR2.CharaSimControl
                 {
                     textWidth = TextRenderer.MeasureText(g, gearName, GearGraphics.ItemNameFont2, new Size(int.MaxValue, int.MaxValue), TextFormatFlags.NoPrefix);
                 }
-
-                if (textWidth.Width > 264 && gearName.Length > 17)
+                int titleWrapQuota;
+                if (System.Text.Encoding.UTF8.GetByteCount(gearName) != gearName.Length)
+                {
+                    titleWrapQuota = 17;
+                }
+                else
+                {
+                    titleWrapQuota = 33;
+                }
+                if (textWidth.Width > 264 && gearName.Length > titleWrapQuota)
                 {
                     int remainingLength = gearName.Length;
                     string newGearName = "";
-                    while (remainingLength > 17)
+                    while (remainingLength > titleWrapQuota)
                     {
-                        newGearName += gearName.Substring(gearName.Length - remainingLength, 17) + Environment.NewLine;
-                        remainingLength -= 17;
+                        newGearName += gearName.Substring(gearName.Length - remainingLength, titleWrapQuota) + Environment.NewLine;
+                        remainingLength -= titleWrapQuota;
                     }
                     gearName = newGearName + gearName.Substring(gearName.Length - remainingLength, remainingLength);
                 }
