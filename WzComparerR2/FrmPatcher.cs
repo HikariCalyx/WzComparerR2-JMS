@@ -286,6 +286,15 @@ namespace WzComparerR2
             prePatch = chkPrePatch.Checked;
             deadPatch = chkDeadPatch.Checked;
 
+            if (!File.Exists(msFolder + "//MapleStory.exe") && !File.Exists(msFolder + "//MapleStoryT.exe"))
+            {
+                DialogResult PatcherPromptResult = MessageBoxEx.Show("警告: 選択したディレクトリは有効なメイプルフォルダではないようです。\r\nそれでも続行しますか?", "警告", MessageBoxButtons.YesNo);
+                if (PatcherPromptResult == System.Windows.Forms.DialogResult.No)
+                {
+                    return;
+                }
+            }
+
             patchThread = new Thread(() => ExecutePatch(patchFile, msFolder, prePatch));
             patchThread.Priority = ThreadPriority.Highest;
             waitHandle = new EventWaitHandle(false, EventResetMode.AutoReset);
