@@ -416,6 +416,7 @@ namespace WzComparerR2.CharaSimControl
                 else
                 {
                     effTitle = effect.Key + "セット効果";
+                    TextRenderer.DrawText(g, effTitle, GearGraphics.ItemDetailFont, new Point(10, picHeight), ((SolidBrush)GearGraphics.JMSGreenBrush).Color, TextFormatFlags.NoPadding);
                 }
                 picHeight += 15;
                 //Brush brush = effect.Value.Enabled ? Brushes.White : GearGraphics.GrayBrush2;
