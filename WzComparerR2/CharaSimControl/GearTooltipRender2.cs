@@ -440,12 +440,18 @@ namespace WzComparerR2.CharaSimControl
 
             //绘制攻击力变化
             format.Alignment = StringAlignment.Far;
-            TextRenderer.DrawText(g, "攻撃力增加量", GearGraphics.EquipDetailFont, new Point(248 - TextRenderer.MeasureText(g, "攻撃力增加量", GearGraphics.EquipDetailFont, new Size(int.MaxValue, int.MaxValue), TextFormatFlags.NoPadding).Width, picH + 10), ((SolidBrush)GearGraphics.GrayBrush2).Color, TextFormatFlags.NoPadding | TextFormatFlags.NoPrefix);
-            g.DrawImage(Resource.UIToolTip_img_Item_Equip_Summary_incline_0, 249 - 19, picH + 27); //暂时画个0
+            TextRenderer.DrawText(g, "攻撃力增加量", GearGraphics.EquipDetailFont, new Point(252 - TextRenderer.MeasureText(g, "攻撃力增加量", GearGraphics.EquipDetailFont, new Size(int.MaxValue, int.MaxValue), TextFormatFlags.NoPadding).Width, picH + 10), ((SolidBrush)GearGraphics.GrayBrush2).Color, TextFormatFlags.NoPadding | TextFormatFlags.NoPrefix);
+            g.DrawImage(Resource.UIToolTip_img_Item_Equip_Summary_incline_0, 253 - 15, picH + 25); //暂时画个0
+
+            picH += 45;
+
+            //Combat Power
+            TextRenderer.DrawText(g, "戦闘力增加量", GearGraphics.EquipDetailFont, new Point(252 - TextRenderer.MeasureText(g, "戦闘力增加量", GearGraphics.EquipDetailFont, new Size(int.MaxValue, int.MaxValue), TextFormatFlags.NoPadding).Width, picH + 10), ((SolidBrush)GearGraphics.GrayBrush2).Color, TextFormatFlags.NoPadding | TextFormatFlags.NoPrefix);
+            g.DrawImage(Resource.UIToolTip_img_Item_Equip_Summary_incline_0, 253 - 15, picH + 25); //暂时画个0
 
             //绘制属性需求
-            DrawGearReq(g, 97, picH + 59);
-            picH += 94;
+            DrawGearReq(g, 97, picH + 54);
+            picH += 89;
 
             //绘制属性变化
             DrawPropDiffEx(g, 12, picH);
@@ -1656,12 +1662,12 @@ namespace WzComparerR2.CharaSimControl
             }
             
             Image jobImage = extraReq == null ? Resource.UIToolTip_img_Item_Equip_Job_normal : extraReq.Contains("\r\n") ? Resource.UIToolTip_img_Item_Equip_Job_expand2 : Resource.UIToolTip_img_Item_Equip_Job_expand;
-            g.DrawImage(jobImage, 10, picH);
+            g.DrawImage(jobImage, 12, picH);
 
             int reqJob;
             Gear.Props.TryGetValue(GearPropType.reqJob, out reqJob);
-            int[] origin = new int[] { 7, 5, 48, 4, 79, 5, 132, 4, 175, 4, 204, 4 };//changed to adapt JMS
-            int[] origin2 = new int[] { 8, 6, 50, 6, 80, 6, 134, 6, 176, 6, 206, 6 };
+            int[] origin = new int[] { 9, 5, 50, 4, 81, 5, 134, 4, 177, 4, 206, 4 };//changed to adapt JMS
+            int[] origin2 = new int[] { 10, 6, 52, 6, 82, 6, 136, 6, 178, 6, 208, 6 };
             for (int i = 0; i <= 5; i++)
             {
                 bool enable;

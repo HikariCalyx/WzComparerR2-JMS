@@ -189,7 +189,14 @@ namespace WzComparerR2.CharaSimControl
 
                 picH += 8;
                 //term += " >";
-                TextRenderer.DrawText(g, term, GearGraphics.ItemDetailFont2, new Point(cashBitmap.Width, picH), ((SolidBrush)GearGraphics.OrangeBrush4).Color, TextFormatFlags.HorizontalCenter);
+                if (IsKoreanStringPresent(term))
+                {
+                    TextRenderer.DrawText(g, term, GearGraphics.KMSItemDetailFont2, new Point(cashBitmap.Width, picH), ((SolidBrush)GearGraphics.OrangeBrush4).Color, TextFormatFlags.HorizontalCenter);
+                }
+                else
+                {
+                    TextRenderer.DrawText(g, term, GearGraphics.ItemDetailFont2, new Point(cashBitmap.Width, picH), ((SolidBrush)GearGraphics.OrangeBrush4).Color, TextFormatFlags.HorizontalCenter);
+                }
                 picH += 16 * term.Split('\n').Length;
                 //picH += 12; < --- commented because of line above, check!
             }
@@ -228,10 +235,27 @@ namespace WzComparerR2.CharaSimControl
                 CashPackage.desc += "";
             CashPackage.desc += "\n";
             if (CashPackage.onlyCash == 0)
-                GearGraphics.DrawString(g, CashPackage.desc + "", GearGraphics.ItemDetailFont, 11, right, ref picH, 16);
-            //GearGraphics.DrawString(g, CashPackage.desc + "\n#(Not applicable to free bonus items) Buy this with Nexon Cash and you can trade it with another user once if unused.", GearGraphics.ItemDetailFont2, 11, right, ref picH, 16);
+            {
+                if (IsKoreanStringPresent(CashPackage.desc))
+                {
+                    GearGraphics.DrawString(g, CashPackage.desc + "", GearGraphics.KMSItemDetailFont2, 11, right, ref picH, 16);
+                }
+                else
+                {
+                    GearGraphics.DrawString(g, CashPackage.desc + "", GearGraphics.ItemDetailFont2, 11, right, ref picH, 16);
+                }
+            }    
             else
-                GearGraphics.DrawString(g, CashPackage.desc + "\n#NEXONポイントでのみ購入可能#", GearGraphics.ItemDetailFont2, 11, right, ref picH, 16);
+            {
+                if (IsKoreanStringPresent(CashPackage.desc))
+                {
+                    GearGraphics.DrawString(g, CashPackage.desc + "\n#NEXONポイントでのみ購入可能#", GearGraphics.KMSItemDetailFont2, 11, right, ref picH, 16);
+                }
+                else
+                {
+                    GearGraphics.DrawString(g, CashPackage.desc + "\n#NEXONポイントでのみ購入可能#", GearGraphics.ItemDetailFont2, 11, right, ref picH, 16);
+                }
+            }
 
             bool hasLine = false;
             picH -= 0;//default is 4
@@ -389,7 +413,14 @@ namespace WzComparerR2.CharaSimControl
                     }
                     if (commodity.Bonus == 0)
                     {
-                        TextRenderer.DrawText(g, info, GearGraphics.ItemDetailFont, new Point(columnLeft + 55, picH + 33), Color.White, TextFormatFlags.NoPadding | TextFormatFlags.NoPrefix);
+                        if (IsKoreanStringPresent(info))
+                        {
+                            TextRenderer.DrawText(g, info, GearGraphics.KMSItemDetailFont, new Point(columnLeft + 55, picH + 33), Color.White, TextFormatFlags.NoPadding | TextFormatFlags.NoPrefix);
+                        }
+                        else
+                        {
+                            TextRenderer.DrawText(g, info, GearGraphics.ItemDetailFont, new Point(columnLeft + 55, picH + 33), Color.White, TextFormatFlags.NoPadding | TextFormatFlags.NoPrefix);
+                        }
                         if (commodity.originalPrice > 0 && commodity.Price < commodity.originalPrice)
                         {
                             int width = TextRenderer.MeasureText(g, info.Substring(0, info.IndexOf("    ")), GearGraphics.ItemDetailFont, new Size(int.MaxValue, int.MaxValue), TextFormatFlags.NoPadding).Width;
@@ -400,13 +431,27 @@ namespace WzComparerR2.CharaSimControl
                     }
                     else
                     {
-                        TextRenderer.DrawText(g, info, GearGraphics.ItemDetailFont, new Point(columnLeft + 55, picH + 33), Color.Red, TextFormatFlags.NoPadding | TextFormatFlags.NoPrefix);
+                        if (IsKoreanStringPresent(info))
+                        {
+                            TextRenderer.DrawText(g, info, GearGraphics.KMSItemDetailFont, new Point(columnLeft + 55, picH + 33), Color.Red, TextFormatFlags.NoPadding | TextFormatFlags.NoPrefix);
+                        }
+                        else
+                        {
+                            TextRenderer.DrawText(g, info, GearGraphics.ItemDetailFont, new Point(columnLeft + 55, picH + 33), Color.Red, TextFormatFlags.NoPadding | TextFormatFlags.NoPrefix);
+                        }
                         g.DrawImage(Resource.CSDiscount_bonus, columnRight - 47, picH + 29);
                     }
                 }
                 else
                 {
-                    TextRenderer.DrawText(g, name.Replace(Environment.NewLine, ""), GearGraphics.ItemDetailFont, new Point(columnLeft + 55, picH + 8), Color.White, TextFormatFlags.NoPadding | TextFormatFlags.NoPrefix);
+                    if (IsKoreanStringPresent(name))
+                    {
+                        TextRenderer.DrawText(g, name.Replace(Environment.NewLine, ""), GearGraphics.KMSItemDetailFont, new Point(columnLeft + 55, picH + 8), Color.White, TextFormatFlags.NoPadding | TextFormatFlags.NoPrefix);
+                    }
+                    else
+                    {
+                        TextRenderer.DrawText(g, name.Replace(Environment.NewLine, ""), GearGraphics.ItemDetailFont, new Point(columnLeft + 55, picH + 8), Color.White, TextFormatFlags.NoPadding | TextFormatFlags.NoPrefix);
+                    }
                     if (commodity.Bonus == 0)
                     {
                         TextRenderer.DrawText(g, info, GearGraphics.ItemDetailFont, new Point(columnLeft + 55, picH + 24), Color.White, TextFormatFlags.NoPadding | TextFormatFlags.NoPrefix);
@@ -420,10 +465,24 @@ namespace WzComparerR2.CharaSimControl
                     }
                     else
                     {
-                        TextRenderer.DrawText(g, info, GearGraphics.ItemDetailFont, new Point(columnLeft + 55, picH + 24), Color.Red, TextFormatFlags.NoPadding | TextFormatFlags.NoPrefix);
+                        if (IsKoreanStringPresent(info))
+                        {
+                            TextRenderer.DrawText(g, info, GearGraphics.KMSItemDetailFont, new Point(columnLeft + 55, picH + 24), Color.Red, TextFormatFlags.NoPadding | TextFormatFlags.NoPrefix);
+                        }
+                        else
+                        {
+                            TextRenderer.DrawText(g, info, GearGraphics.ItemDetailFont, new Point(columnLeft + 55, picH + 24), Color.Red, TextFormatFlags.NoPadding | TextFormatFlags.NoPrefix);
+                        }
                         g.DrawImage(Resource.CSDiscount_bonus, columnRight - 47, picH + 20);
                     }
-                    TextRenderer.DrawText(g, time, GearGraphics.ItemDetailFont, new Point(columnLeft + 55, picH + 39), Color.White, TextFormatFlags.NoPadding | TextFormatFlags.NoPrefix);
+                    if (IsKoreanStringPresent(info))
+                    {
+                        TextRenderer.DrawText(g, info, GearGraphics.KMSItemDetailFont, new Point(columnLeft + 55, picH + 39), Color.White, TextFormatFlags.NoPadding | TextFormatFlags.NoPrefix);
+                    }
+                    else
+                    {
+                        TextRenderer.DrawText(g, info, GearGraphics.ItemDetailFont, new Point(columnLeft + 55, picH + 39), Color.White, TextFormatFlags.NoPadding | TextFormatFlags.NoPrefix);
+                    }
                 }
                 picH += 57;
 
@@ -504,6 +563,7 @@ namespace WzComparerR2.CharaSimControl
 
         private bool IsKoreanStringPresent(string checkString)
         {
+            if (checkString == null) return false;
             return checkString.Any(c => (c >= '\uAC00' && c <= '\uD7A3'));
         }
     }
