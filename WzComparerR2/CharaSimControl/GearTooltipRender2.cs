@@ -441,13 +441,13 @@ namespace WzComparerR2.CharaSimControl
             //绘制攻击力变化
             format.Alignment = StringAlignment.Far;
             TextRenderer.DrawText(g, "攻撃力增加量", GearGraphics.EquipDetailFont, new Point(248 - TextRenderer.MeasureText(g, "攻撃力增加量", GearGraphics.EquipDetailFont, new Size(int.MaxValue, int.MaxValue), TextFormatFlags.NoPadding).Width, picH + 10), ((SolidBrush)GearGraphics.GrayBrush2).Color, TextFormatFlags.NoPadding | TextFormatFlags.NoPrefix);
-            g.DrawImage(Resource.UIToolTip_img_Item_Equip_Summary_incline_0, 249 - 19, picH + 27); //暂时画个0
+            g.DrawImage(Resource.UIToolTip_img_Item_Equip_Summary_incline_0, 249 - 15, picH + 25); //暂时画个0
 
-            picH += 54;
+            picH += 45;
 
             //Combat Power
             TextRenderer.DrawText(g, "戦闘力增加量", GearGraphics.EquipDetailFont, new Point(248 - TextRenderer.MeasureText(g, "戦闘力增加量", GearGraphics.EquipDetailFont, new Size(int.MaxValue, int.MaxValue), TextFormatFlags.NoPadding).Width, picH + 10), ((SolidBrush)GearGraphics.GrayBrush2).Color, TextFormatFlags.NoPadding | TextFormatFlags.NoPrefix);
-            g.DrawImage(Resource.UIToolTip_img_Item_Equip_Summary_incline_0, 249 - 19, picH + 27); //暂时画个0
+            g.DrawImage(Resource.UIToolTip_img_Item_Equip_Summary_incline_0, 249 - 15, picH + 25); //暂时画个0
 
             //绘制属性需求
             DrawGearReq(g, 97, picH + 59);
