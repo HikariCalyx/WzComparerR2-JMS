@@ -32,8 +32,10 @@
             this.buttonX2 = new DevComponents.DotNetBar.ButtonX();
             this.buttonX1 = new DevComponents.DotNetBar.ButtonX();
             this.txtAPIkey = new DevComponents.DotNetBar.Controls.TextBoxX();
+            this.txtGCloudTranslateAPIkey = new DevComponents.DotNetBar.Controls.TextBoxX();
             this.txtSecretkey = new DevComponents.DotNetBar.Controls.TextBoxX();
             this.buttonXCheck = new DevComponents.DotNetBar.ButtonX();
+            this.buttonXCheck2 = new DevComponents.DotNetBar.ButtonX();
             this.superTabControl1 = new DevComponents.DotNetBar.SuperTabControl();
             this.superTabControlPanel1 = new DevComponents.DotNetBar.SuperTabControlPanel();
             this.cmbWzVersionVerifyMode = new DevComponents.DotNetBar.Controls.ComboBoxEx();
@@ -41,6 +43,8 @@
             this.chkImgCheckDisabled = new DevComponents.DotNetBar.Controls.CheckBoxX();
             this.chkWzSortByImgID = new DevComponents.DotNetBar.Controls.CheckBoxX();
             this.chkAutoCheckExtFiles = new DevComponents.DotNetBar.Controls.CheckBoxX();
+            this.chkEnableTranslate = new DevComponents.DotNetBar.Controls.CheckBoxX();
+            this.cmbDesiredLanguage = new DevComponents.DotNetBar.Controls.ComboBoxEx();
             this.cmbWzEncoding = new DevComponents.DotNetBar.Controls.ComboBoxEx();
             this.labelX1 = new DevComponents.DotNetBar.LabelX();
             this.chkWzAutoSort = new DevComponents.DotNetBar.Controls.CheckBoxX();
@@ -50,6 +54,7 @@
             this.superTabItem2 = new DevComponents.DotNetBar.SuperTabItem();
             this.superTabControlPanel3 = new DevComponents.DotNetBar.SuperTabControlPanel();
             this.labelX4 = new DevComponents.DotNetBar.LabelX();
+            this.labelX5 = new DevComponents.DotNetBar.LabelX();
             this.superTabItem3 = new DevComponents.DotNetBar.SuperTabItem();
             this.panelEx1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.superTabControl1)).BeginInit();
@@ -112,10 +117,22 @@
             // 
             this.txtAPIkey.Border.Class = "TextBoxBorder";
             this.txtAPIkey.Border.CornerType = DevComponents.DotNetBar.eCornerType.Square;
-            this.txtAPIkey.Location = new System.Drawing.Point(63, 13);
+            this.txtAPIkey.Location = new System.Drawing.Point(110, 13);
             this.txtAPIkey.Name = "txtAPIkey";
-            this.txtAPIkey.Size = new System.Drawing.Size(180, 23);
+            this.txtAPIkey.Size = new System.Drawing.Size(148, 23);
             this.txtAPIkey.TabIndex = 10;
+            // 
+            // txtGCloudTranslateAPIkey
+            // 
+            // 
+            // 
+            // 
+            this.txtGCloudTranslateAPIkey.Border.Class = "TextBoxBorder";
+            this.txtGCloudTranslateAPIkey.Border.CornerType = DevComponents.DotNetBar.eCornerType.Square;
+            this.txtGCloudTranslateAPIkey.Location = new System.Drawing.Point(110, 40);
+            this.txtGCloudTranslateAPIkey.Name = "txtGCloudTranslateAPIkey";
+            this.txtGCloudTranslateAPIkey.Size = new System.Drawing.Size(148, 23);
+            this.txtGCloudTranslateAPIkey.TabIndex = 10;
             // 
             // buttonXCheck
             // 
@@ -129,6 +146,19 @@
             this.buttonXCheck.TabIndex = 4;
             this.buttonXCheck.Text = "検査する";
             this.buttonXCheck.Click += new System.EventHandler(this.buttonXCheck_Click);
+            // 
+            // buttonXCheck2
+            // 
+            this.buttonXCheck2.AccessibleRole = System.Windows.Forms.AccessibleRole.PushButton;
+            this.buttonXCheck2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonXCheck2.ColorTable = DevComponents.DotNetBar.eButtonColor.OrangeWithBackground;
+            this.buttonXCheck2.Location = new System.Drawing.Point(288, 40);
+            this.buttonXCheck2.Name = "buttonXCheck2";
+            this.buttonXCheck2.Size = new System.Drawing.Size(55, 19);
+            this.buttonXCheck2.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
+            this.buttonXCheck2.TabIndex = 4;
+            this.buttonXCheck2.Text = "検査する";
+            this.buttonXCheck2.Click += new System.EventHandler(this.buttonXCheck2_Click);
             // 
             // superTabControl1
             // 
@@ -226,6 +256,21 @@
             this.chkImgCheckDisabled.TabIndex = 6;
             this.chkImgCheckDisabled.Text = "IMGチェックサム検証をスキップする";
             // 
+            // chkEnableTranslate
+            // 
+            this.chkEnableTranslate.AutoSize = true;
+            this.chkEnableTranslate.BackColor = System.Drawing.Color.Transparent;
+            // 
+            // 
+            // 
+            this.chkEnableTranslate.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
+            this.chkEnableTranslate.Location = new System.Drawing.Point(14, 110);
+            this.chkEnableTranslate.Name = "chkEnableTranslate";
+            this.chkEnableTranslate.Size = new System.Drawing.Size(212, 16);
+            this.chkEnableTranslate.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
+            this.chkEnableTranslate.TabIndex = 6;
+            this.chkEnableTranslate.Text = "翻訳を有効にする";
+            // 
             // chkWzSortByImgID
             // 
             this.chkWzSortByImgID.AutoSize = true;
@@ -310,6 +355,10 @@
             this.superTabControlPanel2.Controls.Add(this.labelX3);
             this.superTabControlPanel2.Controls.Add(this.txtAPIkey);
             this.superTabControlPanel2.Controls.Add(this.buttonXCheck);
+            this.superTabControlPanel2.Controls.Add(this.labelX5);
+            this.superTabControlPanel2.Controls.Add(this.buttonXCheck2);
+            this.superTabControlPanel2.Controls.Add(this.txtGCloudTranslateAPIkey);
+            this.superTabControlPanel2.Controls.Add(this.chkEnableTranslate);
             this.superTabControlPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.superTabControlPanel2.Location = new System.Drawing.Point(49, 0);
             this.superTabControlPanel2.Name = "superTabControlPanel2";
@@ -329,7 +378,20 @@
             this.labelX3.Location = new System.Drawing.Point(14, 15);
             this.labelX3.Name = "labelX3";
             this.labelX3.TabIndex = 9;
-            this.labelX3.Text = "APIキー";
+            this.labelX3.Text = "NX OpenAPIキー";
+            // 
+            // labelX5
+            // 
+            this.labelX5.AutoSize = true;
+            this.labelX5.BackColor = System.Drawing.Color.Transparent;
+            // 
+            // 
+            // 
+            this.labelX5.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
+            this.labelX5.Location = new System.Drawing.Point(14, 42);
+            this.labelX5.Name = "labelX5";
+            this.labelX5.TabIndex = 9;
+            this.labelX5.Text = "翻訳APIキー";
             // 
             // superTabItem2
             // 
@@ -408,6 +470,8 @@
 
         private DevComponents.DotNetBar.PanelEx panelEx1;
         private DevComponents.DotNetBar.Controls.TextBoxX txtAPIkey;
+        private DevComponents.DotNetBar.Controls.TextBoxX txtNxAPIkey;
+        private DevComponents.DotNetBar.Controls.TextBoxX txtGCloudTranslateAPIkey;
         private DevComponents.DotNetBar.Controls.TextBoxX txtSecretkey;
         private DevComponents.DotNetBar.SuperTabControl superTabControl1;
         private DevComponents.DotNetBar.SuperTabControlPanel superTabControlPanel1;
@@ -419,15 +483,19 @@
         private DevComponents.DotNetBar.ButtonX buttonX2;
         private DevComponents.DotNetBar.ButtonX buttonX1;
         private DevComponents.DotNetBar.ButtonX buttonXCheck;
+        private DevComponents.DotNetBar.ButtonX buttonXCheck2;
         private DevComponents.DotNetBar.Controls.CheckBoxX chkWzAutoSort;
         private DevComponents.DotNetBar.LabelX labelX1;
         private DevComponents.DotNetBar.Controls.ComboBoxEx cmbWzEncoding;
         private DevComponents.DotNetBar.Controls.CheckBoxX chkAutoCheckExtFiles;
         private DevComponents.DotNetBar.Controls.CheckBoxX chkWzSortByImgID;
         private DevComponents.DotNetBar.Controls.CheckBoxX chkImgCheckDisabled;
+        private DevComponents.DotNetBar.Controls.CheckBoxX chkEnableTranslate;
         private DevComponents.DotNetBar.Controls.ComboBoxEx cmbWzVersionVerifyMode;
+        private DevComponents.DotNetBar.Controls.ComboBoxEx cmbDesiredLanguage;
         private DevComponents.DotNetBar.LabelX labelX2;
         private DevComponents.DotNetBar.LabelX labelX3;
         private DevComponents.DotNetBar.LabelX labelX4;
+        private DevComponents.DotNetBar.LabelX labelX5;
     }
 }

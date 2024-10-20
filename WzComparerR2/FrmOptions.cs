@@ -43,6 +43,15 @@ namespace WzComparerR2
                 new ComboItem("高速な方法"){ Value = WzLib.WzVersionVerifyMode.Fast },
                 new ComboItem("従来の方法"){ Value = WzLib.WzVersionVerifyMode.Default },
             });
+
+            cmbDesiredLanguage.Items.AddRange(new[]
+            {
+                new ComboItem("日本語 (JMS)"){ Value = "ja" },
+                new ComboItem("韓国語 (KMS)"){ Value = "ko" },
+                new ComboItem("英語 (GMS)"){ Value = "en" },
+                new ComboItem("簡体字中国語 (CMS)"){ Value = "zh-CN" },
+                new ComboItem("繁体字中国語 (TMS)"){ Value = "zh-TW" },
+            });
         }
 
         public bool SortWzOnOpened
@@ -90,10 +99,23 @@ namespace WzComparerR2
             get { return txtAPIkey.Text; }
             set { txtAPIkey.Text = value; }
         }
+
+        public string GCloudAPIKey
+        {
+            get { return txtGCloudTranslateAPIkey.Text; }
+            set { txtGCloudTranslateAPIkey.Text = value; }
+        }
+
         public string NxSecretKey
         {
             get { return txtSecretkey.Text; }
             set { txtSecretkey.Text = value;}
+        }
+
+        public bool EnableTranslate
+        {
+            get { return chkEnableTranslate.Checked; }
+            set { chkEnableTranslate.Checked = value; }
         }
         private void buttonXCheck_Click(object sender, EventArgs e)
         {
@@ -102,6 +124,30 @@ namespace WzComparerR2
             req.Timeout = 15000;
             req.Accept = "application/json";
             req.Headers.Add("x-nxopen-api-key", txtAPIkey.Text);
+            try
+            {
+                string respJson = new StreamReader(req.GetResponse().GetResponseStream(), Encoding.UTF8).ReadToEnd();
+                Clipboard.SetText(respJson);
+                respText = "この API キーは有効です。" + Environment.NewLine + "この API キーに関連付けられたキャラクターが JSON 形式でクリップボードにコピーされました。";
+            }
+            catch (WebException ex)
+            {
+                string respJson = new StreamReader(ex.Response.GetResponseStream(), Encoding.UTF8).ReadToEnd();
+                respText = "この API キーは無効です。" + Environment.NewLine + respJson;
+            }
+            catch (Exception ex)
+            {
+                respText = "不明なエラーが発生しました：" + ex;
+            }
+            MessageBoxEx.Show(respText);
+        }
+
+        private void buttonXCheck2_Click(object sender, EventArgs e)
+        {
+            string respText;
+            var req = WebRequest.Create(Program.GCloudAPIBaseURL + "/languages?key=" + txtGCloudTranslateAPIkey.Text) as HttpWebRequest;
+            req.Timeout = 15000;
+            req.Accept = "application/json";
             try
             {
                 string respJson = new StreamReader(req.GetResponse().GetResponseStream(), Encoding.UTF8).ReadToEnd();
@@ -141,7 +187,9 @@ namespace WzComparerR2
             this.ImgCheckDisabled = config.ImgCheckDisabled;
             this.WzVersionVerifyMode = config.WzVersionVerifyMode;
             this.NxOpenAPIKey = config.NxOpenAPIKey;
+            this.GCloudAPIKey = config.GCloudAPIKey;
             this.NxSecretKey = config.NxSecretKey;
+            this.EnableTranslate = config.EnableTranslate;
         }
 
         public void Save(WcR2Config config)
@@ -153,7 +201,9 @@ namespace WzComparerR2
             config.ImgCheckDisabled = this.ImgCheckDisabled;
             config.WzVersionVerifyMode = this.WzVersionVerifyMode;
             config.NxOpenAPIKey = this.NxOpenAPIKey;
+            config.GCloudAPIKey = this.GCloudAPIKey;
             config.NxSecretKey = this.NxSecretKey;
+            config.EnableTranslate = this.EnableTranslate;
         }
     }
 }

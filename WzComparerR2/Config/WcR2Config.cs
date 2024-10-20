@@ -19,6 +19,7 @@ namespace WzComparerR2.Config
             this.AutoDetectExtFiles = true;
             this.NoPatcherPrompt = false;
             this.WzVersionVerifyMode = WzLib.WzVersionVerifyMode.Fast;
+            this.EnableTranslate = false;
         }
 
         /// <summary>
@@ -60,6 +61,25 @@ namespace WzComparerR2.Config
         {
             get { return (ConfigItem<string>)this["nxOpenAPIKey"]; }
             set { this["nxOpenAPIKey"] = value; }
+        }
+        /// <summary>
+        /// GCloudAPI Configuration
+        /// </summary>
+        [ConfigurationProperty("GCloudAPIKey")]
+        [ConfigurationCollection(typeof(ConfigArrayList<string>.ItemElement))]
+        public ConfigItem<string> GCloudAPIKey
+        {
+            get { return (ConfigItem<string>)this["GCloudAPIKey"]; }
+            set { this["GCloudAPIKey"] = value; }
+        }
+        /// <summary>
+        /// EnableTranslate Configuration
+        /// </summary>
+        [ConfigurationProperty("EnableTranslate")]
+        public ConfigItem<bool> EnableTranslate
+        {
+            get { return (ConfigItem<bool>)this["EnableTranslate"]; }
+            set { this["EnableTranslate"] = value; }
         }
         /// <summary>
         /// NXSecretKey Configuration
