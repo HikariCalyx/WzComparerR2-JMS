@@ -20,6 +20,7 @@ namespace WzComparerR2.Config
             this.NoPatcherPrompt = false;
             this.WzVersionVerifyMode = WzLib.WzVersionVerifyMode.Fast;
             this.EnableTranslate = false;
+            this.EnableCloudTranslateAPI = false;
             this.DesiredLanguage = "ja";
         }
 
@@ -94,6 +95,16 @@ namespace WzComparerR2.Config
         {
             get { return (ConfigItem<bool>)this["EnableTranslate"]; }
             set { this["EnableTranslate"] = value; }
+        }
+
+        /// <summary>
+        /// EnableCloudTranslateAPI Configuration
+        /// </summary>
+        [ConfigurationProperty("EnableCloudTranslateAPI")]
+        public ConfigItem<bool> EnableCloudTranslateAPI
+        {
+            get { return (ConfigItem<bool>)this["EnableCloudTranslateAPI"]; }
+            set { this["EnableCloudTranslateAPI"] = value; }
         }
 
         /// <summary>

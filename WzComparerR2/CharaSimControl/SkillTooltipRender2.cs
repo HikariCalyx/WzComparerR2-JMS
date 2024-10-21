@@ -150,6 +150,29 @@ namespace WzComparerR2.CharaSimControl
             {
                 translatedSkillName = Translator.TranslateString(sr.Name);
                 isTranslateRequired = !(sr.Name == translatedSkillName);
+                SizeF titleSize;
+                if (IsKoreanStringPresent(translatedSkillName + sr.Name))
+                {
+                    titleSize = TextRenderer.MeasureText(g, translatedSkillName + " (" + sr.Name + ")", GearGraphics.KMSItemNameFont, new Size(int.MaxValue, int.MaxValue), TextFormatFlags.NoPrefix);
+                }
+                else
+                {
+                    titleSize = TextRenderer.MeasureText(g, translatedSkillName + " (" + sr.Name + ")", GearGraphics.ItemNameFont2, new Size(int.MaxValue, int.MaxValue), TextFormatFlags.NoPrefix);
+                }
+                if (titleSize.Width > (int)(0.6 * region.Width))
+                {
+                    translatedSkillName += Environment.NewLine;
+                }
+                else
+                {
+                    translatedSkillName += " ";
+                }
+            }
+
+            // for 6th job skills
+            if (Skill.Origin)
+            {
+                g.DrawImage(Resource.UIWindow2_img_Skill_skillTypeIcon_origin, 16, 11);
             }
 
             //绘制技能名称
@@ -158,11 +181,15 @@ namespace WzComparerR2.CharaSimControl
             {
                 if (IsKoreanStringPresent(translatedSkillName + sr.Name))
                 {
-                    TextRenderer.DrawText(g, translatedSkillName + " (" + sr.Name + ")", GearGraphics.KMSItemNameFont, new Point(bitmap.Width, 10), Color.White, TextFormatFlags.HorizontalCenter | TextFormatFlags.NoPrefix);
+                    TextRenderer.DrawText(g, translatedSkillName + "(" + sr.Name + ")", GearGraphics.KMSItemNameFont, new Point(bitmap.Width, 10), Color.White, TextFormatFlags.HorizontalCenter | TextFormatFlags.NoPrefix);
                 }
                 else
                 {
-                    TextRenderer.DrawText(g, translatedSkillName + " (" + sr.Name + ")", GearGraphics.ItemNameFont2, new Point(bitmap.Width, 10), Color.White, TextFormatFlags.HorizontalCenter | TextFormatFlags.NoPrefix);
+                    TextRenderer.DrawText(g, translatedSkillName + "(" + sr.Name + ")", GearGraphics.ItemNameFont2, new Point(bitmap.Width, 10), Color.White, TextFormatFlags.HorizontalCenter | TextFormatFlags.NoPrefix);
+                }
+                if (translatedSkillName.Contains(Environment.NewLine))
+                {
+                    picH += 30;
                 }
             }
             else
@@ -188,11 +215,7 @@ namespace WzComparerR2.CharaSimControl
                 picH + (33 - Skill.Icon.Bitmap.Height) * 2);
             }
 
-            // for 6th job skills
-            if (Skill.Origin)
-            {
-                g.DrawImage(Resource.UIWindow2_img_Skill_skillTypeIcon_origin, 16, 11);
-            }
+
 
             //绘制desc
             picH = 35;

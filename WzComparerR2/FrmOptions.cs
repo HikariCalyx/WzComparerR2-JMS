@@ -122,6 +122,12 @@ namespace WzComparerR2
             set { chkEnableTranslate.Checked = value; }
         }
 
+        public bool EnableCloudTranslateAPI
+        {
+            get { return chkUseAPI.Checked; }
+            set { chkUseAPI.Checked = value; }
+        }
+
         public string DesiredLanguage
         {
             get
@@ -186,6 +192,20 @@ namespace WzComparerR2
             MessageBoxEx.Show(respText);
         }
 
+        private void chkUseAPI_Click(object sender, EventArgs e)
+        {
+            if (chkUseAPI.Checked)
+            {
+                txtGCloudTranslateAPIkey.Enabled = true;
+                buttonXCheck2.Enabled = true;
+            }
+            else
+            {
+                txtGCloudTranslateAPIkey.Enabled = false;
+                buttonXCheck2.Enabled = false;
+            }
+        }
+
         public WzLib.WzVersionVerifyMode WzVersionVerifyMode
         {
             get { return ((cmbWzVersionVerifyMode.SelectedItem as ComboItem)?.Value as WzLib.WzVersionVerifyMode?) ?? default; }
@@ -210,6 +230,7 @@ namespace WzComparerR2
             this.GCloudAPIKey = config.GCloudAPIKey;
             this.NxSecretKey = config.NxSecretKey;
             this.EnableTranslate = config.EnableTranslate;
+            this.EnableCloudTranslateAPI = config.EnableCloudTranslateAPI;
             this.DesiredLanguage = config.DesiredLanguage;
         }
 
@@ -225,6 +246,7 @@ namespace WzComparerR2
             config.GCloudAPIKey = this.GCloudAPIKey;
             config.NxSecretKey = this.NxSecretKey;
             config.EnableTranslate = this.EnableTranslate;
+            config.EnableCloudTranslateAPI = this.EnableCloudTranslateAPI;
             config.DesiredLanguage = this.DesiredLanguage;
         }
     }

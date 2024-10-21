@@ -14,8 +14,8 @@ namespace WzComparerR2.CharaSim
     {
         public TranslatorAPI()
         {
-            this.DesiredLanguage = TranslatorAPI.DefaultDesiredLanguage;
-            this.GCloudAPIKey = TranslatorAPI.DefaultGCloudAPIKey;
+            this.DesiredLanguage = Translator.DefaultDesiredLanguage;
+            this.GCloudAPIKey = Translator.DefaultGCloudAPIKey;
         }
 
         public string DesiredLanguage { get; set; }

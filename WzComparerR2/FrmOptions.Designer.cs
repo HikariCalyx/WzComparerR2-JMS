@@ -44,6 +44,7 @@
             this.chkWzSortByImgID = new DevComponents.DotNetBar.Controls.CheckBoxX();
             this.chkAutoCheckExtFiles = new DevComponents.DotNetBar.Controls.CheckBoxX();
             this.chkEnableTranslate = new DevComponents.DotNetBar.Controls.CheckBoxX();
+            this.chkUseAPI = new DevComponents.DotNetBar.Controls.CheckBoxX();
             this.cmbDesiredLanguage = new DevComponents.DotNetBar.Controls.ComboBoxEx();
             this.cmbWzEncoding = new DevComponents.DotNetBar.Controls.ComboBoxEx();
             this.labelX1 = new DevComponents.DotNetBar.LabelX();
@@ -272,6 +273,36 @@
             this.chkEnableTranslate.TabIndex = 6;
             this.chkEnableTranslate.Text = "翻訳を有効にする";
             // 
+            // chkEnableTranslate
+            // 
+            this.chkEnableTranslate.AutoSize = true;
+            this.chkEnableTranslate.BackColor = System.Drawing.Color.Transparent;
+            // 
+            // 
+            // 
+            this.chkEnableTranslate.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
+            this.chkEnableTranslate.Location = new System.Drawing.Point(14, 110);
+            this.chkEnableTranslate.Name = "chkEnableTranslate";
+            this.chkEnableTranslate.Size = new System.Drawing.Size(212, 16);
+            this.chkEnableTranslate.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
+            this.chkEnableTranslate.TabIndex = 6;
+            this.chkEnableTranslate.Text = "翻訳を有効にする";
+            // 
+            // chkUseAPI
+            // 
+            this.chkUseAPI.AutoSize = true;
+            this.chkUseAPI.BackColor = System.Drawing.Color.Transparent;
+            // 
+            // 
+            // 
+            this.chkUseAPI.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
+            this.chkUseAPI.Location = new System.Drawing.Point(14, 90);
+            this.chkUseAPI.Name = "chkUseAPI";
+            this.chkUseAPI.Size = new System.Drawing.Size(212, 16);
+            this.chkUseAPI.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
+            this.chkUseAPI.TabIndex = 10;
+            this.chkUseAPI.Text = "翻訳APIを使用する";
+            // 
             // chkWzSortByImgID
             // 
             this.chkWzSortByImgID.AutoSize = true;
@@ -356,10 +387,11 @@
             this.superTabControlPanel2.Controls.Add(this.labelX3);
             this.superTabControlPanel2.Controls.Add(this.txtAPIkey);
             this.superTabControlPanel2.Controls.Add(this.buttonXCheck);
-            this.superTabControlPanel2.Controls.Add(this.labelX5);
-            this.superTabControlPanel2.Controls.Add(this.buttonXCheck2);
-            this.superTabControlPanel2.Controls.Add(this.txtGCloudTranslateAPIkey);
+            //this.superTabControlPanel2.Controls.Add(this.labelX5);
+            //this.superTabControlPanel2.Controls.Add(this.buttonXCheck2);
+            //this.superTabControlPanel2.Controls.Add(this.txtGCloudTranslateAPIkey);
             this.superTabControlPanel2.Controls.Add(this.chkEnableTranslate);
+            //this.superTabControlPanel2.Controls.Add(this.chkUseAPI);
             this.superTabControlPanel2.Controls.Add(this.labelX6);
             this.superTabControlPanel2.Controls.Add(this.cmbDesiredLanguage);
             this.superTabControlPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -497,6 +529,11 @@
 
         }
 
+        private void ChkUseAPI_Click(object sender, System.EventArgs e)
+        {
+            throw new System.NotImplementedException();
+        }
+
         #endregion
 
         private DevComponents.DotNetBar.PanelEx panelEx1;
@@ -522,6 +559,7 @@
         private DevComponents.DotNetBar.Controls.CheckBoxX chkWzSortByImgID;
         private DevComponents.DotNetBar.Controls.CheckBoxX chkImgCheckDisabled;
         private DevComponents.DotNetBar.Controls.CheckBoxX chkEnableTranslate;
+        private DevComponents.DotNetBar.Controls.CheckBoxX chkUseAPI;
         private DevComponents.DotNetBar.Controls.ComboBoxEx cmbWzVersionVerifyMode;
         private DevComponents.DotNetBar.Controls.ComboBoxEx cmbDesiredLanguage;
         private DevComponents.DotNetBar.LabelX labelX2;
