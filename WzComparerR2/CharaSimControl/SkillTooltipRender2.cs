@@ -159,7 +159,7 @@ namespace WzComparerR2.CharaSimControl
                 {
                     titleSize = TextRenderer.MeasureText(g, translatedSkillName + " (" + sr.Name + ")", GearGraphics.ItemNameFont2, new Size(int.MaxValue, int.MaxValue), TextFormatFlags.NoPrefix);
                 }
-                if (titleSize.Width > (int)(0.6 * region.Width))
+                if (titleSize.Width > (int)(0.96 * region.Width))
                 {
                     translatedSkillName += Environment.NewLine;
                 }
