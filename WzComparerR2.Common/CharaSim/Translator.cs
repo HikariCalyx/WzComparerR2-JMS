@@ -49,8 +49,8 @@ namespace WzComparerR2.CharaSim
 
         public static string TranslateString(string orgText)
         {
-            JArray response = Translate(orgText, Translator.DefaultDesiredLanguage);
-            return response[0][0].ToString();
+            JArray response = Translate(orgText.Replace("\\n", "\r\n"), Translator.DefaultDesiredLanguage);
+            return response[0][0].ToString().Replace("\r\n","\\n").Replace("££", "#");
         }
 
         public static bool IsDesiredLanguage(string orgText)

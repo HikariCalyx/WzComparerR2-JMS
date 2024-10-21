@@ -696,7 +696,7 @@ namespace WzComparerR2.CharaSimControl
                 if (isTranslateRequired)
                 {
                     string translateddesc = Translator.TranslateString(desc);
-                    if (IsKoreanStringPresent(translateddesc))
+                    if (IsKoreanStringPresent(translateddesc + desc))
                     {
                         GearGraphics.DrawString(g, translateddesc + Environment.NewLine + Environment.NewLine + desc, GearGraphics.KMSItemDetailFont, 100, right, ref picH, 16);
                     }
@@ -722,7 +722,7 @@ namespace WzComparerR2.CharaSimControl
                 if (isTranslateRequired)
                 {
                     string translatedautoDesc = Translator.TranslateString(sr.AutoDesc);
-                    if (IsKoreanStringPresent(translatedautoDesc))
+                    if (IsKoreanStringPresent(translatedautoDesc + desc))
                     {
                         GearGraphics.DrawString(g, translatedautoDesc + Environment.NewLine + Environment.NewLine + sr.AutoDesc, GearGraphics.KMSItemDetailFont, 100, right, ref picH, 16);
                     }
