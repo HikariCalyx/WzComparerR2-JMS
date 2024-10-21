@@ -1006,13 +1006,16 @@ namespace WzComparerR2.CharaSimControl
             {
                 if (Gear.Props.TryGetValue(type, out value) && value != 0)
                 {
-                    //desc.Add(" " + ItemStringHelper.GetGearPropString(type, value)); (Korean edit code)
                     desc.Add(ItemStringHelper.GetGearPropString(type, value));
                 }
             }
 
             if (!string.IsNullOrEmpty(Gear.EpicHs) && sr[Gear.EpicHs] != null)
             {
+                if (isTranslateRequired)
+                {
+                    desc.Add(Translator.TranslateString(sr[Gear.EpicHs]).Replace("#", " #"));
+                }
                 desc.Add(sr[Gear.EpicHs].Replace("#", " #"));
             }
 
@@ -1174,29 +1177,14 @@ namespace WzComparerR2.CharaSimControl
                 }
                 foreach (string str in desc)
                 {
-                    if (isTranslateRequired)
+                    if (IsKoreanStringPresent(str))
                     {
-                        string translatedstr = Translator.TranslateString(str);
-                        if (IsKoreanStringPresent(translatedstr))
-                        {
-                            GearGraphics.DrawString(g, translatedstr + Environment.NewLine + Environment.NewLine + str, GearGraphics.KMSItemDetailFont, orange2FontColorTable, 10, 243, ref picH, 15);
-                        }
-                        else
-                        {
-                            GearGraphics.DrawString(g, translatedstr + Environment.NewLine + Environment.NewLine + str, GearGraphics.EquipDetailFont2, orange2FontColorTable, 10, 243, ref picH, 15);
-                        }
+                        GearGraphics.DrawString(g, str, GearGraphics.KMSItemDetailFont, orange2FontColorTable, 10, 243, ref picH, 15);
                     }
                     else
                     {
-                        if (IsKoreanStringPresent(str))
-                        {
-                            GearGraphics.DrawString(g, str, GearGraphics.KMSItemDetailFont, orange2FontColorTable, 10, 243, ref picH, 15);
-                        }
-                        else
-                        {
-                            GearGraphics.DrawString(g, str, GearGraphics.EquipDetailFont2, orange2FontColorTable, 10, 243, ref picH, 15);
-                        }
-                    }                    
+                        GearGraphics.DrawString(g, str, GearGraphics.EquipDetailFont2, orange2FontColorTable, 10, 243, ref picH, 15);
+                    }
                 }
                 picH += 5;
             }

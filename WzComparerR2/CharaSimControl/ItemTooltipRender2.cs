@@ -724,11 +724,11 @@ namespace WzComparerR2.CharaSimControl
                     string translatedautoDesc = Translator.TranslateString(sr.AutoDesc);
                     if (IsKoreanStringPresent(translatedautoDesc))
                     {
-                        GearGraphics.DrawString(g, translatedautoDesc + Environment.NewLine + Environment.NewLine + desc, GearGraphics.KMSItemDetailFont, 100, right, ref picH, 16);
+                        GearGraphics.DrawString(g, translatedautoDesc + Environment.NewLine + Environment.NewLine + sr.AutoDesc, GearGraphics.KMSItemDetailFont, 100, right, ref picH, 16);
                     }
                     else
                     {
-                        GearGraphics.DrawString(g, translatedautoDesc + Environment.NewLine + Environment.NewLine + desc, GearGraphics.ItemDetailFont, 100, right, ref picH, 16);
+                        GearGraphics.DrawString(g, translatedautoDesc + Environment.NewLine + Environment.NewLine + sr.AutoDesc, GearGraphics.ItemDetailFont, 100, right, ref picH, 16);
                     }
                 }
                 else
