@@ -185,6 +185,15 @@ namespace WzComparerR2.CharaSimControl
                 sr.Name = "(null)";
             }
             string gearName = sr.Name;
+            string translatedName = "";
+            bool isTranslateRequired = Translator.IsTranslateEnabled;
+            // isTranslateRequired = !Translator.IsDesiredLanguage(gearName);
+            if (isTranslateRequired)
+            {
+                translatedName = Translator.TranslateString(gearName);
+                isTranslateRequired = !(translatedName == gearName);
+            }
+
             switch (Gear.GetGender(Gear.ItemID))
             {
                 case 0: gearName += " (♂)"; break;
@@ -227,10 +236,55 @@ namespace WzComparerR2.CharaSimControl
                     }
                     gearName = newGearName + gearName.Substring(gearName.Length - remainingLength, remainingLength);
                 }
+                if (isTranslateRequired)
+                {
+                    // 既知の問題: ヨーロッパ言語のアクセント文字は非 ASCII 文字として扱われますが、これは想定内のことです。
+                    if (System.Text.Encoding.UTF8.GetByteCount(translatedName) != translatedName.Length)
+                    {
+                        titleWrapQuota = 17;
+                    }
+                    else
+                    {
+                        titleWrapQuota = 33;
+                    }
+                    if (translatedName.Length > titleWrapQuota)
+                    {
+                        int remainingLength = translatedName.Length;
+                        string newTranslatedName = "";
+                        while (remainingLength > titleWrapQuota)
+                        {
+                            newTranslatedName += translatedName.Substring(translatedName.Length - remainingLength, titleWrapQuota) + Environment.NewLine;
+                            remainingLength -= titleWrapQuota;
+                        }
+                        translatedName = newTranslatedName + translatedName.Substring(translatedName.Length - remainingLength, remainingLength) + Environment.NewLine;
+                    }
+                    else
+                    {
+                        translatedName += Environment.NewLine;
+                    }
+                }
 
             }
 
             format.Alignment = StringAlignment.Center;
+            if (isTranslateRequired)
+            {
+                gearName = "(" + gearName + ")";
+                if (IsKoreanStringPresent(translatedName))
+                {
+                    g.DrawString(translatedName, GearGraphics.KMSItemNameFont,
+                        GearGraphics.GetGearNameBrush(Gear.diff, Gear.ScrollUp > 0), 130, picH, format);
+                }
+                else
+                {
+                    g.DrawString(translatedName, GearGraphics.ItemNameFont2,
+                        GearGraphics.GetGearNameBrush(Gear.diff, Gear.ScrollUp > 0), 130, picH, format);
+                }
+                if (translatedName.Contains(Environment.NewLine))
+                {
+                    picH += 12 * (Regex.Matches(translatedName, Environment.NewLine).Count + 1) + 1;
+                }
+            }
             if (IsKoreanStringPresent(gearName))
             {
                 g.DrawString(gearName, GearGraphics.KMSItemNameFont,
@@ -440,12 +494,18 @@ namespace WzComparerR2.CharaSimControl
 
             //绘制攻击力变化
             format.Alignment = StringAlignment.Far;
-            TextRenderer.DrawText(g, "攻撃力增加量", GearGraphics.EquipDetailFont, new Point(248 - TextRenderer.MeasureText(g, "攻撃力增加量", GearGraphics.EquipDetailFont, new Size(int.MaxValue, int.MaxValue), TextFormatFlags.NoPadding).Width, picH + 10), ((SolidBrush)GearGraphics.GrayBrush2).Color, TextFormatFlags.NoPadding | TextFormatFlags.NoPrefix);
-            g.DrawImage(Resource.UIToolTip_img_Item_Equip_Summary_incline_0, 249 - 19, picH + 27); //暂时画个0
+            TextRenderer.DrawText(g, "攻撃力增加量", GearGraphics.EquipDetailFont, new Point(252 - TextRenderer.MeasureText(g, "攻撃力增加量", GearGraphics.EquipDetailFont, new Size(int.MaxValue, int.MaxValue), TextFormatFlags.NoPadding).Width, picH + 10), ((SolidBrush)GearGraphics.GrayBrush2).Color, TextFormatFlags.NoPadding | TextFormatFlags.NoPrefix);
+            g.DrawImage(Resource.UIToolTip_img_Item_Equip_Summary_incline_0, 253 - 15, picH + 25); //暂时画个0
+
+            picH += 45;
+
+            //Combat Power
+            TextRenderer.DrawText(g, "戦闘力增加量", GearGraphics.EquipDetailFont, new Point(252 - TextRenderer.MeasureText(g, "戦闘力增加量", GearGraphics.EquipDetailFont, new Size(int.MaxValue, int.MaxValue), TextFormatFlags.NoPadding).Width, picH + 10), ((SolidBrush)GearGraphics.GrayBrush2).Color, TextFormatFlags.NoPadding | TextFormatFlags.NoPrefix);
+            g.DrawImage(Resource.UIToolTip_img_Item_Equip_Summary_incline_0, 253 - 15, picH + 25); //暂时画个0
 
             //绘制属性需求
-            DrawGearReq(g, 97, picH + 59);
-            picH += 94;
+            DrawGearReq(g, 97, picH + 54);
+            picH += 89;
 
             //绘制属性变化
             DrawPropDiffEx(g, 12, picH);
@@ -946,13 +1006,16 @@ namespace WzComparerR2.CharaSimControl
             {
                 if (Gear.Props.TryGetValue(type, out value) && value != 0)
                 {
-                    //desc.Add(" " + ItemStringHelper.GetGearPropString(type, value)); (Korean edit code)
                     desc.Add(ItemStringHelper.GetGearPropString(type, value));
                 }
             }
 
             if (!string.IsNullOrEmpty(Gear.EpicHs) && sr[Gear.EpicHs] != null)
             {
+                if (isTranslateRequired)
+                {
+                    desc.Add(Translator.TranslateString(sr[Gear.EpicHs]).Replace("#", " #"));
+                }
                 desc.Add(sr[Gear.EpicHs].Replace("#", " #"));
             }
 
@@ -1083,13 +1146,29 @@ namespace WzComparerR2.CharaSimControl
                 }
                 if (!string.IsNullOrEmpty(sr.Desc))
                 {
-                    if (IsKoreanStringPresent(sr.Desc))
+                    if (isTranslateRequired)
                     {
-                        GearGraphics.DrawString(g, sr.Desc.Replace("#", " #"), GearGraphics.KMSItemDetailFont2, orange2FontColorTable, 10, 243, ref picH, 15);
+                        string translatedDesc = Translator.TranslateString(sr.Desc);
+                        if (IsKoreanStringPresent(translatedDesc))
+                        {
+                            GearGraphics.DrawString(g, translatedDesc.Replace("#", " #") + Environment.NewLine + Environment.NewLine + sr.Desc.Replace("#", " #"), GearGraphics.KMSItemDetailFont2, orange2FontColorTable, 10, 243, ref picH, 15);
+                        }
+                        else
+                        {
+                            GearGraphics.DrawString(g, translatedDesc.Replace("#", " #") + Environment.NewLine + Environment.NewLine + sr.Desc.Replace("#", " #"), GearGraphics.EquipDetailFont2, orange2FontColorTable, 10, 243, ref picH, 15);
+                        }
                     }
                     else
                     {
-                        GearGraphics.DrawString(g, sr.Desc.Replace("#", " #"), GearGraphics.EquipDetailFont2, orange2FontColorTable, 10, 243, ref picH, 15);
+
+                        if (IsKoreanStringPresent(sr.Desc))
+                        {
+                            GearGraphics.DrawString(g, sr.Desc.Replace("#", " #"), GearGraphics.KMSItemDetailFont2, orange2FontColorTable, 10, 243, ref picH, 15);
+                        }
+                        else
+                        {
+                            GearGraphics.DrawString(g, sr.Desc.Replace("#", " #"), GearGraphics.EquipDetailFont2, orange2FontColorTable, 10, 243, ref picH, 15);
+                        }
                     }
                 }
                 if (!string.IsNullOrEmpty(levelDesc))
@@ -1106,7 +1185,6 @@ namespace WzComparerR2.CharaSimControl
                     {
                         GearGraphics.DrawString(g, str, GearGraphics.EquipDetailFont2, orange2FontColorTable, 10, 243, ref picH, 15);
                     }
-                    
                 }
                 picH += 5;
             }
@@ -1656,12 +1734,12 @@ namespace WzComparerR2.CharaSimControl
             }
             
             Image jobImage = extraReq == null ? Resource.UIToolTip_img_Item_Equip_Job_normal : extraReq.Contains("\r\n") ? Resource.UIToolTip_img_Item_Equip_Job_expand2 : Resource.UIToolTip_img_Item_Equip_Job_expand;
-            g.DrawImage(jobImage, 10, picH);
+            g.DrawImage(jobImage, 12, picH);
 
             int reqJob;
             Gear.Props.TryGetValue(GearPropType.reqJob, out reqJob);
-            int[] origin = new int[] { 7, 5, 48, 4, 79, 5, 132, 4, 175, 4, 204, 4 };//changed to adapt JMS
-            int[] origin2 = new int[] { 8, 6, 50, 6, 80, 6, 134, 6, 176, 6, 206, 6 };
+            int[] origin = new int[] { 9, 5, 50, 4, 81, 5, 134, 4, 177, 4, 206, 4 };//changed to adapt JMS
+            int[] origin2 = new int[] { 10, 6, 52, 6, 82, 6, 136, 6, 178, 6, 208, 6 };
             for (int i = 0; i <= 5; i++)
             {
                 bool enable;

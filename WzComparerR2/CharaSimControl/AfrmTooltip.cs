@@ -6,6 +6,7 @@ using System.Windows.Forms;
 using WzComparerR2.Common;
 using WzComparerR2.CharaSim;
 using WzComparerR2.Controls;
+using SharpDX.XAudio2;
 
 namespace WzComparerR2.CharaSimControl
 {
@@ -16,6 +17,7 @@ namespace WzComparerR2.CharaSimControl
             this.menu = new ContextMenuStrip();
             this.menu.Items.Add(new ToolStripMenuItem("クリップボードにコピー", null, tsmiCopy_Click));
             this.menu.Items.Add(new ToolStripMenuItem("PNGに保存", null, tsmiSave_Click));
+            this.menu.Items.Add(new ToolStripMenuItem("元のテキストをコピー", null));
             this.menu.Items.Add(new ToolStripMenuItem("このダイアログを閉じるには、[Esc]キーを押します。", null));
             this.ContextMenuStrip = this.menu;
 
@@ -206,6 +208,22 @@ namespace WzComparerR2.CharaSimControl
                     dataObj.SetData(DataFormats.Dib, stream);
                     Clipboard.SetDataObject(dataObj, true);
                 }
+            }
+        }
+
+        void tsmiCopyText_Click(object sender, EventArgs e)
+        {
+            var dataObj = new DataObject();
+            switch (item)
+            {
+                case Skill:
+                case Item:
+                case Gear:
+                    Clipboard.SetDataObject(dataObj, true);
+                    break;
+                default:
+                    Clipboard.SetDataObject(dataObj, true);
+                    break;
             }
         }
 

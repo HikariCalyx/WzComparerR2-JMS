@@ -19,6 +19,9 @@ namespace WzComparerR2.Config
             this.AutoDetectExtFiles = true;
             this.NoPatcherPrompt = false;
             this.WzVersionVerifyMode = WzLib.WzVersionVerifyMode.Fast;
+            this.EnableTranslate = false;
+            this.EnableCloudTranslateAPI = false;
+            this.DesiredLanguage = "ja";
         }
 
         /// <summary>
@@ -61,6 +64,49 @@ namespace WzComparerR2.Config
             get { return (ConfigItem<string>)this["nxOpenAPIKey"]; }
             set { this["nxOpenAPIKey"] = value; }
         }
+
+        /// <summary>
+        /// GCloudAPI Configuration
+        /// </summary>
+        [ConfigurationProperty("GCloudAPIKey")]
+        [ConfigurationCollection(typeof(ConfigArrayList<string>.ItemElement))]
+        public ConfigItem<string> GCloudAPIKey
+        {
+            get { return (ConfigItem<string>)this["GCloudAPIKey"]; }
+            set { this["GCloudAPIKey"] = value; }
+        }
+
+        /// <summary>
+        /// Desired Language Configuration
+        /// </summary>
+        [ConfigurationProperty("DesiredLanguage")]
+        [ConfigurationCollection(typeof(ConfigArrayList<string>.ItemElement))]
+        public ConfigItem<string> DesiredLanguage
+        {
+            get { return (ConfigItem<string>)this["DesiredLanguage"]; }
+            set { this["DesiredLanguage"] = value; }
+        }
+
+        /// <summary>
+        /// EnableTranslate Configuration
+        /// </summary>
+        [ConfigurationProperty("EnableTranslate")]
+        public ConfigItem<bool> EnableTranslate
+        {
+            get { return (ConfigItem<bool>)this["EnableTranslate"]; }
+            set { this["EnableTranslate"] = value; }
+        }
+
+        /// <summary>
+        /// EnableCloudTranslateAPI Configuration
+        /// </summary>
+        [ConfigurationProperty("EnableCloudTranslateAPI")]
+        public ConfigItem<bool> EnableCloudTranslateAPI
+        {
+            get { return (ConfigItem<bool>)this["EnableCloudTranslateAPI"]; }
+            set { this["EnableCloudTranslateAPI"] = value; }
+        }
+
         /// <summary>
         /// NXSecretKey Configuration
         /// </summary>
@@ -71,6 +117,7 @@ namespace WzComparerR2.Config
             get { return (ConfigItem<string>)this["nxSecretKey"]; }
             set { this["nxSecretKey"] = value; }
         }
+
         /// <summary>
         /// 获取或设置Wz对比报告默认输出文件夹。
         /// </summary>
