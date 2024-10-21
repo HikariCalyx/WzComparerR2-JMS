@@ -117,6 +117,22 @@ namespace WzComparerR2
             get { return chkEnableTranslate.Checked; }
             set { chkEnableTranslate.Checked = value; }
         }
+
+        public string DesiredLanguage
+        {
+            get
+            {
+                return ((cmbDesiredLanguage.SelectedItem as ComboItem)?.Value as string) ?? "ja";
+            }
+            set
+            {
+                var items = cmbDesiredLanguage.Items.Cast<ComboItem>();
+                var item = items.FirstOrDefault(_item => _item.Value as string == value)
+                    ?? items.Last();
+                item.Value = value;
+                cmbDesiredLanguage.SelectedItem = item;
+            }
+        }
         private void buttonXCheck_Click(object sender, EventArgs e)
         {
             string respText;
@@ -190,6 +206,7 @@ namespace WzComparerR2
             this.GCloudAPIKey = config.GCloudAPIKey;
             this.NxSecretKey = config.NxSecretKey;
             this.EnableTranslate = config.EnableTranslate;
+            this.DesiredLanguage = config.DesiredLanguage;
         }
 
         public void Save(WcR2Config config)
@@ -204,6 +221,7 @@ namespace WzComparerR2
             config.GCloudAPIKey = this.GCloudAPIKey;
             config.NxSecretKey = this.NxSecretKey;
             config.EnableTranslate = this.EnableTranslate;
+            config.DesiredLanguage = this.DesiredLanguage;
         }
     }
 }

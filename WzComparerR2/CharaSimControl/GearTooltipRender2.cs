@@ -185,6 +185,12 @@ namespace WzComparerR2.CharaSimControl
                 sr.Name = "(null)";
             }
             string gearName = sr.Name;
+
+            if (Translator.IsTranslateEnabled)
+            {
+                gearName = Translator.TranslateString(gearName) + Environment.NewLine + "(" + gearName + ")";
+            }
+
             switch (Gear.GetGender(Gear.ItemID))
             {
                 case 0: gearName += " (♂)"; break;

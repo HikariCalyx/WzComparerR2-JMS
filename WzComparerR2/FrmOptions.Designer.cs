@@ -55,6 +55,7 @@
             this.superTabControlPanel3 = new DevComponents.DotNetBar.SuperTabControlPanel();
             this.labelX4 = new DevComponents.DotNetBar.LabelX();
             this.labelX5 = new DevComponents.DotNetBar.LabelX();
+            this.labelX6 = new DevComponents.DotNetBar.LabelX();
             this.superTabItem3 = new DevComponents.DotNetBar.SuperTabItem();
             this.panelEx1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.superTabControl1)).BeginInit();
@@ -359,6 +360,8 @@
             this.superTabControlPanel2.Controls.Add(this.buttonXCheck2);
             this.superTabControlPanel2.Controls.Add(this.txtGCloudTranslateAPIkey);
             this.superTabControlPanel2.Controls.Add(this.chkEnableTranslate);
+            this.superTabControlPanel2.Controls.Add(this.labelX6);
+            this.superTabControlPanel2.Controls.Add(this.cmbDesiredLanguage);
             this.superTabControlPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.superTabControlPanel2.Location = new System.Drawing.Point(49, 0);
             this.superTabControlPanel2.Name = "superTabControlPanel2";
@@ -392,6 +395,34 @@
             this.labelX5.Name = "labelX5";
             this.labelX5.TabIndex = 9;
             this.labelX5.Text = "翻訳APIキー";
+            // 
+            // labelX6
+            // 
+            this.labelX6.AutoSize = true;
+            this.labelX6.BackColor = System.Drawing.Color.Transparent;
+            // 
+            // 
+            // 
+            this.labelX6.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
+            this.labelX6.Location = new System.Drawing.Point(14, 134);
+            this.labelX6.Name = "labelX6";
+            this.labelX6.Size = new System.Drawing.Size(138, 16);
+            this.labelX6.TabIndex = 7;
+            this.labelX6.Text = "ご希望の翻訳言語";
+            // 
+            // cmbDesiredLanguage
+            // 
+            this.cmbDesiredLanguage.DisplayMember = "Text";
+            this.cmbDesiredLanguage.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
+            this.cmbDesiredLanguage.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbDesiredLanguage.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.cmbDesiredLanguage.FormattingEnabled = true;
+            this.cmbDesiredLanguage.ItemHeight = 13;
+            this.cmbDesiredLanguage.Width = 125;
+            this.cmbDesiredLanguage.Location = new System.Drawing.Point(148, 132);
+            this.cmbDesiredLanguage.Name = "cmbDesiredLanguage";
+            this.cmbDesiredLanguage.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
+            this.cmbDesiredLanguage.TabIndex = 8;
             // 
             // superTabItem2
             // 
@@ -497,5 +528,6 @@
         private DevComponents.DotNetBar.LabelX labelX3;
         private DevComponents.DotNetBar.LabelX labelX4;
         private DevComponents.DotNetBar.LabelX labelX5;
+        private DevComponents.DotNetBar.LabelX labelX6;
     }
 }
