@@ -46,11 +46,15 @@ namespace WzComparerR2
 
             cmbDesiredLanguage.Items.AddRange(new[]
             {
-                new ComboItem("日本語 (JMS)"){ Value = "ja" },
+                new ComboItem("英語 (GMS/MapleSEA)"){ Value = "en" },
+                new ComboItem("オランダ語 (EMS-NL)"){ Value = "nl" },
                 new ComboItem("韓国語 (KMS)"){ Value = "ko" },
-                new ComboItem("英語 (GMS)"){ Value = "en" },
                 new ComboItem("簡体字中国語 (CMS)"){ Value = "zh-CN" },
+                new ComboItem("スペイン語 (EMS-ES)"){ Value = "es" },
+                new ComboItem("ドイツ語 (EMS-DE)"){ Value = "de" },
+                new ComboItem("日本語 (JMS)"){ Value = "ja" },
                 new ComboItem("繁体字中国語 (TMS)"){ Value = "zh-TW" },
+                new ComboItem("フランス語 (EMS-FR)"){ Value = "fr" },
             });
         }
 

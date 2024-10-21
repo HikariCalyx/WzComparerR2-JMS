@@ -144,16 +144,39 @@ namespace WzComparerR2.CharaSimControl
                 sr.Name = "(null)";
             }
 
+            bool isTranslateRequired = Translator.IsTranslateEnabled;
+            string translatedSkillName = "";
+            if (isTranslateRequired)
+            {
+                translatedSkillName = Translator.TranslateString(sr.Name);
+                isTranslateRequired = !(sr.Name == translatedSkillName);
+            }
+
             //绘制技能名称
             format.Alignment = StringAlignment.Center;
-            if (IsKoreanStringPresent(sr.Name))
+            if (isTranslateRequired)
             {
-                TextRenderer.DrawText(g, sr.Name, GearGraphics.KMSItemNameFont, new Point(bitmap.Width, 10), Color.White, TextFormatFlags.HorizontalCenter | TextFormatFlags.NoPrefix);
+                if (IsKoreanStringPresent(translatedSkillName + sr.Name))
+                {
+                    TextRenderer.DrawText(g, translatedSkillName + " (" + sr.Name + ")", GearGraphics.KMSItemNameFont, new Point(bitmap.Width, 10), Color.White, TextFormatFlags.HorizontalCenter | TextFormatFlags.NoPrefix);
+                }
+                else
+                {
+                    TextRenderer.DrawText(g, translatedSkillName + " (" + sr.Name + ")", GearGraphics.ItemNameFont2, new Point(bitmap.Width, 10), Color.White, TextFormatFlags.HorizontalCenter | TextFormatFlags.NoPrefix);
+                }
             }
             else
             {
-                TextRenderer.DrawText(g, sr.Name, GearGraphics.ItemNameFont2, new Point(bitmap.Width, 10), Color.White, TextFormatFlags.HorizontalCenter | TextFormatFlags.NoPrefix);
+                if (IsKoreanStringPresent(sr.Name))
+                {
+                    TextRenderer.DrawText(g, sr.Name, GearGraphics.KMSItemNameFont, new Point(bitmap.Width, 10), Color.White, TextFormatFlags.HorizontalCenter | TextFormatFlags.NoPrefix);
+                }
+                else
+                {
+                    TextRenderer.DrawText(g, sr.Name, GearGraphics.ItemNameFont2, new Point(bitmap.Width, 10), Color.White, TextFormatFlags.HorizontalCenter | TextFormatFlags.NoPrefix);
+                }
             }
+
 
             //绘制图标
             if (Skill.Icon.Bitmap != null)
@@ -181,15 +204,31 @@ namespace WzComparerR2.CharaSimControl
             if (sr.Desc != null)
             {
                 string hdesc = SummaryParser.GetSkillSummary(sr.Desc, Skill.Level, Skill.Common, SummaryParams.Default);
-                //string hStr = SummaryParser.GetSkillSummary(skill, skill.Level, sr, SummaryParams.Default);
-                if (IsKoreanStringPresent(hdesc))
+                if (isTranslateRequired)
                 {
-                    GearGraphics.DrawString(g, hdesc, GearGraphics.KMSItemDetailFont, v6SkillSummaryFontColorTable, Skill.Icon.Bitmap == null ? region.LevelDescLeft : region.SkillDescLeft, region.TextRight, ref picH, 16);
+                    string translatedhdesc = Translator.TranslateString(hdesc);
+                    if (IsKoreanStringPresent(translatedhdesc))
+                    {
+                        GearGraphics.DrawString(g, translatedhdesc + Environment.NewLine + Environment.NewLine + hdesc, GearGraphics.KMSItemDetailFont, v6SkillSummaryFontColorTable, Skill.Icon.Bitmap == null ? region.LevelDescLeft : region.SkillDescLeft, region.TextRight, ref picH, 16);
+                    }
+                    else
+                    {
+                        GearGraphics.DrawString(g, translatedhdesc + Environment.NewLine + Environment.NewLine + hdesc, GearGraphics.ItemDetailFont, v6SkillSummaryFontColorTable, Skill.Icon.Bitmap == null ? region.LevelDescLeft : region.SkillDescLeft, region.TextRight, ref picH, 16);
+                    }
                 }
                 else
                 {
-                    GearGraphics.DrawString(g, hdesc, GearGraphics.ItemDetailFont, v6SkillSummaryFontColorTable, Skill.Icon.Bitmap == null ? region.LevelDescLeft : region.SkillDescLeft, region.TextRight, ref picH, 16);
+                    if (IsKoreanStringPresent(hdesc))
+                    {
+                        GearGraphics.DrawString(g, hdesc, GearGraphics.KMSItemDetailFont, v6SkillSummaryFontColorTable, Skill.Icon.Bitmap == null ? region.LevelDescLeft : region.SkillDescLeft, region.TextRight, ref picH, 16);
+                    }
+                    else
+                    {
+                        GearGraphics.DrawString(g, hdesc, GearGraphics.ItemDetailFont, v6SkillSummaryFontColorTable, Skill.Icon.Bitmap == null ? region.LevelDescLeft : region.SkillDescLeft, region.TextRight, ref picH, 16);
+                    }
                 }
+                //string hStr = SummaryParser.GetSkillSummary(skill, skill.Level, sr, SummaryParams.Default);
+
             }
             if (Skill.TimeLimited)
             {
@@ -317,13 +356,29 @@ namespace WzComparerR2.CharaSimControl
                 }
                 if (hStr != null)
                 {
-                    if (IsKoreanStringPresent(hStr))
+                    if (isTranslateRequired)
                     {
-                        GearGraphics.DrawString(g, hStr, GearGraphics.KMSItemDetailFont, v6SkillSummaryFontColorTable, region.LevelDescLeft, region.TextRight, ref picH, 16);
+                        string translatedhstr = Translator.TranslateString(hStr);
+                        if (IsKoreanStringPresent(translatedhstr))
+                        {
+                            GearGraphics.DrawString(g, translatedhstr + Environment.NewLine + Environment.NewLine + hStr, GearGraphics.KMSItemDetailFont, v6SkillSummaryFontColorTable, region.LevelDescLeft, region.TextRight, ref picH, 16);
+                        }
+                        else
+                        {
+                            GearGraphics.DrawString(g, translatedhstr + Environment.NewLine + Environment.NewLine + hStr, GearGraphics.ItemDetailFont, v6SkillSummaryFontColorTable, region.LevelDescLeft, region.TextRight, ref picH, 16);
+                        }
                     }
                     else
                     {
-                        GearGraphics.DrawString(g, hStr, GearGraphics.ItemDetailFont, v6SkillSummaryFontColorTable, region.LevelDescLeft, region.TextRight, ref picH, 16);
+
+                        if (IsKoreanStringPresent(hStr))
+                        {
+                            GearGraphics.DrawString(g, hStr, GearGraphics.KMSItemDetailFont, v6SkillSummaryFontColorTable, region.LevelDescLeft, region.TextRight, ref picH, 16);
+                        }
+                        else
+                        {
+                            GearGraphics.DrawString(g, hStr, GearGraphics.ItemDetailFont, v6SkillSummaryFontColorTable, region.LevelDescLeft, region.TextRight, ref picH, 16);
+                        }
                     }
                 }
             }
@@ -343,13 +398,29 @@ namespace WzComparerR2.CharaSimControl
                 }
                 if (hStr != null)
                 {
-                    if (IsKoreanStringPresent(hStr))
+                    if (isTranslateRequired)
                     {
-                        GearGraphics.DrawString(g, hStr, GearGraphics.KMSItemDetailFont, v6SkillSummaryFontColorTable, region.LevelDescLeft, region.TextRight, ref picH, 16);
+                        string translatedhstr = Translator.TranslateString(hStr);
+                        if (IsKoreanStringPresent(translatedhstr))
+                        {
+                            GearGraphics.DrawString(g, translatedhstr + Environment.NewLine + Environment.NewLine + hStr, GearGraphics.KMSItemDetailFont, v6SkillSummaryFontColorTable, region.LevelDescLeft, region.TextRight, ref picH, 16);
+                        }
+                        else
+                        {
+                            GearGraphics.DrawString(g, translatedhstr + Environment.NewLine + Environment.NewLine + hStr, GearGraphics.ItemDetailFont, v6SkillSummaryFontColorTable, region.LevelDescLeft, region.TextRight, ref picH, 16);
+                        }
                     }
                     else
                     {
-                        GearGraphics.DrawString(g, hStr, GearGraphics.ItemDetailFont, v6SkillSummaryFontColorTable, region.LevelDescLeft, region.TextRight, ref picH, 16);
+
+                        if (IsKoreanStringPresent(hStr))
+                        {
+                            GearGraphics.DrawString(g, hStr, GearGraphics.KMSItemDetailFont, v6SkillSummaryFontColorTable, region.LevelDescLeft, region.TextRight, ref picH, 16);
+                        }
+                        else
+                        {
+                            GearGraphics.DrawString(g, hStr, GearGraphics.ItemDetailFont, v6SkillSummaryFontColorTable, region.LevelDescLeft, region.TextRight, ref picH, 16);
+                        }
                     }
                 }
             }

@@ -10,6 +10,7 @@ using WzComparerR2.MapRender.Patches2;
 using WzComparerR2.MapRender.UI;
 using Microsoft.Xna.Framework;
 using IE = System.Collections.IEnumerator;
+using WzComparerR2.CharaSim;
 
 namespace WzComparerR2.MapRender
 {
@@ -258,12 +259,21 @@ namespace WzComparerR2.MapRender
 
             this.ui.Minimap.Mirror = mapData.ID / 10000000 == 32;
 
+            bool isTranslateRequired = Translator.IsTranslateEnabled;
+
             StringResult sr;
             if (mapData.ID != null && this.StringLinker != null
                 && StringLinker.StringMap.TryGetValue(mapData.ID.Value, out sr))
             {
                 this.ui.Minimap.StreetName = sr["streetName"];
                 this.ui.Minimap.MapName = sr["mapName"];
+                if (isTranslateRequired)
+                {
+                    string translatedStreetName = Translator.TranslateString(sr["streetName"]);
+                    string translatedMapName = Translator.TranslateString(sr["mapName"]);
+                    if (translatedStreetName != sr["streetName"]) this.ui.Minimap.StreetName = translatedStreetName + " (" + this.ui.Minimap.StreetName + ")";
+                    if (translatedMapName != sr["mapName"]) this.ui.Minimap.MapName = translatedMapName + " (" + this.ui.Minimap.MapName + ")";
+                }
             }
             else
             {

@@ -325,6 +325,7 @@ namespace WzComparerR2.CharaSimControl
 
         private Bitmap RenderItem(out int picH)
         {
+            bool isTranslateRequired = Translator.IsTranslateEnabled;
             Bitmap tooltip = new Bitmap(290, DefaultPicHeight);
             Graphics g = Graphics.FromImage(tooltip);
             StringFormat format = (StringFormat)StringFormat.GenericDefault.Clone();
@@ -344,7 +345,18 @@ namespace WzComparerR2.CharaSimControl
             {
                 itemName += " (" + nameAdd + ")";
             }
-
+            if (isTranslateRequired)
+            {
+                string translatedItemName = Translator.TranslateString(itemName);
+                if (translatedItemName != itemName)
+                {
+                    itemName = translatedItemName + " (" + itemName + ")";
+                }
+                else
+                {
+                    isTranslateRequired = false;
+                }
+            }
             //SizeF titleSize = TextRenderer.MeasureText(g, sr.Name.Replace(Environment.NewLine, ""), GearGraphics.ItemNameFont2, new Size(int.MaxValue, int.MaxValue), TextFormatFlags.NoPrefix);
             SizeF titleSize;
             if (IsKoreanStringPresent(itemName))
@@ -380,13 +392,13 @@ namespace WzComparerR2.CharaSimControl
             //绘制标题
             bool hasPart2 = false;
             format.Alignment = StringAlignment.Center;
-            if (IsKoreanStringPresent(sr.Name))
+            if (IsKoreanStringPresent(itemName))
             {
-                g.DrawString(sr.Name, GearGraphics.KMSItemNameFont, Brushes.White, tooltip.Width / 2, picH, format);
+                g.DrawString(itemName, GearGraphics.KMSItemNameFont, Brushes.White, tooltip.Width / 2, picH, format);
             }
             else
             {
-                g.DrawString(sr.Name, GearGraphics.ItemNameFont2, Brushes.White, tooltip.Width / 2, picH, format);
+                g.DrawString(itemName, GearGraphics.ItemNameFont2, Brushes.White, tooltip.Width / 2, picH, format);
             }
             picH += 22;
 
@@ -681,24 +693,54 @@ namespace WzComparerR2.CharaSimControl
             }
             if (!string.IsNullOrEmpty(desc))
             {
-                if (IsKoreanStringPresent(desc))
+                if (isTranslateRequired)
                 {
-                    GearGraphics.DrawString(g, desc, GearGraphics.KMSItemDetailFont, 100, right, ref picH, 16);
+                    string translateddesc = Translator.TranslateString(desc);
+                    if (IsKoreanStringPresent(translateddesc))
+                    {
+                        GearGraphics.DrawString(g, translateddesc + Environment.NewLine + Environment.NewLine + desc, GearGraphics.KMSItemDetailFont, 100, right, ref picH, 16);
+                    }
+                    else
+                    {
+                        GearGraphics.DrawString(g, translateddesc + Environment.NewLine + Environment.NewLine + desc, GearGraphics.ItemDetailFont, 100, right, ref picH, 16);
+                    }
                 }
                 else
                 {
-                    GearGraphics.DrawString(g, desc, GearGraphics.ItemDetailFont, 100, right, ref picH, 16);
+                    if (IsKoreanStringPresent(desc))
+                    {
+                        GearGraphics.DrawString(g, desc, GearGraphics.KMSItemDetailFont, 100, right, ref picH, 16);
+                    }
+                    else
+                    {
+                        GearGraphics.DrawString(g, desc, GearGraphics.ItemDetailFont, 100, right, ref picH, 16);
+                    }
                 }
             }
             if (!string.IsNullOrEmpty(sr.AutoDesc))
             {
-                if (IsKoreanStringPresent(sr.AutoDesc))
+                if (isTranslateRequired)
                 {
-                    GearGraphics.DrawString(g, sr.AutoDesc, GearGraphics.KMSItemDetailFont, 100, right, ref picH, 16);
+                    string translatedautoDesc = Translator.TranslateString(sr.AutoDesc);
+                    if (IsKoreanStringPresent(translatedautoDesc))
+                    {
+                        GearGraphics.DrawString(g, translatedautoDesc + Environment.NewLine + Environment.NewLine + desc, GearGraphics.KMSItemDetailFont, 100, right, ref picH, 16);
+                    }
+                    else
+                    {
+                        GearGraphics.DrawString(g, translatedautoDesc + Environment.NewLine + Environment.NewLine + desc, GearGraphics.ItemDetailFont, 100, right, ref picH, 16);
+                    }
                 }
                 else
                 {
-                    GearGraphics.DrawString(g, sr.AutoDesc, GearGraphics.ItemDetailFont, 100, right, ref picH, 16);
+                    if (IsKoreanStringPresent(sr.AutoDesc))
+                    {
+                        GearGraphics.DrawString(g, sr.AutoDesc, GearGraphics.KMSItemDetailFont, 100, right, ref picH, 16);
+                    }
+                    else
+                    {
+                        GearGraphics.DrawString(g, sr.AutoDesc, GearGraphics.ItemDetailFont, 100, right, ref picH, 16);
+                    }
                 }
             }
             if (item.Props.TryGetValue(ItemPropType.tradeAvailable, out value) && value > 0)
@@ -825,13 +867,28 @@ namespace WzComparerR2.CharaSimControl
                 if (!string.IsNullOrEmpty(descLeftAlign))
                 {
                     picH += 12;
-                    if (IsKoreanStringPresent(descLeftAlign))
+                    if (isTranslateRequired)
                     {
-                        GearGraphics.DrawString(g, descLeftAlign, GearGraphics.KMSItemDetailFont, 14, right, ref picH, 16);
+                        string translateddescLeftAlign = Translator.TranslateString(descLeftAlign);
+                        if (IsKoreanStringPresent(translateddescLeftAlign))
+                        {
+                            GearGraphics.DrawString(g, translateddescLeftAlign + Environment.NewLine + Environment.NewLine + descLeftAlign, GearGraphics.KMSItemDetailFont, 100, right, ref picH, 16);
+                        }
+                        else
+                        {
+                            GearGraphics.DrawString(g, translateddescLeftAlign + Environment.NewLine + Environment.NewLine + descLeftAlign, GearGraphics.ItemDetailFont, 100, right, ref picH, 16);
+                        }
                     }
                     else
                     {
-                        GearGraphics.DrawString(g, descLeftAlign, GearGraphics.ItemDetailFont, 14, right, ref picH, 16);
+                        if (IsKoreanStringPresent(descLeftAlign))
+                        {
+                            GearGraphics.DrawString(g, descLeftAlign, GearGraphics.KMSItemDetailFont, 14, right, ref picH, 16);
+                        }
+                        else
+                        {
+                            GearGraphics.DrawString(g, descLeftAlign, GearGraphics.ItemDetailFont, 14, right, ref picH, 16);
+                        }
                     }
                 }
                 if (item.CoreSpecs.Count > 0)
