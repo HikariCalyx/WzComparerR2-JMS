@@ -238,22 +238,22 @@ namespace WzComparerR2.CharaSimControl
             {
                 if (IsKoreanStringPresent(CashPackage.desc))
                 {
-                    GearGraphics.DrawString(g, CashPackage.desc + "", GearGraphics.KMSItemDetailFont2, 11, right, ref picH, 16);
+                    GearGraphics.DrawString(g, CashPackage.desc + "", GearGraphics.KMSItemDetailFont, 11, right, ref picH, 16);
                 }
                 else
                 {
-                    GearGraphics.DrawString(g, CashPackage.desc + "", GearGraphics.ItemDetailFont2, 11, right, ref picH, 16);
+                    GearGraphics.DrawString(g, CashPackage.desc + "", GearGraphics.ItemDetailFont, 11, right, ref picH, 16);
                 }
             }    
             else
             {
                 if (IsKoreanStringPresent(CashPackage.desc))
                 {
-                    GearGraphics.DrawString(g, CashPackage.desc + "\n#NEXONポイントでのみ購入可能#", GearGraphics.KMSItemDetailFont2, 11, right, ref picH, 16);
+                    GearGraphics.DrawString(g, CashPackage.desc + "\n#NEXONポイントでのみ購入可能#", GearGraphics.KMSItemDetailFont, 11, right, ref picH, 16);
                 }
                 else
                 {
-                    GearGraphics.DrawString(g, CashPackage.desc + "\n#NEXONポイントでのみ購入可能#", GearGraphics.ItemDetailFont2, 11, right, ref picH, 16);
+                    GearGraphics.DrawString(g, CashPackage.desc + "\n#NEXONポイントでのみ購入可能#", GearGraphics.ItemDetailFont, 11, right, ref picH, 16);
                 }
             }
 
