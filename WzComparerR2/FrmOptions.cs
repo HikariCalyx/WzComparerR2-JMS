@@ -46,7 +46,7 @@ namespace WzComparerR2
 
             cmbDesiredLanguage.Items.AddRange(new[]
             {
-                new ComboItem("英語 (GMS/MapleSEA)"){ Value = "en" },
+                new ComboItem("英語 (GMS/MSEA)"){ Value = "en" },
                 new ComboItem("オランダ語 (EMS-NL)"){ Value = "nl" },
                 new ComboItem("韓国語 (KMS)"){ Value = "ko" },
                 new ComboItem("簡体字中国語 (CMS)"){ Value = "zh-CN" },

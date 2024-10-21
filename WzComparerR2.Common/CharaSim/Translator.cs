@@ -21,65 +21,42 @@ namespace WzComparerR2.CharaSim
         public string DesiredLanguage { get; set; }
         public string GCloudAPIKey { get; set; }
 
-        public static string GCloudAPIBaseURL = "https://translation.googleapis.com/language/translate/v2";
+        public static string GTranslateBaseURL = "https://translate.googleapis.com/translate_a/t";
 
-        public static JObject PostJson(string url, Dictionary<string, object> param)
+        public static JArray Translate(string text, string desiredLanguage)
         {
-            string paramStr = JsonConvert.SerializeObject(param);
-            byte[] data = System.Text.Encoding.UTF8.GetBytes(paramStr);
-            var request = (HttpWebRequest)WebRequest.Create(url);
+            var request = (HttpWebRequest)WebRequest.Create(GTranslateBaseURL + "?client=gtx&format=text&sl=auto&tl=" + desiredLanguage);
             request.Method = "POST";
-            request.ContentType = "application/json";
-
+            request.ContentType = "application/x-www-form-urlencoded";
+            var postData = "q=" + Uri.EscapeDataString(text);
+            var byteArray = System.Text.Encoding.UTF8.GetBytes(postData);
+            request.ContentLength = byteArray.Length;
             Stream newStream = request.GetRequestStream();
-            newStream.Write(data, 0, data.Length);
+            newStream.Write(byteArray, 0, byteArray.Length);
             newStream.Close();
-
-            request.ServicePoint.Expect100Continue = false;
-            request.ProtocolVersion = HttpVersion.Version11;
-
-            var response = (HttpWebResponse)request.GetResponse();
-            var responseString = new StreamReader(response.GetResponseStream()).ReadToEnd();
-            if (response.StatusCode == System.Net.HttpStatusCode.OK)
-            {
-                return JObject.Parse(responseString);
-            }
-
-            return null;
-        }
-
-        public static bool IsDesiredLanguage(string orgText)
-        {
-            if (orgText == "(null)" || string.IsNullOrEmpty(orgText)) return true;
-            Dictionary<string, object> keyValuePairs = new Dictionary<string, object>();
-            keyValuePairs.Add("q", orgText);
             try
             {
-                JObject checkResult = PostJson(GCloudAPIBaseURL + "/detect?key=" + DefaultGCloudAPIKey, keyValuePairs);
-                return (DefaultDesiredLanguage == checkResult.SelectToken("data.['detections'][0]['language']").ToString());
+                var response = (HttpWebResponse)request.GetResponse();
+                var responseString = new StreamReader(response.GetResponseStream()).ReadToEnd();
+                return JArray.Parse(responseString);
             }
             catch
             {
-                return true;
+                return JArray.Parse($"[[\"{text}\",\"{desiredLanguage}\"]]");
             }
+            
         }
 
         public static string TranslateString(string orgText)
         {
-            if (orgText == "(null)" || string.IsNullOrEmpty(orgText)) return orgText;
-            Dictionary<string, object> keyValuePairs = new Dictionary<string, object>();
-            keyValuePairs.Add("q", orgText);
-            keyValuePairs.Add("target", DefaultDesiredLanguage);
-            keyValuePairs.Add("format", "text");
-            try
-            {
-                JObject checkResult = PostJson(GCloudAPIBaseURL + "?key=" + DefaultGCloudAPIKey, keyValuePairs);
-                return checkResult.SelectToken("data.['translations'][0]['translatedText']").ToString();
-            }
-            catch
-            {
-                return "";
-            }
+            JArray response = Translate(orgText, Translator.DefaultDesiredLanguage);
+            return response[0][0].ToString();
+        }
+
+        public static bool IsDesiredLanguage(string orgText)
+        {
+            JArray response = Translate(orgText, Translator.DefaultDesiredLanguage);
+            return (response[0][1].ToString() == DefaultDesiredLanguage);
         }
 
         #region Global Settings
