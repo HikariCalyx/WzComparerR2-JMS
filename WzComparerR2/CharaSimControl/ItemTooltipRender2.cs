@@ -485,11 +485,11 @@ namespace WzComparerR2.CharaSimControl
                 expireTime = "";
                 if (item.ConsumableFrom != null)
                 {
-                    expireTime += string.Format("\nUsable From: {1}/{2}/{0} {3:D2}:{4:D2} UTC", Convert.ToInt32(item.ConsumableFrom.Substring(0, 4)), Convert.ToInt32(item.ConsumableFrom.Substring(4, 2)), Convert.ToInt32(item.ConsumableFrom.Substring(6, 2)), Convert.ToInt32(item.ConsumableFrom.Substring(8, 2)), Convert.ToInt32(item.ConsumableFrom.Substring(10, 2)));
+                    expireTime += string.Format("{0}年 {1}月 {2}日 {3:D2}時 {4:D2}分使用可能", Convert.ToInt32(item.ConsumableFrom.Substring(0, 4)), Convert.ToInt32(item.ConsumableFrom.Substring(4, 2)), Convert.ToInt32(item.ConsumableFrom.Substring(6, 2)), Convert.ToInt32(item.ConsumableFrom.Substring(8, 2)), Convert.ToInt32(item.ConsumableFrom.Substring(10, 2)));
                 }
                 if (item.EndUseDate != null)
                 {
-                    expireTime += string.Format("\n{0}年 {1}月 {2}日 {3:D2}時 {4:D2}分まで使用可能", Convert.ToInt32(item.EndUseDate.Substring(0, 4)), Convert.ToInt32(item.EndUseDate.Substring(4, 2)), Convert.ToInt32(item.EndUseDate.Substring(6, 2)), Convert.ToInt32(item.EndUseDate.Substring(8, 2)), Convert.ToInt32(item.EndUseDate.Substring(10, 2)));
+                    expireTime += string.Format("{0}年 {1}月 {2}日 {3:D2}時 {4:D2}分まで使用可能", Convert.ToInt32(item.EndUseDate.Substring(0, 4)), Convert.ToInt32(item.EndUseDate.Substring(4, 2)), Convert.ToInt32(item.EndUseDate.Substring(6, 2)), Convert.ToInt32(item.EndUseDate.Substring(8, 2)), Convert.ToInt32(item.EndUseDate.Substring(10, 2)));
                 }
             }
             else if ((item.Props.TryGetValue(ItemPropType.permanent, out value) && value != 0) || (item.ItemID / 10000 == 500 && item.Props.TryGetValue(ItemPropType.life, out value) && value == 0))
@@ -504,7 +504,7 @@ namespace WzComparerR2.CharaSimControl
             else if (item.ItemID / 10000 == 500 && item.Props.TryGetValue(ItemPropType.limitedLife, out value) && value > 0)
             {
                 picH -= 3;
-                expireTime = string.Format("DAYS OF MAGIC: {0}hrs. {1}min.", value / 3600, (value % 3600) / 60);
+                expireTime = string.Format("魔法の時間: {0}時間 {1}分", value / 3600, (value % 3600) / 60);
             }
             else if (item.ItemID / 10000 == 500 && item.Props.TryGetValue(ItemPropType.life, out value) && value > 0)
             {
@@ -791,7 +791,7 @@ namespace WzComparerR2.CharaSimControl
             }
             if (item.Props.TryGetValue(ItemPropType.noRevive, out value) && value > 0)
             {
-                GearGraphics.DrawString(g, "#cYou cannot use the Water of Life.#", GearGraphics.ItemDetailFont, 100, right, ref picH, 16);
+                GearGraphics.DrawString(g, "#c生命の水は使用できません。#", GearGraphics.ItemDetailFont, 100, right, ref picH, 16);
             }
 
             if (item.ItemID / 10000 == 500)
