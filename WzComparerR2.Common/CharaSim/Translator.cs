@@ -15,24 +15,6 @@ namespace WzComparerR2.CharaSim
     public class Translator
     {
         public static string GTranslateBaseURL = "https://translate.googleapis.com/translate_a/t";
-
-        public static string EncodeToUriComponent(string value)
-        {
-            StringBuilder encoded = new StringBuilder();
-            foreach (char c in value)
-            {
-                if (c > 127) // Non-ASCII character
-                {
-                    encoded.Append(Uri.EscapeDataString(c.ToString()));
-                }
-                else
-                {
-                    encoded.Append(c);
-                }
-            }
-            return encoded.ToString();
-        }
-
         public static JArray GTranslate(string text, string desiredLanguage)
         {
             var request = (HttpWebRequest)WebRequest.Create(GTranslateBaseURL + "?client=gtx&format=text&sl=auto&tl=" + desiredLanguage);
