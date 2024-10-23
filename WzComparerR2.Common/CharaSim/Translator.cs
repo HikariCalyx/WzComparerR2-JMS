@@ -127,6 +127,7 @@ namespace WzComparerR2.CharaSim
         #region Global Settings
         public static string DefaultDesiredLanguage { get; set; }
         public static string DefaultMozhiBackend { get; set; }
+        public static string DefaultTranslateAPIKey { get; set; }
         public static int DefaultPreferredTranslateEngine { get; set; }
         public static bool IsTranslateEnabled { get; set; }
         #endregion

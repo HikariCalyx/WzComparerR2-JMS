@@ -269,6 +269,7 @@ namespace WzComparerR2
             Translator.DefaultDesiredLanguage = config.DesiredLanguage;
             Translator.DefaultMozhiBackend = config.MozhiBackend;
             Translator.DefaultPreferredTranslateEngine = config.PreferredTranslateEngine;
+            Translator.DefaultTranslateAPIKey = config.NxSecretKey;
             Translator.IsTranslateEnabled = config.EnableTranslate;
         }
 
