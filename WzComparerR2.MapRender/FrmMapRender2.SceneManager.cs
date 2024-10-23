@@ -269,10 +269,8 @@ namespace WzComparerR2.MapRender
                 this.ui.Minimap.MapName = sr["mapName"];
                 if (isTranslateRequired)
                 {
-                    string translatedStreetName = Translator.TranslateString(sr["streetName"]);
-                    string translatedMapName = Translator.TranslateString(sr["mapName"]);
-                    if (translatedStreetName != sr["streetName"]) this.ui.Minimap.StreetName = translatedStreetName + " (" + this.ui.Minimap.StreetName + ")";
-                    if (translatedMapName != sr["mapName"]) this.ui.Minimap.MapName = translatedMapName + " (" + this.ui.Minimap.MapName + ")";
+                    this.ui.Minimap.StreetName = Translator.MergeString(sr["streetName"], Translator.TranslateString(sr["streetName"]), 0, false, true);
+                    this.ui.Minimap.MapName = Translator.MergeString(sr["mapName"], Translator.TranslateString(sr["mapName"]), 0, false, true);
                 }
             }
             else

@@ -60,7 +60,7 @@ namespace WzComparerR2.CharaSim
             }
         }
 
-        public static string MergeString(string text1, string text2, int newLineCounts)
+        public static string MergeString(string text1, string text2, int newLineCounts=0, bool oneLineSeparatorRequired=false, bool bracketRequiredForText2=false)
         {
             if (text1 == text2)
             {
@@ -73,21 +73,29 @@ namespace WzComparerR2.CharaSim
                 {
                     case 1:
                         resultStr = text2;
+                        if (newLineCounts == 0 && oneLineSeparatorRequired) resultStr += " / ";
+                        if (newLineCounts == 0 && bracketRequiredForText2) resultStr += " ";
                         while (newLineCounts > 0)
                         {
                             resultStr += Environment.NewLine;
                             newLineCounts--;
                         }
+                        if (bracketRequiredForText2) resultStr += "(";
                         resultStr += text1;
+                        if (bracketRequiredForText2) resultStr += ")";
                         break;
                     case 2:
                         resultStr = text1;
+                        if (newLineCounts == 0 && oneLineSeparatorRequired) resultStr += " / ";
+                        if (newLineCounts == 0 && bracketRequiredForText2) resultStr += " ";
                         while (newLineCounts > 0)
                         {
                             resultStr += Environment.NewLine;
                             newLineCounts--;
                         }
+                        if (bracketRequiredForText2) resultStr += "(";
                         resultStr += text2;
+                        if (bracketRequiredForText2) resultStr += ")";
                         break;
                     case 3:
                         resultStr = text2;

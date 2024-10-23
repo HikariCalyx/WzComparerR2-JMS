@@ -151,17 +151,12 @@ namespace WzComparerR2.CharaSimControl
             }
             if (isTranslateRequired)
             {
-                string translatedName = Translator.TranslateString(sr.Name);
-                if (sr.Name == translatedName)
-                {
-                    return sr.Name;
-                }
-                else
-                {
-                    return translatedName + " (" + sr.Name + ")";
-                }
+                return Translator.MergeString(sr.Name, Translator.TranslateString(sr.Name), 0, false, true);
             }
-            return sr.Name;
+            else
+            {
+                return sr.Name;
+            }
         }
 
         private string GetMapName(int mapID)
@@ -174,17 +169,12 @@ namespace WzComparerR2.CharaSimControl
             }
             if (isTranslateRequired)
             {
-                string translatedName = Translator.TranslateString(sr.Name);
-                if (sr.Name == translatedName)
-                {
-                    return sr.Name;
-                }
-                else
-                {
-                    return translatedName + " (" + sr.Name + ")";
-                }
+                return Translator.MergeString(sr.Name, Translator.TranslateString(sr.Name), 0, false, true);
             }
-            return sr.Name;
+            else
+            {
+                return sr.Name;
+            }
         }
     }
 }

@@ -347,14 +347,14 @@ namespace WzComparerR2.CharaSimControl
             }
             if (isTranslateRequired)
             {
-                string translatedItemName = Translator.TranslateString(itemName);
-                if (translatedItemName != itemName)
+                string translatedItemName = Translator.MergeString(itemName, Translator.TranslateString(itemName), 0, false, true);
+                if (translatedItemName == itemName)
                 {
-                    itemName = translatedItemName + " (" + itemName + ")";
+                    isTranslateRequired = false;
                 }
                 else
                 {
-                    isTranslateRequired = false;
+                    itemName = translatedItemName;
                 }
             }
             //SizeF titleSize = TextRenderer.MeasureText(g, sr.Name.Replace(Environment.NewLine, ""), GearGraphics.ItemNameFont2, new Size(int.MaxValue, int.MaxValue), TextFormatFlags.NoPrefix);
@@ -695,14 +695,14 @@ namespace WzComparerR2.CharaSimControl
             {
                 if (isTranslateRequired)
                 {
-                    string translateddesc = Translator.TranslateString(desc);
-                    if (Translator.IsKoreanStringPresent(translateddesc + desc))
+                    string mergedDesc = Translator.MergeString(desc, Translator.TranslateString(desc), 2);
+                    if (Translator.IsKoreanStringPresent(mergedDesc))
                     {
-                        GearGraphics.DrawString(g, translateddesc + Environment.NewLine + Environment.NewLine + desc, GearGraphics.KMSItemDetailFont, 100, right, ref picH, 16);
+                        GearGraphics.DrawString(g, mergedDesc, GearGraphics.KMSItemDetailFont, 100, right, ref picH, 16);
                     }
                     else
                     {
-                        GearGraphics.DrawString(g, translateddesc + Environment.NewLine + Environment.NewLine + desc, GearGraphics.ItemDetailFont, 100, right, ref picH, 16);
+                        GearGraphics.DrawString(g, mergedDesc, GearGraphics.ItemDetailFont, 100, right, ref picH, 16);
                     }
                 }
                 else
@@ -721,14 +721,14 @@ namespace WzComparerR2.CharaSimControl
             {
                 if (isTranslateRequired)
                 {
-                    string translatedautoDesc = Translator.TranslateString(sr.AutoDesc);
-                    if (Translator.IsKoreanStringPresent(translatedautoDesc + desc))
+                    string mergedAutoDesc = Translator.MergeString(sr.AutoDesc, Translator.TranslateString(sr.AutoDesc), 2);
+                    if (Translator.IsKoreanStringPresent(mergedAutoDesc))
                     {
-                        GearGraphics.DrawString(g, translatedautoDesc + Environment.NewLine + Environment.NewLine + sr.AutoDesc, GearGraphics.KMSItemDetailFont, 100, right, ref picH, 16);
+                        GearGraphics.DrawString(g, mergedAutoDesc, GearGraphics.KMSItemDetailFont, 100, right, ref picH, 16);
                     }
                     else
                     {
-                        GearGraphics.DrawString(g, translatedautoDesc + Environment.NewLine + Environment.NewLine + sr.AutoDesc, GearGraphics.ItemDetailFont, 100, right, ref picH, 16);
+                        GearGraphics.DrawString(g, mergedAutoDesc, GearGraphics.ItemDetailFont, 100, right, ref picH, 16);
                     }
                 }
                 else
@@ -869,14 +869,14 @@ namespace WzComparerR2.CharaSimControl
                     picH += 12;
                     if (isTranslateRequired)
                     {
-                        string translateddescLeftAlign = Translator.TranslateString(descLeftAlign);
-                        if (Translator.IsKoreanStringPresent(translateddescLeftAlign))
+                        string mergedDescLeftAlign = Translator.MergeString(descLeftAlign, Translator.TranslateString(descLeftAlign), 2);
+                        if (Translator.IsKoreanStringPresent(mergedDescLeftAlign))
                         {
-                            GearGraphics.DrawString(g, translateddescLeftAlign + Environment.NewLine + Environment.NewLine + descLeftAlign, GearGraphics.KMSItemDetailFont, 100, right, ref picH, 16);
+                            GearGraphics.DrawString(g, mergedDescLeftAlign, GearGraphics.KMSItemDetailFont, 100, right, ref picH, 16);
                         }
                         else
                         {
-                            GearGraphics.DrawString(g, translateddescLeftAlign + Environment.NewLine + Environment.NewLine + descLeftAlign, GearGraphics.ItemDetailFont, 100, right, ref picH, 16);
+                            GearGraphics.DrawString(g, mergedDescLeftAlign, GearGraphics.ItemDetailFont, 100, right, ref picH, 16);
                         }
                     }
                     else

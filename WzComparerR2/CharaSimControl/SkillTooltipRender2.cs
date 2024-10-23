@@ -150,7 +150,6 @@ namespace WzComparerR2.CharaSimControl
             if (isTranslateRequired)
             {
                 translatedSkillName = Translator.TranslateString(sr.Name);
-                isTranslateRequired = !(sr.Name == translatedSkillName);
                 SizeF titleSize;
                 if (Translator.IsKoreanStringPresent(translatedSkillName + sr.Name))
                 {
@@ -176,34 +175,14 @@ namespace WzComparerR2.CharaSimControl
             format.Alignment = StringAlignment.Center;
             if (isTranslateRequired)
             {
-                string mergedSkillName = sr.Name;
-                switch (Translator.DefaultPreferredLayout)
+                string mergedSkillName;
+                if (isNewLineRequired)
                 {
-                    case 1:
-                        if (isNewLineRequired)
-                        {
-                            mergedSkillName = translatedSkillName + Environment.NewLine + "(" + sr.Name + ")";
-                        }
-                        else
-                        {
-                            mergedSkillName = translatedSkillName + " (" + sr.Name + ")";
-                        }
-                        break;
-                    case 2:
-                        if (isNewLineRequired)
-                        {
-                            mergedSkillName += Environment.NewLine + "(" + translatedSkillName + ")";
-                        }
-                        else
-                        {
-                            mergedSkillName += " (" + translatedSkillName + ")";
-                        }
-                        break;
-                    case 3:
-                        mergedSkillName = translatedSkillName;
-                        break;
-                    default:
-                        break;
+                    mergedSkillName = Translator.MergeString(sr.Name, translatedSkillName, 1, false, true);
+                }
+                else
+                {
+                    mergedSkillName = Translator.MergeString(sr.Name, translatedSkillName, 0, false, true);
                 }
                 if (Translator.IsKoreanStringPresent(translatedSkillName + sr.Name))
                 {
