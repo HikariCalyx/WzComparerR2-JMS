@@ -14,6 +14,7 @@ using WzComparerR2.Config;
 using System.Security.Policy;
 using System.IO;
 using Spine;
+using Newtonsoft.Json.Linq;
 
 namespace WzComparerR2
 {
@@ -47,15 +48,11 @@ namespace WzComparerR2
             cmbDesiredLanguage.Items.AddRange(new[]
             {
                 new ComboItem("英語 (GMS/MSEA)"){ Value = "en" },
-                new ComboItem("オランダ語 (EMS-NL)"){ Value = "nl" },
                 new ComboItem("韓国語 (KMS)"){ Value = "ko" },
                 new ComboItem("広東語 (HKMS)"){ Value = "yue" },
                 new ComboItem("簡体字中国語 (CMS)"){ Value = "zh-CN" },
-                new ComboItem("スペイン語 (EMS-ES)"){ Value = "es" },
-                new ComboItem("ドイツ語 (EMS-DE)"){ Value = "de" },
                 new ComboItem("日本語 (JMS)"){ Value = "ja" },
                 new ComboItem("繁体字中国語 (TMS)"){ Value = "zh-TW" },
-                new ComboItem("フランス語 (EMS-FR)"){ Value = "fr" },
             });
 
             cmbMozhiBackend.Items.AddRange(new[]
@@ -83,7 +80,7 @@ namespace WzComparerR2
                 new ComboItem("DuckDuckGo / Bing"){ Value = 2 },
                 new ComboItem("MyMemory"){ Value = 3 },
                 new ComboItem("Yandex"){ Value = 4 },
-                // new ComboItem("Naver Papago (非Mozhi)"){ Value = 5 },
+                new ComboItem("Naver Papago (非Mozhi)"){ Value = 5 },
                 new ComboItem("Google (非Mozhi)"){ Value = 6 },
             });
         }
@@ -253,6 +250,21 @@ namespace WzComparerR2
             MessageBoxEx.Show(respText);
         }
 
+        private void buttonXCheck3_Click(object sender, EventArgs e)
+        {
+            string respText;
+            JObject testJObject;
+            try
+            {
+                testJObject = JObject.Parse(txtSecretkey.Text);
+                respText = "有効なJSONのようです。";
+            }
+            catch
+            {
+                respText = "有効なJSONではないようです。";
+            }
+            MessageBoxEx.Show(respText);
+        }
 
         public WzLib.WzVersionVerifyMode WzVersionVerifyMode
         {

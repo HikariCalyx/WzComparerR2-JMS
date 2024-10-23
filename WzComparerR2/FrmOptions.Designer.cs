@@ -36,6 +36,7 @@
             this.txtSecretkey = new DevComponents.DotNetBar.Controls.TextBoxX();
             this.buttonXCheck = new DevComponents.DotNetBar.ButtonX();
             this.buttonXCheck2 = new DevComponents.DotNetBar.ButtonX();
+            this.buttonXCheck3 = new DevComponents.DotNetBar.ButtonX();
             this.superTabControl1 = new DevComponents.DotNetBar.SuperTabControl();
             this.superTabControlPanel1 = new DevComponents.DotNetBar.SuperTabControlPanel();
             this.cmbWzVersionVerifyMode = new DevComponents.DotNetBar.Controls.ComboBoxEx();
@@ -163,6 +164,19 @@
             this.buttonXCheck2.TabIndex = 4;
             this.buttonXCheck2.Text = "検査する";
             this.buttonXCheck2.Click += new System.EventHandler(this.buttonXCheck2_Click);
+            // 
+            // buttonXCheck3
+            // 
+            this.buttonXCheck3.AccessibleRole = System.Windows.Forms.AccessibleRole.PushButton;
+            this.buttonXCheck3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonXCheck3.ColorTable = DevComponents.DotNetBar.eButtonColor.OrangeWithBackground;
+            this.buttonXCheck3.Location = new System.Drawing.Point(263, 40);
+            this.buttonXCheck3.Name = "buttonXCheck3";
+            this.buttonXCheck3.Size = new System.Drawing.Size(55, 19);
+            this.buttonXCheck3.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
+            this.buttonXCheck3.TabIndex = 4;
+            this.buttonXCheck3.Text = "検査する";
+            this.buttonXCheck3.Click += new System.EventHandler(this.buttonXCheck3_Click);
             // 
             // superTabControl1
             // 
@@ -494,6 +508,7 @@
             this.superTabControlPanel3.Controls.Add(this.labelX3);
             this.superTabControlPanel3.Controls.Add(this.labelX4);
             this.superTabControlPanel3.Controls.Add(this.buttonXCheck);
+            this.superTabControlPanel3.Controls.Add(this.buttonXCheck3);
             this.superTabControlPanel3.Controls.Add(this.txtAPIkey);
             this.superTabControlPanel3.Controls.Add(this.txtSecretkey);
             this.superTabControlPanel3.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -574,10 +589,12 @@
         private DevComponents.DotNetBar.SuperTabItem superTabItem1;
         private DevComponents.DotNetBar.SuperTabItem superTabItem2;
         private DevComponents.DotNetBar.SuperTabItem superTabItem3;
+        private DevComponents.DotNetBar.ButtonX buttonX3;
         private DevComponents.DotNetBar.ButtonX buttonX2;
         private DevComponents.DotNetBar.ButtonX buttonX1;
         private DevComponents.DotNetBar.ButtonX buttonXCheck;
         private DevComponents.DotNetBar.ButtonX buttonXCheck2;
+        private DevComponents.DotNetBar.ButtonX buttonXCheck3;
         private DevComponents.DotNetBar.Controls.CheckBoxX chkWzAutoSort;
         private DevComponents.DotNetBar.LabelX labelX1;
         private DevComponents.DotNetBar.Controls.ComboBoxEx cmbWzEncoding;
