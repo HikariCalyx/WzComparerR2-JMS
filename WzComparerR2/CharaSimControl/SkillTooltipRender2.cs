@@ -151,7 +151,7 @@ namespace WzComparerR2.CharaSimControl
                 translatedSkillName = Translator.TranslateString(sr.Name);
                 isTranslateRequired = !(sr.Name == translatedSkillName);
                 SizeF titleSize;
-                if (IsKoreanStringPresent(translatedSkillName + sr.Name))
+                if (Translator.IsKoreanStringPresent(translatedSkillName + sr.Name))
                 {
                     titleSize = TextRenderer.MeasureText(g, translatedSkillName + " (" + sr.Name + ")", GearGraphics.KMSItemNameFont, new Size(int.MaxValue, int.MaxValue), TextFormatFlags.NoPrefix);
                 }
@@ -179,7 +179,7 @@ namespace WzComparerR2.CharaSimControl
             format.Alignment = StringAlignment.Center;
             if (isTranslateRequired)
             {
-                if (IsKoreanStringPresent(translatedSkillName + sr.Name))
+                if (Translator.IsKoreanStringPresent(translatedSkillName + sr.Name))
                 {
                     TextRenderer.DrawText(g, translatedSkillName + "(" + sr.Name + ")", GearGraphics.KMSItemNameFont, new Point(bitmap.Width, 10), Color.White, TextFormatFlags.HorizontalCenter | TextFormatFlags.NoPrefix);
                 }
@@ -194,7 +194,7 @@ namespace WzComparerR2.CharaSimControl
             }
             else
             {
-                if (IsKoreanStringPresent(sr.Name))
+                if (Translator.IsKoreanStringPresent(sr.Name))
                 {
                     TextRenderer.DrawText(g, sr.Name, GearGraphics.KMSItemNameFont, new Point(bitmap.Width, 10), Color.White, TextFormatFlags.HorizontalCenter | TextFormatFlags.NoPrefix);
                 }
@@ -230,7 +230,7 @@ namespace WzComparerR2.CharaSimControl
                 if (isTranslateRequired)
                 {
                     string translatedhdesc = Translator.TranslateString(hdesc);
-                    if (IsKoreanStringPresent(translatedhdesc))
+                    if (Translator.IsKoreanStringPresent(translatedhdesc + hdesc))
                     {
                         GearGraphics.DrawString(g, translatedhdesc + Environment.NewLine + Environment.NewLine + hdesc, GearGraphics.KMSItemDetailFont, v6SkillSummaryFontColorTable, Skill.Icon.Bitmap == null ? region.LevelDescLeft : region.SkillDescLeft, region.TextRight, ref picH, 16);
                     }
@@ -241,7 +241,7 @@ namespace WzComparerR2.CharaSimControl
                 }
                 else
                 {
-                    if (IsKoreanStringPresent(hdesc))
+                    if (Translator.IsKoreanStringPresent(hdesc))
                     {
                         GearGraphics.DrawString(g, hdesc, GearGraphics.KMSItemDetailFont, v6SkillSummaryFontColorTable, Skill.Icon.Bitmap == null ? region.LevelDescLeft : region.SkillDescLeft, region.TextRight, ref picH, 16);
                     }
@@ -382,7 +382,7 @@ namespace WzComparerR2.CharaSimControl
                     if (isTranslateRequired)
                     {
                         string translatedhstr = Translator.TranslateString(hStr);
-                        if (IsKoreanStringPresent(translatedhstr))
+                        if (Translator.IsKoreanStringPresent(translatedhstr + hStr))
                         {
                             GearGraphics.DrawString(g, translatedhstr + Environment.NewLine + Environment.NewLine + hStr, GearGraphics.KMSItemDetailFont, v6SkillSummaryFontColorTable, region.LevelDescLeft, region.TextRight, ref picH, 16);
                         }
@@ -394,7 +394,7 @@ namespace WzComparerR2.CharaSimControl
                     else
                     {
 
-                        if (IsKoreanStringPresent(hStr))
+                        if (Translator.IsKoreanStringPresent(hStr))
                         {
                             GearGraphics.DrawString(g, hStr, GearGraphics.KMSItemDetailFont, v6SkillSummaryFontColorTable, region.LevelDescLeft, region.TextRight, ref picH, 16);
                         }
@@ -424,7 +424,7 @@ namespace WzComparerR2.CharaSimControl
                     if (isTranslateRequired)
                     {
                         string translatedhstr = Translator.TranslateString(hStr);
-                        if (IsKoreanStringPresent(translatedhstr))
+                        if (Translator.IsKoreanStringPresent(translatedhstr + hStr))
                         {
                             GearGraphics.DrawString(g, translatedhstr + Environment.NewLine + Environment.NewLine + hStr, GearGraphics.KMSItemDetailFont, v6SkillSummaryFontColorTable, region.LevelDescLeft, region.TextRight, ref picH, 16);
                         }
@@ -436,7 +436,7 @@ namespace WzComparerR2.CharaSimControl
                     else
                     {
 
-                        if (IsKoreanStringPresent(hStr))
+                        if (Translator.IsKoreanStringPresent(hStr))
                         {
                             GearGraphics.DrawString(g, hStr, GearGraphics.KMSItemDetailFont, v6SkillSummaryFontColorTable, region.LevelDescLeft, region.TextRight, ref picH, 16);
                         }
@@ -601,7 +601,7 @@ namespace WzComparerR2.CharaSimControl
                 picH += 9;
                 foreach (var descEx in skillDescEx)
                 {
-                    if (IsKoreanStringPresent(descEx))
+                    if (Translator.IsKoreanStringPresent(descEx))
                     {
                         GearGraphics.DrawString(g, descEx, GearGraphics.KMSItemDetailFont, region.LevelDescLeft, region.TextRight, ref picH, 16);
                     }
@@ -618,14 +618,6 @@ namespace WzComparerR2.CharaSimControl
             format.Dispose();
             g.Dispose();
             return bitmap;
-        }
-        private bool IsKoreanStringPresent(string checkString)
-        {
-            if (checkString == null)
-            {
-                return false;
-            }
-            return checkString.Any(c => (c >= '\uAC00' && c <= '\uD7A3'));
         }
         private void DrawV6SkillDotline(Graphics g, int x1, int x2, int y)
         {

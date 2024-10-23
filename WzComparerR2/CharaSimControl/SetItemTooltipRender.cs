@@ -70,14 +70,7 @@ namespace WzComparerR2.CharaSimControl
             g.Dispose();
             return tooltip;
         }
-        private bool IsKoreanStringPresent(string checkString)
-        {
-            if (checkString == null)
-            {
-                return false;
-            }
-            return checkString.Any(c => (c >= '\uAC00' && c <= '\uD7A3'));
-        }
+
         private bool isSpecialPet(int itemID)
         {
             if (itemID / 1000000 != 5)
@@ -110,7 +103,7 @@ namespace WzComparerR2.CharaSimControl
             var fmtItemType = new StringFormat() { Alignment = StringAlignment.Far };
 
             picHeight = 10;
-            if (IsKoreanStringPresent(this.SetItem.SetItemName))
+            if (Translator.IsKoreanStringPresent(this.SetItem.SetItemName))
             {
                 TextRenderer.DrawText(g, this.SetItem.SetItemName, GearGraphics.KMSItemDetailFont, new Point(261, 10), ((SolidBrush)GearGraphics.JMSGreenBrush).Color, TextFormatFlags.HorizontalCenter);
             }
@@ -249,7 +242,7 @@ namespace WzComparerR2.CharaSimControl
                             //picHeight += 18;
                             int typeWidth = TextRenderer.MeasureText(g, typeName, GearGraphics.EquipDetailFont2, new Size(int.MaxValue, int.MaxValue), TextFormatFlags.NoPadding).Width;
                             TextRenderer.DrawText(g, typeName, GearGraphics.EquipDetailFont2, new Point(261 - 10 - typeWidth, picHeight), ((SolidBrush)brush).Color, TextFormatFlags.NoPadding);
-                            if (IsKoreanStringPresent(itemName))
+                            if (Translator.IsKoreanStringPresent(itemName))
                             {
                                 TextRenderer.DrawText(g, Compact(g, itemName, 261 - 12 - typeWidth - 10), GearGraphics.KMSItemDetailFont2, new Point(10, picHeight), ((SolidBrush)brush).Color, TextFormatFlags.NoPadding);
                             }
@@ -273,7 +266,7 @@ namespace WzComparerR2.CharaSimControl
                             //TextRenderer.DrawText(g, typeName, GearGraphics.EquipDetailFont2, new Point(261 - 10 - TextRenderer.MeasureText(g, typeName, GearGraphics.EquipDetailFont2, new Size(int.MaxValue, int.MaxValue), TextFormatFlags.NoPadding).Width, picHeight), ((SolidBrush)brush).Color, TextFormatFlags.NoPadding);
                             int typeWidth = TextRenderer.MeasureText(g, typeName, GearGraphics.EquipDetailFont2, new Size(int.MaxValue, int.MaxValue), TextFormatFlags.NoPadding).Width;
                             TextRenderer.DrawText(g, typeName, GearGraphics.EquipDetailFont2, new Point(261 - 10 - typeWidth, picHeight), ((SolidBrush)brush).Color, TextFormatFlags.NoPadding);
-                            if (IsKoreanStringPresent(itemName))
+                            if (Translator.IsKoreanStringPresent(itemName))
                             {
                                 TextRenderer.DrawText(g, Compact(g, itemName, 261 - 10 - typeWidth - 52), GearGraphics.KMSItemDetailFont2, new Point(10, picHeight), ((SolidBrush)brush).Color, TextFormatFlags.NoPadding);
                             }
@@ -431,7 +424,7 @@ namespace WzComparerR2.CharaSimControl
                         List<Potential> ops = (List<Potential>)prop.Value;
                         foreach (Potential p in ops)
                         {
-                            if (IsKoreanStringPresent(p.ConvertSummary()))
+                            if (Translator.IsKoreanStringPresent(p.ConvertSummary()))
                             {
                                 GearGraphics.DrawString(g, p.ConvertSummary(), GearGraphics.KMSItemDetailFont2, new Dictionary<string, Color>() { { string.Empty, color } }, 10, 244, ref picHeight, 15);
                             }

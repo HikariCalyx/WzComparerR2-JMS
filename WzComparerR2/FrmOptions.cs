@@ -83,6 +83,14 @@ namespace WzComparerR2
                 new ComboItem("Naver Papago (非Mozhi)"){ Value = 5 },
                 new ComboItem("Google (非Mozhi)"){ Value = 6 },
             });
+
+            cmbPreferredLayout.Items.AddRange(new[]
+            {
+                new ComboItem("翻訳なし"){ Value = 0 },
+                new ComboItem("最初に訳文、次に原文"){ Value = 1 },
+                new ComboItem("最初に原文、次に訳文"){ Value = 2 },
+                new ComboItem("翻訳のみ"){ Value = 3 },
+            });
         }
 
         public bool SortWzOnOpened

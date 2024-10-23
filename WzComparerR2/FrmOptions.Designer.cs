@@ -47,6 +47,7 @@
             this.chkEnableTranslate = new DevComponents.DotNetBar.Controls.CheckBoxX();
             this.cmbDesiredLanguage = new DevComponents.DotNetBar.Controls.ComboBoxEx();
             this.cmbMozhiBackend = new DevComponents.DotNetBar.Controls.ComboBoxEx();
+            this.cmbPreferredLayout = new DevComponents.DotNetBar.Controls.ComboBoxEx();
             this.cmbPreferredTranslateEngine = new DevComponents.DotNetBar.Controls.ComboBoxEx();
             this.cmbWzEncoding = new DevComponents.DotNetBar.Controls.ComboBoxEx();
             this.labelX1 = new DevComponents.DotNetBar.LabelX();
@@ -60,6 +61,7 @@
             this.labelX5 = new DevComponents.DotNetBar.LabelX();
             this.labelX6 = new DevComponents.DotNetBar.LabelX();
             this.labelX7 = new DevComponents.DotNetBar.LabelX();
+            this.labelX8 = new DevComponents.DotNetBar.LabelX();
             this.superTabItem3 = new DevComponents.DotNetBar.SuperTabItem();
             this.panelEx1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.superTabControl1)).BeginInit();
@@ -392,7 +394,9 @@
             this.superTabControlPanel2.Controls.Add(this.labelX6);
             this.superTabControlPanel2.Controls.Add(this.cmbDesiredLanguage);
             this.superTabControlPanel2.Controls.Add(this.labelX7);
+            this.superTabControlPanel2.Controls.Add(this.labelX8);
             this.superTabControlPanel2.Controls.Add(this.cmbPreferredTranslateEngine);
+            this.superTabControlPanel2.Controls.Add(this.cmbPreferredLayout);
             this.superTabControlPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.superTabControlPanel2.Location = new System.Drawing.Point(49, 0);
             this.superTabControlPanel2.Name = "superTabControlPanel2";
@@ -439,6 +443,19 @@
             this.labelX7.Name = "labelX7";
             this.labelX7.TabIndex = 9;
             this.labelX7.Text = "翻訳エンジン";
+            // 
+            // labelX8
+            // 
+            this.labelX8.AutoSize = true;
+            this.labelX8.BackColor = System.Drawing.Color.Transparent;
+            // 
+            // 
+            // 
+            this.labelX8.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
+            this.labelX8.Location = new System.Drawing.Point(14, 67);
+            this.labelX8.Name = "labelX8";
+            this.labelX8.TabIndex = 9;
+            this.labelX8.Text = "訳文表示";
             // 
             // labelX6
             // 
@@ -494,7 +511,21 @@
             this.cmbPreferredTranslateEngine.Location = new System.Drawing.Point(110, 40);
             this.cmbPreferredTranslateEngine.Name = "cmbPreferredTranslateEngine";
             this.cmbPreferredTranslateEngine.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
-            this.cmbPreferredTranslateEngine.TabIndex = 12;
+            this.cmbPreferredTranslateEngine.TabIndex = 13;
+            // 
+            // cmbPreferredLayout
+            // 
+            this.cmbPreferredLayout.DisplayMember = "Text";
+            this.cmbPreferredLayout.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
+            this.cmbPreferredLayout.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbPreferredLayout.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.cmbPreferredLayout.FormattingEnabled = true;
+            this.cmbPreferredLayout.ItemHeight = 13;
+            this.cmbPreferredLayout.Width = 148;
+            this.cmbPreferredLayout.Location = new System.Drawing.Point(110, 67);
+            this.cmbPreferredLayout.Name = "cmbPreferredLayout";
+            this.cmbPreferredLayout.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
+            this.cmbPreferredLayout.TabIndex = 15;
             // 
             // superTabItem2
             // 
@@ -605,6 +636,7 @@
         private DevComponents.DotNetBar.Controls.ComboBoxEx cmbWzVersionVerifyMode;
         private DevComponents.DotNetBar.Controls.ComboBoxEx cmbDesiredLanguage;
         private DevComponents.DotNetBar.Controls.ComboBoxEx cmbMozhiBackend;
+        private DevComponents.DotNetBar.Controls.ComboBoxEx cmbPreferredLayout;
         private DevComponents.DotNetBar.Controls.ComboBoxEx cmbPreferredTranslateEngine;
         private DevComponents.DotNetBar.LabelX labelX2;
         private DevComponents.DotNetBar.LabelX labelX3;
@@ -612,5 +644,6 @@
         private DevComponents.DotNetBar.LabelX labelX5;
         private DevComponents.DotNetBar.LabelX labelX6;
         private DevComponents.DotNetBar.LabelX labelX7;
+        private DevComponents.DotNetBar.LabelX labelX8;
     }
 }

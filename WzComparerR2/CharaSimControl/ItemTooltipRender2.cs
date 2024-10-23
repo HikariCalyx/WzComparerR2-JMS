@@ -359,7 +359,7 @@ namespace WzComparerR2.CharaSimControl
             }
             //SizeF titleSize = TextRenderer.MeasureText(g, sr.Name.Replace(Environment.NewLine, ""), GearGraphics.ItemNameFont2, new Size(int.MaxValue, int.MaxValue), TextFormatFlags.NoPrefix);
             SizeF titleSize;
-            if (IsKoreanStringPresent(itemName))
+            if (Translator.IsKoreanStringPresent(itemName))
             {
                 titleSize = TextRenderer.MeasureText(g, itemName, GearGraphics.KMSItemNameFont, new Size(int.MaxValue, int.MaxValue), TextFormatFlags.NoPrefix);
             }
@@ -392,7 +392,7 @@ namespace WzComparerR2.CharaSimControl
             //绘制标题
             bool hasPart2 = false;
             format.Alignment = StringAlignment.Center;
-            if (IsKoreanStringPresent(itemName))
+            if (Translator.IsKoreanStringPresent(itemName))
             {
                 g.DrawString(itemName, GearGraphics.KMSItemNameFont, Brushes.White, tooltip.Width / 2, picH, format);
             }
@@ -696,7 +696,7 @@ namespace WzComparerR2.CharaSimControl
                 if (isTranslateRequired)
                 {
                     string translateddesc = Translator.TranslateString(desc);
-                    if (IsKoreanStringPresent(translateddesc + desc))
+                    if (Translator.IsKoreanStringPresent(translateddesc + desc))
                     {
                         GearGraphics.DrawString(g, translateddesc + Environment.NewLine + Environment.NewLine + desc, GearGraphics.KMSItemDetailFont, 100, right, ref picH, 16);
                     }
@@ -707,7 +707,7 @@ namespace WzComparerR2.CharaSimControl
                 }
                 else
                 {
-                    if (IsKoreanStringPresent(desc))
+                    if (Translator.IsKoreanStringPresent(desc))
                     {
                         GearGraphics.DrawString(g, desc, GearGraphics.KMSItemDetailFont, 100, right, ref picH, 16);
                     }
@@ -722,7 +722,7 @@ namespace WzComparerR2.CharaSimControl
                 if (isTranslateRequired)
                 {
                     string translatedautoDesc = Translator.TranslateString(sr.AutoDesc);
-                    if (IsKoreanStringPresent(translatedautoDesc + desc))
+                    if (Translator.IsKoreanStringPresent(translatedautoDesc + desc))
                     {
                         GearGraphics.DrawString(g, translatedautoDesc + Environment.NewLine + Environment.NewLine + sr.AutoDesc, GearGraphics.KMSItemDetailFont, 100, right, ref picH, 16);
                     }
@@ -733,7 +733,7 @@ namespace WzComparerR2.CharaSimControl
                 }
                 else
                 {
-                    if (IsKoreanStringPresent(sr.AutoDesc))
+                    if (Translator.IsKoreanStringPresent(sr.AutoDesc))
                     {
                         GearGraphics.DrawString(g, sr.AutoDesc, GearGraphics.KMSItemDetailFont, 100, right, ref picH, 16);
                     }
@@ -870,7 +870,7 @@ namespace WzComparerR2.CharaSimControl
                     if (isTranslateRequired)
                     {
                         string translateddescLeftAlign = Translator.TranslateString(descLeftAlign);
-                        if (IsKoreanStringPresent(translateddescLeftAlign))
+                        if (Translator.IsKoreanStringPresent(translateddescLeftAlign))
                         {
                             GearGraphics.DrawString(g, translateddescLeftAlign + Environment.NewLine + Environment.NewLine + descLeftAlign, GearGraphics.KMSItemDetailFont, 100, right, ref picH, 16);
                         }
@@ -881,7 +881,7 @@ namespace WzComparerR2.CharaSimControl
                     }
                     else
                     {
-                        if (IsKoreanStringPresent(descLeftAlign))
+                        if (Translator.IsKoreanStringPresent(descLeftAlign))
                         {
                             GearGraphics.DrawString(g, descLeftAlign, GearGraphics.KMSItemDetailFont, 14, right, ref picH, 16);
                         }
@@ -1303,14 +1303,6 @@ namespace WzComparerR2.CharaSimControl
                 picHeight += 13;
             }
             return level;
-        }
-        private bool IsKoreanStringPresent(string checkString)
-        {
-            if (checkString == null)
-            {
-                return false;
-            }
-            return checkString.Any(c => (c >= '\uAC00' && c <= '\uD7A3'));
         }
         private bool TryGetNickResource(long nickTag, out Wz_Node resNode)
         {

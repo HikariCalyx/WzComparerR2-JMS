@@ -38,6 +38,12 @@ namespace WzComparerR2.CharaSim
             }            
         }
 
+        public static bool IsKoreanStringPresent(string checkString)
+        {
+            if (checkString == null) return false;
+            return checkString.Any(c => (c >= '\uAC00' && c <= '\uD7A3'));
+        }
+
         public static JObject MTranslate(string text, string engine, string sourceLanguage, string desiredLanguage)
         {
             var request = (HttpWebRequest)WebRequest.Create(DefaultMozhiBackend + "/api/translate?engine=" + engine + "&from=" + sourceLanguage + "&to=" + desiredLanguage + "&text=" + Uri.EscapeDataString(text));
@@ -128,6 +134,7 @@ namespace WzComparerR2.CharaSim
         public static string DefaultDesiredLanguage { get; set; }
         public static string DefaultMozhiBackend { get; set; }
         public static string DefaultTranslateAPIKey { get; set; }
+        public static int DefaultPreferredLayout { get; set; }
         public static int DefaultPreferredTranslateEngine { get; set; }
         public static bool IsTranslateEnabled { get; set; }
         #endregion
