@@ -267,9 +267,9 @@ namespace WzComparerR2
         {
             var config = WcR2Config.Default;
             Translator.DefaultDesiredLanguage = config.DesiredLanguage;
-            Translator.DefaultGCloudAPIKey = config.GCloudAPIKey;
+            Translator.DefaultMozhiBackend = config.MozhiBackend;
+            Translator.DefaultPreferredTranslateEngine = config.PreferredTranslateEngine;
             Translator.IsTranslateEnabled = config.EnableTranslate;
-            //Translator.DefaultTranslateMixMode = config.TranslateMixMode;
         }
 
         void CharaSimLoader_WzFileFinding(object sender, FindWzEventArgs e)

@@ -49,12 +49,42 @@ namespace WzComparerR2
                 new ComboItem("英語 (GMS/MSEA)"){ Value = "en" },
                 new ComboItem("オランダ語 (EMS-NL)"){ Value = "nl" },
                 new ComboItem("韓国語 (KMS)"){ Value = "ko" },
+                new ComboItem("広東語 (HKMS)"){ Value = "yue" },
                 new ComboItem("簡体字中国語 (CMS)"){ Value = "zh-CN" },
                 new ComboItem("スペイン語 (EMS-ES)"){ Value = "es" },
                 new ComboItem("ドイツ語 (EMS-DE)"){ Value = "de" },
                 new ComboItem("日本語 (JMS)"){ Value = "ja" },
                 new ComboItem("繁体字中国語 (TMS)"){ Value = "zh-TW" },
                 new ComboItem("フランス語 (EMS-FR)"){ Value = "fr" },
+            });
+
+            cmbMozhiBackend.Items.AddRange(new[]
+            {
+                new ComboItem("mozhi.aryak.me"){ Value = "https://mozhi.aryak.me" },
+                new ComboItem("translate.bus-hit.me"){ Value = "https://translate.bus-hit.me" },
+                new ComboItem("nyc1.mz.ggtyler.dev"){ Value = "https://nyc1.mz.ggtyler.dev" },
+                new ComboItem("translate.projectsegfau.lt"){ Value = "https://translate.projectsegfau.lt" },
+                new ComboItem("translate.nerdvpn.de"){ Value = "https://translate.nerdvpn.de" },
+                new ComboItem("mozhi.ducks.party"){ Value = "https://mozhi.ducks.party" },
+                new ComboItem("mozhi.frontendfriendly.xyz"){ Value = "https://mozhi.frontendfriendly.xyz" },
+                new ComboItem("mozhi.pussthecat.org"){ Value = "https://mozhi.pussthecat.org" },
+                new ComboItem("mo.zorby.top"){ Value = "https://mo.zorby.top" },
+                new ComboItem("mozhi.adminforge.de"){ Value = "https://mozhi.adminforge.de" },
+                new ComboItem("translate.privacyredirect.com"){ Value = "https://translate.privacyredirect.com" },
+                new ComboItem("mozhi.canine.tools"){ Value = "https://mozhi.canine.tools" },
+                new ComboItem("mozhi.gitro.xyz"){ Value = "https://mozhi.gitro.xyz" },
+                new ComboItem("api.hikaricalyx.com"){ Value = "https://api.hikaricalyx.com/mozhi" },
+            });
+
+            cmbPreferredTranslateEngine.Items.AddRange(new[]
+            {
+                new ComboItem("Google"){ Value = 0 },
+                new ComboItem("DeepL"){ Value = 1 },
+                new ComboItem("DuckDuckGo / Bing"){ Value = 2 },
+                new ComboItem("MyMemory"){ Value = 3 },
+                new ComboItem("Yandex"){ Value = 4 },
+                // new ComboItem("Naver Papago (非Mozhi)"){ Value = 5 },
+                new ComboItem("Google (非Mozhi)"){ Value = 6 },
             });
         }
 
@@ -122,10 +152,36 @@ namespace WzComparerR2
             set { chkEnableTranslate.Checked = value; }
         }
 
-        public bool EnableCloudTranslateAPI
+        public string MozhiBackend
         {
-            get { return chkUseAPI.Checked; }
-            set { chkUseAPI.Checked = value; }
+            get
+            {
+                return ((cmbMozhiBackend.SelectedItem as ComboItem)?.Value as string) ?? "https://mozhi.aryak.me";
+            }
+            set
+            {
+                var items = cmbMozhiBackend.Items.Cast<ComboItem>();
+                var item = items.FirstOrDefault(_item => _item.Value as string == value)
+                    ?? items.Last();
+                item.Value = value;
+                cmbMozhiBackend.SelectedItem = item;
+            }
+        }
+
+        public int PreferredTranslateEngine
+        {
+            get
+            {
+                return ((cmbPreferredTranslateEngine.SelectedItem as ComboItem)?.Value as int?) ?? 0;
+            }
+            set
+            {
+                var items = cmbPreferredTranslateEngine.Items.Cast<ComboItem>();
+                var item = items.FirstOrDefault(_item => _item.Value as int? == value)
+                    ?? items.Last();
+                item.Value = value;
+                cmbPreferredTranslateEngine.SelectedItem = item;
+            }
         }
 
         public string DesiredLanguage
@@ -171,19 +227,24 @@ namespace WzComparerR2
         private void buttonXCheck2_Click(object sender, EventArgs e)
         {
             string respText;
-            var req = WebRequest.Create(Program.GCloudAPIBaseURL + "/languages?key=" + txtGCloudTranslateAPIkey.Text) as HttpWebRequest;
+            var req = WebRequest.Create((cmbMozhiBackend.SelectedItem as ComboItem)?.Value + "/api/engines") as HttpWebRequest;
             req.Timeout = 15000;
-            req.Accept = "application/json";
             try
             {
                 string respJson = new StreamReader(req.GetResponse().GetResponseStream(), Encoding.UTF8).ReadToEnd();
-                Clipboard.SetText(respJson);
-                respText = "この API キーは有効です。" + Environment.NewLine + "この API キーに関連付けられたキャラクターが JSON 形式でクリップボードにコピーされました。";
+                if (respJson.Contains("All Engines"))
+                {
+                    respText = "このMozhiサーバーは有効です。";
+                }
+                else
+                {
+                    respText = "このMozhiサーバーは無効です。";
+                }
             }
             catch (WebException ex)
             {
                 string respJson = new StreamReader(ex.Response.GetResponseStream(), Encoding.UTF8).ReadToEnd();
-                respText = "この API キーは無効です。" + Environment.NewLine + respJson;
+                respText = "このMozhiサーバーは無効です。";
             }
             catch (Exception ex)
             {
@@ -192,19 +253,6 @@ namespace WzComparerR2
             MessageBoxEx.Show(respText);
         }
 
-        private void chkUseAPI_Click(object sender, EventArgs e)
-        {
-            if (chkUseAPI.Checked)
-            {
-                txtGCloudTranslateAPIkey.Enabled = true;
-                buttonXCheck2.Enabled = true;
-            }
-            else
-            {
-                txtGCloudTranslateAPIkey.Enabled = false;
-                buttonXCheck2.Enabled = false;
-            }
-        }
 
         public WzLib.WzVersionVerifyMode WzVersionVerifyMode
         {
@@ -227,11 +275,11 @@ namespace WzComparerR2
             this.ImgCheckDisabled = config.ImgCheckDisabled;
             this.WzVersionVerifyMode = config.WzVersionVerifyMode;
             this.NxOpenAPIKey = config.NxOpenAPIKey;
-            this.GCloudAPIKey = config.GCloudAPIKey;
             this.NxSecretKey = config.NxSecretKey;
-            this.EnableTranslate = config.EnableTranslate;
-            this.EnableCloudTranslateAPI = config.EnableCloudTranslateAPI;
+            this.MozhiBackend = config.MozhiBackend;
+            this.PreferredTranslateEngine = config.PreferredTranslateEngine;
             this.DesiredLanguage = config.DesiredLanguage;
+            this.EnableTranslate = config.EnableTranslate;
         }
 
         public void Save(WcR2Config config)
@@ -243,11 +291,11 @@ namespace WzComparerR2
             config.ImgCheckDisabled = this.ImgCheckDisabled;
             config.WzVersionVerifyMode = this.WzVersionVerifyMode;
             config.NxOpenAPIKey = this.NxOpenAPIKey;
-            config.GCloudAPIKey = this.GCloudAPIKey;
             config.NxSecretKey = this.NxSecretKey;
-            config.EnableTranslate = this.EnableTranslate;
-            config.EnableCloudTranslateAPI = this.EnableCloudTranslateAPI;
+            config.MozhiBackend = this.MozhiBackend;
+            config.PreferredTranslateEngine = this.PreferredTranslateEngine;
             config.DesiredLanguage = this.DesiredLanguage;
+            config.EnableTranslate = this.EnableTranslate;
         }
     }
 }

@@ -20,8 +20,8 @@ namespace WzComparerR2.Config
             this.NoPatcherPrompt = false;
             this.WzVersionVerifyMode = WzLib.WzVersionVerifyMode.Fast;
             this.EnableTranslate = false;
-            this.EnableCloudTranslateAPI = false;
             this.DesiredLanguage = "ja";
+            this.MozhiBackend = "https://mozhi.aryak.me";
         }
 
         /// <summary>
@@ -66,14 +66,14 @@ namespace WzComparerR2.Config
         }
 
         /// <summary>
-        /// GCloudAPI Configuration
+        /// Mozhi Backend Configuration
         /// </summary>
-        [ConfigurationProperty("GCloudAPIKey")]
+        [ConfigurationProperty("MozhiBackend")]
         [ConfigurationCollection(typeof(ConfigArrayList<string>.ItemElement))]
-        public ConfigItem<string> GCloudAPIKey
+        public ConfigItem<string> MozhiBackend
         {
-            get { return (ConfigItem<string>)this["GCloudAPIKey"]; }
-            set { this["GCloudAPIKey"] = value; }
+            get { return (ConfigItem<string>)this["MozhiBackend"]; }
+            set { this["MozhiBackend"] = value; }
         }
 
         /// <summary>
@@ -98,13 +98,13 @@ namespace WzComparerR2.Config
         }
 
         /// <summary>
-        /// EnableCloudTranslateAPI Configuration
+        /// Preferred Translate Engine Configuration
         /// </summary>
-        [ConfigurationProperty("EnableCloudTranslateAPI")]
-        public ConfigItem<bool> EnableCloudTranslateAPI
+        [ConfigurationProperty("PreferredTranslateEngine")]
+        public ConfigItem<int> PreferredTranslateEngine
         {
-            get { return (ConfigItem<bool>)this["EnableCloudTranslateAPI"]; }
-            set { this["EnableCloudTranslateAPI"] = value; }
+            get { return (ConfigItem<int>)this["PreferredTranslateEngine"]; }
+            set { this["PreferredTranslateEngine"] = value; }
         }
 
         /// <summary>
