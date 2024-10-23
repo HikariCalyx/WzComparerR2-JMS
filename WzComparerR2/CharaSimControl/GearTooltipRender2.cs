@@ -187,7 +187,11 @@ namespace WzComparerR2.CharaSimControl
             string gearName = sr.Name;
             string translatedName = "";
             bool isTranslateRequired = Translator.IsTranslateEnabled;
-            if (isTranslateRequired) translatedName = Translator.TranslateString(gearName);
+            bool isTitleTranslateRequired = !Translator.IsTranslateEnabled;
+            if (isTranslateRequired) {
+                translatedName = Translator.TranslateString(gearName);
+                isTitleTranslateRequired = !(translatedName == gearName);
+            }
 
             switch (Gear.GetGender(Gear.ItemID))
             {
@@ -254,14 +258,25 @@ namespace WzComparerR2.CharaSimControl
                     }
                     else
                     {
-                        translatedName += Environment.NewLine;
+                        switch (Translator.DefaultPreferredLayout)
+                        {
+                            case 1: 
+                                translatedName += Environment.NewLine;
+                                break;
+                            case 2:
+                                gearName += Environment.NewLine;
+                                break;
+                            case 3:
+                            default:
+                                break;
+                        }
                     }
                 }
 
             }
 
             format.Alignment = StringAlignment.Center;
-            if (isTranslateRequired)
+            if (isTitleTranslateRequired)
             {
                 switch (Translator.DefaultPreferredLayout)
                 {
@@ -277,10 +292,7 @@ namespace WzComparerR2.CharaSimControl
                             g.DrawString(translatedName, GearGraphics.ItemNameFont2,
                                 GearGraphics.GetGearNameBrush(Gear.diff, Gear.ScrollUp > 0), 130, picH, format);
                         }
-                        if (translatedName.Contains(Environment.NewLine))
-                        {
-                            picH += 12 * (Regex.Matches(translatedName, Environment.NewLine).Count + 1) + 1;
-                        }
+                        picH += 12 * (Regex.Matches(translatedName, Environment.NewLine).Count + 1) + 1;
                         if (Translator.IsKoreanStringPresent(gearName))
                         {
                             g.DrawString(gearName, GearGraphics.KMSItemNameFont,
@@ -308,10 +320,7 @@ namespace WzComparerR2.CharaSimControl
                             g.DrawString(gearName, GearGraphics.ItemNameFont2,
                                 GearGraphics.GetGearNameBrush(Gear.diff, Gear.ScrollUp > 0), 130, picH, format);
                         }
-                        if (gearName.Contains(Environment.NewLine))
-                        {
-                            picH += 12 * Regex.Matches(gearName, Environment.NewLine).Count;
-                        }
+                        picH += 12 * (Regex.Matches(gearName, Environment.NewLine).Count + 1) + 1;
                         if (Translator.IsKoreanStringPresent(translatedName))
                         {
                             g.DrawString(translatedName, GearGraphics.KMSItemNameFont,
@@ -324,7 +333,7 @@ namespace WzComparerR2.CharaSimControl
                         }
                         if (translatedName.Contains(Environment.NewLine))
                         {
-                            picH += 12 * (Regex.Matches(translatedName, Environment.NewLine).Count + 1) + 1;
+                            picH += 12 * Regex.Matches(translatedName, Environment.NewLine).Count;
                         }
                         break;
                     case 3:
