@@ -370,6 +370,23 @@ namespace WzComparerR2.CharaSimControl
                         break;
                 }
             }
+            else
+            {
+                if (Translator.IsKoreanStringPresent(gearName))
+                {
+                    g.DrawString(gearName, GearGraphics.KMSItemNameFont,
+                        GearGraphics.GetGearNameBrush(Gear.diff, Gear.ScrollUp > 0), 130, picH, format);
+                }
+                else
+                {
+                    g.DrawString(gearName, GearGraphics.ItemNameFont2,
+                        GearGraphics.GetGearNameBrush(Gear.diff, Gear.ScrollUp > 0), 130, picH, format);
+                }
+                if (gearName.Contains(Environment.NewLine))
+                {
+                    picH += 12 * Regex.Matches(gearName, Environment.NewLine).Count;
+                }
+            }
             picH += 23;
 
             //装备rank

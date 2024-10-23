@@ -14,8 +14,9 @@ namespace WzComparerR2.CharaSim
 {
     public class Translator
     {
-        public static string GTranslateBaseURL = "https://translate.googleapis.com/translate_a/t";
-        public static JArray GTranslate(string text, string desiredLanguage)
+        private static string GTranslateBaseURL = "https://translate.googleapis.com/translate_a/t";
+        private static string NTranslateBaseURL = "https://naveropenapi.apigw.ntruss.com";
+        private static JArray GTranslate(string text, string desiredLanguage)
         {
             var request = (HttpWebRequest)WebRequest.Create(GTranslateBaseURL + "?client=gtx&format=text&sl=auto&tl=" + desiredLanguage);
             request.Method = "POST";
@@ -44,7 +45,19 @@ namespace WzComparerR2.CharaSim
             return checkString.Any(c => (c >= '\uAC00' && c <= '\uD7A3'));
         }
 
-        public static JObject MTranslate(string text, string engine, string sourceLanguage, string desiredLanguage)
+        private static string GetKeyValue(string jsonDictKey)
+        {
+            try
+            {
+                return JObject.Parse(DefaultTranslateAPIKey).SelectToken(jsonDictKey).ToString();
+            }
+            catch
+            {
+                return "";
+            }
+            
+        }
+        private static JObject MTranslate(string text, string engine, string sourceLanguage, string desiredLanguage)
         {
             var request = (HttpWebRequest)WebRequest.Create(DefaultMozhiBackend + "/api/translate?engine=" + engine + "&from=" + sourceLanguage + "&to=" + desiredLanguage + "&text=" + Uri.EscapeDataString(text));
             request.Accept = "application/json";
@@ -57,6 +70,32 @@ namespace WzComparerR2.CharaSim
             catch
             {
                 return JObject.Parse("{\"translated-text\": \"" + text + "\"}");
+            }
+        }
+
+        private static JObject NTranslate(string text, string desiredLanguage)
+        {
+            var request = (HttpWebRequest)WebRequest.Create(NTranslateBaseURL + "/nmt/v1");
+            request.Method = "POST";
+            request.Accept = "application/json";
+            request.ContentType = "application/x-www-form-urlencoded";
+            request.Headers["X-NCP-APIGW-API-KEY-ID"] = GetKeyValue("X-NCP-APIGW-API-KEY-ID");
+            request.Headers["X-NCP-APIGW-API-KEY"] = GetKeyValue("X-NCP-APIGW-API-KEY-ID");
+            var postData = "source=auto&target=" + desiredLanguage + "text=" + Uri.EscapeDataString(text);
+            var byteArray = System.Text.Encoding.UTF8.GetBytes(postData);
+            request.ContentLength = byteArray.Length;
+            Stream newStream = request.GetRequestStream();
+            newStream.Write(byteArray, 0, byteArray.Length);
+            newStream.Close();
+            try
+            {
+                var response = (HttpWebResponse)request.GetResponse();
+                var responseString = new StreamReader(response.GetResponseStream()).ReadToEnd();
+                return JObject.Parse(responseString);
+            }
+            catch
+            {
+                return JObject.Parse("{\"message\": {\"result\": {\"translatedText\": \"Ÿo„¿¤ÊNaver API¥­©`\"}}}");
             }
         }
 
@@ -157,15 +196,15 @@ namespace WzComparerR2.CharaSim
                     break;
                 //5: Naver Papago (Non-Mozhi)
                 case 5:
-                    isMozhiUsed = true;
                     if (targetLanguage == "yue") targetLanguage = "zh-TW";
-                    mozhiEngine = "naver";
+                    JObject responseObj = NTranslate(orgText.Replace("\\n", "\r\n"), Translator.DefaultDesiredLanguage);
+                    translatedText = responseObj.SelectToken("message.result.translatedText").ToString();
                     break;
                 //6: Google (Non-Mozhi)
                 case 6:
                 default:
-                    JArray response = GTranslate(orgText.Replace("\\n", "\r\n"), Translator.DefaultDesiredLanguage);
-                    translatedText = response[0][0].ToString().Replace("\r\n", "\\n").Replace("££", "#");
+                    JArray responseArr = GTranslate(orgText.Replace("\\n", "\r\n"), Translator.DefaultDesiredLanguage);
+                    translatedText = responseArr[0][0].ToString().Replace("\r\n", "\\n").Replace("££", "#");
                     break;
             }
             if (isMozhiUsed)
