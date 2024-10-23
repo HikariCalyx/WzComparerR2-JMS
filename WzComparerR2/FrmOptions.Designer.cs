@@ -143,7 +143,7 @@
             this.buttonXCheck.AccessibleRole = System.Windows.Forms.AccessibleRole.PushButton;
             this.buttonXCheck.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonXCheck.ColorTable = DevComponents.DotNetBar.eButtonColor.OrangeWithBackground;
-            this.buttonXCheck.Location = new System.Drawing.Point(288, 13);
+            this.buttonXCheck.Location = new System.Drawing.Point(263, 13);
             this.buttonXCheck.Name = "buttonXCheck";
             this.buttonXCheck.Size = new System.Drawing.Size(55, 19);
             this.buttonXCheck.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
@@ -156,7 +156,7 @@
             this.buttonXCheck2.AccessibleRole = System.Windows.Forms.AccessibleRole.PushButton;
             this.buttonXCheck2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonXCheck2.ColorTable = DevComponents.DotNetBar.eButtonColor.OrangeWithBackground;
-            this.buttonXCheck2.Location = new System.Drawing.Point(288, 40);
+            this.buttonXCheck2.Location = new System.Drawing.Point(288, 13);
             this.buttonXCheck2.Name = "buttonXCheck2";
             this.buttonXCheck2.Size = new System.Drawing.Size(55, 19);
             this.buttonXCheck2.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
@@ -371,9 +371,6 @@
             // 
             // superTabControlPanel2
             // 
-            this.superTabControlPanel2.Controls.Add(this.labelX3);
-            this.superTabControlPanel2.Controls.Add(this.txtAPIkey);
-            this.superTabControlPanel2.Controls.Add(this.buttonXCheck);
             this.superTabControlPanel2.Controls.Add(this.labelX5);
             this.superTabControlPanel2.Controls.Add(this.buttonXCheck2);
             this.superTabControlPanel2.Controls.Add(this.chkEnableTranslate);
@@ -411,7 +408,7 @@
             // 
             // 
             this.labelX5.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
-            this.labelX5.Location = new System.Drawing.Point(14, 42);
+            this.labelX5.Location = new System.Drawing.Point(14, 15);
             this.labelX5.Name = "labelX5";
             this.labelX5.TabIndex = 9;
             this.labelX5.Text = "Mozhiサーバー";
@@ -424,7 +421,7 @@
             // 
             // 
             this.labelX7.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
-            this.labelX7.Location = new System.Drawing.Point(14, 69);
+            this.labelX7.Location = new System.Drawing.Point(14, 42);
             this.labelX7.Name = "labelX7";
             this.labelX7.TabIndex = 9;
             this.labelX7.Text = "翻訳エンジン";
@@ -466,7 +463,7 @@
             this.cmbMozhiBackend.FormattingEnabled = true;
             this.cmbMozhiBackend.ItemHeight = 13;
             this.cmbMozhiBackend.Width = 148;
-            this.cmbMozhiBackend.Location = new System.Drawing.Point(110, 40);
+            this.cmbMozhiBackend.Location = new System.Drawing.Point(110, 13);
             this.cmbMozhiBackend.Name = "cmbMozhiBackend";
             this.cmbMozhiBackend.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
             this.cmbMozhiBackend.TabIndex = 12;
@@ -480,7 +477,7 @@
             this.cmbPreferredTranslateEngine.FormattingEnabled = true;
             this.cmbPreferredTranslateEngine.ItemHeight = 13;
             this.cmbPreferredTranslateEngine.Width = 148;
-            this.cmbPreferredTranslateEngine.Location = new System.Drawing.Point(110, 67);
+            this.cmbPreferredTranslateEngine.Location = new System.Drawing.Point(110, 40);
             this.cmbPreferredTranslateEngine.Name = "cmbPreferredTranslateEngine";
             this.cmbPreferredTranslateEngine.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
             this.cmbPreferredTranslateEngine.TabIndex = 12;
@@ -490,11 +487,14 @@
             this.superTabItem2.AttachedControl = this.superTabControlPanel2;
             this.superTabItem2.GlobalItem = false;
             this.superTabItem2.Name = "superTabItem2";
-            this.superTabItem2.Text = "API機能";
+            this.superTabItem2.Text = "翻訳機能";
             // 
             // superTabControlPanel3
             // 
+            this.superTabControlPanel3.Controls.Add(this.labelX3);
             this.superTabControlPanel3.Controls.Add(this.labelX4);
+            this.superTabControlPanel3.Controls.Add(this.buttonXCheck);
+            this.superTabControlPanel3.Controls.Add(this.txtAPIkey);
             this.superTabControlPanel3.Controls.Add(this.txtSecretkey);
             this.superTabControlPanel3.Dock = System.Windows.Forms.DockStyle.Fill;
             this.superTabControlPanel3.Location = new System.Drawing.Point(49, 0);
@@ -512,18 +512,21 @@
             // 
             // 
             this.labelX4.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
-            this.labelX4.Location = new System.Drawing.Point(14, 15);
+            this.labelX4.Location = new System.Drawing.Point(14, 42);
             this.labelX4.Name = "labelX4";
             this.labelX4.TabIndex = 9;
-            this.labelX4.Text = "秘密キー";
+            this.labelX4.Text = "翻訳APIキー (JSON形式)";
             // 
             // txtSecretkey
             // 
             this.txtSecretkey.Border.Class = "TextBoxBorder";
             this.txtSecretkey.Border.CornerType = DevComponents.DotNetBar.eCornerType.Square;
-            this.txtSecretkey.Location = new System.Drawing.Point(70, 13);
+            this.txtSecretkey.Location = new System.Drawing.Point(14, 67);
             this.txtSecretkey.Name = "txtSecretkey";
-            this.txtSecretkey.Size = new System.Drawing.Size(180, 23);
+            this.txtSecretkey.Multiline = true;
+            this.txtSecretkey.Font = new System.Drawing.Font("MS Gothic", 9F);
+            this.txtSecretkey.ScrollBars = System.Windows.Forms.ScrollBars.Both;
+            this.txtSecretkey.Size = new System.Drawing.Size(306, 90);
             this.txtSecretkey.TabIndex = 10;
             // 
             // superTabItem3
@@ -531,7 +534,7 @@
             this.superTabItem3.AttachedControl = this.superTabControlPanel3;
             this.superTabItem3.GlobalItem = false;
             this.superTabItem3.Name = "superTabItem3";
-            this.superTabItem3.Text = "秘密キー";
+            this.superTabItem3.Text = "APIキー";
             // 
             // FrmOptions
             // 
