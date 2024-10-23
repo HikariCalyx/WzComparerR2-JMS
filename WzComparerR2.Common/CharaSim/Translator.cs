@@ -105,7 +105,7 @@ namespace WzComparerR2.CharaSim
                 case 3:
                     isMozhiUsed = true;
                     sourceLanguage = "Autodetect";
-                    if (targetLanguage == "yue") targetLanguage = "zh-TW";
+                    if (targetLanguage.Contains("zh") || targetLanguage == "yue") targetLanguage = "zh";
                     mozhiEngine = "mymemory";
                     break;
                 //4: Yandex (Mozhi)
