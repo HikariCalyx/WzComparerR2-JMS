@@ -270,7 +270,8 @@ namespace WzComparerR2
             Translator.DefaultMozhiBackend = config.MozhiBackend;
             Translator.DefaultPreferredTranslateEngine = config.PreferredTranslateEngine;
             Translator.DefaultTranslateAPIKey = config.NxSecretKey;
-            Translator.IsTranslateEnabled = config.EnableTranslate;
+            Translator.DefaultPreferredLayout = config.PreferredLayout;
+            Translator.IsTranslateEnabled = (config.PreferredLayout > 0);
         }
 
         void CharaSimLoader_WzFileFinding(object sender, FindWzEventArgs e)

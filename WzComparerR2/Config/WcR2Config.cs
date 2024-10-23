@@ -19,7 +19,7 @@ namespace WzComparerR2.Config
             this.AutoDetectExtFiles = true;
             this.NoPatcherPrompt = false;
             this.WzVersionVerifyMode = WzLib.WzVersionVerifyMode.Fast;
-            this.EnableTranslate = false;
+            this.PreferredLayout = 0;
             this.DesiredLanguage = "ja";
             this.MozhiBackend = "https://mozhi.aryak.me";
         }
@@ -88,16 +88,6 @@ namespace WzComparerR2.Config
         }
 
         /// <summary>
-        /// EnableTranslate Configuration
-        /// </summary>
-        [ConfigurationProperty("EnableTranslate")]
-        public ConfigItem<bool> EnableTranslate
-        {
-            get { return (ConfigItem<bool>)this["EnableTranslate"]; }
-            set { this["EnableTranslate"] = value; }
-        }
-
-        /// <summary>
         /// Preferred Translate Engine Configuration
         /// </summary>
         [ConfigurationProperty("PreferredTranslateEngine")]
@@ -105,6 +95,16 @@ namespace WzComparerR2.Config
         {
             get { return (ConfigItem<int>)this["PreferredTranslateEngine"]; }
             set { this["PreferredTranslateEngine"] = value; }
+        }
+
+        /// <summary>
+        /// Preferred Layout Configuration
+        /// </summary>
+        [ConfigurationProperty("PreferredLayout")]
+        public ConfigItem<int> PreferredLayout
+        {
+            get { return (ConfigItem<int>)this["PreferredLayout"]; }
+            set { this["PreferredLayout"] = value; }
         }
 
         /// <summary>

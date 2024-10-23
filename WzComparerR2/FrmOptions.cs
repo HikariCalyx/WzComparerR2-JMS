@@ -151,10 +151,20 @@ namespace WzComparerR2
             set { txtSecretkey.Text = value;}
         }
 
-        public bool EnableTranslate
+        public int PreferredLayout
         {
-            get { return chkEnableTranslate.Checked; }
-            set { chkEnableTranslate.Checked = value; }
+            get
+            {
+                return ((cmbPreferredLayout.SelectedItem as ComboItem)?.Value as int?) ?? 0;
+            }
+            set
+            {
+                var items = cmbPreferredLayout.Items.Cast<ComboItem>();
+                var item = items.FirstOrDefault(_item => _item.Value as int? == value)
+                    ?? items.Last();
+                item.Value = value;
+                cmbPreferredLayout.SelectedItem = item;
+            }
         }
 
         public string MozhiBackend
@@ -299,7 +309,7 @@ namespace WzComparerR2
             this.MozhiBackend = config.MozhiBackend;
             this.PreferredTranslateEngine = config.PreferredTranslateEngine;
             this.DesiredLanguage = config.DesiredLanguage;
-            this.EnableTranslate = config.EnableTranslate;
+            this.PreferredLayout = config.PreferredLayout;
         }
 
         public void Save(WcR2Config config)
@@ -315,7 +325,7 @@ namespace WzComparerR2
             config.MozhiBackend = this.MozhiBackend;
             config.PreferredTranslateEngine = this.PreferredTranslateEngine;
             config.DesiredLanguage = this.DesiredLanguage;
-            config.EnableTranslate = this.EnableTranslate;
+            config.PreferredLayout = this.PreferredLayout;
         }
     }
 }

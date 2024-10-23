@@ -44,7 +44,6 @@
             this.chkImgCheckDisabled = new DevComponents.DotNetBar.Controls.CheckBoxX();
             this.chkWzSortByImgID = new DevComponents.DotNetBar.Controls.CheckBoxX();
             this.chkAutoCheckExtFiles = new DevComponents.DotNetBar.Controls.CheckBoxX();
-            this.chkEnableTranslate = new DevComponents.DotNetBar.Controls.CheckBoxX();
             this.cmbDesiredLanguage = new DevComponents.DotNetBar.Controls.ComboBoxEx();
             this.cmbMozhiBackend = new DevComponents.DotNetBar.Controls.ComboBoxEx();
             this.cmbPreferredLayout = new DevComponents.DotNetBar.Controls.ComboBoxEx();
@@ -276,36 +275,6 @@
             this.chkImgCheckDisabled.TabIndex = 6;
             this.chkImgCheckDisabled.Text = "IMGチェックサム検証をスキップする";
             // 
-            // chkEnableTranslate
-            // 
-            this.chkEnableTranslate.AutoSize = true;
-            this.chkEnableTranslate.BackColor = System.Drawing.Color.Transparent;
-            // 
-            // 
-            // 
-            this.chkEnableTranslate.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
-            this.chkEnableTranslate.Location = new System.Drawing.Point(14, 110);
-            this.chkEnableTranslate.Name = "chkEnableTranslate";
-            this.chkEnableTranslate.Size = new System.Drawing.Size(212, 16);
-            this.chkEnableTranslate.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
-            this.chkEnableTranslate.TabIndex = 6;
-            this.chkEnableTranslate.Text = "翻訳を有効にする";
-            // 
-            // chkEnableTranslate
-            // 
-            this.chkEnableTranslate.AutoSize = true;
-            this.chkEnableTranslate.BackColor = System.Drawing.Color.Transparent;
-            // 
-            // 
-            // 
-            this.chkEnableTranslate.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
-            this.chkEnableTranslate.Location = new System.Drawing.Point(14, 110);
-            this.chkEnableTranslate.Name = "chkEnableTranslate";
-            this.chkEnableTranslate.Size = new System.Drawing.Size(212, 16);
-            this.chkEnableTranslate.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
-            this.chkEnableTranslate.TabIndex = 6;
-            this.chkEnableTranslate.Text = "翻訳を有効にする";
-            // 
             // chkWzSortByImgID
             // 
             this.chkWzSortByImgID.AutoSize = true;
@@ -389,7 +358,6 @@
             // 
             this.superTabControlPanel2.Controls.Add(this.labelX5);
             this.superTabControlPanel2.Controls.Add(this.buttonXCheck2);
-            this.superTabControlPanel2.Controls.Add(this.chkEnableTranslate);
             this.superTabControlPanel2.Controls.Add(this.cmbMozhiBackend);
             this.superTabControlPanel2.Controls.Add(this.labelX6);
             this.superTabControlPanel2.Controls.Add(this.cmbDesiredLanguage);
@@ -452,7 +420,7 @@
             // 
             // 
             this.labelX8.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
-            this.labelX8.Location = new System.Drawing.Point(14, 67);
+            this.labelX8.Location = new System.Drawing.Point(14, 69);
             this.labelX8.Name = "labelX8";
             this.labelX8.TabIndex = 9;
             this.labelX8.Text = "訳文表示";
@@ -465,11 +433,11 @@
             // 
             // 
             this.labelX6.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
-            this.labelX6.Location = new System.Drawing.Point(14, 134);
+            this.labelX6.Location = new System.Drawing.Point(14, 96);
             this.labelX6.Name = "labelX6";
-            this.labelX6.Size = new System.Drawing.Size(138, 16);
+            this.labelX6.Size = new System.Drawing.Size(131, 16);
             this.labelX6.TabIndex = 7;
-            this.labelX6.Text = "ご希望の翻訳言語";
+            this.labelX6.Text = "ご希望の言語";
             // 
             // cmbDesiredLanguage
             // 
@@ -479,8 +447,8 @@
             this.cmbDesiredLanguage.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.cmbDesiredLanguage.FormattingEnabled = true;
             this.cmbDesiredLanguage.ItemHeight = 13;
-            this.cmbDesiredLanguage.Width = 125;
-            this.cmbDesiredLanguage.Location = new System.Drawing.Point(148, 132);
+            this.cmbDesiredLanguage.Width = 148;
+            this.cmbDesiredLanguage.Location = new System.Drawing.Point(110, 94);
             this.cmbDesiredLanguage.Name = "cmbDesiredLanguage";
             this.cmbDesiredLanguage.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
             this.cmbDesiredLanguage.TabIndex = 8;
@@ -632,7 +600,6 @@
         private DevComponents.DotNetBar.Controls.CheckBoxX chkAutoCheckExtFiles;
         private DevComponents.DotNetBar.Controls.CheckBoxX chkWzSortByImgID;
         private DevComponents.DotNetBar.Controls.CheckBoxX chkImgCheckDisabled;
-        private DevComponents.DotNetBar.Controls.CheckBoxX chkEnableTranslate;
         private DevComponents.DotNetBar.Controls.ComboBoxEx cmbWzVersionVerifyMode;
         private DevComponents.DotNetBar.Controls.ComboBoxEx cmbDesiredLanguage;
         private DevComponents.DotNetBar.Controls.ComboBoxEx cmbMozhiBackend;

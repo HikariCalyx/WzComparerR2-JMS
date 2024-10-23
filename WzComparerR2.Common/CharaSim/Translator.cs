@@ -60,6 +60,50 @@ namespace WzComparerR2.CharaSim
             }
         }
 
+        public static string MergeString(string text1, string text2, int newLineCounts)
+        {
+            if (text1 == text2)
+            {
+                return text1;
+            }
+            else if (!string.IsNullOrEmpty(text1) && !string.IsNullOrEmpty(text2))
+            {
+                string resultStr;
+                switch (DefaultPreferredLayout)
+                {
+                    case 1:
+                        resultStr = text2;
+                        while (newLineCounts > 0)
+                        {
+                            resultStr += Environment.NewLine;
+                            newLineCounts--;
+                        }
+                        resultStr += text1;
+                        break;
+                    case 2:
+                        resultStr = text1;
+                        while (newLineCounts > 0)
+                        {
+                            resultStr += Environment.NewLine;
+                            newLineCounts--;
+                        }
+                        resultStr += text2;
+                        break;
+                    case 3:
+                        resultStr = text2;
+                        break;
+                    default:
+                        resultStr = text1;
+                        break;
+                }
+                return resultStr;
+            }
+            else
+            {
+                return text1;
+            }
+        }
+
         public static string TranslateString(string orgText)
         {
             if (string.IsNullOrEmpty(orgText)) return orgText;
