@@ -75,13 +75,13 @@ namespace WzComparerR2
 
             cmbPreferredTranslateEngine.Items.AddRange(new[]
             {
-                new ComboItem("Google"){ Value = 0 },
-                new ComboItem("DeepL"){ Value = 1 },
-                new ComboItem("DuckDuckGo / Bing"){ Value = 2 },
-                new ComboItem("MyMemory"){ Value = 3 },
-                new ComboItem("Yandex"){ Value = 4 },
-                new ComboItem("Naver Papago (非Mozhi)"){ Value = 5 },
-                new ComboItem("Google (非Mozhi)"){ Value = 6 },
+                new ComboItem("Google (非Mozhi)"){ Value = 0 },
+                new ComboItem("Google"){ Value = 1 },
+                new ComboItem("DeepL"){ Value = 2 },
+                new ComboItem("DuckDuckGo / Bing"){ Value = 3 },
+                new ComboItem("MyMemory"){ Value = 4 },
+                new ComboItem("Yandex"){ Value = 5 },
+                new ComboItem("Naver Papago (非Mozhi)"){ Value = 6 },
             });
 
             cmbPreferredLayout.Items.AddRange(new[]

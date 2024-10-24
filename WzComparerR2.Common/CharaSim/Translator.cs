@@ -161,50 +161,50 @@ namespace WzComparerR2.CharaSim
             string targetLanguage = DefaultDesiredLanguage;
             switch (DefaultPreferredTranslateEngine)
             {
-                //0: Google (Mozhi)
+                //0: Google (Non-Mozhi)
+                default:
                 case 0:
+                    JArray responseArr = GTranslate(orgText.Replace("\\n", "\r\n"), Translator.DefaultDesiredLanguage);
+                    translatedText = responseArr[0][0].ToString().Replace("\r\n", "\\n").Replace("££", "#");
+                    break;
+                //1: Google (Mozhi)
+                case 1:
                     isMozhiUsed = true;
                     mozhiEngine = "google";
                     break;
-                //1: DeepL (Mozhi)
-                case 1:
+                //2: DeepL (Mozhi)
+                case 2:
                     isMozhiUsed = true;
                     sourceLanguage = "en";
                     if (targetLanguage.Contains("zh")) targetLanguage = "zh";
                     if (targetLanguage == "yue") targetLanguage = "zh";
                     mozhiEngine = "deepl";
                     break;
-                //2: DuckDuckGo / Bing (Mozhi)
-                case 2:
+                //3: DuckDuckGo / Bing (Mozhi)
+                case 3:
                     isMozhiUsed = true;
                     if (targetLanguage == "zh-CN") targetLanguage = "zh";
                     mozhiEngine = "duckduckgo";
                     break;
-                //3: MyMemory (Mozhi)
-                case 3:
+                //4: MyMemory (Mozhi)
+                case 4:
                     isMozhiUsed = true;
                     sourceLanguage = "Autodetect";
                     if (targetLanguage.Contains("zh") || targetLanguage == "yue") targetLanguage = "zh";
                     mozhiEngine = "mymemory";
                     break;
-                //4: Yandex (Mozhi)
-                case 4:
+                //5: Yandex (Mozhi)
+                case 5:
                     isMozhiUsed = true;
                     if (targetLanguage.Contains("zh")) targetLanguage = "zh";
                     if (targetLanguage == "yue") targetLanguage = "zh";
                     mozhiEngine = "yandex";
                     break;
-                //5: Naver Papago (Non-Mozhi)
-                case 5:
+                //6: Naver Papago (Non-Mozhi)
+                case 6:
                     if (targetLanguage == "yue") targetLanguage = "zh-TW";
                     JObject responseObj = NTranslate(orgText.Replace("\\n", "\r\n"), Translator.DefaultDesiredLanguage);
                     translatedText = responseObj.SelectToken("message.result.translatedText").ToString();
-                    break;
-                //6: Google (Non-Mozhi)
-                case 6:
-                default:
-                    JArray responseArr = GTranslate(orgText.Replace("\\n", "\r\n"), Translator.DefaultDesiredLanguage);
-                    translatedText = responseArr[0][0].ToString().Replace("\r\n", "\\n").Replace("££", "#");
                     break;
             }
             if (isMozhiUsed)
