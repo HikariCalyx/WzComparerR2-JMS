@@ -17,8 +17,7 @@ namespace WzComparerR2.CharaSimControl
             this.menu = new ContextMenuStrip();
             this.menu.Items.Add(new ToolStripMenuItem("クリップボードにコピー", null, tsmiCopy_Click));
             this.menu.Items.Add(new ToolStripMenuItem("PNGに保存", null, tsmiSave_Click));
-            this.menu.Items.Add(new ToolStripMenuItem("元のテキストをコピー", null));
-            this.menu.Items.Add(new ToolStripMenuItem("このダイアログを閉じるには、[Esc]キーを押します。", null));
+            this.menu.Items.Add(new ToolStripMenuItem("閉じる (Esc)", null, tsmiClose_Click));
             this.ContextMenuStrip = this.menu;
 
             this.Size = new Size(1, 1);
@@ -214,6 +213,7 @@ namespace WzComparerR2.CharaSimControl
         void tsmiCopyText_Click(object sender, EventArgs e)
         {
             var dataObj = new DataObject();
+            string name, desc, descex;
             switch (item)
             {
                 case Skill:
@@ -224,6 +224,14 @@ namespace WzComparerR2.CharaSimControl
                 default:
                     Clipboard.SetDataObject(dataObj, true);
                     break;
+            }
+        }
+
+        void tsmiClose_Click(object sender, EventArgs e)
+        {
+            if (this.Bitmap != null)
+            {
+                this.Close();
             }
         }
 

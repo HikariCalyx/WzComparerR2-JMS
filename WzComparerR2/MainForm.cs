@@ -1893,6 +1893,29 @@ namespace WzComparerR2
                 }
             }
         }
+
+        private void tsmi1CopyString_Click(object sender, EventArgs e)
+        {
+            Wz_Image img = advTree1.SelectedNode?.AsWzNode()?.GetValue<Wz_Image>();
+            if (img == null)
+            {
+                MessageBoxEx.Show("エクスポートする IMG を選択します。");
+                return;
+            }
+            Wz_File wzf = advTree1.SelectedNode.AsWzNode().GetNodeWzFile();
+            switch (wzf.Type)
+            {
+                case Wz_Type.Character:
+                case Wz_Type.Item:
+                case Wz_Type.Map:
+                case Wz_Type.Mob:
+                case Wz_Type.Npc:
+                case Wz_Type.Skill:
+                default:
+                    break;
+            }
+
+        }
         #endregion
 
         #region Tools菜单事件和方法
