@@ -236,6 +236,8 @@
             this.toolStripMenuItem4 = new System.Windows.Forms.ToolStripSeparator();
             this.tsmi1Export = new System.Windows.Forms.ToolStripMenuItem();
             this.tsmi1DumpAsXml = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem5 = new System.Windows.Forms.ToolStripSeparator();
+            this.tsmi1CopyString = new System.Windows.Forms.ToolStripMenuItem();
             this.nodeConnector1 = new DevComponents.AdvTree.NodeConnector();
             this.elementStyle1 = new DevComponents.DotNetBar.ElementStyle();
             this.listViewExString = new DevComponents.DotNetBar.Controls.ListViewEx();
@@ -2798,7 +2800,9 @@
             this.tsmi1Sort,
             this.toolStripMenuItem4,
             this.tsmi1Export,
-            this.tsmi1DumpAsXml});
+            this.tsmi1DumpAsXml,
+            this.toolStripMenuItem5,
+            this.tsmi1CopyString});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
             this.contextMenuStrip1.Size = new System.Drawing.Size(155, 76);
             // 
@@ -2827,6 +2831,19 @@
             this.tsmi1DumpAsXml.Size = new System.Drawing.Size(154, 22);
             this.tsmi1DumpAsXml.Text = "XMLファイルにエクスポート";
             this.tsmi1DumpAsXml.Click += new System.EventHandler(this.tsmi1DumpAsXml_Click);
+            // 
+            // toolStripMenuItem5
+            // 
+            this.toolStripMenuItem5.Name = "toolStripMenuItem5";
+            this.toolStripMenuItem5.Size = new System.Drawing.Size(151, 6);
+            // 
+            // tsmi1CopyString
+            // 
+            this.tsmi1CopyString.Name = "tsmi1CopyString";
+            this.tsmi1CopyString.Size = new System.Drawing.Size(154, 22);
+            this.tsmi1CopyString.Text = "文字列をコピー";
+            this.tsmi1CopyString.Click += new System.EventHandler(this.tsmi1CopyString_Click);
+            this.tsmi1CopyString.Enabled = false;
             // 
             // elementStyle1
             // 
@@ -3307,7 +3324,9 @@
         private DevComponents.DotNetBar.LabelX labelXComp1;
         private DevComponents.DotNetBar.LabelX labelXComp2;
         private System.Windows.Forms.ToolStripMenuItem tsmi1Export;
+        private System.Windows.Forms.ToolStripMenuItem tsmi1CopyString;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem4;
+        private System.Windows.Forms.ToolStripSeparator toolStripMenuItem5;
         private DevComponents.DotNetBar.ComboBoxItem comboBoxItemLanguage;
         private DevComponents.Editors.ComboItem comboItem13;
         private DevComponents.Editors.ComboItem comboItem14;

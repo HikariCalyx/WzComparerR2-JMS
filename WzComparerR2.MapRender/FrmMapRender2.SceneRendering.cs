@@ -13,6 +13,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using WzComparerR2.Controls;
 using WzComparerR2.PluginBase;
+using WzComparerR2.CharaSim;
 
 namespace WzComparerR2.MapRender
 {

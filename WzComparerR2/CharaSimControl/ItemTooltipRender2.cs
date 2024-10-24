@@ -325,6 +325,7 @@ namespace WzComparerR2.CharaSimControl
 
         private Bitmap RenderItem(out int picH)
         {
+            bool isTranslateRequired = Translator.IsTranslateEnabled;
             Bitmap tooltip = new Bitmap(290, DefaultPicHeight);
             Graphics g = Graphics.FromImage(tooltip);
             StringFormat format = (StringFormat)StringFormat.GenericDefault.Clone();
@@ -344,10 +345,21 @@ namespace WzComparerR2.CharaSimControl
             {
                 itemName += " (" + nameAdd + ")";
             }
-
+            if (isTranslateRequired)
+            {
+                string translatedItemName = Translator.MergeString(itemName, Translator.TranslateString(itemName), 0, false, true);
+                if (translatedItemName == itemName)
+                {
+                    isTranslateRequired = false;
+                }
+                else
+                {
+                    itemName = translatedItemName;
+                }
+            }
             //SizeF titleSize = TextRenderer.MeasureText(g, sr.Name.Replace(Environment.NewLine, ""), GearGraphics.ItemNameFont2, new Size(int.MaxValue, int.MaxValue), TextFormatFlags.NoPrefix);
             SizeF titleSize;
-            if (IsKoreanStringPresent(itemName))
+            if (Translator.IsKoreanStringPresent(itemName))
             {
                 titleSize = TextRenderer.MeasureText(g, itemName, GearGraphics.KMSItemNameFont, new Size(int.MaxValue, int.MaxValue), TextFormatFlags.NoPrefix);
             }
@@ -380,13 +392,13 @@ namespace WzComparerR2.CharaSimControl
             //绘制标题
             bool hasPart2 = false;
             format.Alignment = StringAlignment.Center;
-            if (IsKoreanStringPresent(sr.Name))
+            if (Translator.IsKoreanStringPresent(itemName))
             {
-                g.DrawString(sr.Name, GearGraphics.KMSItemNameFont, Brushes.White, tooltip.Width / 2, picH, format);
+                g.DrawString(itemName, GearGraphics.KMSItemNameFont, Brushes.White, tooltip.Width / 2, picH, format);
             }
             else
             {
-                g.DrawString(sr.Name, GearGraphics.ItemNameFont2, Brushes.White, tooltip.Width / 2, picH, format);
+                g.DrawString(itemName, GearGraphics.ItemNameFont2, Brushes.White, tooltip.Width / 2, picH, format);
             }
             picH += 22;
 
@@ -473,11 +485,11 @@ namespace WzComparerR2.CharaSimControl
                 expireTime = "";
                 if (item.ConsumableFrom != null)
                 {
-                    expireTime += string.Format("\nUsable From: {1}/{2}/{0} {3:D2}:{4:D2} UTC", Convert.ToInt32(item.ConsumableFrom.Substring(0, 4)), Convert.ToInt32(item.ConsumableFrom.Substring(4, 2)), Convert.ToInt32(item.ConsumableFrom.Substring(6, 2)), Convert.ToInt32(item.ConsumableFrom.Substring(8, 2)), Convert.ToInt32(item.ConsumableFrom.Substring(10, 2)));
+                    expireTime += string.Format("{0}年 {1}月 {2}日 {3:D2}時 {4:D2}分使用可能", Convert.ToInt32(item.ConsumableFrom.Substring(0, 4)), Convert.ToInt32(item.ConsumableFrom.Substring(4, 2)), Convert.ToInt32(item.ConsumableFrom.Substring(6, 2)), Convert.ToInt32(item.ConsumableFrom.Substring(8, 2)), Convert.ToInt32(item.ConsumableFrom.Substring(10, 2)));
                 }
                 if (item.EndUseDate != null)
                 {
-                    expireTime += string.Format("\n{0}年 {1}月 {2}日 {3:D2}時 {4:D2}分まで使用可能", Convert.ToInt32(item.EndUseDate.Substring(0, 4)), Convert.ToInt32(item.EndUseDate.Substring(4, 2)), Convert.ToInt32(item.EndUseDate.Substring(6, 2)), Convert.ToInt32(item.EndUseDate.Substring(8, 2)), Convert.ToInt32(item.EndUseDate.Substring(10, 2)));
+                    expireTime += string.Format("{0}年 {1}月 {2}日 {3:D2}時 {4:D2}分まで使用可能", Convert.ToInt32(item.EndUseDate.Substring(0, 4)), Convert.ToInt32(item.EndUseDate.Substring(4, 2)), Convert.ToInt32(item.EndUseDate.Substring(6, 2)), Convert.ToInt32(item.EndUseDate.Substring(8, 2)), Convert.ToInt32(item.EndUseDate.Substring(10, 2)));
                 }
             }
             else if ((item.Props.TryGetValue(ItemPropType.permanent, out value) && value != 0) || (item.ItemID / 10000 == 500 && item.Props.TryGetValue(ItemPropType.life, out value) && value == 0))
@@ -492,7 +504,7 @@ namespace WzComparerR2.CharaSimControl
             else if (item.ItemID / 10000 == 500 && item.Props.TryGetValue(ItemPropType.limitedLife, out value) && value > 0)
             {
                 picH -= 3;
-                expireTime = string.Format("DAYS OF MAGIC: {0}hrs. {1}min.", value / 3600, (value % 3600) / 60);
+                expireTime = string.Format("魔法の時間: {0}時間 {1}分", value / 3600, (value % 3600) / 60);
             }
             else if (item.ItemID / 10000 == 500 && item.Props.TryGetValue(ItemPropType.life, out value) && value > 0)
             {
@@ -681,24 +693,54 @@ namespace WzComparerR2.CharaSimControl
             }
             if (!string.IsNullOrEmpty(desc))
             {
-                if (IsKoreanStringPresent(desc))
+                if (isTranslateRequired)
                 {
-                    GearGraphics.DrawString(g, desc, GearGraphics.KMSItemDetailFont, 100, right, ref picH, 16);
+                    string mergedDesc = Translator.MergeString(desc, Translator.TranslateString(desc), 2);
+                    if (Translator.IsKoreanStringPresent(mergedDesc))
+                    {
+                        GearGraphics.DrawString(g, mergedDesc, GearGraphics.KMSItemDetailFont, 100, right, ref picH, 16);
+                    }
+                    else
+                    {
+                        GearGraphics.DrawString(g, mergedDesc, GearGraphics.ItemDetailFont, 100, right, ref picH, 16);
+                    }
                 }
                 else
                 {
-                    GearGraphics.DrawString(g, desc, GearGraphics.ItemDetailFont, 100, right, ref picH, 16);
+                    if (Translator.IsKoreanStringPresent(desc))
+                    {
+                        GearGraphics.DrawString(g, desc, GearGraphics.KMSItemDetailFont, 100, right, ref picH, 16);
+                    }
+                    else
+                    {
+                        GearGraphics.DrawString(g, desc, GearGraphics.ItemDetailFont, 100, right, ref picH, 16);
+                    }
                 }
             }
             if (!string.IsNullOrEmpty(sr.AutoDesc))
             {
-                if (IsKoreanStringPresent(sr.AutoDesc))
+                if (isTranslateRequired)
                 {
-                    GearGraphics.DrawString(g, sr.AutoDesc, GearGraphics.KMSItemDetailFont, 100, right, ref picH, 16);
+                    string mergedAutoDesc = Translator.MergeString(sr.AutoDesc, Translator.TranslateString(sr.AutoDesc), 2);
+                    if (Translator.IsKoreanStringPresent(mergedAutoDesc))
+                    {
+                        GearGraphics.DrawString(g, mergedAutoDesc, GearGraphics.KMSItemDetailFont, 100, right, ref picH, 16);
+                    }
+                    else
+                    {
+                        GearGraphics.DrawString(g, mergedAutoDesc, GearGraphics.ItemDetailFont, 100, right, ref picH, 16);
+                    }
                 }
                 else
                 {
-                    GearGraphics.DrawString(g, sr.AutoDesc, GearGraphics.ItemDetailFont, 100, right, ref picH, 16);
+                    if (Translator.IsKoreanStringPresent(sr.AutoDesc))
+                    {
+                        GearGraphics.DrawString(g, sr.AutoDesc, GearGraphics.KMSItemDetailFont, 100, right, ref picH, 16);
+                    }
+                    else
+                    {
+                        GearGraphics.DrawString(g, sr.AutoDesc, GearGraphics.ItemDetailFont, 100, right, ref picH, 16);
+                    }
                 }
             }
             if (item.Props.TryGetValue(ItemPropType.tradeAvailable, out value) && value > 0)
@@ -749,7 +791,7 @@ namespace WzComparerR2.CharaSimControl
             }
             if (item.Props.TryGetValue(ItemPropType.noRevive, out value) && value > 0)
             {
-                GearGraphics.DrawString(g, "#cYou cannot use the Water of Life.#", GearGraphics.ItemDetailFont, 100, right, ref picH, 16);
+                GearGraphics.DrawString(g, "#c生命の水は使用できません。#", GearGraphics.ItemDetailFont, 100, right, ref picH, 16);
             }
 
             if (item.ItemID / 10000 == 500)
@@ -825,13 +867,28 @@ namespace WzComparerR2.CharaSimControl
                 if (!string.IsNullOrEmpty(descLeftAlign))
                 {
                     picH += 12;
-                    if (IsKoreanStringPresent(descLeftAlign))
+                    if (isTranslateRequired)
                     {
-                        GearGraphics.DrawString(g, descLeftAlign, GearGraphics.KMSItemDetailFont, 14, right, ref picH, 16);
+                        string mergedDescLeftAlign = Translator.MergeString(descLeftAlign, Translator.TranslateString(descLeftAlign), 2);
+                        if (Translator.IsKoreanStringPresent(mergedDescLeftAlign))
+                        {
+                            GearGraphics.DrawString(g, mergedDescLeftAlign, GearGraphics.KMSItemDetailFont, 100, right, ref picH, 16);
+                        }
+                        else
+                        {
+                            GearGraphics.DrawString(g, mergedDescLeftAlign, GearGraphics.ItemDetailFont, 100, right, ref picH, 16);
+                        }
                     }
                     else
                     {
-                        GearGraphics.DrawString(g, descLeftAlign, GearGraphics.ItemDetailFont, 14, right, ref picH, 16);
+                        if (Translator.IsKoreanStringPresent(descLeftAlign))
+                        {
+                            GearGraphics.DrawString(g, descLeftAlign, GearGraphics.KMSItemDetailFont, 14, right, ref picH, 16);
+                        }
+                        else
+                        {
+                            GearGraphics.DrawString(g, descLeftAlign, GearGraphics.ItemDetailFont, 14, right, ref picH, 16);
+                        }
                     }
                 }
                 if (item.CoreSpecs.Count > 0)
@@ -1246,14 +1303,6 @@ namespace WzComparerR2.CharaSimControl
                 picHeight += 13;
             }
             return level;
-        }
-        private bool IsKoreanStringPresent(string checkString)
-        {
-            if (checkString == null)
-            {
-                return false;
-            }
-            return checkString.Any(c => (c >= '\uAC00' && c <= '\uD7A3'));
         }
         private bool TryGetNickResource(long nickTag, out Wz_Node resNode)
         {

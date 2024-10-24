@@ -18,6 +18,24 @@
 # Usage
 - **2.x**: Win7+/.net4.8+/dx11.0
 
+# 翻訳機能
+- WzComparerR2-JMS v5.6.0 以降では、翻訳機能が導入されました。
+- 以下の翻訳エンジンと連携します: Google、DeepL、DuckDuckGo/Bing、MyMemory、Yandex、Naver Papago。
+
+### Mozhiサーバー
+Mozhi は、公開されている API を備えた、多くの翻訳エンジンの代替フロントエンドです。[Mozhi プロジェクトの詳細については、こちらをご覧ください。](https://mozhi.aryak.me/about)
+
+### Naver Papago
+韓国語のテキストの翻訳に関しては、Naver Papago はすべての翻訳エンジンの中で比較的最高の結果を達成しています。ただし、Naver Papago を使用するには API キーが必要です。[API キーはここからリクエストできます。](https://guide.ncloud-docs.com/docs/ja/papagotranslation-api)
+
+API キーを取得したら、次のように JSON 形式で「翻訳APIキー」テキストボックスに入力してください:
+```
+{
+    "X-NCP-APIGW-API-KEY-ID": "APIキーIDに置き換えてください",
+    "X-NCP-APIGW-API-KEY": "APIキーに置き換えてください"
+]
+```
+
 # NX OpenAPI
 - [API キーを取得する方法については、こちらをご覧ください。](https://openapi.nexon.com/guide/prepare-in-advance/)
 - 他の国や地域のNX IDは使用できません。韓国のNX IDのみ使用できます。
