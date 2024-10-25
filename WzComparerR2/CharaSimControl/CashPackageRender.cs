@@ -161,7 +161,7 @@ namespace WzComparerR2.CharaSimControl
             string translatedCashPackageName = "";
             if (isTranslateRequired)
             {
-                translatedCashPackageName = Translator.TranslateString(CashPackage.name);
+                translatedCashPackageName = Translator.TranslateString(CashPackage.name, true);
                 isTranslateRequired = !(translatedCashPackageName == CashPackage.name);
             }
             if (isTranslateRequired)

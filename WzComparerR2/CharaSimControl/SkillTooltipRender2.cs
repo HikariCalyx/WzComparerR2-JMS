@@ -149,7 +149,7 @@ namespace WzComparerR2.CharaSimControl
             string translatedSkillName = "";
             if (isTranslateRequired)
             {
-                translatedSkillName = Translator.TranslateString(sr.Name);
+                translatedSkillName = Translator.TranslateString(sr.Name, true);
                 SizeF titleSize;
                 if (Translator.IsKoreanStringPresent(translatedSkillName + sr.Name))
                 {

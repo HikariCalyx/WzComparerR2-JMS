@@ -347,7 +347,7 @@ namespace WzComparerR2.CharaSimControl
             }
             if (isTranslateRequired)
             {
-                string translatedItemName = Translator.MergeString(itemName, Translator.TranslateString(itemName), 0, false, true);
+                string translatedItemName = Translator.MergeString(itemName, Translator.TranslateString(itemName, true), 0, false, true);
                 if (translatedItemName == itemName)
                 {
                     isTranslateRequired = false;

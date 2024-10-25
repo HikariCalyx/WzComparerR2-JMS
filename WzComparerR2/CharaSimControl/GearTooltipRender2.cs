@@ -189,7 +189,7 @@ namespace WzComparerR2.CharaSimControl
             bool isTranslateRequired = Translator.IsTranslateEnabled;
             bool isTitleTranslateRequired = !Translator.IsTranslateEnabled;
             if (isTranslateRequired) {
-                translatedName = Translator.TranslateString(gearName);
+                translatedName = Translator.TranslateString(gearName, true);
                 isTitleTranslateRequired = !(translatedName == gearName);
             }
 

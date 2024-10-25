@@ -10,12 +10,15 @@ using System.Net;
 using System.IO;
 using static System.Net.Mime.MediaTypeNames;
 using DevComponents.DotNetBar;
+using System.Globalization;
+using System.Threading;
 namespace WzComparerR2.CharaSim
 {
     public class Translator
     {
         private static string GTranslateBaseURL = "https://translate.googleapis.com/translate_a/t";
         private static string NTranslateBaseURL = "https://naveropenapi.apigw.ntruss.com";
+
         private static JArray GTranslate(string text, string desiredLanguage)
         {
             var request = (HttpWebRequest)WebRequest.Create(GTranslateBaseURL + "?client=gtx&format=text&sl=auto&tl=" + desiredLanguage);
@@ -151,7 +154,7 @@ namespace WzComparerR2.CharaSim
             }
         }
 
-        public static string TranslateString(string orgText)
+        public static string TranslateString(string orgText, bool titleCase=false)
         {
             if (string.IsNullOrEmpty(orgText)) return orgText;
             bool isMozhiUsed = false;
@@ -206,10 +209,20 @@ namespace WzComparerR2.CharaSim
                     JObject responseObj = NTranslate(orgText.Replace("\\n", "\r\n"), Translator.DefaultDesiredLanguage);
                     translatedText = responseObj.SelectToken("message.result.translatedText").ToString();
                     break;
+                case 7:
+                    if (targetLanguage.Contains("zh")) targetLanguage = "zh";
+                    if (targetLanguage == "yue") targetLanguage = "zh";
+                    break;
             }
             if (isMozhiUsed)
             {
                 translatedText = MTranslate(orgText.Replace("\\n", "\r\n"), mozhiEngine, sourceLanguage, targetLanguage).SelectToken("translated-text").ToString().Replace("\r\n", "\\n").Replace("££", "#");
+            }
+            if (titleCase && targetLanguage == "en")
+            {
+                CultureInfo cultureInfo = Thread.CurrentThread.CurrentCulture;
+                TextInfo textInfo = cultureInfo.TextInfo;
+                translatedText = textInfo.ToTitleCase(translatedText);
             }
             return translatedText;
         }

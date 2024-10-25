@@ -151,7 +151,7 @@ namespace WzComparerR2.CharaSimControl
             }
             if (isTranslateRequired)
             {
-                return Translator.MergeString(sr.Name, Translator.TranslateString(sr.Name), 0, false, true);
+                return Translator.MergeString(sr.Name, Translator.TranslateString(sr.Name, true), 0, false, true);
             }
             else
             {
@@ -169,7 +169,7 @@ namespace WzComparerR2.CharaSimControl
             }
             if (isTranslateRequired)
             {
-                return Translator.MergeString(sr.Name, Translator.TranslateString(sr.Name), 0, false, true);
+                return Translator.MergeString(sr.Name, Translator.TranslateString(sr.Name, true), 0, false, true);
             }
             else
             {
