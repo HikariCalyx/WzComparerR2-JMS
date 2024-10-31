@@ -179,8 +179,7 @@ namespace WzComparerR2.CharaSim
                 case 2:
                     isMozhiUsed = true;
                     sourceLanguage = "en";
-                    if (targetLanguage.Contains("zh")) targetLanguage = "zh";
-                    if (targetLanguage == "yue") targetLanguage = "zh";
+                    if (targetLanguage.Contains("zh") || targetLanguage == "yue") targetLanguage = "zh";
                     mozhiEngine = "deepl";
                     break;
                 //3: DuckDuckGo / Bing (Mozhi)
@@ -199,8 +198,7 @@ namespace WzComparerR2.CharaSim
                 //5: Yandex (Mozhi)
                 case 5:
                     isMozhiUsed = true;
-                    if (targetLanguage.Contains("zh")) targetLanguage = "zh";
-                    if (targetLanguage == "yue") targetLanguage = "zh";
+                    if (targetLanguage.Contains("zh") || targetLanguage == "yue") targetLanguage = "zh";
                     mozhiEngine = "yandex";
                     break;
                 //6: Naver Papago (Non-Mozhi)
@@ -209,10 +207,7 @@ namespace WzComparerR2.CharaSim
                     JObject responseObj = NTranslate(orgText.Replace("\\n", "\r\n"), Translator.DefaultDesiredLanguage);
                     translatedText = responseObj.SelectToken("message.result.translatedText").ToString();
                     break;
-                case 7:
-                    if (targetLanguage.Contains("zh")) targetLanguage = "zh";
-                    if (targetLanguage == "yue") targetLanguage = "zh";
-                    break;
+                //7: iFlyTek (Non-Mozhi)
             }
             if (isMozhiUsed)
             {
