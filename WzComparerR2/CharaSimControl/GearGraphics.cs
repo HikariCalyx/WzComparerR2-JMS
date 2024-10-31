@@ -493,6 +493,12 @@ namespace WzComparerR2.CharaSimControl
             }).ToArray();
 
             Color color = Color.FromArgb(resNode.FindNodeByPath("clr").GetValueEx(-1));
+            BitmapOrigin ani0 = default;
+            Wz_Node ani0Node = resNode.FindNodeByPath(false, "ani", "0");
+            if (ani0Node != null)
+            {
+                ani0 = BitmapOrigin.CreateFromNode(ani0Node, PluginBase.PluginManager.FindWz);
+            }
 
             //测试y轴大小
             int offsetY = wce.Min(bmp => bmp.OpOrigin.Y);
@@ -501,45 +507,65 @@ namespace WzComparerR2.CharaSimControl
             //测试宽度
             var font = GearGraphics.JMSKunshoFont;
             var fmt = StringFormat.GenericTypographic;
-            //int width = string.IsNullOrEmpty(tagName) ? 0 : (int)Math.Ceiling(g.MeasureString(tagName, font, 261, fmt).Width);
-            int width = string.IsNullOrEmpty(tagName) ? 0 : TextRenderer.MeasureText(g, tagName, font, new Size(int.MaxValue, int.MaxValue), TextFormatFlags.NoPadding).Width;
-            if (wce[1].Bitmap != null)
-            {
-                width = (int)Math.Ceiling(1.0 * width / wce[1].Bitmap.Width) * wce[1].Bitmap.Width;
-            }
-            int left = picW / 2 - width / 2;
-            int right = left + width;
+            int nameWidth = string.IsNullOrEmpty(tagName) ? 0 : (int)Math.Ceiling(g.MeasureString(tagName, font, 261, fmt).Width);
+            int center = picW / 2;
 
-            //开始绘制背景
-            picH -= offsetY;
-            if (wce[0].Bitmap != null)
+            if (ani0.Bitmap == null) // legacy mode
             {
-                g.DrawImage(wce[0].Bitmap, left - wce[0].Origin.X, picH - wce[0].Origin.Y);
-            }
-            if (wce[1].Bitmap != null) //不用拉伸 用纹理平铺 看运气
-            {
-                var brush = new TextureBrush(wce[1].Bitmap);
-                Rectangle rect = new Rectangle(left, picH - wce[1].Origin.Y, right - left, brush.Image.Height);
-                brush.TranslateTransform(rect.X, rect.Y);
-                g.FillRectangle(brush, rect);
-                brush.Dispose();
-            }
-            if (wce[2].Bitmap != null)
-            {
-                g.DrawImage(wce[2].Bitmap, right - wce[2].Origin.X, picH - wce[2].Origin.Y);
-            }
+                int left = center - nameWidth / 2;
+                int right = left + nameWidth;
 
-            //绘制文字
-            if (!string.IsNullOrEmpty(tagName))
+                //开始绘制背景
+                picH -= offsetY;
+                if (wce[0].Bitmap != null)
+                {
+                    g.DrawImage(wce[0].Bitmap, left - wce[0].Origin.X, picH - wce[0].Origin.Y);
+                }
+                if (wce[1].Bitmap != null) //不用拉伸 用纹理平铺 看运气
+                {
+                    var brush = new TextureBrush(wce[1].Bitmap);
+                    Rectangle rect = new Rectangle(left, picH - wce[1].Origin.Y, right - left, brush.Image.Height);
+                    brush.TranslateTransform(rect.X, rect.Y);
+                    g.FillRectangle(brush, rect);
+                    brush.Dispose();
+                }
+                if (wce[2].Bitmap != null)
+                {
+                    g.DrawImage(wce[2].Bitmap, right - wce[2].Origin.X, picH - wce[2].Origin.Y);
+                }
+
+                //绘制文字
+                if (!string.IsNullOrEmpty(tagName))
+                {
+                    using var brush = new SolidBrush(color);
+                    g.DrawString(tagName, font, brush, left, picH, fmt);
+                }
+            }
+            else //  ani mode
             {
-                var brush = new SolidBrush(color);
-                //g.DrawString(tagName, font, brush, left, picH, fmt);
-                g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAliasGridFit;
-                //TextRenderer.DrawText(g, tagName, font, new Point(left, picH - 2), color, TextFormatFlags.NoPadding);2 juni
-                TextRenderer.DrawText(g, tagName, font, new Rectangle(left, picH, right - left, int.MaxValue), color, TextFormatFlags.HorizontalCenter | TextFormatFlags.NoPadding);
-                //TextRenderer.DrawText(g, tagName, font, new Rectangle(left, picH, right - left, int.MaxValue), color, TextFormatFlags.NoPadding);
-                g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.ClearTypeGridFit;
-                brush.Dispose();
+                offsetY = Math.Min(offsetY, ani0.OpOrigin.Y);
+                height = Math.Max(height, ani0.Rectangle.Bottom);
+
+                int bgWidth = wce[1].Bitmap?.Width ?? 0;
+                int left = center - bgWidth / 2;
+                int right = left + bgWidth;
+                int nameLeft = center - nameWidth / 2;
+
+                picH -= offsetY;
+
+                if (wce[1].Bitmap != null) // draw center only
+                {
+                    g.DrawImage(wce[1].Bitmap, left - wce[1].Origin.X, picH - wce[1].Origin.Y);
+                }
+                // draw ani0 based on bg center position
+                g.DrawImage(ani0.Bitmap, left - wce[1].Origin.X - ani0.Origin.X, picH - wce[1].Origin.Y - ani0.Origin.Y);
+                // draw name
+                if (!string.IsNullOrEmpty(tagName))
+                {
+                    using var brush = new SolidBrush(color);
+                    // offsetX with bg for better alignment
+                    g.DrawString(tagName, font, brush, nameLeft - wce[1].Origin.X, picH, fmt);
+                }
             }
 
             picH += height;
