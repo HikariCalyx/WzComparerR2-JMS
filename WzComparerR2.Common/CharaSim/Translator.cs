@@ -156,7 +156,7 @@ namespace WzComparerR2.CharaSim
 
         public static string TranslateString(string orgText, bool titleCase=false)
         {
-            if (string.IsNullOrEmpty(orgText)) return orgText;
+            if (string.IsNullOrEmpty(orgText) || orgText == "(null)") return orgText;
             bool isMozhiUsed = false;
             string mozhiEngine = "";
             string translatedText = "";
