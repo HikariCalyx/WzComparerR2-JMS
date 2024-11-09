@@ -892,7 +892,7 @@ namespace WzComparerR2.CharaSimControl
                     }
                 }
                 picH += 0;
-                if (!Gear.GetBooleanValue(GearPropType.exceptUpgrade) && !Gear.GetBooleanValue(GearPropType.blockGoldHammer))
+                if (!Gear.GetBooleanValue(GearPropType.exceptUpgrade) && !Gear.GetBooleanValue(GearPropType.blockGoldHammer) && !(Gear.type == GearType.petEquip))
                 {
                     if (Gear.Hammer < 2)
                     {
@@ -906,6 +906,14 @@ namespace WzComparerR2.CharaSimControl
                     //g.DrawString(": " + Gear.Hammer.ToString() + (Gear.Hammer == 2 ? "(MAX)" : null) + "/2", GearGraphics.EquipDetailFont, Brushes.White, 168, picH);
                     picH += 15;
                     hasPart2 = true;
+                }
+
+                if (Gear.type == GearType.petEquip)
+                {
+                    TextRenderer.DrawText(g, "ペット装備能力値移転書適用", GearGraphics.EquipDetailFont, new Point(12, picH), Color.White, TextFormatFlags.NoPadding | TextFormatFlags.NoPrefix);
+                    picH += 15;
+                    TextRenderer.DrawText(g, "黄金つち(ペット専用)使用可能回数 : 0/2", GearGraphics.EquipDetailFont, new Point(12, picH), Color.White, TextFormatFlags.NoPadding | TextFormatFlags.NoPrefix);
+                    picH += 15;
                 }
 
             }
