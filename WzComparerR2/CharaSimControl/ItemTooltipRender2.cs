@@ -1016,21 +1016,6 @@ namespace WzComparerR2.CharaSimControl
                     }
                 }
             }
-
-
-            // JMS exclusive pricing display
-            if (!item.Props.TryGetValue(ItemPropType.quest, out value) && !item.Props.TryGetValue(ItemPropType.notSale, out value) && (item.Props.TryGetValue(ItemPropType.price, out value) && value > 0) && ShowSoldPrice)
-            {
-                picH += 16;
-                GearGraphics.DrawString(g, "\r\n · 販売価額：" + value + "メル", GearGraphics.EquipDetailFont, 100, right, ref picH, 16);
-            }
-
-            if (item.Props.TryGetValue(ItemPropType.autoPrice, out value) && ShowSoldPrice)
-            {
-                picH += 16;
-                GearGraphics.DrawString(g, "\r\n · 販売価額：" + (item.Level * 2) + "メル", GearGraphics.EquipDetailFont, 100, right, ref picH, 16);
-            }
-
             //绘制配方需求
             if (item.Specs.TryGetValue(ItemSpecType.recipe, out value))
             {
@@ -1057,9 +1042,24 @@ namespace WzComparerR2.CharaSimControl
                     sr = new StringResult();
                     sr.Name = "- (null)";
                 }
-                TextRenderer.DrawText(g, string.Format("- {0} Lv {1}", sr.Name, reqSkillLevel), GearGraphics.ItemDetailFont, new Point(13, picH), ((SolidBrush)GearGraphics.SetItemNameBrush).Color, TextFormatFlags.NoPadding | TextFormatFlags.NoPrefix);
+                //Workaround for Korean profession name in JMS
+                sr.Name = sr.Name.Replace("장비제작", "装備制作").Replace("장신구제작", "アクセサリ制作").Replace("연금술", "錬金術");
+                TextRenderer.DrawText(g, string.Format("· {0} {1}レベル以上", sr.Name, reqSkillLevel), GearGraphics.ItemDetailFont, new Point(13, picH), ((SolidBrush)GearGraphics.SetItemNameBrush).Color, TextFormatFlags.NoPadding | TextFormatFlags.NoPrefix);
                 picH += 16;
                 picH += 6;
+            }
+
+            // JMS exclusive pricing display
+            if (!item.Props.TryGetValue(ItemPropType.quest, out value) && !item.Props.TryGetValue(ItemPropType.notSale, out value) && (item.Props.TryGetValue(ItemPropType.price, out value) && value > 0) && ShowSoldPrice)
+            {
+                picH += 16;
+                GearGraphics.DrawString(g, "\r\n · 販売価額：" + value + "メル", GearGraphics.EquipDetailFont, 100, right, ref picH, 16);
+            }
+
+            if (item.Props.TryGetValue(ItemPropType.autoPrice, out value) && ShowSoldPrice)
+            {
+                picH += 16;
+                GearGraphics.DrawString(g, "\r\n · 販売価額：" + (item.Level * 2) + "メル", GearGraphics.EquipDetailFont, 100, right, ref picH, 16);
             }
 
             picH = Math.Max(iconY + 94, picH + 6);
