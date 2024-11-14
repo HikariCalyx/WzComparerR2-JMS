@@ -39,20 +39,7 @@ namespace WzComparerR2.Common
                         if (!image.TryExtract()) break;
                         foreach (Wz_Node tree in image.Node.Nodes)
                         {
-                            Wz_Node test_tree = tree;
-                            if (test_tree.Value is Wz_Uol)
-                            {
-                                Wz_Uol uol = test_tree.Value as Wz_Uol;
-                                Wz_Node uolNode = uol.HandleUol(tree);
-                                if (uolNode != null)
-                                {
-                                    test_tree = uolNode;
-                                }
-                                else
-                                {
-                                    break;
-                                }
-                            }
+                            Wz_Node test_tree = TryLocateUolNode(tree);
                             if (Int32.TryParse(tree.Text, out id))
                             {
                                 StringResult strResult = new StringResult();
@@ -79,20 +66,7 @@ namespace WzComparerR2.Common
                         {
                             foreach (Wz_Node tree in tree0.Nodes)
                             {
-                                Wz_Node test_tree = tree;
-                                if (test_tree.Value is Wz_Uol)
-                                {
-                                    Wz_Uol uol = test_tree.Value as Wz_Uol;
-                                    Wz_Node uolNode = uol.HandleUol(tree);
-                                    if (uolNode != null)
-                                    {
-                                        test_tree = uolNode;
-                                    }
-                                    else
-                                    {
-                                        break;
-                                    }
-                                }
+                                Wz_Node test_tree = TryLocateUolNode(tree);
                                 if (Int32.TryParse(tree.Text, out id))
                                 {
                                     StringResult strResult = new StringResult();
@@ -117,20 +91,7 @@ namespace WzComparerR2.Common
                         if (!image.TryExtract()) break;
                         foreach (Wz_Node tree in image.Node.Nodes)
                         {
-                            Wz_Node test_tree = tree;
-                            if (test_tree.Value is Wz_Uol)
-                            {
-                                Wz_Uol uol = test_tree.Value as Wz_Uol;
-                                Wz_Node uolNode = uol.HandleUol(tree);
-                                if (uolNode != null)
-                                {
-                                    test_tree = uolNode;
-                                }
-                                else
-                                {
-                                    break;
-                                }
-                            }
+                            Wz_Node test_tree = TryLocateUolNode(tree);
                             if (Int32.TryParse(tree.Text, out id))
                             {
                                 StringResult strResult = new StringResult();
@@ -153,20 +114,7 @@ namespace WzComparerR2.Common
                         if (!image.TryExtract()) break;
                         foreach (Wz_Node tree in image.Node.Nodes)
                         {
-                            Wz_Node test_tree = tree;
-                            if (test_tree.Value is Wz_Uol)
-                            {
-                                Wz_Uol uol = test_tree.Value as Wz_Uol;
-                                Wz_Node uolNode = uol.HandleUol(tree);
-                                if (uolNode != null)
-                                {
-                                    test_tree = uolNode;
-                                }
-                                else
-                                {
-                                    break;
-                                }
-                            }
+                            Wz_Node test_tree = TryLocateUolNode(tree);
                             if (Int32.TryParse(tree.Text, out id))
                             {
                                 StringResult strResult = new StringResult();
@@ -192,20 +140,7 @@ namespace WzComparerR2.Common
                         {
                             foreach (Wz_Node tree in tree0.Nodes)
                             {
-                                Wz_Node test_tree = tree;
-                                if (test_tree.Value is Wz_Uol)
-                                {
-                                    Wz_Uol uol = test_tree.Value as Wz_Uol;
-                                    Wz_Node uolNode = uol.HandleUol(tree);
-                                    if (uolNode != null)
-                                    {
-                                        test_tree = uolNode;
-                                    }
-                                    else
-                                    {
-                                        break;
-                                    }
-                                }
+                                Wz_Node test_tree = TryLocateUolNode(tree);
                                 if (Int32.TryParse(tree.Text, out id))
                                 {
                                     StringResult strResult = new StringResult();
@@ -232,20 +167,7 @@ namespace WzComparerR2.Common
                         if (!image.TryExtract()) break;
                         foreach (Wz_Node tree in image.Node.Nodes)
                         {
-                            Wz_Node test_tree = tree;
-                            if (test_tree.Value is Wz_Uol)
-                            {
-                                Wz_Uol uol = test_tree.Value as Wz_Uol;
-                                Wz_Node uolNode = uol.HandleUol(tree);
-                                if (uolNode != null)
-                                {
-                                    test_tree = uolNode;
-                                }
-                                else
-                                {
-                                    break;
-                                }
-                            }
+                            Wz_Node test_tree = TryLocateUolNode(tree);
                             StringResult strResult = new StringResultSkill();
                             strResult.Name = GetDefaultString(test_tree, "name");//?? GetDefaultString(tree, "bookName");
                             strResult.Desc = GetDefaultString(test_tree, "desc");
@@ -291,20 +213,7 @@ namespace WzComparerR2.Common
                             {
                                 foreach (Wz_Node tree in tree1.Nodes)
                                 {
-                                    Wz_Node test_tree = tree;
-                                    if (test_tree.Value is Wz_Uol)
-                                    {
-                                        Wz_Uol uol = test_tree.Value as Wz_Uol;
-                                        Wz_Node uolNode = uol.HandleUol(tree);
-                                        if (uolNode != null)
-                                        {
-                                            test_tree = uolNode;
-                                        }
-                                        else
-                                        {
-                                            break;
-                                        }
-                                    }
+                                    Wz_Node test_tree = TryLocateUolNode(tree);
                                     if (Int32.TryParse(tree.Text, out id))
                                     {
                                         StringResult strResult = new StringResult();
@@ -340,20 +249,7 @@ namespace WzComparerR2.Common
                         if (!image.TryExtract()) break;
                         foreach (Wz_Node tree in image.Node.Nodes)
                         {
-                            Wz_Node test_tree = tree;
-                            if (test_tree.Value is Wz_Uol)
-                            {
-                                Wz_Uol uol = test_tree.Value as Wz_Uol;
-                                Wz_Node uolNode = uol.HandleUol(tree);
-                                if (uolNode != null)
-                                {
-                                    test_tree = uolNode;
-                                }
-                                else
-                                {
-                                    break;
-                                }
-                            }
+                            Wz_Node test_tree = TryLocateUolNode(tree);
                             if (Int32.TryParse(tree.Text, out id))
                             {
                                 StringResult strResult = new StringResult();
@@ -387,20 +283,7 @@ namespace WzComparerR2.Common
                         if (!image.TryExtract()) break;
                         foreach (Wz_Node tree in image.Node.Nodes)
                         {
-                            Wz_Node test_tree = tree;
-                            if (test_tree.Value is Wz_Uol)
-                            {
-                                Wz_Uol uol = test_tree.Value as Wz_Uol;
-                                Wz_Node uolNode = uol.HandleUol(tree);
-                                if (uolNode != null)
-                                {
-                                    test_tree = uolNode;
-                                }
-                                else
-                                {
-                                    break;
-                                }
-                            }
+                            Wz_Node test_tree = TryLocateUolNode(tree);
                             if (Int32.TryParse(tree.Text, out id))
                             {
                                 StringResult strResult = new StringResult();
@@ -469,6 +352,27 @@ namespace WzComparerR2.Common
                 {
                     sr[child.Text] = child.GetValue<string>();
                 }
+            }
+        }
+
+        private Wz_Node TryLocateUolNode(Wz_Node node)
+        {
+            if (node.Value is Wz_Uol)
+            {
+                Wz_Uol uol = node.Value as Wz_Uol;
+                Wz_Node uolNode = uol.HandleUol(node);
+                if (uolNode != null)
+                {
+                    return uolNode;
+                }
+                else
+                {
+                    return node;
+                }
+            }
+            else
+            {
+                return node;
             }
         }
 
