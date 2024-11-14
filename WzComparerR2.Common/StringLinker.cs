@@ -357,8 +357,8 @@ namespace WzComparerR2.Common
                             if (Int32.TryParse(tree.Text, out id))
                             {
                                 StringResult strResult = new StringResult();
-                                strResult.Name = GetDefaultString(tree, "name");
-                                strResult.Desc = GetDefaultString(tree, "desc");
+                                strResult.Name = GetDefaultString(test_tree, "name");
+                                strResult.Desc = GetDefaultString(test_tree, "desc");
                                 if (tree.FullPath == test_tree.FullPath)
                                 {
                                     strResult.FullPath = tree.FullPath;
