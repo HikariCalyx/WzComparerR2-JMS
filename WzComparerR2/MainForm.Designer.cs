@@ -1263,7 +1263,7 @@
             // 
             // comboItem19
             // 
-            this.comboItem19.Text = "アイテムセット";
+            this.comboItem19.Text = "ｱｲﾃﾑｾｯﾄ";
             // 
             // itemContainer12
             // 
