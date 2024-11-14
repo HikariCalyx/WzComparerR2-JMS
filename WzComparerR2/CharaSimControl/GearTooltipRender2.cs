@@ -1194,7 +1194,7 @@ namespace WzComparerR2.CharaSimControl
 
                 if (Gear.Cash && (!Gear.Props.TryGetValue(GearPropType.noMoveToLocker, out value) || value == 0) && (!Gear.Props.TryGetValue(GearPropType.tradeBlock, out value) || value == 0) && (!Gear.Props.TryGetValue(GearPropType.accountSharable, out value) || value == 0))
                 {
-                    desc.Add("#cこのアイテムは一度使用するとトレードできません。#");
+                    desc.Add("#cこのアイテムは一度使用すると交換できません。#");
                 }
 
                 if (Gear.type != GearType.pickaxe && Gear.type != GearType.shovel && PluginBase.PluginManager.FindWz(string.Format("Effect/ItemEff.img/{0}/effect", Gear.ItemID)) != null)
