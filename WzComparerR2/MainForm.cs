@@ -1063,7 +1063,7 @@ namespace WzComparerR2
             else if (selectedNode.Value is Wz_File wzFile)
             {
                 listViewExWzDetail.Items.Add(new ListViewItem(new string[] { "ファイル名", wzFile.Header.FileName }));
-                listViewExWzDetail.Items.Add(new ListViewItem(new string[] { "ファイルサイズ", wzFile.Header.FileSize + " bytes" }));
+                listViewExWzDetail.Items.Add(new ListViewItem(new string[] { "ファイルサイズ", wzFile.Header.FileSize + " バイト" }));
                 listViewExWzDetail.Items.Add(new ListViewItem(new string[] { "著作権", wzFile.Header.Copyright }));
                 listViewExWzDetail.Items.Add(new ListViewItem(new string[] { "バージョン", wzFile.GetMergedVersion().ToString() }));
                 listViewExWzDetail.Items.Add(new ListViewItem(new string[] { "WZタイプ", wzFile.IsSubDir ? "Subdirectory" : wzFile.Type.ToString() }));
@@ -1072,7 +1072,7 @@ namespace WzComparerR2
                 {
                     listViewExWzDetail.Items.Add(" ");
                     listViewExWzDetail.Items.Add(new ListViewItem(new string[] { "ファイル名", subFile.Header.FileName }));
-                    listViewExWzDetail.Items.Add(new ListViewItem(new string[] { "ファイルサイズ", subFile.Header.FileSize + " bytes" }));
+                    listViewExWzDetail.Items.Add(new ListViewItem(new string[] { "ファイルサイズ", subFile.Header.FileSize + " バイト" }));
                     listViewExWzDetail.Items.Add(new ListViewItem(new string[] { "著作権", subFile.Header.Copyright }));
                     listViewExWzDetail.Items.Add(new ListViewItem(new string[] { "バージョン", subFile.Header.WzVersion.ToString() }));
                 }
@@ -1082,8 +1082,8 @@ namespace WzComparerR2
             else if (selectedNode.Value is Wz_Image wzImage)
             {
                 listViewExWzDetail.Items.Add(new ListViewItem(new string[] { "IMG名", wzImage.Name }));
-                listViewExWzDetail.Items.Add(new ListViewItem(new string[] { "IMGサイズ", wzImage.Size + " bytes" }));
-                listViewExWzDetail.Items.Add(new ListViewItem(new string[] { "IMGオフセット", wzImage.Offset + " bytes" }));
+                listViewExWzDetail.Items.Add(new ListViewItem(new string[] { "IMGサイズ", wzImage.Size + " バイト" }));
+                listViewExWzDetail.Items.Add(new ListViewItem(new string[] { "IMGオフセット", wzImage.Offset + " バイト" }));
                 listViewExWzDetail.Items.Add(new ListViewItem(new string[] { "パス", wzImage.Node.FullPathToFile }));
                 listViewExWzDetail.Items.Add(new ListViewItem(new string[] { "チェックサム", wzImage.Checksum.ToString() }));
                 autoResizeColumns(listViewExWzDetail);
@@ -1247,10 +1247,10 @@ namespace WzComparerR2
                     pictureBoxEx1.ShowImage(png);
                     this.cmbItemAniNames.Items.Clear();
                     advTree3.PathSeparator = ".";
-                    textBoxX1.Text = "dataLength: " + png.DataLength + " bytes\r\n" +
-                        "offset: " + png.Offset + "\r\n" +
-                        "size: " + png.Width + "*" + png.Height + "\r\n" +
-                        "png format: " + png.Form;
+                    textBoxX1.Text = "データ長:  " + png.DataLength + " バイト\r\n" +
+                        "オフセット:  " + png.Offset + "\r\n" +
+                        "サイズ:  " + png.Width + "*" + png.Height + "\r\n" +
+                        "PNG形式:  " + png.Form;
 
                     var sourceNode = selectedNode.GetLinkedSourceNode(PluginManager.FindWz);
                     if (sourceNode != selectedNode)
@@ -1269,10 +1269,10 @@ namespace WzComparerR2
                             pictureBoxEx1.ShowImage(png);
                             this.cmbItemAniNames.Items.Clear();
                             advTree3.PathSeparator = ".";
-                            textBoxX1.AppendText("\r\n\r\ndataLength: " + png.DataLength + " bytes\r\n" +
-                                "offset: " + png.Offset + "\r\n" +
-                                "size: " + png.Width + "*" + png.Height + "\r\n" +
-                                "png format: " + png.Form);
+                            textBoxX1.AppendText("\r\n\r\nデータ長:  " + png.DataLength + " バイト\r\n" +
+                                "オフセット:  " + png.Offset + "\r\n" +
+                                "サイズ:  " + png.Width + "*" + png.Height + "\r\n" +
+                                "PNG形式:  " + png.Form);
                         }
                     }
                     break;
@@ -1298,12 +1298,12 @@ namespace WzComparerR2
 
                 case Wz_Sound sound:
                     preLoadSound(sound, selectedNode.Text);
-                    textBoxX1.Text = "dataLength: " + sound.DataLength + " bytes\r\n" +
-                        "offset: " + sound.Offset + "\r\n" +
-                        "duration: " + sound.Ms + " ms\r\n" +
-                        "channels: " + sound.Channels + "\r\n" +
-                        "freq: " + sound.Frequency + " Hz\r\n" +
-                        "type: " + sound.SoundType.ToString();
+                    textBoxX1.Text = "データ長:  " + sound.DataLength + " バイト\r\n" +
+                        "オフセット:  " + sound.Offset + "\r\n" +
+                        "長さ: " + sound.Ms + " ms\r\n" +
+                        "チャンネル: " + sound.Channels + "\r\n" +
+                        "周波数: " + sound.Frequency + " Hz\r\n" +
+                        "タイプ: " + sound.SoundType.ToString();
                     break;
 
                 case Wz_Image:
@@ -1311,8 +1311,8 @@ namespace WzComparerR2
                     break;
 
                 case Wz_RawData rawData:
-                    textBoxX1.Text = "dataLength: " + rawData.Length + " bytes\r\n" +
-                        "offset: " + rawData.Offset;
+                    textBoxX1.Text = "データ長:  " + rawData.Length + " バイト\r\n" +
+                        "オフセット:  " + rawData.Offset;
                     break;
 
                 default:
@@ -1341,10 +1341,10 @@ namespace WzComparerR2
                                         pictureBoxEx1.ShowImage(png);
                                         this.cmbItemAniNames.Items.Clear();
                                         advTree3.PathSeparator = ".";
-                                        textBoxX1.AppendText("\r\n\r\ndataLength: " + png.DataLength + " bytes\r\n" +
-                                        "offset: " + png.Offset + "\r\n" +
-                                        "size: " + png.Width + "*" + png.Height + "\r\n" +
-                                            "png format: " + png.Form);
+                                        textBoxX1.AppendText("\r\n\r\nデータ長:  " + png.DataLength + " バイト\r\n" +
+                                        "オフセット:  " + png.Offset + "\r\n" +
+                                        "サイズ:  " + png.Width + "*" + png.Height + "\r\n" +
+                                            "PNG形式:  " + png.Form);
                                     }
                                 }
                             }
