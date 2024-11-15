@@ -27,6 +27,8 @@ using WzComparerR2.Rendering;
 using WzComparerR2.Config;
 using WzComparerR2.Animation;
 using static Microsoft.Xna.Framework.MathHelper;
+using Microsoft.Win32;
+using SharpDX;
 
 namespace WzComparerR2
 {
@@ -2313,28 +2315,61 @@ namespace WzComparerR2
 
         private void buttonInstallGame_Click(object sender, EventArgs e)
         {
-            #if NET6_0_OR_GREATER
-            Process.Start(new ProcessStartInfo
+            if (!IsUriSchemeRegistered("ngm"))
             {
-                UseShellExecute = true,
-                FileName = "ngm://launch/ -mode:install -game:'16785939@bb01'",
-            });
-            #else
-            Process.Start("ngm://launch/ -mode:install -game:'16785939@bb01'");
-            #endif
+                ngmInstallPrompt();
+                return;
+            }
+            else
+            {
+                #if NET6_0_OR_GREATER
+                Process.Start(new ProcessStartInfo
+                {
+                    UseShellExecute = true,
+                    FileName = "ngm://launch/ -mode:install -game:'16785939@bb01'",
+                });
+                #else
+                Process.Start("ngm://launch/ -mode:install -game:'16785939@bb01'");
+                #endif
+            }
         }
 
         private void buttonGameStart_Click(object sender, EventArgs e)
         {
-            #if NET6_0_OR_GREATER
-            Process.Start(new ProcessStartInfo
+            if (!IsUriSchemeRegistered("ngm"))
             {
-                UseShellExecute = true,
-                FileName = "ngm://launch/ -mode:launch -game:'16785939@bb01'",
-            });
-            #else
-            Process.Start("ngm://launch/ -mode:launch -game:'16785939@bb01'");
-            #endif
+                ngmInstallPrompt();
+                return;
+            }
+            else
+            {
+                #if NET6_0_OR_GREATER
+                Process.Start(new ProcessStartInfo
+                {
+                    UseShellExecute = true,
+                    FileName = "ngm://launch/ -mode:launch -game:'16785939@bb01'",
+                });
+                #else
+                Process.Start("ngm://launch/ -mode:launch -game:'16785939@bb01'");
+                #endif
+            }
+        }
+
+        private void ngmInstallPrompt()
+        {
+            DialogResult ngmresult = MessageBoxEx.Show("ゲームをダウンロードまたは起動するには Nexon Game Manager が必要ですが、\r\nインストールされていないようです。\r\n\r\nダウンロードしてインストールしますか?", "確認", MessageBoxButtons.YesNo);
+            if (ngmresult == DialogResult.Yes)
+            {
+#if NET6_0_OR_GREATER
+                Process.Start(new ProcessStartInfo
+                {
+                    UseShellExecute = true,
+                    FileName = "https://platform.nexon.com/NGM/Bin/Install_NGM.exe",
+                });
+#else
+                Process.Start("https://platform.nexon.com/NGM/Bin/Install_NGM.exe");
+                #endif
+            }
         }
         #endregion
 
@@ -3514,6 +3549,13 @@ namespace WzComparerR2
         private void buttomItem13_FormClosing(object sender, EventArgs e)
         {
             this.Close();
+        }
+
+        private static bool IsUriSchemeRegistered(string scheme)
+        {
+            string registryKey = $@"HKEY_CLASSES_ROOT\{scheme}";
+            object keyValue = Registry.GetValue(registryKey, "", null);
+            return keyValue != null;
         }
     }
 
