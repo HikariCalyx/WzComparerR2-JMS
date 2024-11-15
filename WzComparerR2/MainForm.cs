@@ -35,6 +35,7 @@ namespace WzComparerR2
         public MainForm()
         {
             InitializeComponent();
+            this.FormClosing += new FormClosingEventHandler(MainForm_FormClosing);
 #if NET6_0_OR_GREATER
             // https://learn.microsoft.com/en-us/dotnet/core/compatibility/fx-core#controldefaultfont-changed-to-segoe-ui-9pt
             this.Font = new Font(new FontFamily("MS Gothic"), 9f);
@@ -3485,6 +3486,23 @@ namespace WzComparerR2
                 UpdateWzLoadingSettings();
                 UpdateTranslateSettings();
             }
+        }
+        private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            DialogResult result = MessageBoxEx.Show("終了しますか?", "確認", MessageBoxButtons.YesNo);
+            if (result == DialogResult.Yes)
+            {
+                e.Cancel = false;  //点击OK
+            }
+            else
+            {
+                e.Cancel = true;
+            }
+        }
+
+        private void buttomItem13_FormClosing(object sender, EventArgs e)
+        {
+            this.Close();
         }
     }
 
