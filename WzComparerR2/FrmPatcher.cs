@@ -672,7 +672,7 @@ namespace WzComparerR2
         {
             if (patchThread != null && patchThread.IsAlive)
             {
-                DialogResult result = MessageBoxEx.Show("ゲームはパッチ適用中なので、終了するとゲームデータが破損する可能性があります。\r\n\r\nそれでも終了しますか?", "確認", MessageBoxButtons.YesNo);
+                DialogResult result = MessageBoxEx.Show("ゲームはパッチ適用中なので、パッチャー終了するとゲームデータが破損する可能性があります。\r\n\r\nそれでも終了しますか?", "確認", MessageBoxButtons.YesNo);
                 if (result == DialogResult.Yes)
                 {
                     patchThread.Interrupt();
