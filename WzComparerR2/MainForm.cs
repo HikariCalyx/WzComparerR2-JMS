@@ -3489,6 +3489,17 @@ namespace WzComparerR2
         }
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
+            foreach (Form form in Application.OpenForms)
+            {
+                if (form is FrmPatcher && !form.IsDisposed)
+                {
+                    form.Show();
+                    form.BringToFront();
+                    MessageBoxEx.Show("終了する前にゲームパッチャーを閉じてください。", "注意", MessageBoxButtons.OK);
+                    e.Cancel = true;
+                    return;
+                }
+            }
             DialogResult result = MessageBoxEx.Show("終了しますか?", "確認", MessageBoxButtons.YesNo);
             if (result == DialogResult.Yes)
             {

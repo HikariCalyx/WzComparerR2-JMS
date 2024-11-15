@@ -24,6 +24,7 @@ namespace WzComparerR2
         public FrmPatcher()
         {
             InitializeComponent();
+            this.FormClosing += new FormClosingEventHandler(FrmPatcher_FormClosing);
 #if NET6_0_OR_GREATER
             // https://learn.microsoft.com/en-us/dotnet/core/compatibility/fx-core#controldefaultfont-changed-to-segoe-ui-9pt
             this.Font = new Font(new FontFamily("MS PGothic"), 9f);
@@ -213,7 +214,7 @@ namespace WzComparerR2
         {
             if (patchThread != null && patchThread.IsAlive)
             {
-                patchThread.Interrupt();
+                patchThread = null;
             }
             ConfigManager.Reload();
             WcR2Config.Default.PatcherSettings.Clear();
@@ -663,6 +664,23 @@ namespace WzComparerR2
                 }
                 catch(Exception ex)
                 {
+                }
+            }
+        }
+
+        private void FrmPatcher_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (patchThread != null && patchThread.IsAlive)
+            {
+                DialogResult result = MessageBoxEx.Show("ゲームはまだパッチ適用中です。\r\n\r\nそれでも終了しますか?", "確認", MessageBoxButtons.YesNo);
+                if (result == DialogResult.Yes)
+                {
+                    patchThread = null;
+                    e.Cancel = false;
+                }
+                else
+                {
+                    e.Cancel = true;
                 }
             }
         }
