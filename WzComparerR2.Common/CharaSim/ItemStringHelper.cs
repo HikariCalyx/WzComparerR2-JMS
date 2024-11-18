@@ -136,7 +136,7 @@ namespace WzComparerR2.CharaSim
                 case GearPropType.plusToSetItem: return value == 0 ? null : "#c装備すると、アイテムセットは2つ装備したものとしてカウントされます。#";
                 case GearPropType.abilityTimeLimited: return value == 0 ? null : "期間限定能力値";
                 case GearPropType.blockGoldHammer: return value == 0 ? null : "ビシアスのハンマー使用不可";
-                case GearPropType.colorvar: return value == 0 ? null : "#cThis item can be dyed using a Dye.#";
+                case GearPropType.colorvar: return value == 0 ? null : "#cこのアイテムは染料使用可能#";
                 case GearPropType.cantRepair: return value == 0 ? null : "修理不可";
                 case GearPropType.noLookChange: return value == 0 ? null : "神秘のカナトコ使用不可";
 

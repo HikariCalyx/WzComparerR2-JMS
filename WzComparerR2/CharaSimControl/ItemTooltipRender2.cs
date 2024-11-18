@@ -647,7 +647,7 @@ namespace WzComparerR2.CharaSimControl
                             }
                             if (wonderGradeString != null)
                             {
-                                desc += $"\nEquipping #c{wonderGradeString}# rank #c{setItemName}# pet gives the #c{setSkillName}# set effect. (Up to 3 levels.)\nSet effects can be enhanced up to 3 times depending on the type of #c{setItemName}# pet you have equipped.";
+                                desc += $"\n#c{wonderGradeString}#ランクの#c{setItemName}#ペットを装備すると、#c{setSkillName}#セット効果が得られます。(最大3レベル)\n装備した#c{setItemName}#ペットの種類に応じて、セット効果は最大3倍まで強化されます。";
                             }
                         }
                     }
@@ -1220,7 +1220,7 @@ namespace WzComparerR2.CharaSimControl
                     g = Graphics.FromImage(level);
                 }
                 picHeight += 13;
-                TextRenderer.DrawText(g, "Growth Stats", GearGraphics.ItemDetailFont, new Point(261, picHeight), ((SolidBrush)GearGraphics.GreenBrush2).Color, TextFormatFlags.HorizontalCenter);
+                TextRenderer.DrawText(g, "成長の属性", GearGraphics.ItemDetailFont, new Point(261, picHeight), ((SolidBrush)GearGraphics.GreenBrush2).Color, TextFormatFlags.HorizontalCenter);
                 picHeight += 15;
 
                 for (int i = 0; i < Item.Levels.Count; i++)

@@ -882,8 +882,8 @@ namespace WzComparerR2.CharaSimControl
                     if (Gear.Star > 0) //星星
                     {
                         //TextRenderer.DrawText(g, "APPLIED " + Gear.Star + " STAR ENHANCEMENT (UP TO " + maxStar + ")", GearGraphics.EquipDetailFont, new Point(11, picH), Color.White, TextFormatFlags.NoPadding | TextFormatFlags.NoPrefix);
-                        TextRenderer.DrawText(g, "Star Force:" + Gear.Star + "/" + maxStar + "Stars Infused", GearGraphics.EquipDetailFont, new Point(12, picH), Color.White, TextFormatFlags.NoPadding | TextFormatFlags.NoPrefix);
-                        picH += 15;
+                        //TextRenderer.DrawText(g, "Star Force:" + Gear.Star + "/" + maxStar + "Stars Infused", GearGraphics.EquipDetailFont, new Point(12, picH), Color.White, TextFormatFlags.NoPadding | TextFormatFlags.NoPrefix);
+                        //picH += 15;
                     }
                     else
                     {
