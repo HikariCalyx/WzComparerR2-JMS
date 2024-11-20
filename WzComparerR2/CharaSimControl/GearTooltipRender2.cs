@@ -175,7 +175,10 @@ namespace WzComparerR2.CharaSimControl
             int value, value2;
 
             picH = 13;
-            DrawStar2(g, ref picH); //绘制星星
+            if (!Gear.GetBooleanValue(GearPropType.blockUpgradeStarforce))
+            {
+                DrawStar2(g, ref picH); //绘制星星
+            }
 
             //绘制装备名称
             StringResult sr;
@@ -825,6 +828,11 @@ namespace WzComparerR2.CharaSimControl
                 TextRenderer.DrawText(g, "強化不可", GearGraphics.EquipDetailFont, new Point(12, picH), Color.White, TextFormatFlags.NoPadding | TextFormatFlags.NoPrefix);
                 picH += 15;
             }
+            else if (Gear.GetBooleanValue(GearPropType.blockUpgradeStarforce))
+            {
+                TextRenderer.DrawText(g, "スターフォース強化不可", GearGraphics.EquipDetailFont, new Point(12, picH), Color.FromArgb(255, 0, 102), TextFormatFlags.NoPadding | TextFormatFlags.NoPrefix);
+                picH += 15;
+            }
             else if (hasTuc)
             {
                 GearGraphics.DrawString(g, "アップグレード可能回数: " + value + (Gear.Cash ? "" : " #c(復旧可能: 0)#"), GearGraphics.EquipDetailFont, orange3FontColorTable, 13, 248, ref picH, 15);
@@ -892,7 +900,7 @@ namespace WzComparerR2.CharaSimControl
                     }
                 }
                 picH += 0;
-                if (!Gear.GetBooleanValue(GearPropType.exceptUpgrade) && !Gear.GetBooleanValue(GearPropType.blockGoldHammer) && !(Gear.type == GearType.petEquip))
+                if (!Gear.GetBooleanValue(GearPropType.exceptUpgrade) && !(Gear.GetBooleanValue(GearPropType.blockUpgradeStarforce)) && !Gear.GetBooleanValue(GearPropType.blockGoldHammer) && !(Gear.type == GearType.petEquip))
                 {
                     if (Gear.Hammer < 2)
                     {
@@ -906,6 +914,11 @@ namespace WzComparerR2.CharaSimControl
                     //g.DrawString(": " + Gear.Hammer.ToString() + (Gear.Hammer == 2 ? "(MAX)" : null) + "/2", GearGraphics.EquipDetailFont, Brushes.White, 168, picH);
                     picH += 15;
                     hasPart2 = true;
+                }
+                else if (Gear.GetBooleanValue(GearPropType.blockUpgradeExtraOption))
+                {
+                    TextRenderer.DrawText(g, "追加オプション設定/再設定不可", GearGraphics.EquipDetailFont, new Point(12, picH), Color.FromArgb(255, 0, 102), TextFormatFlags.NoPadding | TextFormatFlags.NoPrefix);
+                    picH += 15;
                 }
 
                 if (Gear.type == GearType.petEquip)
@@ -1612,6 +1625,10 @@ namespace WzComparerR2.CharaSimControl
             if (Gear.Props.TryGetValue(GearPropType.tradeBlock, out value) && value != 0)
             {
                 tags.Add(ItemStringHelper.GetGearPropString(GearPropType.tradeBlock, value));
+            }
+            if (Gear.Props.TryGetValue(GearPropType.mintable, out value) && value != 0)
+            {
+                tags.Add(ItemStringHelper.GetGearPropString(GearPropType.mintable, value));
             }
             if (Gear.Props.TryGetValue(GearPropType.abilityTimeLimited, out value) && value != 0)
             {

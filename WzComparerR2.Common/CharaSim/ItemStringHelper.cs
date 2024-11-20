@@ -115,6 +115,7 @@ namespace WzComparerR2.CharaSim
                 case GearPropType.onlyEquip: return value == 0 ? null : "固有装備アイテム";
                 case GearPropType.notExtend: return value == 0 ? null : "有効期間延長不可";
                 case GearPropType.accountSharableAfterExchange: return value == 0 ? null : "1回交換可能\n(取引後、ワールド内のキャラクター間移動のみ可能)";
+                case GearPropType.mintable: return value == 0 ? null : "ミンティング可能";
                 case GearPropType.tradeAvailable:
                     switch (value)
                     {
@@ -661,6 +662,8 @@ namespace WzComparerR2.CharaSim
                 case ItemPropType.multiPet:
                     // return value == 0 ? null : "マルチペット(他のペットと最大3個重複使用可能)";
                     return value == 0 ? "" : "";
+                case ItemPropType.mintable:
+                    return GetGearPropString(GearPropType.mintable, value);
                 default:
                     return null;
             }
