@@ -830,7 +830,7 @@ namespace WzComparerR2.CharaSimControl
             }
             else if (Gear.GetBooleanValue(GearPropType.blockUpgradeStarforce))
             {
-                TextRenderer.DrawText(g, "スターフォース強化不可", GearGraphics.EquipDetailFont, new Point(12, picH), Color.FromArgb(255, 0, 102), TextFormatFlags.NoPadding | TextFormatFlags.NoPrefix);
+                TextRenderer.DrawText(g, "スターフォース強化不可", GearGraphics.EquipDetailFont, new Point(12, picH), ((SolidBrush)GearGraphics.BlockRedBrush).Color, TextFormatFlags.NoPadding | TextFormatFlags.NoPrefix);
                 picH += 15;
             }
             else if (hasTuc)
@@ -917,7 +917,7 @@ namespace WzComparerR2.CharaSimControl
                 }
                 else if (Gear.GetBooleanValue(GearPropType.blockUpgradeExtraOption))
                 {
-                    TextRenderer.DrawText(g, "追加オプション設定/再設定不可", GearGraphics.EquipDetailFont, new Point(12, picH), Color.FromArgb(255, 0, 102), TextFormatFlags.NoPadding | TextFormatFlags.NoPrefix);
+                    TextRenderer.DrawText(g, "追加オプション設定/再設定不可", GearGraphics.EquipDetailFont, new Point(12, picH), ((SolidBrush)GearGraphics.BlockRedBrush).Color, TextFormatFlags.NoPadding | TextFormatFlags.NoPrefix);
                     picH += 15;
                 }
 
