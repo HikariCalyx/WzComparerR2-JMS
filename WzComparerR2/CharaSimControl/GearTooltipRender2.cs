@@ -817,7 +817,7 @@ namespace WzComparerR2.CharaSimControl
             bool hasReduce = Gear.Props.TryGetValue(GearPropType.reduceReq, out value);
             if (hasReduce && value > 0)
             {
-                TextRenderer.DrawText(g, ItemStringHelper.GetGearPropString(GearPropType.reduceReq, value), GearGraphics.EquipDetailFont, new Point(12, picH), Color.White, TextFormatFlags.NoPadding | TextFormatFlags.NoPrefix);
+                TextRenderer.DrawText(g, ItemStringHelper.GetGearPropString(GearPropType.reduceReq, value), GearGraphics.EquipDetailFont, new Point(12, picH), ((SolidBrush)GearGraphics.GreenBrush2).Color, TextFormatFlags.NoPadding | TextFormatFlags.NoPrefix);
                 picH += 15;
                 hasPart2 = true;
             }
