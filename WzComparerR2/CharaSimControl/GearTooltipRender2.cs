@@ -1258,7 +1258,7 @@ namespace WzComparerR2.CharaSimControl
                     picH += Gear.Sample.Bitmap.Height;
                     picH += 4;
                 }
-                if (medalResNode != null)
+                else if (medalResNode != null)
                 {
                     //GearGraphics.DrawNameTag(g, medalResNode, sr.Name, bitmap.Width, ref picH);2 juni
                     GearGraphics.DrawNameTag(g, medalResNode, sr.Name.Replace("의 훈장", "").Replace("の勲章", ""), bitmap.Width, ref picH);
