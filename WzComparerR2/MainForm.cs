@@ -300,6 +300,10 @@ namespace WzComparerR2
                     {
                         if (wz_f.Type == e.WzType)
                         {
+                            if (e.HasChildNodes && wz_f.Node.Nodes.Count <= 0)
+                            {
+                                continue;
+                            }
                             preSearch.Add(wz_f.Node);
                             find = true;
                             //e.WzFile = wz_f;
