@@ -45,7 +45,11 @@ namespace WzComparerR2.CharaSim
             { "twd", "Ì¨Íå¥É¥ë" },
             { "hkd", "Ïã¸Û¥É¥ë" },
             { "mop", "¥Þ¥«¥ª¥Ñ¥¿¥«" },
-            { "sgd", "¥·¥ó¥¬¥Ý©`¥ë¥É¥ë" }
+            { "sgd", "¥·¥ó¥¬¥Ý©`¥ë¥É¥ë" },
+            { "eur", "¥æ©`¥í" },
+            { "cad", "¥«¥Ê¥À¥É¥ë" },
+            { "aud", "¥ª©`¥¹¥È¥é¥ê¥¢¥É¥ë" },
+            { "myr", "¥Þ¥ì©`¥·¥¢¥ê¥ó¥®¥Ã¥È" },
         };
 
         private static string GTranslateBaseURL = "https://translate.googleapis.com/translate_a/t";

@@ -106,6 +106,8 @@ namespace WzComparerR2
             cmbDesiredCurrency.Items.AddRange(new[]
             {
                 new ComboItem("変換しない"){ Value = "none" },
+                new ComboItem("カナダドル (CAD)"){ Value = "cad" },
+                new ComboItem("オーストラリアドル (AUD)"){ Value = "aud" },
                 new ComboItem("韓国ウォン (KRW)"){ Value = "krw" },
                 new ComboItem("シンガポールドル (SGD)"){ Value = "sgd" },
                 new ComboItem("台湾ドル (NTD)"){ Value = "twd" },
@@ -114,6 +116,8 @@ namespace WzComparerR2
                 new ComboItem("米ドル (USD)"){ Value = "usd" },
                 new ComboItem("香港ドル (HKD)"){ Value = "hkd" },
                 new ComboItem("マカオパタカ (MOP)"){ Value = "mop" },
+                new ComboItem("ﾏﾚｰｼｱﾘﾝｷﾞｯﾄ (MYR)"){ Value = "myr" },
+                new ComboItem("ユーロ (EUR)"){ Value = "eur" },
             });
         }
 
