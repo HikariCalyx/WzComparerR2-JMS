@@ -95,23 +95,25 @@ namespace WzComparerR2
             cmbDetectCurrency.Items.AddRange(new[]
             {
                 new ComboItem("自動検出"){ Value = "auto" },
-                new ComboItem("日本円 (JPY)"){ Value = "jpy" },
                 new ComboItem("韓国ウォン (KRW)"){ Value = "krw" },
-                new ComboItem("中国元 (CNY)"){ Value = "cny" },
-                new ComboItem("米ドル (USD)"){ Value = "usd" },
-                new ComboItem("新台湾ドル (NTD)"){ Value = "twd" },
                 new ComboItem("シンガポールドル (SGD)"){ Value = "sgd" },
+                new ComboItem("台湾ドル (NTD)"){ Value = "twd" },
+                new ComboItem("中国元 (CNY)"){ Value = "cny" },
+                new ComboItem("日本円 (JPY)"){ Value = "jpy" },
+                new ComboItem("米ドル (USD)"){ Value = "usd" },
             });
 
             cmbDesiredCurrency.Items.AddRange(new[]
             {
                 new ComboItem("変換しない"){ Value = "none" },
-                new ComboItem("日本円 (JPY)"){ Value = "jpy" },
                 new ComboItem("韓国ウォン (KRW)"){ Value = "krw" },
-                new ComboItem("中国元 (CNY)"){ Value = "cny" },
-                new ComboItem("米ドル (USD)"){ Value = "usd" },
-                new ComboItem("新台湾ドル (NTD)"){ Value = "twd" },
                 new ComboItem("シンガポールドル (SGD)"){ Value = "sgd" },
+                new ComboItem("台湾ドル (NTD)"){ Value = "twd" },
+                new ComboItem("中国元 (CNY)"){ Value = "cny" },
+                new ComboItem("日本円 (JPY)"){ Value = "jpy" },
+                new ComboItem("米ドル (USD)"){ Value = "usd" },
+                new ComboItem("香港ドル (HKD)"){ Value = "hkd" },
+                new ComboItem("マカオパタカ (MOP)"){ Value = "mop" },
             });
         }
 
