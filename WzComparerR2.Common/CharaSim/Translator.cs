@@ -26,6 +26,16 @@ namespace WzComparerR2.CharaSim
             { "zh-TW", "twd" }            
         };
 
+        private static Dictionary<string, string> dictC2L = new Dictionary<string, string>()
+        {
+            { "jpy", "ja" },
+            { "krw", "ko" },
+            { "cny", "zh-CN" },
+            { "usd", "en" },
+            { "twd", "zh-TW" },
+            { "sgd", "en" }
+        };
+
         private static Dictionary<string, string> dictCurrencyName = new Dictionary<string, string>()
         {
             { "jpy", "ƒÒ" },
@@ -327,9 +337,9 @@ namespace WzComparerR2.CharaSim
             switch (sourceLanguage)
             {
                 case "zh-CN":
-                    irlPrice = pointValue / 100 * 0.98; break; // CMS¤Ç¤Ï100¥Ý¥¤¥ó¥È¤¢¤¿¤ê0.98Ôª
+                    irlPrice = pointValue / 100.00 * 0.98; break; // CMS¤Ç¤Ï100¥Ý¥¤¥ó¥È¤¢¤¿¤ê0.98Ôª
                 case "en":
-                    irlPrice = pointValue / 1000; break; // GMS¤Ç¤Ï1000¥Ý¥¤¥ó¥È¤¢¤¿¤ê1¥É¥ë
+                    irlPrice = pointValue / 1000.00; break; // GMS¤Ç¤Ï1000¥Ý¥¤¥ó¥È¤¢¤¿¤ê1¥É¥ë
                 default:
                     irlPrice = pointValue; break;
             }
@@ -346,6 +356,18 @@ namespace WzComparerR2.CharaSim
             double.TryParse(exTable.SelectToken(DefaultDesiredCurrency + "." + sourceCurrency).ToString(), out exchangeMultipler);
             double convertedPrice = irlPrice / exchangeMultipler;
             return "¼s" + convertedPrice.ToString("0.##") + dictCurrencyName[DefaultDesiredCurrency];
+        }
+
+        public static string ConvertCurrencyToLang(string currency)
+        {
+            try
+            {
+                return dictC2L[currency];
+            }
+            catch
+            {
+                return null;
+            }
         }
 
         public static bool IsDesiredLanguage(string orgText)

@@ -169,7 +169,7 @@ namespace WzComparerR2.CharaSimControl
                 }
                 else
                 {
-                    titleLanguage = Translator.DefaultDetectCurrency;
+                    titleLanguage = Translator.ConvertCurrencyToLang(Translator.DefaultDetectCurrency);
                 }
                 
             }
