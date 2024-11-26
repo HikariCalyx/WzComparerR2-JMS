@@ -275,6 +275,9 @@ namespace WzComparerR2
             Translator.DefaultTranslateAPIKey = config.NxSecretKey;
             Translator.DefaultPreferredLayout = config.PreferredLayout;
             Translator.IsTranslateEnabled = (config.PreferredLayout > 0);
+            Translator.DefaultDetectCurrency = config.DetectCurrency;
+            Translator.DefaultDesiredCurrency = config.DesiredCurrency;
+            Translator.ExchangeTable = null;
         }
 
         void CharaSimLoader_WzFileFinding(object sender, FindWzEventArgs e)

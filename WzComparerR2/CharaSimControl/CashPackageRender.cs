@@ -17,6 +17,8 @@ namespace WzComparerR2.CharaSimControl
     public class CashPackageTooltipRender : TooltipRender
     {
         bool isTranslateRequired = Translator.IsTranslateEnabled;
+        bool isCurrencyConversionEnabled = (Translator.DefaultDesiredCurrency != "none");
+        string titleLanguage = "";
         public CashPackageTooltipRender()
         {
         }
@@ -159,6 +161,18 @@ namespace WzComparerR2.CharaSimControl
 
             picH = 10;
             string translatedCashPackageName = "";
+            if (isCurrencyConversionEnabled)
+            {
+                if (Translator.DefaultDetectCurrency == "auto")
+                {
+                    titleLanguage = Translator.GetLanguage(CashPackage.name);
+                }
+                else
+                {
+                    titleLanguage = Translator.DefaultDetectCurrency;
+                }
+                
+            }
             if (isTranslateRequired)
             {
                 translatedCashPackageName = Translator.TranslateString(CashPackage.name, true);
@@ -651,6 +665,15 @@ namespace WzComparerR2.CharaSimControl
             if (totalOriginalPrice == totalPrice)
             {
                 TextRenderer.DrawText(g, totalPrice + "ポイント", GearGraphics.ItemDetailFont, new Point(64, picH), Color.White, TextFormatFlags.NoPadding | TextFormatFlags.NoPrefix);
+                if (isCurrencyConversionEnabled)
+                {
+                    string exchangedPrice = Translator.GetConvertedCurrency(totalPrice, titleLanguage);
+                    if (!String.IsNullOrEmpty(exchangedPrice))
+                    {
+                        picH += 17;
+                        TextRenderer.DrawText(g, exchangedPrice, GearGraphics.ItemDetailFont, new Point(95, picH), Color.White, TextFormatFlags.NoPadding | TextFormatFlags.NoPrefix);
+                    }                    
+                }
             }
             else
             {
@@ -660,6 +683,15 @@ namespace WzComparerR2.CharaSimControl
                 if ((int)((100 - 100.0 * totalPrice / totalOriginalPrice)) > 0) 
                 {
                     DrawDiscountNum(g, "-" + (int)((100 - 100.0 * totalPrice / totalOriginalPrice)) + "%", cashBitmap.Width - 40, picH - 1, StringAlignment.Near);
+                }
+                if (isCurrencyConversionEnabled)
+                {
+                    string exchangedPrice = Translator.GetConvertedCurrency(totalPrice, titleLanguage);
+                    if (!String.IsNullOrEmpty(exchangedPrice))
+                    {
+                        picH += 17;
+                        TextRenderer.DrawText(g, exchangedPrice, GearGraphics.ItemDetailFont, new Point(128, picH), Color.White, TextFormatFlags.NoPadding | TextFormatFlags.NoPrefix);
+                    }
                 }
             }
             picH += 11;

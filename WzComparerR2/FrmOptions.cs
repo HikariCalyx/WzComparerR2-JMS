@@ -91,6 +91,28 @@ namespace WzComparerR2
                 new ComboItem("最初に原文、次に訳文"){ Value = 2 },
                 new ComboItem("翻訳のみ"){ Value = 3 },
             });
+
+            cmbDetectCurrency.Items.AddRange(new[]
+            {
+                new ComboItem("自動検出"){ Value = "auto" },
+                new ComboItem("日本円 (JPY)"){ Value = "jpy" },
+                new ComboItem("韓国ウォン (KRW)"){ Value = "krw" },
+                new ComboItem("中国元 (CNY)"){ Value = "cny" },
+                new ComboItem("米ドル (USD)"){ Value = "usd" },
+                new ComboItem("新台湾ドル (NTD)"){ Value = "twd" },
+                new ComboItem("シンガポールドル (SGD)"){ Value = "sgd" },
+            });
+
+            cmbDesiredCurrency.Items.AddRange(new[]
+            {
+                new ComboItem("変換しない"){ Value = "none" },
+                new ComboItem("日本円 (JPY)"){ Value = "jpy" },
+                new ComboItem("韓国ウォン (KRW)"){ Value = "krw" },
+                new ComboItem("中国元 (CNY)"){ Value = "cny" },
+                new ComboItem("米ドル (USD)"){ Value = "usd" },
+                new ComboItem("新台湾ドル (NTD)"){ Value = "twd" },
+                new ComboItem("シンガポールドル (SGD)"){ Value = "sgd" },
+            });
         }
 
         public bool SortWzOnOpened
@@ -180,6 +202,38 @@ namespace WzComparerR2
                     ?? items.Last();
                 item.Value = value;
                 cmbMozhiBackend.SelectedItem = item;
+            }
+        }
+
+        public string DetectCurrency
+        {
+            get
+            {
+                return ((cmbDetectCurrency.SelectedItem as ComboItem)?.Value as string) ?? "auto";
+            }
+            set
+            {
+                var items = cmbDetectCurrency.Items.Cast<ComboItem>();
+                var item = items.FirstOrDefault(_item => _item.Value as string == value)
+                    ?? items.Last();
+                item.Value = value;
+                cmbDetectCurrency.SelectedItem = item;
+            }
+        }
+
+        public string DesiredCurrency
+        {
+            get
+            {
+                return ((cmbDesiredCurrency.SelectedItem as ComboItem)?.Value as string) ?? "jpy";
+            }
+            set
+            {
+                var items = cmbDesiredCurrency.Items.Cast<ComboItem>();
+                var item = items.FirstOrDefault(_item => _item.Value as string == value)
+                    ?? items.Last();
+                item.Value = value;
+                cmbDesiredCurrency.SelectedItem = item;
             }
         }
 
@@ -310,6 +364,8 @@ namespace WzComparerR2
             this.PreferredTranslateEngine = config.PreferredTranslateEngine;
             this.DesiredLanguage = config.DesiredLanguage;
             this.PreferredLayout = config.PreferredLayout;
+            this.DetectCurrency = config.DetectCurrency;
+            this.DesiredCurrency = config.DesiredCurrency;
         }
 
         public void Save(WcR2Config config)
@@ -326,6 +382,8 @@ namespace WzComparerR2
             config.PreferredTranslateEngine = this.PreferredTranslateEngine;
             config.DesiredLanguage = this.DesiredLanguage;
             config.PreferredLayout = this.PreferredLayout;
+            config.DetectCurrency = this.DetectCurrency;
+            config.DesiredCurrency = this.DesiredCurrency;
         }
     }
 }

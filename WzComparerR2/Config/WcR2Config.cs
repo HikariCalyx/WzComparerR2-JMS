@@ -22,6 +22,8 @@ namespace WzComparerR2.Config
             this.PreferredLayout = 0;
             this.DesiredLanguage = "ja";
             this.MozhiBackend = "https://mozhi.aryak.me";
+            this.DetectCurrency = "auto";
+            this.DesiredCurrency = "none";
         }
 
         /// <summary>
@@ -105,6 +107,28 @@ namespace WzComparerR2.Config
         {
             get { return (ConfigItem<int>)this["PreferredLayout"]; }
             set { this["PreferredLayout"] = value; }
+        }
+
+        /// <summary>
+        /// Detect Currency Configuration
+        /// </summary>
+        [ConfigurationProperty("DetectCurrency")]
+        [ConfigurationCollection(typeof(ConfigArrayList<string>.ItemElement))]
+        public ConfigItem<string> DetectCurrency
+        {
+            get { return (ConfigItem<string>)this["DetectCurrency"]; }
+            set { this["DetectCurrency"] = value; }
+        }
+
+        /// <summary>
+        /// Desired Currency Configuration
+        /// </summary>
+        [ConfigurationProperty("DesiredCurrency")]
+        [ConfigurationCollection(typeof(ConfigArrayList<string>.ItemElement))]
+        public ConfigItem<string> DesiredCurrency
+        {
+            get { return (ConfigItem<string>)this["DesiredCurrency"]; }
+            set { this["DesiredCurrency"] = value; }
         }
 
         /// <summary>

@@ -11,12 +11,40 @@ using System.IO;
 using DevComponents.DotNetBar;
 using System.Globalization;
 using System.Threading;
+using static System.Net.Mime.MediaTypeNames;
 namespace WzComparerR2.CharaSim
 {
     public class Translator
     {
+        // L2C stands for Language to Currency
+        private static Dictionary<string, string> dictL2C = new Dictionary<string, string>()
+        {
+            { "ja", "jpy" },
+            { "ko", "krw" },
+            { "zh-CN", "cny" },
+            { "en", "usd" },
+            { "zh-TW", "twd" }            
+        };
+
+        private static Dictionary<string, string> dictCurrencyName = new Dictionary<string, string>()
+        {
+            { "jpy", "ƒÒ" },
+            { "krw", "¥¦¥©¥ó" },
+            { "cny", "Ôª" },
+            { "usd", "¥É¥ë" },
+            { "twd", "Ì¨Íå¥É¥ë" },
+            { "sgd", "¥·¥ó¥¬¥Ý©`¥ë¥É¥ë" }
+        };
+
         private static string GTranslateBaseURL = "https://translate.googleapis.com/translate_a/t";
         private static string NTranslateBaseURL = "https://naveropenapi.apigw.ntruss.com";
+
+        private static List<string> CurrencyBaseURL = new List<string>()
+        {
+            "https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/",
+            "https://latest.currency-api.pages.dev/v1/currencies/",
+            "https://registry.npmmirror.com/@fawazahmed0/currency-api/latest/files/v1/currencies/"
+        };
 
         private static JArray GTranslate(string text, string desiredLanguage)
         {
@@ -221,6 +249,105 @@ namespace WzComparerR2.CharaSim
             return translatedText;
         }
 
+        public static string GetLanguage(string orgText)
+        {
+            if (string.IsNullOrEmpty(orgText) || orgText == "(null)") return "ja";
+            bool isMozhiUsed = false;
+            string mozhiEngine = "";
+            string orgLanguage = "";
+            string sourceLanguage = "auto";
+            string targetLanguage = DefaultDesiredLanguage;
+            switch (DefaultPreferredTranslateEngine)
+            {
+                //0: Google (Non-Mozhi)
+                default:
+                case 0:
+                    JArray responseArr = GTranslate(orgText.Replace("\\n", "\r\n"), Translator.DefaultDesiredLanguage);
+                    orgLanguage = responseArr[0][1].ToString();
+                    break;
+                //1: Google (Mozhi)
+                case 1:
+                    isMozhiUsed = true;
+                    mozhiEngine = "google";
+                    break;
+                //2: DeepL (Mozhi)
+                case 2:
+                    isMozhiUsed = true;
+                    sourceLanguage = "en";
+                    if (targetLanguage.Contains("zh") || targetLanguage == "yue") targetLanguage = "zh";
+                    mozhiEngine = "deepl";
+                    break;
+                //3: DuckDuckGo / Bing (Mozhi)
+                case 3:
+                    isMozhiUsed = true;
+                    if (targetLanguage == "zh-CN") targetLanguage = "zh";
+                    mozhiEngine = "duckduckgo";
+                    break;
+                //4: MyMemory (Mozhi)
+                case 4:
+                    isMozhiUsed = true;
+                    sourceLanguage = "Autodetect";
+                    if (targetLanguage.Contains("zh") || targetLanguage == "yue") targetLanguage = "zh";
+                    mozhiEngine = "mymemory";
+                    break;
+                //5: Yandex (Mozhi)
+                case 5:
+                    isMozhiUsed = true;
+                    if (targetLanguage.Contains("zh") || targetLanguage == "yue") targetLanguage = "zh";
+                    mozhiEngine = "yandex";
+                    break;
+                //6: Naver Papago (Non-Mozhi)
+                case 6:
+                    if (targetLanguage == "yue") targetLanguage = "zh-TW";
+                    JObject responseObj = NTranslate(orgText.Replace("\\n", "\r\n"), Translator.DefaultDesiredLanguage);
+                    orgLanguage = responseObj.SelectToken("message.result.srcLangType").ToString();
+                    break;
+                    //7: iFlyTek (Non-Mozhi)
+            }
+            if (isMozhiUsed)
+            {
+                orgLanguage = MTranslate(orgText.Replace("\\n", "\r\n"), mozhiEngine, sourceLanguage, targetLanguage).SelectToken("detected").ToString();
+            }
+            return orgLanguage;
+        }
+
+        public static string GetConvertedCurrency(int pointValue, string sourceLanguage)
+        {
+            if (DefaultDesiredCurrency == "none")
+            {
+                return null;
+            }
+            UpdateExchangeTable();
+            if (String.IsNullOrEmpty(ExchangeTable))
+            {
+                return null;
+            }
+            double irlPrice;
+            string sourceCurrency;
+            switch (sourceLanguage)
+            {
+                case "zh-CN":
+                    irlPrice = pointValue / 100 * 0.98; break; // CMS¤Ç¤Ï100¥Ý¥¤¥ó¥È¤¢¤¿¤ê0.98Ôª
+                case "en":
+                    irlPrice = pointValue / 1000; break; // GMS¤Ç¤Ï1000¥Ý¥¤¥ó¥È¤¢¤¿¤ê1¥É¥ë
+                default:
+                    irlPrice = pointValue; break;
+            }
+            JObject exTable = JObject.Parse(ExchangeTable);
+            if (DefaultDetectCurrency == "auto")
+            {
+                sourceCurrency = dictL2C[sourceLanguage];
+            }
+            else
+            {
+                sourceCurrency = DefaultDetectCurrency;
+            }
+            double exchangeMultipler = 1;
+            double.TryParse(exTable.SelectToken(DefaultDesiredCurrency + "." + sourceCurrency).ToString(), out exchangeMultipler);
+            double convertedPrice = irlPrice / exchangeMultipler;
+            return "¼s" + convertedPrice.ToString("0.##") + dictCurrencyName[DefaultDesiredCurrency];
+        }
+
         public static bool IsDesiredLanguage(string orgText)
         {
             if (string.IsNullOrEmpty(orgText)) return true;
@@ -228,13 +355,40 @@ namespace WzComparerR2.CharaSim
             return (response[0][1].ToString() == DefaultDesiredLanguage);
         }
 
+        public static void UpdateExchangeTable()
+        {
+            if (String.IsNullOrEmpty(ExchangeTable))
+            {
+                foreach (string bURL in CurrencyBaseURL)
+                {
+                    string fetchURL = bURL + DefaultDesiredCurrency + ".min.json";
+                    var request = (HttpWebRequest)WebRequest.Create(fetchURL);
+                    request.Accept = "application/json";
+                    try
+                    {
+                        var response = (HttpWebResponse)request.GetResponse();
+                        var responseString = new StreamReader(response.GetResponseStream()).ReadToEnd();
+                        ExchangeTable = responseString;
+                        break;
+                    }
+                    catch
+                    {
+                        continue;
+                    }
+                }
+            }
+        }
+
         #region Global Settings
+        public static string ExchangeTable { get; set; }
         public static string DefaultDesiredLanguage { get; set; }
         public static string DefaultMozhiBackend { get; set; }
         public static string DefaultTranslateAPIKey { get; set; }
         public static int DefaultPreferredLayout { get; set; }
         public static int DefaultPreferredTranslateEngine { get; set; }
         public static bool IsTranslateEnabled { get; set; }
+        public static string DefaultDetectCurrency { get; set; }
+        public static string DefaultDesiredCurrency { get; set; }
         #endregion
     }
 
