@@ -397,11 +397,11 @@ namespace WzComparerR2
             }
             catch (ThreadAbortException)
             {
-                MessageBoxEx.Show("パッチは中止されました。", "Patcher");
+                // MessageBoxEx.Show("パッチは中止されました。", "Patcher");
             }
             catch (ThreadInterruptedException)
             {
-                MessageBoxEx.Show("パッチは中止されました。", "Patcher");
+                // MessageBoxEx.Show("パッチは中止されました。", "Patcher");
             }
             catch (UnauthorizedAccessException ex)
             {
