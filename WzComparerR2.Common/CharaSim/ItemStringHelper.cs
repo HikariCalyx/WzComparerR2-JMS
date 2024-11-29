@@ -192,7 +192,7 @@ namespace WzComparerR2.CharaSim
                     case GearPropType.damR:
                     case GearPropType.incDAMr:
                     case GearPropType.statR:
-                        subfix = $"({standardValue}% #e+{value - standardValue}%#)"; break;
+                        subfix = $"({standardValue}% #$+{value - standardValue}%#)"; break;
 
                     case GearPropType.addSTR:
                     case GearPropType.addDEX:
