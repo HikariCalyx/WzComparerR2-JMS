@@ -18,6 +18,12 @@ namespace WzComparerR2.Avatar
             this.Actions = new List<Action>();
             this.Emotions = new List<string>();
             this.TamingActions = new List<string>();
+            this.EffectActions = new List<string>[18];
+            for (int i = 0; i < this.EffectActions.Length; i++)
+            {
+                this.EffectActions[i] = new List<string>();
+            }
+            this.EffectActionName = new string[18];
             this.Parts = new AvatarPart[18];
             this.EarType = 0;
             this.WeaponIndex = 0;
@@ -27,6 +33,8 @@ namespace WzComparerR2.Avatar
         public List<Action> Actions { get; private set; }
         public List<string> Emotions { get; private set; }
         public List<string> TamingActions { get; private set; }
+        public List<string>[] EffectActions { get; private set; }
+        public string[] EffectActionName { get; set; }
 
         public AvatarPart[] Parts { get; private set; }
         public string ActionName { get; set; }
@@ -35,6 +43,7 @@ namespace WzComparerR2.Avatar
 
         public bool HairCover { get; set; }
         public bool ShowHairShade { get; set; }
+
         public bool ApplyBRM { get; set; }
         public int WeaponIndex { get; set; }
         public int WeaponType { get; set; }
@@ -173,14 +182,45 @@ namespace WzComparerR2.Avatar
         public bool LoadChairActions() // 의자 아이템의 행동 이름
         {
             this.TamingActions.Clear();
+
             Wz_Node tamingNode = this.Taming == null ? null : this.Taming.Node;
+
             if (tamingNode == null)
             {
                 return false;
             }
+
             this.TamingActions.Add("effect");
+
             return true;
         }
+
+        public bool LoadEffects()
+        {
+            bool suc = false;
+            for (int i = 0; i < this.EffectActions.Length; i++)
+            {
+                this.EffectActions[i].Clear();
+
+                var effNode = this.Parts[i]?.effectNode;
+                if (effNode == null)
+                {
+                    continue;
+                }
+
+                foreach (var childnode in effNode.Nodes)
+                {
+                    if (childnode.Nodes.Count > 0 || childnode.Value is Wz_Uol)
+                    {
+                        this.EffectActions[i].Add(childnode.Text);
+                    }
+                }
+                suc = true;
+                continue;
+            }
+            return suc;
+        }
+
         public List<int> GetCashWeaponTypes()
         {
             List<int> types = new List<int>();
@@ -336,8 +376,10 @@ namespace WzComparerR2.Avatar
             AvatarPart part = new AvatarPart(imgNode, forceIcon, forceID, brm, forceAct);
 
             this.Taming = part;
+
             return part;
         }
+
         /// <summary>
         /// 获取角色动作的动画帧。
         /// </summary>
@@ -485,6 +527,7 @@ namespace WzComparerR2.Avatar
                         action = "effect2";
                     }
                 }
+
                 var actionNode = this.Taming.Node.FindNodeByPath(action);
                 frames.AddRange(LoadStandardFrames(actionNode, action));
             }
@@ -500,6 +543,7 @@ namespace WzComparerR2.Avatar
                 {
                     actionNode = this.Taming?.Node.Nodes["effect2"]?.ResolveUol();
                 }
+
                 if (actionNode == null)
                 {
                     return null;
@@ -507,6 +551,38 @@ namespace WzComparerR2.Avatar
             }
 
             var frameNode = actionNode.Nodes[frameIndex.ToString()];
+            if (frameNode != null)
+            {
+                var frame = LoadStandardFrame(frameNode);
+                frame.Action = action;
+                frame.Frame = frameIndex;
+                return frame;
+            }
+
+            return null;
+        }
+
+        public ActionFrame[] GetEffectFrames(string action, int index)
+        {
+            List<ActionFrame> frames = new List<ActionFrame>();
+            if (this.Parts[index] != null)
+            {
+                if (this.Parts[index].effectNode != null)
+                {
+                    // if action dosent exist, find "default" action
+                    var actionNode = this.Parts[index].effectNode.FindNodeByPath(action) ?? this.Parts[index].effectNode.FindNodeByPath("default");
+                    frames.AddRange(LoadStandardFrames(actionNode, action));
+                }
+            }
+            return frames.ToArray();
+        }
+
+        private ActionFrame GetEffectFrame(string action, int frameIndex, int partIndex)
+        {
+            // if action dosent exist, find "default" action
+            var actionNode = this.Parts[partIndex]?.effectNode?.Nodes[action]?.ResolveUol() ?? this.Parts[partIndex]?.effectNode?.FindNodeByPath("default")?.ResolveUol();
+
+            var frameNode = actionNode?.Nodes[frameIndex.ToString()];
             if (frameNode != null)
             {
                 var frame = LoadStandardFrame(frameNode);
@@ -590,12 +666,14 @@ namespace WzComparerR2.Avatar
         /// </summary>
         /// <param name="frame"></param>
         /// <returns></returns>
-        public Bone CreateFrame(int bodyFrame, int faceFrame, int tamingFrame)
+        public Bone CreateFrame(int bodyFrame, int faceFrame, int tamingFrame, int[] effectFrames)
         {
             ActionFrame bodyAction = null, faceAction = null, tamingAction = null;
+            ActionFrame[] effectActions = new ActionFrame[this.Parts.Length];
             string actionName = this.ActionName,
                 emotionName = this.EmotionName,
                 tamingActionName = this.TamingActionName;
+            string[] effectActionNames = this.EffectActionName;
             bool bodyFlip = false;
 
             //获取骑宠
@@ -648,24 +726,51 @@ namespace WzComparerR2.Avatar
                 }
             }
 
+            if (effectFrames != null)
+            {
+                for (int i = 0; i < effectFrames.Length; i++)
+                {
+                    if (!string.IsNullOrEmpty(effectActionNames[i]))
+                    {
+                        if (effectFrames[i] > -1)
+                        {
+                            ActionFrame effectAction = GetEffectFrame(effectActionNames[i], effectFrames[i], i);
+                            effectActions[i] = effectAction;
+                        }
+                    }
+                }
+            }
+
             if (!string.IsNullOrEmpty(emotionName))
             {
                 faceAction = GetFaceFrame(emotionName, faceFrame);
             }
 
-            return CreateFrame(bodyAction, faceAction, tamingAction);
+            return CreateFrame(bodyAction, faceAction, tamingAction, effectActions);
         }
 
-        public Bone CreateFrame(ActionFrame bodyAction, ActionFrame faceAction, ActionFrame tamingAction)
+        public Bone CreateFrame(ActionFrame bodyAction, ActionFrame faceAction, ActionFrame tamingAction, ActionFrame[] effectActions)
         {
             //获取所有部件
             Tuple<Wz_Node, Wz_Node, int>[] playerNodes = LinkPlayerParts(bodyAction, faceAction);
             Tuple<Wz_Node, Wz_Node, int>[] tamingNodes = LinkTamingParts(tamingAction);
+            List<Tuple<Wz_Node, Wz_Node, int>> effectNodes = []; // find effect nodes
+            for (int i = 0; i < effectActions.Length; i++)
+            {
+                if (effectActions[i] != null)
+                {
+                    effectNodes.AddRange(LinkEffectParts(effectActions[i], this.Parts[i]));
+                }
+            }
 
             //根骨骼 作为角色原点
             Bone bodyRoot = new Bone("@root");
             bodyRoot.Position = Point.Empty;
             CreateBone(bodyRoot, playerNodes, bodyAction?.Face);
+            if (effectNodes != null) // add effects to body bone
+            {
+                CreateBone(bodyRoot, effectNodes.ToArray(), bodyAction?.Face, true);
+            }
             SetBonePoperty(bodyRoot, BoneGroup.Character, bodyAction);
 
             if (tamingNodes != null && tamingNodes.Length > 0)
@@ -733,7 +838,7 @@ namespace WzComparerR2.Avatar
             }
         }
 
-        private void CreateBone(Bone root, Tuple<Wz_Node, Wz_Node, int>[] frameNodes, bool? bodyFace = null)
+        private void CreateBone(Bone root, Tuple<Wz_Node, Wz_Node, int>[] frameNodes, bool? bodyFace = null, bool effectNode = false)
         {
             bool face = true;
 
@@ -750,26 +855,60 @@ namespace WzComparerR2.Avatar
                 {
                     linkPartMixNode = linkPartMixNode.GetValue<Wz_Uol>().HandleUol(linkPartMixNode);
                 }
-                if (linkPartNode.Value is Wz_Png) // 의자 아이템 이미지 로드
+                if (linkPartNode.Value is Wz_Png)
                 {
                     string frameIdx = linkPartNode.Text;
+
+                    // for item effects
+                    if (effectNode)
+                    {
+                        Skin skin = new Skin();
+                        skin.Name = frameIdx;
+
+                        skin.Image = BitmapOrigin.CreateFromNode(linkPartNode, PluginBase.PluginManager.FindWz);
+                        skin.ZIndex = linkPartNode.ParentNode.FindNodeByPath("z")?.GetValueEx<int?>(null) ?? -2;
+
+                        string pos = linkPartNode.ParentNode.FindNodeByPath("pos")?.GetValueEx<string>(null);
+
+                        if (skin.Image.Bitmap != null)
+                        {
+                            if (pos == "1") // effect combined with character
+                            {
+                                Bone parentBone = null;
+                                Point mapOrigin = new Point(4, 20);
+
+                                parentBone = AppendBone(root, null, skin, "neck", mapOrigin);
+                            }
+                            else // effect offset fixed as background
+                            {
+                                root.Skins.Add(skin);
+                            }
+                        }
+                        continue;
+                    }
+
+                    // 의자 아이템 이미지 로드
                     Wz_Node gpNode = linkPartNode.ParentNode.ParentNode;
                     List<string> actionList = new List<string> { "effect", "effect2" };
+
                     foreach (string action in actionList)
                     {
                         Wz_Node eff = gpNode?.Nodes[action]?.Nodes[frameIdx];
                         Skin skin = new Skin();
                         skin.Name = frameIdx;
+
                         if (eff != null)
                         {
                             skin.Image = BitmapOrigin.CreateFromNode(eff, PluginBase.PluginManager.FindWz);
                         }
                         else skin.Image = BitmapOrigin.CreateFromNode(gpNode?.Nodes[action]?.Nodes["0"], PluginBase.PluginManager.FindWz);
-                        var zIndex = gpNode?.Nodes[action]?.FindNodeByPath("z")?.GetValueEx<int?>(null);
-                        skin.ZIndex = zIndex ?? 0;
+
+                        skin.ZIndex = gpNode?.Nodes[action]?.FindNodeByPath("z")?.GetValueEx<int?>(null) ?? 0;
+
                         if (this.Taming.bodyRelMove != null)
                         {
                             skin.Offset = new Point(0, 0);
+
                             bool applyb = false;
                             string pos = gpNode?.Nodes[action]?.FindNodeByPath("pos")?.GetValueEx<string>(null);
                             if (pos == "1" && !this.Taming.forceAction)
@@ -780,22 +919,27 @@ namespace WzComparerR2.Avatar
                             {
                                 applyb = true;
                             }
+
                             if (this.ApplyBRM)
                             {
                                 applyb = !applyb;
                             }
+
                             if (applyb)
                             {
                                 skin.Offset += (Size)new Point(-this.Taming.bodyRelMove.X, -this.Taming.bodyRelMove.Y);
                             }
                         }
+
                         if (skin.Image.Bitmap != null)
                         {
                             root.Skins.Add(skin);
                         }
                     }
+
                     return;
                 }
+
                 foreach (Wz_Node childNode in linkPartNode.Nodes) //分析部件
                 {
                     Wz_Node linkNode = childNode;
@@ -1263,7 +1407,7 @@ namespace WzComparerR2.Avatar
                             ActionFrame hairAction = new ActionFrame() { Action = actName, Frame = 0 };
                             hairNode = FindActionFrameNode(this.Hair.Node, hairAction);
                             mixHairNode = FindActionFrameNode(this.Hair.MixNodes[this.Hair.MixColor], hairAction);
-                        }  
+                        }
                     }
                     if (this.Hair.IsMixing)
                     {
@@ -1325,6 +1469,21 @@ namespace WzComparerR2.Avatar
             return partNode.Select(node => Tuple.Create(node, (Wz_Node)null, 100)).ToArray();
         }
 
+        private List<Tuple<Wz_Node, Wz_Node, int>> LinkEffectParts(ActionFrame aFrame, AvatarPart parent) // find effect nodes
+        {
+            List<Wz_Node> partNode = new List<Wz_Node>();
+
+            //链接马
+            if (parent != null && parent.Visible && aFrame != null)
+            {
+                partNode.Add(FindActionFrameNode(parent.effectNode, aFrame, true));
+            }
+
+            partNode.RemoveAll(node => node == null);
+
+            return partNode.Select(node => Tuple.Create(node, (Wz_Node)null, 100)).ToList();
+        }
+
         private Wz_Node FindBodyActionNode(ActionFrame actionFrame)
         {
             Wz_Node actionNode = null;
@@ -1344,18 +1503,31 @@ namespace WzComparerR2.Avatar
             return actionNode;
         }
 
-        private Wz_Node FindActionFrameNode(Wz_Node parent, ActionFrame actionFrame)
+        private Wz_Node FindActionFrameNode(Wz_Node parent, ActionFrame actionFrame, bool effectNode = false)
         {
             if (parent == null || actionFrame == null)
             {
                 return null;
             }
             var actionNode = parent;
-            foreach (var path in new[] { actionFrame.Action, actionFrame.Frame.ToString() })
+            // for item effects
+            if (effectNode)
             {
-                if (actionNode != null && !string.IsNullOrEmpty(path))
+                if (actionNode != null && !string.IsNullOrEmpty(actionFrame.Action))
                 {
-                    actionNode = actionNode.FindNodeByPath(path);
+                    actionNode = actionNode.FindNodeByPath(actionFrame.Action) ?? actionNode.FindNodeByPath("default");
+
+                    //处理uol
+                    Wz_Uol uol;
+                    while ((uol = actionNode.GetValueEx<Wz_Uol>(null)) != null)
+                    {
+                        actionNode = uol.HandleUol(actionNode);
+                    }
+                }
+
+                if (actionNode != null && !string.IsNullOrEmpty(actionFrame.Frame.ToString()))
+                {
+                    actionNode = actionNode.FindNodeByPath(actionFrame.Frame.ToString());
 
                     //处理uol
                     Wz_Uol uol;
@@ -1365,14 +1537,14 @@ namespace WzComparerR2.Avatar
                     }
                 }
             }
-            if (actionFrame.Action == "effect" && actionNode == null) // 의자 아이템 프레임 정보 찾기
+            else
             {
-                actionNode = parent;
-                foreach (var path in new[] { "effect2", actionFrame.Frame.ToString() })
+                foreach (var path in new[] { actionFrame.Action, actionFrame.Frame.ToString() })
                 {
                     if (actionNode != null && !string.IsNullOrEmpty(path))
                     {
                         actionNode = actionNode.FindNodeByPath(path);
+
                         //处理uol
                         Wz_Uol uol;
                         while ((uol = actionNode.GetValueEx<Wz_Uol>(null)) != null)
@@ -1382,6 +1554,27 @@ namespace WzComparerR2.Avatar
                     }
                 }
             }
+
+            if (actionFrame.Action == "effect" && actionNode == null) // 의자 아이템 프레임 정보 찾기
+            {
+                actionNode = parent;
+
+                foreach (var path in new[] { "effect2", actionFrame.Frame.ToString() })
+                {
+                    if (actionNode != null && !string.IsNullOrEmpty(path))
+                    {
+                        actionNode = actionNode.FindNodeByPath(path);
+
+                        //处理uol
+                        Wz_Uol uol;
+                        while ((uol = actionNode.GetValueEx<Wz_Uol>(null)) != null)
+                        {
+                            actionNode = uol.HandleUol(actionNode);
+                        }
+                    }
+                }
+            }
+
             return actionNode;
         }
 

@@ -20,12 +20,13 @@ namespace WzComparerR2.Avatar
             this.forceAction = false;
         }
 
-        public AvatarPart(Wz_Node node, BitmapOrigin forceIcon, int forceID, bool isSkill) : this (node)
+        public AvatarPart(Wz_Node node, BitmapOrigin forceIcon, int forceID, bool isSkill) : this(node)
         {
             this.Icon = forceIcon;
             this.ID = forceID;
             this.IsSkill = isSkill;
         }
+
         public AvatarPart(Wz_Node node, BitmapOrigin forceIcon, int forceID, Wz_Vector brm, bool forceAct)
         {
             this.Node = node;
@@ -38,6 +39,7 @@ namespace WzComparerR2.Avatar
             this.bodyRelMove = brm;
             this.forceAction = forceAct;
         }
+
         public Wz_Node Node { get; private set; }
         public string ISlot { get; private set; }
         public BitmapOrigin Icon { get; private set; }
@@ -61,11 +63,18 @@ namespace WzComparerR2.Avatar
                     return ID.Value % 10;
                 }
                 return -1;
-            } 
+            }
         }
         public int MixColor { get; set; }
         public int MixOpacity { get; set; }
         public bool IsMixing { get { return BaseColor != -1 && BaseColor != MixColor && MixOpacity > 0; } }
+        public Wz_Node effectNode
+        {
+            get
+            {
+                return PluginBase.PluginManager.FindWz("Effect/ItemEff.img/" + this.ID + "/effect");
+            }
+        }
 
         private void LoadInfo()
         {
