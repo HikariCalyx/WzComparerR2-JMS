@@ -238,6 +238,7 @@ namespace WzComparerR2
             tooltipQuickView.GearRender.ShowLevelOrSealed = Setting.Gear.ShowLevelOrSealed;
             tooltipQuickView.GearRender.ShowMedalTag = Setting.Gear.ShowMedalTag;
             tooltipQuickView.GearRender.ShowSoldPrice = Setting.Gear.ShowSoldPrice;
+            tooltipQuickView.GearRender.ShowCashPurchasePrice = Setting.Gear.ShowCashPurchasePrice;
             tooltipQuickView.GearRender.AutoTitleWrap = Setting.Gear.AutoTitleWrap;
             tooltipQuickView.ItemRender.ShowObjectID = Setting.Item.ShowID;
             tooltipQuickView.ItemRender.LinkRecipeInfo = Setting.Item.LinkRecipeInfo;
@@ -245,6 +246,7 @@ namespace WzComparerR2
             tooltipQuickView.ItemRender.ShowLevelOrSealed = Setting.Gear.ShowLevelOrSealed;
             tooltipQuickView.ItemRender.ShowNickTag = Setting.Item.ShowNickTag;
             tooltipQuickView.ItemRender.ShowSoldPrice = Setting.Item.ShowSoldPrice;
+            tooltipQuickView.ItemRender.ShowCashPurchasePrice = Setting.Item.ShowCashPurchasePrice;
             tooltipQuickView.RecipeRender.ShowObjectID = Setting.Recipe.ShowID;
         }
 
@@ -3300,15 +3302,17 @@ namespace WzComparerR2
         {
             if (compareThread != null)
             {
-                compareThread.Suspend();
+                // compareThread.Suspend();
                 if (DialogResult.Yes == MessageBoxEx.Show("比較が進行中です。 中絶しますか?", "注意", MessageBoxButtons.YesNoCancel))
                 {
-                    compareThread.Resume();
+                    // compareThread.Resume();
                     compareThread.Interrupt();
+                    compareThread = null;
+                    GC.Collect();
                 }
                 else
                 {
-                    compareThread.Resume();
+                    // compareThread.Resume();
                 }
                 return;
             }

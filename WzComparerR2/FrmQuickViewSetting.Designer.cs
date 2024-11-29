@@ -30,6 +30,8 @@
         {
             this.superTabControl1 = new DevComponents.DotNetBar.SuperTabControl();
             this.superTabControlPanel1 = new DevComponents.DotNetBar.SuperTabControlPanel();
+            this.checkBoxX20 = new DevComponents.DotNetBar.Controls.CheckBoxX();
+            this.checkBoxX19 = new DevComponents.DotNetBar.Controls.CheckBoxX();
             this.checkBoxX18 = new DevComponents.DotNetBar.Controls.CheckBoxX();
             this.checkBoxX17 = new DevComponents.DotNetBar.Controls.CheckBoxX();
             this.checkBoxX16 = new DevComponents.DotNetBar.Controls.CheckBoxX();
@@ -141,6 +143,36 @@
             this.superTabControlPanel1.TabIndex = 1;
             this.superTabControlPanel1.TabItem = this.superTabItem1;
             // 
+            // checkBoxX19
+            // 
+            this.checkBoxX19.AutoSize = true;
+            this.checkBoxX19.BackColor = System.Drawing.Color.Transparent;
+            // 
+            // 
+            // 
+            this.checkBoxX19.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
+            this.checkBoxX19.Location = new System.Drawing.Point(13, 131);
+            this.checkBoxX19.Name = "checkBoxX19";
+            this.checkBoxX19.Size = new System.Drawing.Size(152, 16);
+            this.checkBoxX19.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
+            this.checkBoxX19.TabIndex = 10;
+            this.checkBoxX19.Text = "ポイント購入価額を表示";
+            // 
+            // checkBoxX20
+            // 
+            this.checkBoxX20.AutoSize = true;
+            this.checkBoxX20.BackColor = System.Drawing.Color.Transparent;
+            // 
+            // 
+            // 
+            this.checkBoxX20.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
+            this.checkBoxX20.Location = new System.Drawing.Point(13, 131);
+            this.checkBoxX20.Name = "checkBoxX20";
+            this.checkBoxX20.Size = new System.Drawing.Size(152, 16);
+            this.checkBoxX20.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
+            this.checkBoxX20.TabIndex = 10;
+            this.checkBoxX20.Text = "ポイント購入価額を表示";
+            // 
             // checkBoxX18
             // 
             this.checkBoxX18.AutoSize = true;
@@ -149,7 +181,7 @@
             // 
             // 
             this.checkBoxX18.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
-            this.checkBoxX18.Location = new System.Drawing.Point(13, 131);
+            this.checkBoxX18.Location = new System.Drawing.Point(13, 155);
             this.checkBoxX18.Name = "checkBoxX18";
             this.checkBoxX18.Size = new System.Drawing.Size(152, 16);
             this.checkBoxX18.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
@@ -169,7 +201,7 @@
             this.checkBoxX17.Size = new System.Drawing.Size(152, 16);
             this.checkBoxX17.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
             this.checkBoxX17.TabIndex = 10;
-            this.checkBoxX17.Text = "販売価額を表示";
+            this.checkBoxX17.Text = "メル販売価額を表示";
             // 
             // checkBoxX16
             // 
@@ -184,7 +216,7 @@
             this.checkBoxX16.Size = new System.Drawing.Size(152, 16);
             this.checkBoxX16.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
             this.checkBoxX16.TabIndex = 10;
-            this.checkBoxX16.Text = "販売価額を表示";
+            this.checkBoxX16.Text = "メル販売価額を表示";
             // 
             // checkBoxX15
             // 
@@ -408,6 +440,7 @@
             // 
             // superTabControlPanel2
             // 
+            this.superTabControlPanel2.Controls.Add(this.checkBoxX19);
             this.superTabControlPanel2.Controls.Add(this.checkBoxX18);
             this.superTabControlPanel2.Controls.Add(this.checkBoxX16);
             this.superTabControlPanel2.Controls.Add(this.checkBoxX11);
@@ -491,6 +524,7 @@
             // 
             // superTabControlPanel3
             // 
+            this.superTabControlPanel3.Controls.Add(this.checkBoxX20);
             this.superTabControlPanel3.Controls.Add(this.checkBoxX17);
             this.superTabControlPanel3.Controls.Add(this.checkBoxX12);
             this.superTabControlPanel3.Controls.Add(this.checkBoxX9);
@@ -724,5 +758,7 @@
         private DevComponents.DotNetBar.Controls.CheckBoxX checkBoxX16;
         private DevComponents.DotNetBar.Controls.CheckBoxX checkBoxX17;
         private DevComponents.DotNetBar.Controls.CheckBoxX checkBoxX18;
+        private DevComponents.DotNetBar.Controls.CheckBoxX checkBoxX19;
+        private DevComponents.DotNetBar.Controls.CheckBoxX checkBoxX20;
     }
 }

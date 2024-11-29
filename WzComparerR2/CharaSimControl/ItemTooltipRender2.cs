@@ -11,6 +11,7 @@ using WzComparerR2.PluginBase;
 using WzComparerR2.WzLib;
 using WzComparerR2.Common;
 using WzComparerR2.CharaSim;
+using DevComponents.DotNetBar;
 
 namespace WzComparerR2.CharaSimControl
 {
@@ -46,11 +47,15 @@ namespace WzComparerR2.CharaSimControl
         public bool ShowLevelOrSealed { get; set; }
         public bool ShowNickTag { get; set; }
         public bool ShowSoldPrice { get; set; }
+        public bool ShowCashPurchasePrice { get; set; }
+        public CashPackage CashPackage { get; set; }
         public TooltipRender LinkRecipeInfoRender { get; set; }
         public TooltipRender LinkRecipeGearRender { get; set; }
         public TooltipRender LinkRecipeItemRender { get; set; }
         public TooltipRender SetItemRender { get; set; }
         public TooltipRender CashPackageRender { get; set; }
+        private bool isCurrencyConversionEnabled = (Translator.DefaultDesiredCurrency != "none");
+        private string titleLanguage = "";
 
         public override Bitmap Render()
         {
@@ -344,6 +349,17 @@ namespace WzComparerR2.CharaSimControl
             if (!string.IsNullOrEmpty(nameAdd))
             {
                 itemName += " (" + nameAdd + ")";
+            }
+            if (isCurrencyConversionEnabled)
+            {
+                if (Translator.DefaultDetectCurrency == "auto")
+                {
+                    titleLanguage = Translator.GetLanguage(itemName);
+                }
+                else
+                {
+                    titleLanguage = Translator.ConvertCurrencyToLang(Translator.DefaultDetectCurrency);
+                }
             }
             if (isTranslateRequired)
             {
@@ -1050,16 +1066,35 @@ namespace WzComparerR2.CharaSimControl
             }
 
             // JMS exclusive pricing display
-            if (!item.Props.TryGetValue(ItemPropType.quest, out value) && !item.Props.TryGetValue(ItemPropType.notSale, out value) && (item.Props.TryGetValue(ItemPropType.price, out value) && value > 0) && ShowSoldPrice)
+            if (!item.GetBooleanValue(ItemPropType.quest) && !item.GetBooleanValue(ItemPropType.notSale) && (item.Props.TryGetValue(ItemPropType.price, out value) && value > 0) && ShowSoldPrice)
             {
                 picH += 16;
                 GearGraphics.DrawString(g, "\r\n · 販売価額：" + value + "メル", GearGraphics.EquipDetailFont, 100, right, ref picH, 16);
             }
 
-            if (item.Props.TryGetValue(ItemPropType.autoPrice, out value) && ShowSoldPrice)
+            if (item.GetBooleanValue(ItemPropType.autoPrice) && ShowSoldPrice)
             {
                 picH += 16;
                 GearGraphics.DrawString(g, "\r\n · 販売価額：" + (item.Level * 2) + "メル", GearGraphics.EquipDetailFont, 100, right, ref picH, 16);
+            }
+
+            if (item.Cash && ShowCashPurchasePrice)
+            {
+                Commodity commodityPackage = new Commodity();
+                if (CharaSimLoader.LoadedCommoditiesByItemId.ContainsKey(item.ItemID))
+                {
+                    commodityPackage = CharaSimLoader.LoadedCommoditiesByItemId[item.ItemID];
+                    if (commodityPackage.Price > 0)
+                    {
+                        picH += 16;
+                        GearGraphics.DrawString(g, "\r\n · 購入価額：" + commodityPackage.Price + "ポイント", GearGraphics.EquipDetailFont, 100, right, ref picH, 16);
+                        if (isCurrencyConversionEnabled)
+                        {
+                            string exchangedPrice = Translator.GetConvertedCurrency(commodityPackage.Price, titleLanguage);
+                            GearGraphics.DrawString(g, "    " + exchangedPrice, GearGraphics.EquipDetailFont, 100, right, ref picH, 16);
+                        }
+                    }
+                }
             }
 
             picH = Math.Max(iconY + 94, picH + 6);

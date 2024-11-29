@@ -136,6 +136,13 @@ namespace WzComparerR2
         }
 
         [Link]
+        public bool Gear_ShowCashPurchasePrice
+        {
+            get { return checkBoxX19.Checked; }
+            set { checkBoxX19.Checked = value; }
+        }
+
+        [Link]
         public bool Gear_AutoTitleWrap
         {
             get { return checkBoxX18.Checked; }
@@ -175,6 +182,13 @@ namespace WzComparerR2
         {
             get { return checkBoxX17.Checked; }
             set { checkBoxX17.Checked = value; }
+        }
+
+        [Link]
+        public bool Item_ShowCashPurchasePrice
+        {
+            get { return checkBoxX20.Checked; }
+            set { checkBoxX20.Checked = value; }
         }
 
         public void Load(CharaSimConfig config)

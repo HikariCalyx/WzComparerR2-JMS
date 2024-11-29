@@ -16,9 +16,9 @@ namespace WzComparerR2.CharaSimControl
 {
     public class CashPackageTooltipRender : TooltipRender
     {
-        bool isTranslateRequired = Translator.IsTranslateEnabled;
-        bool isCurrencyConversionEnabled = (Translator.DefaultDesiredCurrency != "none");
-        string titleLanguage = "";
+        private bool isTranslateRequired = Translator.IsTranslateEnabled;
+        private bool isCurrencyConversionEnabled = (Translator.DefaultDesiredCurrency != "none");
+        private string titleLanguage = "";
         public CashPackageTooltipRender()
         {
         }

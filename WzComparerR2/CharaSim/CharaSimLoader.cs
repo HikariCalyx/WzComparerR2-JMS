@@ -113,8 +113,7 @@ namespace WzComparerR2.CharaSim
                     if (commodity != null)
                     {
                         LoadedCommoditiesBySN[commodity.SN] = commodity;
-                        if (commodity.ItemId / 10000 == 910)
-                            LoadedCommoditiesByItemId[commodity.ItemId] = commodity;
+                        LoadedCommoditiesByItemId[commodity.ItemId] = commodity;
                     }
                 }
             }

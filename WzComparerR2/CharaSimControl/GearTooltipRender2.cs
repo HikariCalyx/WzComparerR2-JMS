@@ -54,7 +54,10 @@ namespace WzComparerR2.CharaSimControl
         public bool ShowMedalTag { get; set; } = true;
         public bool IsCombineProperties { get; set; } = true;
         public bool ShowSoldPrice { get; set; }
+        public bool ShowCashPurchasePrice { get; set; }
         public bool AutoTitleWrap { get; set; }
+        private bool isCurrencyConversionEnabled = (Translator.DefaultDesiredCurrency != "none");
+        private string titleLanguage = "";
 
         public TooltipRender SetItemRender { get; set; }
 
@@ -194,6 +197,17 @@ namespace WzComparerR2.CharaSimControl
             if (isTranslateRequired) {
                 translatedName = Translator.TranslateString(gearName, true);
                 isTitleTranslateRequired = !(translatedName == gearName);
+            }
+            if (isCurrencyConversionEnabled)
+            {
+                if (Translator.DefaultDetectCurrency == "auto")
+                {
+                    titleLanguage = Translator.GetLanguage(gearName);
+                }
+                else
+                {
+                    titleLanguage = Translator.ConvertCurrencyToLang(Translator.DefaultDetectCurrency);
+                }
             }
 
             switch (Gear.GetGender(Gear.ItemID))
@@ -1381,11 +1395,30 @@ namespace WzComparerR2.CharaSimControl
             }
 
             // JMS exclusive pricing display
-            if (!Gear.Props.TryGetValue(GearPropType.notSale, out value) && (Gear.Props.TryGetValue(GearPropType.price, out value) && value > 0) && (!Gear.Cash) && ShowSoldPrice)
+            if (!Gear.GetBooleanValue(GearPropType.notSale) && (Gear.Props.TryGetValue(GearPropType.price, out value) && value > 0) && (!Gear.Cash) && ShowSoldPrice)
             {
                 picH += 7;
                 GearGraphics.DrawString(g, "· 販売価額：" + value + "メル", GearGraphics.EquipDetailFont, 13, 244, ref picH, 16);
                 picH += 16;
+            }
+
+            if (Gear.Cash && ShowCashPurchasePrice)
+            {
+                Commodity commodityPackage = new Commodity();
+                if (CharaSimLoader.LoadedCommoditiesByItemId.ContainsKey(Gear.ItemID))
+                {
+                    commodityPackage = CharaSimLoader.LoadedCommoditiesByItemId[Gear.ItemID];
+                    if (commodityPackage.Price > 0)
+                    {
+                        picH += 16;
+                        GearGraphics.DrawString(g, "· 購入価額：" + commodityPackage.Price + "ポイント", GearGraphics.EquipDetailFont, 13, 244, ref picH, 16);
+                        if (isCurrencyConversionEnabled)
+                        {
+                            string exchangedPrice = Translator.GetConvertedCurrency(commodityPackage.Price, titleLanguage);
+                            GearGraphics.DrawString(g, "    " + exchangedPrice, GearGraphics.EquipDetailFont, 13, 244, ref picH, 16);
+                        }
+                    }
+                }
             }
 
             picH += 2;
