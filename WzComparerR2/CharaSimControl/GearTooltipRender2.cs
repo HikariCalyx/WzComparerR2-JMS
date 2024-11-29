@@ -271,7 +271,15 @@ namespace WzComparerR2.CharaSimControl
                             newTranslatedName += translatedName.Substring(translatedName.Length - remainingLength, titleWrapQuota) + Environment.NewLine;
                             remainingLength -= titleWrapQuota;
                         }
-                        translatedName = newTranslatedName + translatedName.Substring(translatedName.Length - remainingLength, remainingLength) + Environment.NewLine;
+                        if (Translator.DefaultPreferredLayout != 3)
+                        {
+                            translatedName = newTranslatedName + translatedName.Substring(translatedName.Length - remainingLength, remainingLength) + Environment.NewLine;
+                        }
+                        else
+                        {
+                            translatedName = newTranslatedName + translatedName.Substring(translatedName.Length - remainingLength, remainingLength);
+                        }
+                        
                     }
                     else
                     {
@@ -282,9 +290,6 @@ namespace WzComparerR2.CharaSimControl
                                 break;
                             case 2:
                                 gearName += Environment.NewLine;
-                                break;
-                            case 3:
-                            default:
                                 break;
                         }
                     }
@@ -366,7 +371,7 @@ namespace WzComparerR2.CharaSimControl
                         }
                         if (translatedName.Contains(Environment.NewLine))
                         {
-                            picH += 12 * (Regex.Matches(translatedName, Environment.NewLine).Count + 1) + 1;
+                            picH += 12 * (Regex.Matches(translatedName, Environment.NewLine).Count);
                         }
                         break;
                     default:
