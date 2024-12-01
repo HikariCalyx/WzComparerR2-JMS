@@ -32,7 +32,6 @@ namespace WzComparerR2
         }
         public static string ExcessiveBracketFilter(string expression)
         {
-            string filteredExpression = expression;
             int leftBracketQuantity = System.Text.RegularExpressions.Regex.Matches(expression, "[(]").Count;
             int rightBracketQuantity = System.Text.RegularExpressions.Regex.Matches(expression, "[)]").Count;
             int bracketQuantityDelta = rightBracketQuantity - leftBracketQuantity;
@@ -40,7 +39,7 @@ namespace WzComparerR2
             {
                 while (bracketQuantityDelta > 0)
                 {
-                    filteredExpression = filteredExpression.Remove(filteredExpression.LastIndexOf(")"));
+                    expression = expression.Remove(expression.LastIndexOf(")"));
                     bracketQuantityDelta--;
                 }
             }
@@ -48,11 +47,11 @@ namespace WzComparerR2
             {
                 while (bracketQuantityDelta < 0)
                 {
-                    filteredExpression = filteredExpression.Remove(filteredExpression.IndexOf("("));
+                    expression += ")";
                     bracketQuantityDelta++;
                 }
             }
-            return filteredExpression;
+            return expression;
         }
         private static List<Token> Lexer(string expr)
         {
