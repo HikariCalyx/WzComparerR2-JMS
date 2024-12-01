@@ -184,7 +184,7 @@ namespace WzComparerR2.CharaSim
                     case GearPropType.incMDD:
                     case GearPropType.incSpeed:
                     case GearPropType.incJump:
-                        subfix = $"({standardValue} #e+{value - standardValue}#)"; break;
+                        subfix = $"({standardValue} #$e+{value - standardValue}#)"; break;
                     case GearPropType.bdR:
                     case GearPropType.incBDR:
                     case GearPropType.imdR:
@@ -192,7 +192,7 @@ namespace WzComparerR2.CharaSim
                     case GearPropType.damR:
                     case GearPropType.incDAMr:
                     case GearPropType.statR:
-                        subfix = $"({standardValue}% #$+{value - standardValue}%#)"; break;
+                        subfix = $"({standardValue}% #$y+{value - standardValue}%#)"; break;
 
                     case GearPropType.addSTR:
                     case GearPropType.addDEX:
@@ -206,13 +206,13 @@ namespace WzComparerR2.CharaSim
                     case GearPropType.addSpeed:
                     case GearPropType.addJump:
                     case GearPropType.addLvlDec:
-                        openAPISubfix += $"#g+{value - standardValue}#"; break;
+                        openAPISubfix += $"#$g+{value - standardValue}#"; break;
 
 
                     case GearPropType.addBDR:
                     case GearPropType.addDamR:
                     case GearPropType.addAllStatR:
-                        openAPISubfix += $"#g+{value - standardValue}%#"; break;
+                        openAPISubfix += $"#$g+{value - standardValue}%#"; break;
 
                     case GearPropType.scrollSTR:
                     case GearPropType.scrollDEX:
@@ -225,7 +225,7 @@ namespace WzComparerR2.CharaSim
                     case GearPropType.scrollDEF:
                     case GearPropType.scrollSpeed:
                     case GearPropType.scrollJump:
-                        openAPISubfix += $" #e+{value - standardValue}#"; break;
+                        openAPISubfix += $" #$e+{value - standardValue}#"; break;
 
                     case GearPropType.starSTR:
                     case GearPropType.starDEX:
@@ -245,7 +245,7 @@ namespace WzComparerR2.CharaSim
                 {
                     openAPISubfix = $"({standardValue}" + openAPISubfix + ")";
                 }
-                propStr = "#$" + propStr + "# " + subfix + openAPISubfix;
+                propStr = "#$y" + propStr + "# " + subfix + openAPISubfix;
             }
             return propStr;
         }

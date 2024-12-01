@@ -167,6 +167,11 @@ namespace WzComparerR2.CharaSimControl
             Graphics g = Graphics.FromImage(bitmap);
             g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAliasGridFit;
             StringFormat format = (StringFormat)StringFormat.GenericTypographic.Clone();
+            var itemPropColorTable = new Dictionary<string, Color>()
+            {
+                { "$y", GearGraphics.gearCyanColor },
+                { "$e", GearGraphics.ScrollEnhancementColor },
+            };
             var orange2FontColorTable = new Dictionary<string, Color>()
             {
                 { "c", ((SolidBrush)GearGraphics.OrangeBrush2).Color },
@@ -814,7 +819,7 @@ namespace WzComparerR2.CharaSimControl
                 if (value > 0 || Gear.Props[type] > 0)
                 {
                     var propStr = ItemStringHelper.GetGearPropDiffString(type, Gear.Props[type], value);
-                    GearGraphics.DrawString(g, propStr, GearGraphics.EquipDetailFont, 12, 256, ref picH, 15);//changes the vertical distance of stats in tooltip, such as STR, DEX, INT etc.
+                    GearGraphics.DrawString(g, propStr, GearGraphics.EquipDetailFont, itemPropColorTable, 12, 256, ref picH, 15);//changes the vertical distance of stats in tooltip, such as STR, DEX, INT etc.
                     hasPart2 = true;
                 }
             }
