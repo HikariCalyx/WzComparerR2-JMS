@@ -591,7 +591,7 @@ namespace WzComparerR2.Comparer
                     sr = new StringResultSkill();
                     sr.Name = "未知のスキル";
                 }
-                if (skillName != sr.Name)
+                if (skillName != sr.Name && skillName != "未知のスキル")
                 {
                     skillName += "_" + sr.Name;
                 }
