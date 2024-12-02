@@ -580,13 +580,13 @@ namespace WzComparerR2.Comparer
                 Bitmap[] skillImageNewOld = { null, null };
                 StringResult sr;
                 string skillName;
-                if (skillRenderNewOld[1].StringLinker == null || !skillRenderNewOld[0].StringLinker.StringSkill.TryGetValue(int.Parse(skillID), out sr))
+                if (skillRenderNewOld[1].StringLinker == null || !skillRenderNewOld[1].StringLinker.StringSkill.TryGetValue(int.Parse(skillID), out sr))
                 {
                     sr = new StringResultSkill();
                     sr.Name = "未知のスキル";
                 }
                 skillName = sr.Name;
-                if (skillRenderNewOld[0].StringLinker == null || !skillRenderNewOld[1].StringLinker.StringSkill.TryGetValue(int.Parse(skillID), out sr))
+                if (skillRenderNewOld[0].StringLinker == null || !skillRenderNewOld[0].StringLinker.StringSkill.TryGetValue(int.Parse(skillID), out sr))
                 {
                     sr = new StringResultSkill();
                     sr.Name = "未知のスキル";
