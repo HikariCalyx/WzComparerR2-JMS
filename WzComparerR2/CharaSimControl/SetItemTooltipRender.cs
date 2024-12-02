@@ -217,7 +217,7 @@ namespace WzComparerR2.CharaSimControl
                     }
 
                     itemName = itemName ?? string.Empty;
-                    typeName = typeName ?? "Equip";
+                    typeName = typeName ?? "装備";
 
                     if (!Regex.IsMatch(typeName, @"^(\(.*\)|（.*）|\[.*\])$"))
                     {
