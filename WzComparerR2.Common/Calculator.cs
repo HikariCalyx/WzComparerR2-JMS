@@ -20,7 +20,7 @@ namespace WzComparerR2
                 {
                     switch (i)
                     {
-                        case 0: paramList["x"] = args[0]; break;
+                        case 0: paramList["x"] = args[0]; paramList["X"] = args[0]; break;
                         case 1: paramList["y"] = args[1]; break;
                         case 2: paramList["z"] = args[2]; break;
                         case 3: paramList["w"] = args[3]; break;
@@ -369,7 +369,12 @@ namespace WzComparerR2
                     value = (Func<decimal, decimal>)Math.Floor;
                     return true;
                 }
-                else if ((m = Regex.Match(key, @"log(\d+)")).Success)
+                else if (key == "min")
+                {
+                    value = (Func<decimal, decimal, decimal>)Math.Min;
+                    return true;
+                }
+                else if ((m = Regex.Match(key, @"^log(\d+)$")).Success)
                 {
                     var logBase = int.Parse(m.Result("$1"));
                     value = (Func<decimal, decimal>)(x => x <= 0 ? 0 : (decimal)Math.Floor(Math.Log(decimal.ToDouble(x), logBase)));
