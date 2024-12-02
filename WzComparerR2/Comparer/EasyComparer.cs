@@ -578,8 +578,28 @@ namespace WzComparerR2.Comparer
                 StateDetail = "Skill 変更点をツールチップ画像に出力中...";
 
                 Bitmap[] skillImageNewOld = { null, null };
-                string oldSkillName = "";
-                string newSkillName = "";
+                StringResult sr;
+                string skillName;
+                if (skillRenderNewOld[1].StringLinker == null || !skillRenderNewOld[0].StringLinker.StringSkill.TryGetValue(int.Parse(skillID), out sr))
+                {
+                    sr = new StringResultSkill();
+                    sr.Name = "未知のスキル";
+                }
+                skillName = sr.Name;
+                if (skillRenderNewOld[0].StringLinker == null || !skillRenderNewOld[1].StringLinker.StringSkill.TryGetValue(int.Parse(skillID), out sr))
+                {
+                    sr = new StringResultSkill();
+                    sr.Name = "未知のスキル";
+                }
+                if (skillName != sr.Name)
+                {
+                    skillName += "_" + sr.Name;
+                }
+                else if (skillName == "未知のスキル")
+                {
+                    skillName = sr.Name;
+                }
+                skillName = Regex.Replace(skillName, "<>:\"/\\\\\\|\\?\\*", "_", RegexOptions.Compiled);
                 string skillType = "削除";
                 string skillNodePath = int.Parse(skillID) / 10000000 == 8 ? String.Format(@"\{0:D}.img\skill\{1:D}", int.Parse(skillID) / 100, skillID) : String.Format(@"\{0:D}.img\skill\{1:D}", int.Parse(skillID) / 10000, skillID);
                 if (int.Parse(skillID) / 10000 == 0) skillNodePath = String.Format(@"\000.img\skill\{0:D7}", skillID);
@@ -632,7 +652,7 @@ namespace WzComparerR2.Comparer
                 int picH = 13;
                 GearGraphics.DrawPlainText(g, skillType, skillTypeFont, Color.FromArgb(255, 255, 255), 2, (int)Math.Ceiling(skillTypeTextInfo.Width) + 2, ref picH, 10);
 
-                string imageName = Path.Combine(skillTooltipPath, "スキル_" + skillID + '[' + (ItemStringHelper.GetJobName(int.Parse(skillID) / 10000) ?? "その他") + "]_" + skillType + "_" + oldSkillName + newSkillName + ".png");
+                string imageName = Path.Combine(skillTooltipPath, "スキル_" + skillID + '[' + (ItemStringHelper.GetJobName(int.Parse(skillID) / 10000) ?? "その他") + "]_" + skillName + "_" + skillType + ".png");
                 if (!File.Exists(imageName))
                 {
                     resultImage.Save(imageName, System.Drawing.Imaging.ImageFormat.Png);
