@@ -138,11 +138,14 @@ namespace WzComparerR2.CharaSim
                         sb.Append(param.CStart);
                         idx += 2;
                     }
-                    else if (idx + 1 < H.Length && H[idx + 1] == 'g')
+                    else if (idx + 1 < H.Length && H[idx + 1] == '$')
                     {
-                        beginG = true;
-                        sb.Append(param.GStart);
-                        idx += 2;
+                        if (idx + 2 < H.Length && H[idx + 2] == 'g')
+                        {
+                            beginG = true;
+                            sb.Append(param.GStart);
+                            idx += 3;
+                        }
                     }
                     else if (beginG)
                     {
@@ -215,7 +218,7 @@ namespace WzComparerR2.CharaSim
             //bool find = false;
             foreach (var kv in dict)
             {
-                if (kv.Key.Equals(key, StringComparison.CurrentCulture))//'CurrentCultureIgnoreCase' bugged #cR variable etc.
+                if (kv.Key.Equals(key, StringComparison.OrdinalIgnoreCase))
                 {
                     value = kv.Value;
                     return true;
@@ -232,7 +235,7 @@ namespace WzComparerR2.CharaSim
             return GetSkillSummary(skill, skill.Level, sr, param);
         }
 
-        public static string GetSkillSummary(Skill skill, int level, StringResult sr, SummaryParams param, SkillSummaryOptions options = default)
+        public static string GetSkillSummary(Skill skill, int level, StringResult sr, SummaryParams param, SkillSummaryOptions options = default, bool doHighlight = false, string skillID = null, Dictionary<string, List<string>> DiffSkillTags = null)
         {
             if (skill == null || sr == null)
                 return null;
@@ -254,6 +257,18 @@ namespace WzComparerR2.CharaSim
                     h = sr.SkillH[0];
                 }
                 var levelCommon = level <= skill.levelCommon.Count ? skill.levelCommon[level - 1] : skill.common;
+
+                if (doHighlight && DiffSkillTags != null && skillID != null)
+                {
+                    if (DiffSkillTags.ContainsKey(skillID))
+                    {
+                        foreach (var tags in DiffSkillTags[skillID])
+                        {
+                            h = (h == null ? null : Regex.Replace(h, "#" + tags + @"([^a-zA-Z0-9])", @"#$g#" + tags + "#$1"));
+                        }
+                    }
+                }
+
                 return GetSkillSummary(h, level, levelCommon, param, options);
             }
             else
@@ -262,6 +277,18 @@ namespace WzComparerR2.CharaSim
                 {
                     h = sr.SkillH[0];
                 }
+
+                if (doHighlight && DiffSkillTags != null && skillID != null)
+                {
+                    if (DiffSkillTags.ContainsKey(skillID))
+                    {
+                        foreach (var tags in DiffSkillTags[skillID])
+                        {
+                            h = (h == null ? null : Regex.Replace(h, "#" + tags + @"([^a-zA-Z0-9])", @"#$g#" + tags + "#$1"));
+                        }
+                    }
+                }
+
                 return GetSkillSummary(h, level, skill.Common, param, options);
             }
         }

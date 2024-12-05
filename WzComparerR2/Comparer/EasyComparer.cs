@@ -22,6 +22,7 @@ namespace WzComparerR2.Comparer
             this.Comparer = new WzFileComparer();
         }
         private Wz_Node[] WzNewOld { get; set; } = new Wz_Node[2];
+        private Wz_File[] WzFileNewOld { get; set; } = new Wz_File[2];
         private Wz_File[] StringWzNewOld { get; set; } = new Wz_File[2];
         private Wz_File[] ItemWzNewOld { get; set; } = new Wz_File[2];
         private Wz_File[] EtcWzNewOld { get; set; } = new Wz_File[2];
@@ -94,6 +95,8 @@ namespace WzComparerR2.Comparer
                 {
                     this.WzNewOld[0] = fileNew.Node;
                     this.WzNewOld[1] = fileOld.Node;
+                    this.WzFileNewOld[0] = fileNew.Node.GetNodeWzFile();
+                    this.WzFileNewOld[1] = fileOld.Node.GetNodeWzFile();
                 }
 
 
@@ -543,12 +546,12 @@ namespace WzComparerR2.Comparer
                 {
                     Directory.CreateDirectory(skillTooltipPath);
                 }
-                SaveTooltip(skillTooltipPath);
+                SaveSkillTooltip(skillTooltipPath);
             }
         }
 
         // 変更されたスキルツールチップ出力
-        private void SaveTooltip(string skillTooltipPath)
+        private void SaveSkillTooltip(string skillTooltipPath)
         {
             SkillTooltipRender2[] skillRenderNewOld = new SkillTooltipRender2[2];
             int count = 0;
@@ -566,7 +569,6 @@ namespace WzComparerR2.Comparer
                 skillRenderNewOld[i].StringLinker.Load(StringWzNewOld[i], ItemWzNewOld[i], EtcWzNewOld[i]);
                 skillRenderNewOld[i].ShowObjectID = true;
                 skillRenderNewOld[i].ShowDelay = true;
-                skillRenderNewOld[i].DoSetDiffColor = true;
                 skillRenderNewOld[i].wzNode = WzNewOld[i];
                 skillRenderNewOld[i].DiffSkillTags = this.DiffSkillTags;
                 skillRenderNewOld[i].IgnoreEvalError = true;
@@ -577,7 +579,9 @@ namespace WzComparerR2.Comparer
                 StateInfo = string.Format("{0}/{1} スキル: {2}", ++count, allCount, skillID);
                 StateDetail = "Skill 変更点をツールチップ画像に出力中...";
 
-                Bitmap[] skillImageNewOld = { null, null };
+                string skillType = "";
+                string skillNodePath = int.Parse(skillID) / 10000000 == 8 ? String.Format(@"\{0:D}.img\skill\{1:D}", int.Parse(skillID) / 100, skillID) : String.Format(@"\{0:D}.img\skill\{1:D}", int.Parse(skillID) / 10000, skillID);
+                if (int.Parse(skillID) / 10000 == 0) skillNodePath = String.Format(@"\000.img\skill\{0:D7}", skillID);
                 StringResult sr;
                 string skillName;
                 if (skillRenderNewOld[1].StringLinker == null || !skillRenderNewOld[1].StringLinker.StringSkill.TryGetValue(int.Parse(skillID), out sr))
@@ -600,52 +604,66 @@ namespace WzComparerR2.Comparer
                     skillName = sr.Name;
                 }
                 skillName = Regex.Replace(skillName, "<>:\"/\\\\\\|\\?\\*", "_", RegexOptions.Compiled);
-                string skillType = "削除";
-                string skillNodePath = int.Parse(skillID) / 10000000 == 8 ? String.Format(@"\{0:D}.img\skill\{1:D}", int.Parse(skillID) / 100, skillID) : String.Format(@"\{0:D}.img\skill\{1:D}", int.Parse(skillID) / 10000, skillID);
-                if (int.Parse(skillID) / 10000 == 0) skillNodePath = String.Format(@"\000.img\skill\{0:D7}", skillID);
-                int[] heightNewOld = { 0, 0 };
-                int width = 0;
+                int nullSkillIdx = 0;
 
                 // 変更前後のツールチップ画像の作成
-                for (int i = 0; i < 2; i++)
+                for (int i = 0; i < 2; i++) // 0: New, 1: Old
                 {
-                    Skill skill = Skill.CreateFromNode(PluginManager.FindWz("Skill" + skillNodePath, WzNewOld[i].GetNodeWzFile()), PluginManager.FindWz, WzNewOld[i]?.GetNodeWzFile()) ??
-                        (Skill.CreateFromNode(PluginManager.FindWz("Skill001" + skillNodePath, WzNewOld[i].GetNodeWzFile()), PluginManager.FindWz, WzNewOld[i]?.GetNodeWzFile()) ??
-                        (Skill.CreateFromNode(PluginManager.FindWz("Skill002" + skillNodePath, WzNewOld[i].GetNodeWzFile()), PluginManager.FindWz, WzNewOld[i]?.GetNodeWzFile()) ??
-                        Skill.CreateFromNode(PluginManager.FindWz("Skill003" + skillNodePath, WzNewOld[i].GetNodeWzFile()), PluginManager.FindWz, WzNewOld[i]?.GetNodeWzFile())));
+                    Skill skill = Skill.CreateFromNode(PluginManager.FindWz("Skill" + skillNodePath, WzFileNewOld[i]), PluginManager.FindWz, WzFileNewOld[i]) ??
+                        (Skill.CreateFromNode(PluginManager.FindWz("Skill001" + skillNodePath, WzFileNewOld[i]), PluginManager.FindWz, WzFileNewOld[i]) ??
+                        (Skill.CreateFromNode(PluginManager.FindWz("Skill002" + skillNodePath, WzFileNewOld[i]), PluginManager.FindWz, WzFileNewOld[i]) ??
+                        Skill.CreateFromNode(PluginManager.FindWz("Skill003" + skillNodePath, WzFileNewOld[i]), PluginManager.FindWz, WzFileNewOld[i])));
 
                     if (skill != null)
                     {
                         skill.Level = skill.MaxLevel;
                         skillRenderNewOld[i].Skill = skill;
-                        skillImageNewOld[i] = skillRenderNewOld[i].Render();
-                        width += skillImageNewOld[i].Width;
-                        heightNewOld[i] = skillImageNewOld[i].Height;
+                    }
+                    else
+                    {
+                        nullSkillIdx = i + 1;
                     }
                 }
-
-                if (width == 0) continue;
 
                 // ツールチップ画像を合わせる
-                Bitmap resultImage = new Bitmap(width, Math.Max(heightNewOld[0], heightNewOld[1]));
-                Graphics g = Graphics.FromImage(resultImage);
+                Bitmap resultImage = null;
+                Graphics g = null;
 
-                if (skillImageNewOld[1] != null)
+                switch (nullSkillIdx)
                 {
-                    if (skillImageNewOld[0] != null)
-                    {
-                        g.DrawImage(skillImageNewOld[0], skillImageNewOld[1].Width, 0);
-                        skillImageNewOld[0].Dispose();
+                    case 0: // change
                         skillType = "変更";
-                    }
-                    g.DrawImage(skillImageNewOld[1], 0, 0);
-                    skillImageNewOld[1].Dispose();
+
+                        Bitmap ImageNew = skillRenderNewOld[0].Render(true);
+                        Bitmap ImageOld = skillRenderNewOld[1].Render(true);
+                        resultImage = new Bitmap(ImageNew.Width + ImageOld.Width, Math.Max(ImageNew.Height, ImageOld.Height));
+                        g = Graphics.FromImage(resultImage);
+
+                        g.DrawImage(ImageOld, 0, 0);
+                        g.DrawImage(ImageNew, ImageOld.Width, 0);
+                        break;
+
+                    case 1: // delete
+                        skillType = "削除";
+
+                        resultImage = skillRenderNewOld[1].Render();
+                        g = Graphics.FromImage(resultImage);
+                        break;
+
+                    case 2: // add
+                        skillType = "追加";
+
+                        resultImage = skillRenderNewOld[0].Render();
+                        g = Graphics.FromImage(resultImage);
+                        break;
+
+                    default:
+                        break;
                 }
-                else
+
+                if (resultImage == null || g == null)
                 {
-                    g.DrawImage(skillImageNewOld[0], 0, 0);
-                    skillImageNewOld[0].Dispose();
-                    skillType = "追加";
+                    continue;
                 }
 
                 var skillTypeTextInfo = g.MeasureString(skillType, GearGraphics.ItemDetailFont);
