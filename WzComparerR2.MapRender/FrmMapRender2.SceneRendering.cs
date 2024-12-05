@@ -12,7 +12,6 @@ using WzComparerR2.Animation;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using WzComparerR2.Controls;
-using WzComparerR2.PluginBase;
 using WzComparerR2.CharaSim;
 
 namespace WzComparerR2.MapRender
@@ -520,10 +519,6 @@ namespace WzComparerR2.MapRender
                         if (this.patchVisibility.NpcNameVisible)
                         {
                             var npcNode = PluginBase.PluginManager.FindWz(string.Format("Npc/{0:D7}.img/info", life.ID));
-                            var customFontFunc = PluginManager.FindWz(string.Format("Npc/{0:D7}.img/info/customFont:func", life.ID));
-                            string customFontColor = customFontFunc?.Nodes["fontColor"].Value.ToString();
-                            // string customFontName = customFontFunc?.Nodes["font"].Value.ToString();
-                            // int customFontSize = customFontFunc?.Nodes["fontSize"].GetValueEx<int>(0);
                             if ((npcNode?.Nodes["hideName"].GetValueEx(0) ?? 0) != 0)
                             {
                                 break;
@@ -560,34 +555,15 @@ namespace WzComparerR2.MapRender
                             {
                                 mesh = batcher.MeshPop();
                                 mesh.Position = new Vector2(life.X, life.Cy + 21);
-                                if (customFontColor != null)
+                                mesh.RenderObject = new TextMesh()
                                 {
-                                    int customAlpha = int.Parse(customFontColor.Substring(0, 2), System.Globalization.NumberStyles.HexNumber);
-                                    int customRed = int.Parse(customFontColor.Substring(2, 2), System.Globalization.NumberStyles.HexNumber);
-                                    int customGreen = int.Parse(customFontColor.Substring(4, 2), System.Globalization.NumberStyles.HexNumber);
-                                    int customBlue = int.Parse(customFontColor.Substring(6, 2), System.Globalization.NumberStyles.HexNumber);
-                                    mesh.RenderObject = new TextMesh()
-                                    {
-                                        Align = Alignment.Center,
-                                        ForeColor = new Color(customRed, customGreen, customBlue, customAlpha),
-                                        BackColor = new Color(Color.Black, 0.7f),
-                                        Font = renderEnv.Fonts.NpcDescFont,
-                                        Padding = new Margins(2, 2, 2, 2),
-                                        Text = desc
-                                    };
-                                }
-                                else
-                                {
-                                    mesh.RenderObject = new TextMesh()
-                                    {
-                                        Align = Alignment.Center,
-                                        ForeColor = Color.Yellow,
-                                        BackColor = new Color(Color.Black, 0.7f),
-                                        Font = renderEnv.Fonts.NpcDescFont,
-                                        Padding = new Margins(2, 2, 2, 2),
-                                        Text = desc
-                                    };
-                                }
+                                    Align = Alignment.Center,
+                                    ForeColor = life.CustomFont?.FontColor ?? Color.Yellow,
+                                    BackColor = new Color(Color.Black, 0.7f),
+                                    Font = renderEnv.Fonts.NpcDescFont,
+                                    Padding = new Margins(2, 2, 2, 2),
+                                    Text = desc
+                                };
                                 batcher.Draw(mesh);
                                 batcher.MeshPush(mesh);
                             }
