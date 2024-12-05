@@ -3034,6 +3034,8 @@ namespace WzComparerR2
 
             object obj = null;
             string fileName = null;
+
+            StringResult sr;
             switch (wzf.Type)
             {
                 case Wz_Type.Character:
@@ -3056,9 +3058,14 @@ namespace WzComparerR2
                     {
                         var item = Item.CreateFromNode(itemNode, PluginManager.FindWz);
                         obj = item;
+                        if (stringLinker == null || !stringLinker.StringItem.TryGetValue(item.ItemID, out sr))
+                        {
+                            sr = new StringResult();
+                            sr.Name = "未知のアイテム";
+                        }
                         if (item != null)
                         {
-                            fileName = item.ItemID + ".png";
+                            fileName = "item_" + item.ItemID + "_" + sr.Name + ".png";
                         }
                     }
                     else if (Regex.IsMatch(itemNode.FullPathToFile, @"^Item\\Pet\\\d{7}.img"))
@@ -3071,9 +3078,14 @@ namespace WzComparerR2
                             return;
                         var item = Item.CreateFromNode(image.Node, PluginManager.FindWz);
                         obj = item;
+                        if (stringLinker == null || !stringLinker.StringItem.TryGetValue(item.ItemID, out sr))
+                        {
+                            sr = new StringResult();
+                            sr.Name = "未知のペット";
+                        }
                         if (item != null)
                         {
-                            fileName = item.ItemID + ".png";
+                            fileName = "pet_" + item.ItemID + "_" + sr.Name + ".png";
                         }
                     }
 
@@ -3085,14 +3097,24 @@ namespace WzComparerR2
                     {
                         Recipe recipe = Recipe.CreateFromNode(skillNode);
                         obj = recipe;
+                        if (stringLinker == null || !stringLinker.StringSkill.TryGetValue(recipe.RecipeID, out sr))
+                        {
+                            sr = new StringResultSkill();
+                            sr.Name = "未知のレシピ";
+                        }
                         if (recipe != null)
                         {
-                            fileName = "recipe_" + recipe.RecipeID + ".png";
+                            fileName = "recipe_" + recipe.RecipeID + "_" + sr.Name + ".png";
                         }
                     }
                     else if (Regex.IsMatch(skillNode.FullPathToFile, @"^Skill\d*\\\d+.img\\skill\\\d+$"))
                     {
                         Skill skill = Skill.CreateFromNode(skillNode, PluginManager.FindWz);
+                        if (stringLinker == null || !stringLinker.StringSkill.TryGetValue(skill.SkillID, out sr))
+                        {
+                            sr = new StringResultSkill();
+                            sr.Name = "未知のスキル";
+                        }
                         if (skill != null)
                         {
                             switch (this.skillDefaultLevel)
@@ -3103,7 +3125,7 @@ namespace WzComparerR2
                                 case DefaultLevel.LevelMaxWithCO: skill.Level = skill.MaxLevel + 2; break;
                             }
                             obj = skill;
-                            fileName = "skill_" + skill.SkillID + ".png";
+                            fileName = "skill_" + skill.SkillID + "_" + sr.Name + ".png";
                         }
                     }
                     break;
@@ -3113,9 +3135,14 @@ namespace WzComparerR2
                         return;
                     var mob = Mob.CreateFromNode(image.Node, PluginManager.FindWz);
                     obj = mob;
+                    if (stringLinker == null || !stringLinker.StringMob.TryGetValue(mob.ID, out sr))
+                    {
+                        sr = new StringResult();
+                        sr.Name = "未知のモンスター";
+                    }
                     if (mob != null)
                     {
-                        fileName = mob.ID + ".png";
+                        fileName = "mob_" + mob.ID + "_" + sr.Name + ".png";
                     }
                     break;
 
@@ -3124,9 +3151,14 @@ namespace WzComparerR2
                         return;
                     var npc = Npc.CreateFromNode(image.Node, PluginManager.FindWz);
                     obj = npc;
+                    if (stringLinker == null || !stringLinker.StringNpc.TryGetValue(npc.ID, out sr))
+                    {
+                        sr = new StringResult();
+                        sr.Name = "未知のNPC";
+                    }
                     if (npc != null)
                     {
-                        fileName = npc.ID + ".png";
+                        fileName = "npc_" + npc.ID + "_" + sr.Name + ".png";
                     }
                     break;
 
@@ -3139,9 +3171,14 @@ namespace WzComparerR2
                         if (!CharaSimLoader.LoadedSetItems.TryGetValue(Convert.ToInt32(selectedNode.Text), out setItem))
                             return;
                         obj = setItem;
+                        if (stringLinker == null || !stringLinker.StringSetItem.TryGetValue(setItem.SetItemID, out sr))
+                        {
+                            sr = new StringResult();
+                            sr.Name = "未知のセット";
+                        }
                         if (setItem != null)
                         {
-                            fileName = setItem.SetItemID + ".png";
+                            fileName = "set_" + setItem.SetItemID + "_" + sr.Name + ".png";
                         }
                     }
                     break;
