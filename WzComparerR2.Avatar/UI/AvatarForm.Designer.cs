@@ -554,7 +554,6 @@
             this.chkHairCover.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
             this.chkHairCover.TabIndex = 9;
             this.chkHairCover.Text = "髪を押す";
-            this.chkHairCover.Enabled = false;
             this.chkHairCover.CheckedChanged += new System.EventHandler(this.chkHairCover_CheckedChanged);
             // 
             // chkApplyBRM
