@@ -1,4 +1,6 @@
-﻿namespace WzComparerR2.Avatar.UI
+﻿using System.Windows.Forms;
+
+namespace WzComparerR2.Avatar.UI
 {
     partial class AvatarForm
     {
@@ -87,11 +89,19 @@
             this.btnHayato = new DevComponents.DotNetBar.ButtonItem();
             this.btnKanna = new DevComponents.DotNetBar.ButtonItem();
             this.btnAngelicBuster = new DevComponents.DotNetBar.ButtonItem();
+            this.btnPopuko = new DevComponents.DotNetBar.ButtonItem();
+            this.btnPipimi = new DevComponents.DotNetBar.ButtonItem();
+            this.btnMegumin = new DevComponents.DotNetBar.ButtonItem();
+            this.btnAqua = new DevComponents.DotNetBar.ButtonItem();
+            this.btnDarkness = new DevComponents.DotNetBar.ButtonItem();
             this.btnTanjiroKamado = new DevComponents.DotNetBar.ButtonItem();
             this.btnNezukoKamado = new DevComponents.DotNetBar.ButtonItem();
             this.btnZenitsuAgatsuma = new DevComponents.DotNetBar.ButtonItem();
             this.btnInosukeHashibira = new DevComponents.DotNetBar.ButtonItem();
             this.btnLaraTheSheep = new DevComponents.DotNetBar.ButtonItem();
+            this.Separator1 = new DevComponents.DotNetBar.Separator();
+            this.Separator2 = new DevComponents.DotNetBar.Separator();
+            this.Separator3 = new DevComponents.DotNetBar.Separator();
             this.btnReset = new DevComponents.DotNetBar.ButtonItem();
             this.btnLock = new DevComponents.DotNetBar.ButtonItem();
             this.btnSaveAsGif = new DevComponents.DotNetBar.ButtonItem();
@@ -650,6 +660,18 @@
             this.btnCode.Name = "btnCode";
             this.btnCode.Tooltip = "コード";
             this.btnCode.Click += new System.EventHandler(this.btnCode_Click);
+            //
+            // Separator1
+            //
+            this.Separator1.SeparatorOrientation = DevComponents.DotNetBar.eDesignMarkerOrientation.Vertical;
+            //
+            // Separator2
+            //
+            this.Separator2.SeparatorOrientation = DevComponents.DotNetBar.eDesignMarkerOrientation.Vertical;
+            //
+            // Separator3
+            //
+            this.Separator3.SeparatorOrientation = DevComponents.DotNetBar.eDesignMarkerOrientation.Vertical;
             // 
             // btnCharac
             // 
@@ -659,15 +681,23 @@
             this.btnCharac.SubItems.AddRange(new DevComponents.DotNetBar.BaseItem[] {
             this.btnMale,
             this.btnFemale,
+            this.Separator1,
             this.btnLaraTheSheep,
-            this.btnHayato,
+            this.Separator2,
+            this.btnAngelicBuster,
             this.btnKanna,
             this.btnZero,
-            this.btnBeastTamer,
             this.btnPathfinder,
+            this.btnHayato,
+            this.btnBeastTamer,
             this.btnLara,
             this.btnLynn,
-            this.btnAngelicBuster,
+            this.Separator3,
+            this.btnPopuko,
+            this.btnPipimi,
+            this.btnMegumin,
+            this.btnAqua,
+            this.btnDarkness,
             this.btnTanjiroKamado,
             this.btnNezukoKamado,
             this.btnZenitsuAgatsuma,
@@ -746,6 +776,41 @@
             this.btnAngelicBuster.Name = "btnAngelicBuster";
             this.btnAngelicBuster.Text = "エンジェリックバスター";
             this.btnAngelicBuster.Click += new System.EventHandler(this.btnAngelicBuster_Click);
+            // 
+            // 
+            // btnPopuko
+            // 
+            this.btnPopuko.Name = "btnPopuko";
+            this.btnPopuko.Text = "ポプ子";
+            this.btnPopuko.Click += new System.EventHandler(this.btnPopuko_Click);
+            // 
+            // 
+            // btnPipimi
+            // 
+            this.btnPipimi.Name = "btnPipimi";
+            this.btnPipimi.Text = "ピピ美";
+            this.btnPipimi.Click += new System.EventHandler(this.btnPipimi_Click);
+            // 
+            // 
+            // btnMegumin
+            // 
+            this.btnMegumin.Name = "btnMegumin";
+            this.btnMegumin.Text = "めぐみん";
+            this.btnMegumin.Click += new System.EventHandler(this.btnMegumin_Click);
+            // 
+            // 
+            // btnAqua
+            // 
+            this.btnAqua.Name = "btnAqua";
+            this.btnAqua.Text = "アクア";
+            this.btnAqua.Click += new System.EventHandler(this.btnAqua_Click);
+            // 
+            // 
+            // btnDarkness
+            // 
+            this.btnDarkness.Name = "btnDarkness";
+            this.btnDarkness.Text = "ダクネス";
+            this.btnDarkness.Click += new System.EventHandler(this.btnDarkness_Click);
             // 
             // 
             // btnTanjiroKamado
@@ -942,6 +1007,11 @@
         private DevComponents.DotNetBar.ButtonItem btnLara;
         private DevComponents.DotNetBar.ButtonItem btnLynn;
         private DevComponents.DotNetBar.ButtonItem btnAngelicBuster;
+        private DevComponents.DotNetBar.ButtonItem btnPopuko;
+        private DevComponents.DotNetBar.ButtonItem btnPipimi;
+        private DevComponents.DotNetBar.ButtonItem btnMegumin;
+        private DevComponents.DotNetBar.ButtonItem btnAqua;
+        private DevComponents.DotNetBar.ButtonItem btnDarkness;
         private DevComponents.DotNetBar.ButtonItem btnTanjiroKamado;
         private DevComponents.DotNetBar.ButtonItem btnNezukoKamado;
         private DevComponents.DotNetBar.ButtonItem btnZenitsuAgatsuma;
@@ -949,6 +1019,9 @@
         private DevComponents.DotNetBar.ButtonItem btnLaraTheSheep;
         private DevComponents.DotNetBar.ButtonItem btnSaveAsGif;
         private DevComponents.DotNetBar.Controls.ComboBoxEx cmbEar;
+        private DevComponents.DotNetBar.Separator Separator1;
+        private DevComponents.DotNetBar.Separator Separator2;
+        private DevComponents.DotNetBar.Separator Separator3;
         private DevComponents.DotNetBar.LabelX labelX5;
         private DevComponents.DotNetBar.ButtonItem btnExport;
     }

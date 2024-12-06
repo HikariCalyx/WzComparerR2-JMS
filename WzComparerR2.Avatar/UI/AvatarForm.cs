@@ -849,7 +849,7 @@ namespace WzComparerR2.Avatar.UI
                 if (part.IsMixing)
                 {
                     text = string.Format("{0} ( {1} {2} : {3} {4} )\r\n{5}+{6}*{7}",
-                        Regex.Replace(sr.Name, "^([^ ]+색 )?", "믹스 "),
+                        Regex.Replace(sr.Name, "^([^ ]+色 )?", "ミックス "),
                         GetColorName(part.ID.Value),
                         100 - part.MixOpacity,
                         GetMixColorName(part.MixColor, part.ID.Value),
@@ -1422,6 +1422,71 @@ namespace WzComparerR2.Avatar.UI
                     return;
 
                 case DialogResult.Cancel:
+                default:
+                    return;
+            }
+        }
+        private void btnPopuko_Click(object sender, EventArgs e)
+        {
+            switch (MessageBoxEx.Show("ポプ子を呼びますか？", "確認", MessageBoxButtons.YesNo))
+            {
+                case DialogResult.Yes:
+                    LoadCode("2000,12000,21000,1005031,1053233,1073245", 0);
+                    return;
+
+                case DialogResult.No:
+                default:
+                    return;
+            }
+        }
+        private void btnPipimi_Click(object sender, EventArgs e)
+        {
+            switch (MessageBoxEx.Show("ピピ美を呼びますか？", "確認", MessageBoxButtons.YesNo))
+            {
+                case DialogResult.Yes:
+                    LoadCode("2000,12000,21000,1005028,1053233,1073245", 0);
+                    return;
+
+                case DialogResult.No:
+                default:
+                    return;
+            }
+        }
+        private void btnMegumin_Click(object sender, EventArgs e)
+        {
+            switch (MessageBoxEx.Show("めぐみんを呼びますか？", "確認", MessageBoxButtons.YesNo))
+            {
+                case DialogResult.Yes:
+                    LoadCode("2000,12000,56037,1006342,1054041,1073789,1703397,1012701", 0);
+                    return;
+
+                case DialogResult.No:
+                default:
+                    return;
+            }
+        }
+        private void btnAqua_Click(object sender, EventArgs e)
+        {
+            switch (MessageBoxEx.Show("アクアを呼びますか？", "確認", MessageBoxButtons.YesNo))
+            {
+                case DialogResult.Yes:
+                    LoadCode("2000,12000,56036,32750,1054040,1073788,1012804", 0);
+                    return;
+
+                case DialogResult.No:
+                default:
+                    return;
+            }
+        }
+        private void btnDarkness_Click(object sender, EventArgs e)
+        {
+            switch (MessageBoxEx.Show("ダクネスを呼びますか？", "確認", MessageBoxButtons.YesNo))
+            {
+                case DialogResult.Yes:
+                    LoadCode("2000,12000,56038,42240,1054042,1073790", 0);
+                    return;
+
+                case DialogResult.No:
                 default:
                     return;
             }
