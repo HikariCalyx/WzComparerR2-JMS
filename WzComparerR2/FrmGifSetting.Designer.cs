@@ -42,6 +42,7 @@
             this.comboItem1 = new DevComponents.Editors.ComboItem();
             this.comboItem2 = new DevComponents.Editors.ComboItem();
             this.comboItem6 = new DevComponents.Editors.ComboItem();
+            this.comboItem7 = new DevComponents.Editors.ComboItem();
             this.labelX3 = new DevComponents.DotNetBar.LabelX();
             this.slider1 = new DevComponents.DotNetBar.Controls.Slider();
             this.labelX4 = new DevComponents.DotNetBar.LabelX();
@@ -65,6 +66,7 @@
             this.comboItem4 = new DevComponents.Editors.ComboItem();
             this.comboItem5 = new DevComponents.Editors.ComboItem();
             this.checkBoxX3 = new DevComponents.DotNetBar.Controls.CheckBoxX();
+            this.buttonX3 = new DevComponents.DotNetBar.ButtonX();
             this.panelExMosaic.SuspendLayout();
             this.panelExColor.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.integerInput1)).BeginInit();
@@ -108,7 +110,7 @@
             this.checkBoxX1.Size = new System.Drawing.Size(163, 16);
             this.checkBoxX1.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
             this.checkBoxX1.TabIndex = 2;
-            this.checkBoxX1.Text = "透明な背景";
+            this.checkBoxX1.Text = "透明な背景 (x264では使用できません)";
             // 
             // buttonX1
             // 
@@ -159,12 +161,14 @@
             this.comboBoxEx1.Items.AddRange(new object[] {
             this.comboItem1,
             this.comboItem2,
-            this.comboItem6});
+            this.comboItem6,
+            this.comboItem7});
             this.comboBoxEx1.Location = new System.Drawing.Point(76, 170);
             this.comboBoxEx1.Name = "comboBoxEx1";
             this.comboBoxEx1.Size = new System.Drawing.Size(129, 19);
             this.comboBoxEx1.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
             this.comboBoxEx1.TabIndex = 6;
+            this.comboBoxEx1.SelectedIndexChanged += new System.EventHandler(this.comboBoxEx1_SelectedIndexChanged);
             // 
             // comboItem1
             // 
@@ -172,11 +176,16 @@
             // 
             // comboItem2
             // 
-            this.comboItem2.Text = "インデックスGIFエンコーダ";
+            this.comboItem2.Text = "ｲﾝﾃﾞｯｸｽGIFｴﾝｺｰﾀﾞ";
             // 
             // comboItem6
             // 
             this.comboItem6.Text = "APNGエンコーダ";
+
+            // 
+            // comboItem7
+            // 
+            this.comboItem7.Text = "FFMPEG x264ｴﾝｺｰﾀﾞ";
             // 
             // labelX3
             // 
@@ -234,7 +243,7 @@
             this.rdoMosaic.Name = "rdoMosaic";
             this.rdoMosaic.Size = new System.Drawing.Size(64, 16);
             this.rdoMosaic.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
-            superTooltipInfo2.BodyText = "Adds a mosaic background to a GIF.";
+            superTooltipInfo2.BodyText = "アニメーションファイルにモザイク背景を追加します。";
             superTooltipInfo2.Color = DevComponents.DotNetBar.eTooltipColor.System;
             this.superTooltip1.SetSuperTooltip(this.rdoMosaic, superTooltipInfo2);
             this.rdoMosaic.TabIndex = 3;
@@ -384,7 +393,7 @@
             this.rdoColor.Name = "rdoColor";
             this.rdoColor.Size = new System.Drawing.Size(57, 16);
             this.rdoColor.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
-            superTooltipInfo3.BodyText = "Adds transparency or a solid color to a GIF.";
+            superTooltipInfo3.BodyText = "アニメーションファイルに透明度または単色を追加します。";
             superTooltipInfo3.Color = DevComponents.DotNetBar.eTooltipColor.System;
             this.superTooltip1.SetSuperTooltip(this.rdoColor, superTooltipInfo3);
             this.rdoColor.TabIndex = 1;
@@ -489,17 +498,30 @@
             // 
             // 
             this.checkBoxX3.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
-            this.checkBoxX3.Location = new System.Drawing.Point(212, 174);
+            this.checkBoxX3.Location = new System.Drawing.Point(212, 197);
             this.checkBoxX3.Name = "checkBoxX3";
             this.checkBoxX3.Size = new System.Drawing.Size(119, 16);
             this.checkBoxX3.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
             this.checkBoxX3.TabIndex = 23;
             this.checkBoxX3.Text = "最適化 (APNG)";
             // 
+            // buttonX3
+            // 
+            this.buttonX3.ColorTable = DevComponents.DotNetBar.eButtonColor.OrangeWithBackground;
+            this.buttonX3.Location = new System.Drawing.Point(212, 170);
+            this.buttonX3.Name = "buttonX3";
+            this.buttonX3.Size = new System.Drawing.Size(120, 19);
+            this.buttonX3.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
+            this.buttonX3.TabIndex = 24;
+            this.buttonX3.Text = "FFMPEGパスを指定";
+            this.buttonX3.Click += new System.EventHandler(this.buttonX3_Click);
+            this.buttonX3.Tooltip = "FFMPEG は GPL ライセンスなので、WzComparerR2 に含めることはできません。自分で指定する必要があります。";
+            // 
             // FrmGifSetting
             // 
             this.CancelButton = this.buttonX2;
             this.ClientSize = new System.Drawing.Size(344, 311);
+            this.Controls.Add(this.buttonX3);
             this.Controls.Add(this.checkBoxX3);
             this.Controls.Add(this.comboBoxEx2);
             this.Controls.Add(this.labelX9);
@@ -567,6 +589,8 @@
         private DevComponents.Editors.ComboItem comboItem4;
         private DevComponents.Editors.ComboItem comboItem5;
         private DevComponents.Editors.ComboItem comboItem6;
+        private DevComponents.Editors.ComboItem comboItem7;
         private DevComponents.DotNetBar.Controls.CheckBoxX checkBoxX3;
+        private DevComponents.DotNetBar.ButtonX buttonX3;
     }
 }

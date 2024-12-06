@@ -48,6 +48,16 @@ namespace WzComparerR2
                         FileDescription = "APNG",
                         SupportAlphaChannel = true,
                     };
+
+                case 3:
+                    return new AnimateEncoderParams()
+                    {
+                        ID = 3,
+                        EncoderType = typeof(ExternalX264Encoder),
+                        FileExtension = ".mp4",
+                        FileDescription = "MP4",
+                        SupportAlphaChannel = false,
+                    };
             }
         }
 
@@ -72,6 +82,12 @@ namespace WzComparerR2
                     {
                         var enc = new BuildInApngEncoder(fileName, width, height);
                         enc.OptimizeEnabled = config.PaletteOptimized;
+                        return enc;
+                    }
+
+                case 3:
+                    {
+                        var enc = new ExternalX264Encoder(fileName, width, height);
                         return enc;
                     }
             }

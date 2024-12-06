@@ -102,6 +102,13 @@ namespace WzComparerR2.Config
             get { return (ConfigItem<Color>)this["overlayRectColor"]; }
             set { this["overlayRectColor"] = value; }
         }
+
+        [ConfigurationProperty("ffmpegPath")]
+        public ConfigItem<string> ffmpegPath
+        {
+            get { return (ConfigItem<string>)this["ffmpegPath"]; }
+            set { this["ffmpegPath"] = value; }
+        }
     }
 
     public enum ImageBackgroundType

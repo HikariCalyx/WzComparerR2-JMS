@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -131,6 +132,8 @@ namespace WzComparerR2
             set { checkBoxX3.Checked = value; }
         }
 
+        public string ffmpegPath { get; set; }
+
         public void Load(ImageHandlerConfig config)
         {
             this.SavePngFramesEnabled = config.SavePngFramesEnabled;
@@ -146,6 +149,7 @@ namespace WzComparerR2
             this.MosaicBlockSize = config.MosaicInfo.BlockSize;
 
             this.PaletteOptimized = config.PaletteOptimized;
+            this.ffmpegPath = config.ffmpegPath;
         }
 
         public void Save(ImageHandlerConfig config)
@@ -163,10 +167,25 @@ namespace WzComparerR2
             config.MosaicInfo.BlockSize = this.MosaicBlockSize;
 
             config.PaletteOptimized = this.PaletteOptimized;
+            config.ffmpegPath = this.ffmpegPath;
         }
 
         private void buttonX1_Click(object sender, EventArgs e)
         {
+            if (comboBoxEx1.SelectedIndex == 3 && !File.Exists(this.ffmpegPath) && String.IsNullOrEmpty(this.ffmpegPath))
+            {
+                DialogResult dialogResult = MessageBoxEx.Show("OKをクリックする前にFFMPEG.exeを指定する必要があります。\r\n今すぐFFMPEG.exeの場所を指定しますか?", "注意", MessageBoxButtons.YesNo);
+                switch (dialogResult)
+                {
+                    case DialogResult.Yes:
+                        buttonX3_Click(sender, e);
+                        if (!File.Exists(this.ffmpegPath) && String.IsNullOrEmpty(this.ffmpegPath)) return;
+                        break;
+                    case DialogResult.No:
+                    default:
+                        return;
+                }
+            }
             this.DialogResult = DialogResult.OK;
             this.Close();
         }
@@ -175,6 +194,17 @@ namespace WzComparerR2
         {
             this.DialogResult = DialogResult.Cancel;
             this.Close();
+        }
+
+        private void buttonX3_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog dlg = new OpenFileDialog();
+            dlg.Title = "FFMPEGの選択";
+            dlg.Filter = "FFMPEG (ffmpeg.exe)|ffmpeg.exe";
+            if (dlg.ShowDialog() == DialogResult.OK)
+            {
+                this.ffmpegPath = dlg.FileName;
+            }
         }
 
         private void slider1_ValueChanged(object sender, EventArgs e)
@@ -191,6 +221,23 @@ namespace WzComparerR2
         private void rdoMosaic_CheckedChanged(object sender, EventArgs e)
         {
             panelExMosaic.Enabled = rdoMosaic.Checked;
+        }
+
+        private void comboBoxEx1_SelectedIndexChanged(object sender, EventArgs args)
+        {
+            if (comboBoxEx1.SelectedIndex == 3) // x264 Encoder is selected
+            {
+                checkBoxX1.Checked = false;
+                checkBoxX1.Enabled = false;
+                slider1.Enabled = false;
+                buttonX3.Enabled = true;
+            }
+            else
+            {
+                checkBoxX1.Enabled = true;
+                slider1.Enabled = true;
+                buttonX3.Enabled = false;
+            }
         }
 
     }
