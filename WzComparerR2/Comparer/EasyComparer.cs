@@ -35,6 +35,11 @@ namespace WzComparerR2.Comparer
         public bool OutputAddedImg { get; set; }
         public bool OutputRemovedImg { get; set; }
         public bool EnableDarkMode { get; set; }
+        public bool OutputCashPackageTooltip { get; set; }
+        public bool OutputGearTooltip { get; set; }
+        public bool OutputItemTooltip { get; set; }
+        public bool OutputMobTooltip { get; set; }
+        public bool OutputNpcTooltip { get; set; }
         public bool OutputSkillTooltip { get; set; }
         public bool HashPngFileName { get; set; }
 

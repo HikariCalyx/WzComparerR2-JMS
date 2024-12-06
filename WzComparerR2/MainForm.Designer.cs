@@ -214,6 +214,11 @@ namespace WzComparerR2
             this.superTabControlPanel2 = new DevComponents.DotNetBar.SuperTabControlPanel();
             this.chkResolvePngLink = new DevComponents.DotNetBar.Controls.CheckBoxX();
             this.chkEnableDarkMode = new DevComponents.DotNetBar.Controls.CheckBoxX();
+            this.chkOutputCashPackageTooltip = new DevComponents.DotNetBar.Controls.CheckBoxX();
+            this.chkOutputGearTooltip = new DevComponents.DotNetBar.Controls.CheckBoxX();
+            this.chkOutputItemTooltip = new DevComponents.DotNetBar.Controls.CheckBoxX();
+            this.chkOutputMobTooltip = new DevComponents.DotNetBar.Controls.CheckBoxX();
+            this.chkOutputNpcTooltip = new DevComponents.DotNetBar.Controls.CheckBoxX();
             this.chkOutputSkillTooltip = new DevComponents.DotNetBar.Controls.CheckBoxX();
             this.superTooltip1 = new DevComponents.DotNetBar.SuperTooltip();
             this.chkOutputRemovedImg = new DevComponents.DotNetBar.Controls.CheckBoxX();
@@ -2476,6 +2481,11 @@ namespace WzComparerR2
             // 
             this.superTabControlPanel2.Controls.Add(this.chkHashPngFileName);
             this.superTabControlPanel2.Controls.Add(this.chkEnableDarkMode);
+            this.superTabControlPanel2.Controls.Add(this.chkOutputCashPackageTooltip);
+            this.superTabControlPanel2.Controls.Add(this.chkOutputGearTooltip);
+            this.superTabControlPanel2.Controls.Add(this.chkOutputItemTooltip);
+            this.superTabControlPanel2.Controls.Add(this.chkOutputMobTooltip);
+            this.superTabControlPanel2.Controls.Add(this.chkOutputNpcTooltip);
             this.superTabControlPanel2.Controls.Add(this.chkOutputSkillTooltip);
             this.superTabControlPanel2.Controls.Add(this.chkResolvePngLink);
             this.superTabControlPanel2.Controls.Add(this.chkOutputRemovedImg);
@@ -2520,6 +2530,77 @@ namespace WzComparerR2
             this.superTooltip1.SetSuperTooltip(this.chkEnableDarkMode, new DevComponents.DotNetBar.SuperTooltipInfo("ダークモード", "", "ダークモードHTMLとの比較を出力します。", null, null, DevComponents.DotNetBar.eTooltipColor.System, true, false, new System.Drawing.Size(180, 70)));
             this.chkEnableDarkMode.TabIndex = 9;
             this.chkEnableDarkMode.Text = "ダークモード";
+            this.superTooltip1.SetSuperTooltip(this.chkOutputMobTooltip, new DevComponents.DotNetBar.SuperTooltipInfo("モンスター比較の出力", "", "変更したモンスターを自動で出力する機能です。", null, null, DevComponents.DotNetBar.eTooltipColor.System, true, false, new System.Drawing.Size(180, 70)));
+            // 
+            // chkOutputCashPackageTooltip
+            // 
+            // 
+            // 
+            // 
+            this.chkOutputCashPackageTooltip.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
+            this.chkOutputCashPackageTooltip.Location = new System.Drawing.Point(550, 61);
+            this.chkOutputCashPackageTooltip.Name = "chkSaveSkillTooltip";
+            this.chkOutputCashPackageTooltip.Size = new System.Drawing.Size(200, 23);
+            this.chkOutputCashPackageTooltip.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
+            this.superTooltip1.SetSuperTooltip(this.chkOutputCashPackageTooltip, new DevComponents.DotNetBar.SuperTooltipInfo("ポイントパッケージ比較の出力", "", "変更したポイントパッケージを自動で出力する機能です。", null, null, DevComponents.DotNetBar.eTooltipColor.System, true, false, new System.Drawing.Size(180, 70)));
+            this.chkOutputCashPackageTooltip.TabIndex = 11;
+            this.chkOutputCashPackageTooltip.Text = "ポイントパッケージ比較の出力";
+            // 
+            // chkOutputGearTooltip
+            // 
+            // 
+            // 
+            // 
+            this.chkOutputGearTooltip.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
+            this.chkOutputGearTooltip.Location = new System.Drawing.Point(550, 88);
+            this.chkOutputGearTooltip.Name = "chkSaveSkillTooltip";
+            this.chkOutputGearTooltip.Size = new System.Drawing.Size(135, 23);
+            this.chkOutputGearTooltip.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
+            this.superTooltip1.SetSuperTooltip(this.chkOutputGearTooltip, new DevComponents.DotNetBar.SuperTooltipInfo("装備比較の出力", "", "変更した装備を自動で出力する機能です。", null, null, DevComponents.DotNetBar.eTooltipColor.System, true, false, new System.Drawing.Size(180, 70)));
+            this.chkOutputGearTooltip.TabIndex = 11;
+            this.chkOutputGearTooltip.Text = "装備比較の出力";
+            // 
+            // chkOutputItemTooltip
+            // 
+            // 
+            // 
+            // 
+            this.chkOutputItemTooltip.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
+            this.chkOutputItemTooltip.Location = new System.Drawing.Point(550, 115);
+            this.chkOutputItemTooltip.Name = "chkSaveSkillTooltip";
+            this.chkOutputItemTooltip.Size = new System.Drawing.Size(165, 23);
+            this.chkOutputItemTooltip.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
+            this.superTooltip1.SetSuperTooltip(this.chkOutputItemTooltip, new DevComponents.DotNetBar.SuperTooltipInfo("アイテム比較の出力", "", "変更したアイテムを自動で出力する機能です。", null, null, DevComponents.DotNetBar.eTooltipColor.System, true, false, new System.Drawing.Size(180, 70)));
+            this.chkOutputItemTooltip.TabIndex = 11;
+            this.chkOutputItemTooltip.Text = "アイテム比較の出力";
+            // 
+            // chkOutputMobTooltip
+            // 
+            // 
+            // 
+            // 
+            this.chkOutputMobTooltip.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
+            this.chkOutputMobTooltip.Location = new System.Drawing.Point(550, 142);
+            this.chkOutputMobTooltip.Name = "chkSaveSkillTooltip";
+            this.chkOutputMobTooltip.Size = new System.Drawing.Size(155, 23);
+            this.chkOutputMobTooltip.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
+            this.superTooltip1.SetSuperTooltip(this.chkOutputMobTooltip, new DevComponents.DotNetBar.SuperTooltipInfo("モンスター比較の出力", "", "変更したモンスターを自動で出力する機能です。", null, null, DevComponents.DotNetBar.eTooltipColor.System, true, false, new System.Drawing.Size(180, 70)));
+            this.chkOutputMobTooltip.TabIndex = 11;
+            this.chkOutputMobTooltip.Text = "モンスター比較の出力";
+            // 
+            // chkOutputNpcTooltip
+            // 
+            // 
+            // 
+            // 
+            this.chkOutputNpcTooltip.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
+            this.chkOutputNpcTooltip.Location = new System.Drawing.Point(550, 169);
+            this.chkOutputNpcTooltip.Name = "chkSaveSkillTooltip";
+            this.chkOutputNpcTooltip.Size = new System.Drawing.Size(135, 23);
+            this.chkOutputNpcTooltip.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
+            this.superTooltip1.SetSuperTooltip(this.chkOutputNpcTooltip, new DevComponents.DotNetBar.SuperTooltipInfo("NPC比較の出力", "", "変更したNPCを自動で出力する機能です。", null, null, DevComponents.DotNetBar.eTooltipColor.System, true, false, new System.Drawing.Size(180, 70)));
+            this.chkOutputNpcTooltip.TabIndex = 11;
+            this.chkOutputNpcTooltip.Text = "NPC比較の出力";
             // 
             // chkOutputSkillTooltip
             // 
@@ -2527,7 +2608,7 @@ namespace WzComparerR2
             // 
             // 
             this.chkOutputSkillTooltip.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
-            this.chkOutputSkillTooltip.Location = new System.Drawing.Point(440, 34);
+            this.chkOutputSkillTooltip.Location = new System.Drawing.Point(550, 34);
             this.chkOutputSkillTooltip.Name = "chkSaveSkillTooltip";
             this.chkOutputSkillTooltip.Size = new System.Drawing.Size(135, 23);
             this.chkOutputSkillTooltip.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
@@ -3426,6 +3507,11 @@ namespace WzComparerR2
         private DevComponents.DotNetBar.CheckBoxItem checkBoxItemRegex2;
         private DevComponents.DotNetBar.SuperTooltip superTooltip1;
         private DevComponents.DotNetBar.Controls.CheckBoxX chkEnableDarkMode;
+        private DevComponents.DotNetBar.Controls.CheckBoxX chkOutputCashPackageTooltip;
+        private DevComponents.DotNetBar.Controls.CheckBoxX chkOutputGearTooltip;
+        private DevComponents.DotNetBar.Controls.CheckBoxX chkOutputItemTooltip;
+        private DevComponents.DotNetBar.Controls.CheckBoxX chkOutputMobTooltip;
+        private DevComponents.DotNetBar.Controls.CheckBoxX chkOutputNpcTooltip;
         private DevComponents.DotNetBar.Controls.CheckBoxX chkOutputSkillTooltip;
         private DevComponents.DotNetBar.Controls.CheckBoxX chkHashPngFileName;
         private DevComponents.Editors.ComboItem comboItem19;
