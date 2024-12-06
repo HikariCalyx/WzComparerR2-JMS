@@ -1157,13 +1157,13 @@ namespace WzComparerR2.CharaSimControl
             {
                 tags.Add(ItemStringHelper.GetItemPropString(ItemPropType.multiPet, value));
             }
-            if (item.Props.TryGetValue(ItemPropType.mintable, out value))
-            {
-                tags.Add(ItemStringHelper.GetItemPropString(ItemPropType.mintable, value));
-            }
             else if (item.ItemID / 10000 == 500)
             {
                 tags.Add(ItemStringHelper.GetItemPropString(ItemPropType.multiPet, 0));
+            }
+            if (item.Props.TryGetValue(ItemPropType.mintable, out value))
+            {
+                tags.Add(ItemStringHelper.GetItemPropString(ItemPropType.mintable, value));
             }
 
             return tags;

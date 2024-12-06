@@ -661,7 +661,7 @@ namespace WzComparerR2.CharaSim
                     return value == 0 ? null : "魔法の時間が終わらないミラクルペットです。";
                 case ItemPropType.multiPet:
                     // return value == 0 ? null : "マルチペット(他のペットと最大3個重複使用可能)";
-                    return value == 0 ? "" : "";
+                    return value == 0 ? "一般ペット(他の一般ペットと重複使用不可)" : "マルチペット(他のペットと最大3個重複使用可能)";
                 case ItemPropType.mintable:
                     return GetGearPropString(GearPropType.mintable, value);
                 default:
