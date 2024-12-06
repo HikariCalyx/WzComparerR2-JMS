@@ -376,7 +376,9 @@ namespace WzComparerR2.Avatar
             {
                 return null;
             }
-            AvatarPart part = new AvatarPart(imgNode, forceIcon, forceID, brm, forceAct);
+            AvatarPart part = new AvatarPart(imgNode, forceIcon, forceID, false);
+            part.forceAction = forceAct;
+            part.bodyRelMove = brm;
 
             this.Taming = part;
 
@@ -539,19 +541,15 @@ namespace WzComparerR2.Avatar
 
         private ActionFrame GetTamingFrame(string action, int frameIndex)
         {
-            var actionNode = this.Taming?.Node.Nodes[action]?.ResolveUol();
-            if (actionNode == null)
+            if (action == "effect") // 의자 아이템
             {
-                if (action == "effect") // 의자 아이템
+                if ((this.Taming.Node.FindNodeByPath(action)?.Nodes.Count ?? 0) < this.Taming.Node.FindNodeByPath("effect2")?.Nodes.Count)
                 {
-                    actionNode = this.Taming?.Node.Nodes["effect2"]?.ResolveUol();
-                }
-
-                if (actionNode == null)
-                {
-                    return null;
+                    action = "effect2";
                 }
             }
+
+            var actionNode = this.Taming?.Node.Nodes[action]?.ResolveUol();
 
             var frameNode = actionNode.Nodes[frameIndex.ToString()];
             if (frameNode != null)
