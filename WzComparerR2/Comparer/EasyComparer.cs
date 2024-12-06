@@ -26,7 +26,17 @@ namespace WzComparerR2.Comparer
         private Wz_File[] StringWzNewOld { get; set; } = new Wz_File[2];
         private Wz_File[] ItemWzNewOld { get; set; } = new Wz_File[2];
         private Wz_File[] EtcWzNewOld { get; set; } = new Wz_File[2];
+        private List<string> OutputCashPackageTooltipIDs { get; set; } = new List<string>();
+        private List<string> OutputGearTooltipIDs { get; set; } = new List<string>();
+        private List<string> OutputItemTooltipIDs { get; set; } = new List<string>();
+        private List<string> OutputMobTooltipIDs { get; set; } = new List<string>();
+        private List<string> OutputNpcTooltipIDs { get; set; } = new List<string>();
         private List<string> OutputSkillTooltipIDs { get; set; } = new List<string>();
+        private Dictionary<string, List<string>> DiffCashPackageTags { get; set; } = new Dictionary<string, List<string>>();
+        private Dictionary<string, List<string>> DiffGearTags { get; set; } = new Dictionary<string, List<string>>();
+        private Dictionary<string, List<string>> DiffItemTags { get; set; } = new Dictionary<string, List<string>>();
+        private Dictionary<string, List<string>> DiffMobTags { get; set; } = new Dictionary<string, List<string>>();
+        private Dictionary<string, List<string>> DiffNpcTags { get; set; } = new Dictionary<string, List<string>>();
         private Dictionary<string, List<string>> DiffSkillTags { get; set; } = new Dictionary<string, List<string>>();
         public WzFileComparer Comparer { get; protected set; }
         private string stateInfo;
@@ -352,6 +362,11 @@ namespace WzComparerR2.Comparer
             {
                 Directory.CreateDirectory(srcDirPath);
             }
+            string cashPackageTooltipPath = Path.Combine(outputDir, "CashPackageTooltips");
+            string gearTooltipPath = Path.Combine(outputDir, "GearPackageTooltips");
+            string itemTooltipPath = Path.Combine(outputDir, "ItemTooltips");
+            string mobTooltipPath = Path.Combine(outputDir, "MobPackageTooltips");
+            string npcTooltipPath = Path.Combine(outputDir, "NpcPackageTooltips");
             string skillTooltipPath = Path.Combine(outputDir, "SkillTooltips");
 
             FileStream htmlFile = null;
@@ -545,13 +560,56 @@ namespace WzComparerR2.Comparer
                 OnPatchingStateChanged(new Patcher.PatchingEventArgs(null, Patcher.PatchingState.CompareFinished));
             }
 
-            if (OutputSkillTooltip && type.ToString() == "String" && OutputSkillTooltipIDs != null)
+            if (type.ToString() == "String")
             {
-                if (!Directory.Exists(skillTooltipPath))
+                if (OutputCashPackageTooltip && OutputCashPackageTooltipIDs != null)
                 {
-                    Directory.CreateDirectory(skillTooltipPath);
+                    if (!Directory.Exists(cashPackageTooltipPath))
+                    {
+                        Directory.CreateDirectory(cashPackageTooltipPath);
+                    }
+                    //SaveCashPackageTooltip(cashPackageTooltipPath);
                 }
-                SaveSkillTooltip(skillTooltipPath);
+                if (OutputGearTooltip && OutputGearTooltipIDs != null)
+                {
+                    if (!Directory.Exists(gearTooltipPath))
+                    {
+                        Directory.CreateDirectory(gearTooltipPath);
+                    }
+                    //SaveGearTooltip(gearTooltipPath);
+                }
+                if (OutputItemTooltip && OutputItemTooltipIDs != null)
+                {
+                    if (!Directory.Exists(itemTooltipPath))
+                    {
+                        Directory.CreateDirectory(itemTooltipPath);
+                    }
+                    //SaveItemTooltip(itemTooltipPath);
+                }
+                if (OutputMobTooltip && OutputMobTooltipIDs != null)
+                {
+                    if (!Directory.Exists(mobTooltipPath))
+                    {
+                        Directory.CreateDirectory(mobTooltipPath);
+                    }
+                    //SaveMobTooltip(mobTooltipPath);
+                }
+                if (OutputNpcTooltip && OutputNpcTooltipIDs != null)
+                {
+                    if (!Directory.Exists(npcTooltipPath))
+                    {
+                        Directory.CreateDirectory(npcTooltipPath);
+                    }
+                    //SaveNpcTooltip(npcTooltipPath);
+                }
+                if (OutputSkillTooltip && OutputSkillTooltipIDs != null)
+                {
+                    if (!Directory.Exists(skillTooltipPath))
+                    {
+                        Directory.CreateDirectory(skillTooltipPath);
+                    }
+                    SaveSkillTooltip(skillTooltipPath);
+                }
             }
         }
 
@@ -687,7 +745,7 @@ namespace WzComparerR2.Comparer
             DiffSkillTags.Clear();
         }
 
-        // 노드에서 스킬 ID 얻기
+        // ノードからスキルIDを取得する
         private void GetSkillID(Wz_Node node, bool change)
         {
             if (node == null) return;
