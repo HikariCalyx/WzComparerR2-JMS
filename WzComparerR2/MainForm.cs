@@ -3035,7 +3035,8 @@ namespace WzComparerR2
             object obj = null;
             string fileName = null;
 
-            StringResult sr;
+            StringResult sr = new StringResult();
+            StringBuilder clipboardContent = new StringBuilder("");
             switch (wzf.Type)
             {
                 case Wz_Type.Character:
@@ -3046,9 +3047,14 @@ namespace WzComparerR2
                     CharaSimLoader.LoadCommoditiesIfEmpty();
                     var gear = Gear.CreateFromNode(image.Node, PluginManager.FindWz);
                     obj = gear;
+                    if (stringLinker == null || !stringLinker.StringEqp.TryGetValue(gear.ItemID, out sr))
+                    {
+                        sr = new StringResult();
+                        sr.Name = "未知の装備";
+                    }
                     if (gear != null)
                     {
-                        fileName = gear.ItemID + ".png";
+                        fileName = "eqp_" + gear.ItemID + "_" + sr.Name + ".png";
                     }
                     break;
                 case Wz_Type.Item:
@@ -3183,10 +3189,17 @@ namespace WzComparerR2
                     }
                     break;
             }
+            if (!String.IsNullOrEmpty(sr.Name)) clipboardContent.AppendLine(sr.Name);
+            if (!String.IsNullOrEmpty(sr.Desc)) clipboardContent.AppendLine(sr.Desc);
+            if (!String.IsNullOrEmpty(sr.Pdesc)) clipboardContent.AppendLine(sr.Pdesc);
+            if (!String.IsNullOrEmpty(sr.AutoDesc)) clipboardContent.AppendLine(sr.AutoDesc);
+            if (!String.IsNullOrEmpty(sr["h"])) clipboardContent.AppendLine(sr["h"]);
+            if (!String.IsNullOrEmpty(sr["desc_leftalign"])) clipboardContent.AppendLine(sr["desc_leftalign"]);
             if (obj != null)
             {
                 tooltipQuickView.TargetItem = obj;
                 tooltipQuickView.ImageFileName = fileName;
+                tooltipQuickView.ClipboardContent = clipboardContent.ToString();
                 tooltipQuickView.Refresh();
                 tooltipQuickView.HideOnHover = false;
                 tooltipQuickView.Show();

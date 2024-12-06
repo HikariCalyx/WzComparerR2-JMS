@@ -17,6 +17,7 @@ namespace WzComparerR2.CharaSimControl
             this.menu = new ContextMenuStrip();
             this.menu.Items.Add(new ToolStripMenuItem("クリップボードにコピー", null, tsmiCopy_Click));
             this.menu.Items.Add(new ToolStripMenuItem("PNGに保存", null, tsmiSave_Click));
+            this.menu.Items.Add(new ToolStripMenuItem("文字列をコピー", null, tsmiCopyText_Click));
             this.menu.Items.Add(new ToolStripMenuItem("閉じる (Esc)", null, tsmiClose_Click));
             this.ContextMenuStrip = this.menu;
 
@@ -60,6 +61,7 @@ namespace WzComparerR2.CharaSimControl
         public SetItemTooltipRender SetItemRender { get; private set; }
 
         public string ImageFileName { get; set; }
+        public string ClipboardContent { get; set; }
 
         public bool ShowID
         {
@@ -212,19 +214,7 @@ namespace WzComparerR2.CharaSimControl
 
         void tsmiCopyText_Click(object sender, EventArgs e)
         {
-            var dataObj = new DataObject();
-            string name, desc, descex;
-            switch (item)
-            {
-                case Skill:
-                case Item:
-                case Gear:
-                    Clipboard.SetDataObject(dataObj, true);
-                    break;
-                default:
-                    Clipboard.SetDataObject(dataObj, true);
-                    break;
-            }
+            Clipboard.SetText(ClipboardContent);
         }
 
         void tsmiClose_Click(object sender, EventArgs e)
