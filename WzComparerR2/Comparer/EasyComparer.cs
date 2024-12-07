@@ -603,7 +603,7 @@ namespace WzComparerR2.Comparer
                 {
                     skillName = sr.Name;
                 }
-                skillName = Regex.Replace(skillName, "<>:\"/\\\\\\|\\?\\*", "_", RegexOptions.Compiled);
+                skillName = RemoveInvalidFileNameChars(skillName);
                 int nullSkillIdx = 0;
 
                 // 変更前後のツールチップ画像の作成
@@ -985,6 +985,13 @@ namespace WzComparerR2.Comparer
                 hex.AppendFormat("{0:x2}", b);
             }
             return hex.ToString();
+        }
+
+        private static string RemoveInvalidFileNameChars(string fileName)
+        {
+            string invalidChars = new string(System.IO.Path.GetInvalidFileNameChars());
+            string regexPattern = $"[{Regex.Escape(invalidChars)}]";
+            return Regex.Replace(fileName, regexPattern, "_");
         }
     }
 }
