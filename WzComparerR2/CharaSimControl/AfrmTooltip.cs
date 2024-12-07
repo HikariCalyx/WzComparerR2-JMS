@@ -61,8 +61,15 @@ namespace WzComparerR2.CharaSimControl
         public SetItemTooltipRender SetItemRender { get; private set; }
 
         public string ImageFileName { get; set; }
-        public string ClipboardContent { get; set; }
-
+        public string NodeName { get; set; }
+        public string Desc { get; set; }
+        public string Pdesc { get; set; }
+        public string AutoDesc { get; set; }
+        public string Hdesc { get; set; }
+        public string DescLeftAlign { get; set; }
+        public int PreferredStringCopyMethod { get; set; }
+        public bool CopyParsedSkillString { get; set; }
+        
         public bool ShowID
         {
             get { return this.showID; }
@@ -214,7 +221,58 @@ namespace WzComparerR2.CharaSimControl
 
         void tsmiCopyText_Click(object sender, EventArgs e)
         {
-            Clipboard.SetText(ClipboardContent);
+            StringBuilder sb = new StringBuilder();
+            if (!String.IsNullOrEmpty(this.NodeName)) sb.AppendLine(this.NodeName);
+            if (this.CopyParsedSkillString && item is Skill) this.Hdesc = this.SkillRender.ParsedHdesc;
+            switch (this.PreferredStringCopyMethod)
+            {
+                default:
+                case 0:
+                    if (!String.IsNullOrEmpty(this.Desc)) sb.AppendLine(this.Desc);
+                    if (!String.IsNullOrEmpty(this.Pdesc)) sb.AppendLine(this.Pdesc);
+                    if (!String.IsNullOrEmpty(this.AutoDesc)) sb.AppendLine(this.AutoDesc);
+                    if (!String.IsNullOrEmpty(this.Hdesc)) sb.AppendLine(this.Hdesc);
+                    if (!String.IsNullOrEmpty(this.DescLeftAlign)) sb.AppendLine(this.DescLeftAlign);
+                    break;
+                case 1:
+                    foreach (string i in (this.Desc + this.Pdesc + this.AutoDesc).Split(new string[] { "\\n" }, StringSplitOptions.None))
+                    {
+                        sb.AppendLine(i.Replace("\\r", "").Replace("#c", "").Replace("#", ""));
+                    }
+                    foreach (string i in this.Hdesc.Split(new string[] { "\\n" }, StringSplitOptions.None))
+                    {
+                        if (this.CopyParsedSkillString)
+                        {
+                            sb.AppendLine(i.Replace("\\r", "").Replace("#c", "").Replace("#", ""));
+                        }
+                        else
+                        {
+                            sb.AppendLine(i.Replace("\\r", ""));
+                        }   
+                    }
+                    break;
+                case 2:
+                    if (!String.IsNullOrEmpty(this.Desc)) sb.AppendLine(this.Desc.Replace("\\r", "").Replace("\\n", "<br />").Replace("#c", "<span class=\"darkorange-text\">").Replace("#", "</span>"));
+                    if (!String.IsNullOrEmpty(this.Pdesc)) sb.AppendLine(this.Pdesc.Replace("\\r", "").Replace("\\n", "<br />").Replace("#c", "<span class=\"darkorange-text\">").Replace("#", "</span>"));
+                    if (!String.IsNullOrEmpty(this.AutoDesc)) sb.AppendLine(this.AutoDesc.Replace("\\r", "").Replace("\\n", "<br />").Replace("#c", "<span class=\"darkorange-text\">").Replace("#", "</span>"));
+                    if (this.CopyParsedSkillString)
+                    {
+                        if (!String.IsNullOrEmpty(this.Hdesc)) sb.AppendLine(this.Hdesc.Replace("\\r", "").Replace("\\n", "<br />").Replace("#c", "<span class=\"darkorange-text\">").Replace("#", "</span>"));
+                    }
+                    else
+                    {
+                        if (!String.IsNullOrEmpty(this.Hdesc)) sb.AppendLine(this.Hdesc.Replace("\\r", "").Replace("\\n", "<br />"));
+                    }                    
+                    if (!String.IsNullOrEmpty(this.DescLeftAlign)) sb.AppendLine(this.DescLeftAlign.Replace("\\r", "").Replace("\\n", "<br />").Replace("#c", "<span class=\"darkorange-text\">").Replace("#", "</span>"));
+                    break;
+            }
+            this.NodeName = null;
+            this.Desc = null;
+            this.Pdesc = null;
+            this.AutoDesc = null;
+            this.Hdesc = null;
+            this.DescLeftAlign = null;
+            Clipboard.SetText(sb.ToString());
         }
 
         void tsmiClose_Click(object sender, EventArgs e)

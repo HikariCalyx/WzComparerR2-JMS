@@ -225,6 +225,8 @@ namespace WzComparerR2
         {
             var Setting = CharaSimConfig.Default;
             this.buttonItemAutoQuickView.Checked = Setting.AutoQuickView;
+            tooltipQuickView.PreferredStringCopyMethod = Setting.PreferredStringCopyMethod;
+            tooltipQuickView.CopyParsedSkillString = Setting.CopyParsedSkillString;
             tooltipQuickView.SkillRender.ShowProperties = Setting.Skill.ShowProperties;
             tooltipQuickView.SkillRender.ShowObjectID = Setting.Skill.ShowID;
             tooltipQuickView.SkillRender.ShowDelay = Setting.Skill.ShowDelay;
@@ -3036,7 +3038,6 @@ namespace WzComparerR2
             string fileName = null;
 
             StringResult sr = new StringResult();
-            StringBuilder clipboardContent = new StringBuilder("");
             switch (wzf.Type)
             {
                 case Wz_Type.Character:
@@ -3189,17 +3190,16 @@ namespace WzComparerR2
                     }
                     break;
             }
-            if (!String.IsNullOrEmpty(sr.Name)) clipboardContent.AppendLine(sr.Name);
-            if (!String.IsNullOrEmpty(sr.Desc)) clipboardContent.AppendLine(sr.Desc);
-            if (!String.IsNullOrEmpty(sr.Pdesc)) clipboardContent.AppendLine(sr.Pdesc);
-            if (!String.IsNullOrEmpty(sr.AutoDesc)) clipboardContent.AppendLine(sr.AutoDesc);
-            if (!String.IsNullOrEmpty(sr["h"])) clipboardContent.AppendLine(sr["h"]);
-            if (!String.IsNullOrEmpty(sr["desc_leftalign"])) clipboardContent.AppendLine(sr["desc_leftalign"]);
             if (obj != null)
             {
                 tooltipQuickView.TargetItem = obj;
                 tooltipQuickView.ImageFileName = fileName;
-                tooltipQuickView.ClipboardContent = clipboardContent.ToString();
+                tooltipQuickView.NodeName = sr.Name;
+                tooltipQuickView.Desc = sr.Desc;
+                tooltipQuickView.Pdesc = sr.Pdesc;
+                tooltipQuickView.AutoDesc = sr.AutoDesc;
+                tooltipQuickView.Hdesc = sr["h"];
+                tooltipQuickView.DescLeftAlign = sr["desc_leftalign"];
                 tooltipQuickView.Refresh();
                 tooltipQuickView.HideOnHover = false;
                 tooltipQuickView.Show();

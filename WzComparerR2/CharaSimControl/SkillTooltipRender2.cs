@@ -37,6 +37,7 @@ namespace WzComparerR2.CharaSimControl
         public Wz_Node wzNode { get; set; } = null;
 
         public TooltipRender LinkRidingGearRender { get; set; }
+        public string ParsedHdesc { get; set; }
 
         public override Bitmap Render()
         {
@@ -330,6 +331,7 @@ namespace WzComparerR2.CharaSimControl
                     }
                 }
                 string hStr = SummaryParser.GetSkillSummary(Skill, Skill.Level, sr, SummaryParams.Default, skillSummaryOptions, doHighlight, skillIDstr, this.DiffSkillTags);
+
                 GearGraphics.DrawString(g, "[現在レベル" + Skill.Level + "]", GearGraphics.ItemDetailFont, region.LevelDescLeft, region.TextRight, ref picH, 16);
                 if (Skill.SkillID / 10000 / 1000 == 10 && Skill.Level == 1 && Skill.ReqLevel > 0)
                 {
@@ -337,6 +339,7 @@ namespace WzComparerR2.CharaSimControl
                 }
                 if (hStr != null)
                 {
+                    ParsedHdesc = hStr;
                     if (isTranslateRequired)
                     {
                         string mergedhStr = Translator.MergeString(hStr, Translator.TranslateString(hStr), 2);
