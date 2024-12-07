@@ -3056,6 +3056,7 @@ namespace WzComparerR2
                     if (gear != null)
                     {
                         fileName = "eqp_" + gear.ItemID + "_" + sr.Name + ".png";
+                        tooltipQuickView.NodeID = gear.ItemID;
                     }
                     break;
                 case Wz_Type.Item:
@@ -3073,6 +3074,7 @@ namespace WzComparerR2
                         if (item != null)
                         {
                             fileName = "item_" + item.ItemID + "_" + sr.Name + ".png";
+                            tooltipQuickView.NodeID = item.ItemID;
                         }
                     }
                     else if (Regex.IsMatch(itemNode.FullPathToFile, @"^Item\\Pet\\\d{7}.img"))
@@ -3093,6 +3095,7 @@ namespace WzComparerR2
                         if (item != null)
                         {
                             fileName = "pet_" + item.ItemID + "_" + sr.Name + ".png";
+                            tooltipQuickView.NodeID = item.ItemID;
                         }
                     }
 
@@ -3112,6 +3115,7 @@ namespace WzComparerR2
                         if (recipe != null)
                         {
                             fileName = "recipe_" + recipe.RecipeID + "_" + sr.Name + ".png";
+                            tooltipQuickView.NodeID = recipe.RecipeID;
                         }
                     }
                     else if (Regex.IsMatch(skillNode.FullPathToFile, @"^Skill\d*\\\d+.img\\skill\\\d+$"))
@@ -3133,6 +3137,7 @@ namespace WzComparerR2
                             }
                             obj = skill;
                             fileName = "skill_" + skill.SkillID + "_" + sr.Name + ".png";
+                            tooltipQuickView.NodeID = skill.SkillID;
                         }
                     }
                     break;
@@ -3150,6 +3155,7 @@ namespace WzComparerR2
                     if (mob != null)
                     {
                         fileName = "mob_" + mob.ID + "_" + sr.Name + ".png";
+                        tooltipQuickView.NodeID = mob.ID;
                     }
                     break;
 
@@ -3166,6 +3172,7 @@ namespace WzComparerR2
                     if (npc != null)
                     {
                         fileName = "npc_" + npc.ID + "_" + sr.Name + ".png";
+                        tooltipQuickView.NodeID = npc.ID;
                     }
                     break;
 
@@ -3186,6 +3193,7 @@ namespace WzComparerR2
                         if (setItem != null)
                         {
                             fileName = "set_" + setItem.SetItemID + "_" + sr.Name + ".png";
+                            tooltipQuickView.NodeID = setItem.SetItemID;
                         }
                     }
                     break;

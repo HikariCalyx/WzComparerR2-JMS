@@ -67,6 +67,7 @@ namespace WzComparerR2.CharaSimControl
         public string AutoDesc { get; set; }
         public string Hdesc { get; set; }
         public string DescLeftAlign { get; set; }
+        public int NodeID { get; set; }
         public int PreferredStringCopyMethod { get; set; }
         public bool CopyParsedSkillString { get; set; }
         
@@ -252,6 +253,7 @@ namespace WzComparerR2.CharaSimControl
                     }
                     break;
                 case 2:
+                    sb.AppendLine(this.NodeID.ToString());
                     if (!String.IsNullOrEmpty(this.Desc)) sb.AppendLine(this.Desc.Replace("\\r", "").Replace("\\n", "<br />").Replace("#c", "<span class=\"darkorange-text\">").Replace("#", "</span>"));
                     if (!String.IsNullOrEmpty(this.Pdesc)) sb.AppendLine(this.Pdesc.Replace("\\r", "").Replace("\\n", "<br />").Replace("#c", "<span class=\"darkorange-text\">").Replace("#", "</span>"));
                     if (!String.IsNullOrEmpty(this.AutoDesc)) sb.AppendLine(this.AutoDesc.Replace("\\r", "").Replace("\\n", "<br />").Replace("#c", "<span class=\"darkorange-text\">").Replace("#", "</span>"));
