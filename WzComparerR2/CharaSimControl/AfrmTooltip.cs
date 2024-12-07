@@ -224,6 +224,11 @@ namespace WzComparerR2.CharaSimControl
         {
             StringBuilder sb = new StringBuilder();
             if (!String.IsNullOrEmpty(this.NodeName)) sb.AppendLine(this.NodeName);
+            if (String.IsNullOrEmpty(this.Desc)) this.Desc = "";
+            if (String.IsNullOrEmpty(this.Pdesc)) this.Pdesc = "";
+            if (String.IsNullOrEmpty(this.AutoDesc)) this.AutoDesc = "";
+            if (String.IsNullOrEmpty(this.Hdesc)) this.Hdesc = "";
+            if (String.IsNullOrEmpty(this.DescLeftAlign)) this.DescLeftAlign = "";
             if (this.CopyParsedSkillString && item is Skill) this.Hdesc = this.SkillRender.ParsedHdesc;
             switch (this.PreferredStringCopyMethod)
             {
@@ -236,20 +241,43 @@ namespace WzComparerR2.CharaSimControl
                     if (!String.IsNullOrEmpty(this.DescLeftAlign)) sb.AppendLine(this.DescLeftAlign);
                     break;
                 case 1:
-                    foreach (string i in (this.Desc + this.Pdesc + this.AutoDesc).Split(new string[] { "\\n" }, StringSplitOptions.None))
+                    if ((this.Desc + this.Pdesc + this.AutoDesc).Contains("\\n"))
                     {
-                        sb.AppendLine(i.Replace("\\r", "").Replace("#c", "").Replace("#", ""));
-                    }
-                    foreach (string i in this.Hdesc.Split(new string[] { "\\n" }, StringSplitOptions.None))
-                    {
-                        if (this.CopyParsedSkillString)
+                        foreach (string i in (this.Desc + this.Pdesc + this.AutoDesc).Split(new string[] { "\\n" }, StringSplitOptions.None))
                         {
                             sb.AppendLine(i.Replace("\\r", "").Replace("#c", "").Replace("#", ""));
                         }
+                    }
+                    else
+                    {
+                        if (!String.IsNullOrEmpty(this.Desc)) sb.AppendLine(this.Desc);
+                        if (!String.IsNullOrEmpty(this.Pdesc)) sb.AppendLine(this.Pdesc);
+                        if (!String.IsNullOrEmpty(this.AutoDesc)) sb.AppendLine(this.AutoDesc);
+                    }
+                    if (this.Hdesc.Contains("\\n"))
+                    {
+                        foreach (string i in this.Hdesc.Split(new string[] { "\\n" }, StringSplitOptions.None))
+                        {
+                            if (this.CopyParsedSkillString)
+                            {
+                                sb.AppendLine(i.Replace("\\r", "").Replace("#c", "").Replace("#", ""));
+                            }
+                            else
+                            {
+                                sb.AppendLine(i.Replace("\\r", ""));
+                            }
+                        }
+                    }
+                    else
+                    {
+                        if (this.CopyParsedSkillString)
+                        {
+                            sb.AppendLine(this.Hdesc.Replace("#c", "").Replace("#", ""));
+                        }
                         else
                         {
-                            sb.AppendLine(i.Replace("\\r", ""));
-                        }   
+                            sb.AppendLine(this.Hdesc);
+                        }
                     }
                     break;
                 case 2:
@@ -268,13 +296,8 @@ namespace WzComparerR2.CharaSimControl
                     if (!String.IsNullOrEmpty(this.DescLeftAlign)) sb.AppendLine(this.DescLeftAlign.Replace("\\r", "").Replace("\\n", "<br />").Replace("#c", "<span class=\"darkorange-text\">").Replace("#", "</span>"));
                     break;
             }
-            this.NodeName = null;
-            this.Desc = null;
-            this.Pdesc = null;
-            this.AutoDesc = null;
-            this.Hdesc = null;
-            this.DescLeftAlign = null;
             Clipboard.SetText(sb.ToString());
+            sb.Clear();
         }
 
         void tsmiClose_Click(object sender, EventArgs e)
