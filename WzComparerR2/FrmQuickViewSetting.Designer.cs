@@ -30,6 +30,7 @@
         {
             this.superTabControl1 = new DevComponents.DotNetBar.SuperTabControl();
             this.superTabControlPanel1 = new DevComponents.DotNetBar.SuperTabControlPanel();
+            this.checkBoxX21 = new DevComponents.DotNetBar.Controls.CheckBoxX();
             this.checkBoxX20 = new DevComponents.DotNetBar.Controls.CheckBoxX();
             this.checkBoxX19 = new DevComponents.DotNetBar.Controls.CheckBoxX();
             this.checkBoxX18 = new DevComponents.DotNetBar.Controls.CheckBoxX();
@@ -165,6 +166,21 @@
             this.checkBoxX19.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
             this.checkBoxX19.TabIndex = 10;
             this.checkBoxX19.Text = "ポイント購入価額を表示";
+            // 
+            // checkBoxX21
+            // 
+            this.checkBoxX21.AutoSize = true;
+            this.checkBoxX21.BackColor = System.Drawing.Color.Transparent;
+            // 
+            // 
+            // 
+            this.checkBoxX21.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
+            this.checkBoxX21.Location = new System.Drawing.Point(13, 179);
+            this.checkBoxX21.Name = "checkBoxX21";
+            this.checkBoxX21.Size = new System.Drawing.Size(152, 16);
+            this.checkBoxX21.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
+            this.checkBoxX21.TabIndex = 10;
+            this.checkBoxX21.Text = "戦闘力増加量を表示";
             // 
             // checkBoxX20
             // 
@@ -448,6 +464,7 @@
             // 
             // superTabControlPanel2
             // 
+            this.superTabControlPanel2.Controls.Add(this.checkBoxX21);
             this.superTabControlPanel2.Controls.Add(this.checkBoxX19);
             this.superTabControlPanel2.Controls.Add(this.checkBoxX18);
             this.superTabControlPanel2.Controls.Add(this.checkBoxX16);
@@ -835,6 +852,7 @@
         private DevComponents.DotNetBar.Controls.CheckBoxX checkBoxX18;
         private DevComponents.DotNetBar.Controls.CheckBoxX checkBoxX19;
         private DevComponents.DotNetBar.Controls.CheckBoxX checkBoxX20;
+        private DevComponents.DotNetBar.Controls.CheckBoxX checkBoxX21;
         private DevComponents.DotNetBar.LabelX labelX4;
         private DevComponents.DotNetBar.Controls.ComboBoxEx cmbPreferredStringCopyMethod;
         private DevComponents.DotNetBar.Controls.CheckBoxX chkCopyParsedSkillString;

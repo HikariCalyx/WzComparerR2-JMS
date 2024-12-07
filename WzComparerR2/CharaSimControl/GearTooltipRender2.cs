@@ -55,6 +55,7 @@ namespace WzComparerR2.CharaSimControl
         public bool IsCombineProperties { get; set; } = true;
         public bool ShowSoldPrice { get; set; }
         public bool ShowCashPurchasePrice { get; set; }
+        public bool ShowCombatPower { get; set; }
         public bool AutoTitleWrap { get; set; }
         private bool isCurrencyConversionEnabled = (Translator.DefaultDesiredCurrency != "none");
         private string titleLanguage = "";
@@ -606,20 +607,34 @@ namespace WzComparerR2.CharaSimControl
             g.DrawImage(Resource.UIToolTip_img_Item_ItemIcon_old, 14 - 2 + 5, picH + 9 + 5);
             g.DrawImage(Resource.UIToolTip_img_Item_ItemIcon_cover, 16, picH + 14); //绘制左上角cover
 
-            //绘制攻击力变化
-            format.Alignment = StringAlignment.Far;
-            TextRenderer.DrawText(g, "攻撃力增加量", GearGraphics.EquipDetailFont, new Point(252 - TextRenderer.MeasureText(g, "攻撃力增加量", GearGraphics.EquipDetailFont, new Size(int.MaxValue, int.MaxValue), TextFormatFlags.NoPadding).Width, picH + 10), ((SolidBrush)GearGraphics.GrayBrush2).Color, TextFormatFlags.NoPadding | TextFormatFlags.NoPrefix);
-            g.DrawImage(Resource.UIToolTip_img_Item_Equip_Summary_incline_0, 253 - 15, picH + 25); //暂时画个0
+            if (ShowCombatPower)
+            {
+                //绘制攻击力变化
+                format.Alignment = StringAlignment.Far;
+                TextRenderer.DrawText(g, "攻撃力增加量", GearGraphics.EquipDetailFont, new Point(252 - TextRenderer.MeasureText(g, "攻撃力增加量", GearGraphics.EquipDetailFont, new Size(int.MaxValue, int.MaxValue), TextFormatFlags.NoPadding).Width, picH + 10), ((SolidBrush)GearGraphics.GrayBrush2).Color, TextFormatFlags.NoPadding | TextFormatFlags.NoPrefix);
+                g.DrawImage(Resource.UIToolTip_img_Item_Equip_Summary_incline_10digit_0, 253 - 15, picH + 25); //暂时画个0
 
-            picH += 45;
+                picH += 45;
 
-            //Combat Power
-            TextRenderer.DrawText(g, "戦闘力增加量", GearGraphics.EquipDetailFont, new Point(252 - TextRenderer.MeasureText(g, "戦闘力增加量", GearGraphics.EquipDetailFont, new Size(int.MaxValue, int.MaxValue), TextFormatFlags.NoPadding).Width, picH + 10), ((SolidBrush)GearGraphics.GrayBrush2).Color, TextFormatFlags.NoPadding | TextFormatFlags.NoPrefix);
-            g.DrawImage(Resource.UIToolTip_img_Item_Equip_Summary_incline_0, 253 - 15, picH + 25); //暂时画个0
+                //Combat Power
+                TextRenderer.DrawText(g, "戦闘力增加量", GearGraphics.EquipDetailFont, new Point(252 - TextRenderer.MeasureText(g, "戦闘力增加量", GearGraphics.EquipDetailFont, new Size(int.MaxValue, int.MaxValue), TextFormatFlags.NoPadding).Width, picH + 10), ((SolidBrush)GearGraphics.GrayBrush2).Color, TextFormatFlags.NoPadding | TextFormatFlags.NoPrefix);
+                g.DrawImage(Resource.UIToolTip_img_Item_Equip_Summary_incline_10digit_0, 253 - 15, picH + 25); //暂时画个0
 
-            //绘制属性需求
-            DrawGearReq(g, 97, picH + 54);
-            picH += 89;
+                //绘制属性需求
+                DrawGearReq(g, 97, picH + 54);
+                picH += 89;
+            }
+            else
+            {
+                //绘制攻击力变化
+                format.Alignment = StringAlignment.Far;
+                TextRenderer.DrawText(g, "攻撃力增加量", GearGraphics.EquipDetailFont, new Point(248 - TextRenderer.MeasureText(g, "攻撃力增加量", GearGraphics.EquipDetailFont, new Size(int.MaxValue, int.MaxValue), TextFormatFlags.NoPadding).Width, picH + 10), ((SolidBrush)GearGraphics.GrayBrush2).Color, TextFormatFlags.NoPadding | TextFormatFlags.NoPrefix);
+                g.DrawImage(Resource.UIToolTip_img_Item_Equip_Summary_incline_0, 249 - 19, picH + 27); //暂时画个0
+
+                //绘制属性需求
+                DrawGearReq(g, 97, picH + 59);
+                picH += 94;
+            }
 
             //绘制属性变化
             DrawPropDiffEx(g, 12, picH);

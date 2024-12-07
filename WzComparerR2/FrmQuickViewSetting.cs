@@ -158,6 +158,13 @@ namespace WzComparerR2
         }
 
         [Link]
+        public bool Gear_ShowCombatPower
+        {
+            get { return checkBoxX21.Checked; }
+            set { checkBoxX21.Checked = value; }
+        }
+
+        [Link]
         public bool Recipe_ShowID
         {
             get { return checkBoxX7.Checked; }
