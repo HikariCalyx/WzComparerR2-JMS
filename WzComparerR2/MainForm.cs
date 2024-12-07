@@ -3725,6 +3725,20 @@ namespace WzComparerR2
                     return;
                 }
             }
+            if (compareThread != null)
+            {
+                if (DialogResult.Yes == MessageBoxEx.Show("比較が進行中です。 中絶しますか?", "注意", MessageBoxButtons.YesNoCancel))
+                {
+                    compareThread.Interrupt();
+                    compareThread = null;
+                    GC.Collect();
+                }
+                else
+                {
+                    e.Cancel = true;
+                    return;
+                }
+            }
             DialogResult result = MessageBoxEx.Show("終了しますか?", "確認", MessageBoxButtons.YesNo);
             if (result == DialogResult.Yes)
             {
