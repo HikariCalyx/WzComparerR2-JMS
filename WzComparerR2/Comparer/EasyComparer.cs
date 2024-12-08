@@ -613,6 +613,163 @@ namespace WzComparerR2.Comparer
             }
         }
 
+        // 変更されたポイントパッケージツールチップ出力
+        private void SaveCashPackageTooltip(string cashPackageTooltipPath)
+        {
+            CashPackageTooltipRender[] cashPackageRenderNewOld = new CashPackageTooltipRender[2];
+            int count = 0;
+            int allCount = OutputCashPackageTooltipIDs.Count;
+            var itemTypeFont = new Font("MS Gothic", 11f, GraphicsUnit.Pixel);
+            StringLinker[] slNewOld = new StringLinker[2];
+
+            for (int i = 0; i < 2; i++) // 0: New, 1: Old
+            {
+                this.StringWzNewOld[i] = WzNewOld[i]?.FindNodeByPath("String").GetNodeWzFile();
+                this.ItemWzNewOld[i] = WzNewOld[i]?.FindNodeByPath("Item").GetNodeWzFile();
+                this.EtcWzNewOld[i] = WzNewOld[i]?.FindNodeByPath("Etc").GetNodeWzFile();
+                slNewOld[i].Load(StringWzNewOld[i], ItemWzNewOld[i], EtcWzNewOld[i]);
+                cashPackageRenderNewOld[i].StringLinker = slNewOld[i];
+                cashPackageRenderNewOld[i].ShowObjectID = true;
+            }
+
+            foreach (var itemID in OutputCashPackageTooltipIDs)
+            {
+                StateInfo = string.Format("{0}/{1} ポイントパッケージ: {2}", count, allCount, itemID);
+                StateDetail = "ポイントパッケージ変更点をツールチップ画像に出力中...";
+
+                string itemType = "";
+                string itemNodePath = int.Parse(itemID) / 1000000 == 9 ? String.Format(@"Item\Special\0{0:D}.img\{1:D}", int.Parse(itemID) / 10000, itemID) : null;
+                StringResult sr;
+                string itemName;
+                if (cashPackageRenderNewOld[1].StringLinker == null || !cashPackageRenderNewOld[1].StringLinker.StringItem.TryGetValue(int.Parse(itemID), out sr))
+                {
+                    sr = new StringResult();
+                    sr.Name = "未知のポイントパッケージ";
+                }
+                itemName = sr.Name;
+                if (cashPackageRenderNewOld[0].StringLinker == null || !cashPackageRenderNewOld[0].StringLinker.StringItem.TryGetValue(int.Parse(itemID), out sr))
+                {
+                    sr = new StringResult();
+                    sr.Name = "未知のポイントパッケージ";
+                }
+                if (itemName != sr.Name && itemName != "未知のポイントパッケージ")
+                {
+                    itemName += "_" + sr.Name;
+                }
+                else if (itemName == "未知のポイントパッケージ")
+                {
+                    itemName = sr.Name;
+                }
+                itemName = RemoveInvalidFileNameChars(itemName);
+                int nullItemIdx = 0;
+
+                // 変更前後のツールチップ画像の作成
+                for (int i = 0; i < 2; i++) // 0: New, 1: Old
+                {
+                    CashPackage cashPackage = CashPackage.CreateFromNode(PluginManager.FindWz(itemNodePath, WzFileNewOld[i]), PluginBase.PluginManager.FindWz(string.Format(@"Etc\CashPackage.img\{0}", itemID)), PluginManager.FindWz);
+
+                    if (cashPackage != null)
+                    {
+                        cashPackageRenderNewOld[i].CashPackage = cashPackage;
+                    }
+                    else
+                    {
+                        nullItemIdx = i + 1;
+                    }
+                }
+
+                // ツールチップ画像を合わせる
+                Bitmap resultImage = null;
+                Graphics g = null;
+
+                switch (nullItemIdx)
+                {
+                    case 0: // change
+                        itemType = "変更";
+
+                        Bitmap ImageNew = cashPackageRenderNewOld[0].Render();
+                        Bitmap ImageOld = cashPackageRenderNewOld[1].Render();
+                        resultImage = new Bitmap(ImageNew.Width + ImageOld.Width, Math.Max(ImageNew.Height, ImageOld.Height));
+                        g = Graphics.FromImage(resultImage);
+
+                        g.DrawImage(ImageOld, 0, 0);
+                        g.DrawImage(ImageNew, ImageOld.Width, 0);
+                        break;
+
+                    case 1: // delete
+                        itemType = "削除";
+
+                        resultImage = cashPackageRenderNewOld[1].Render();
+                        g = Graphics.FromImage(resultImage);
+                        break;
+
+                    case 2: // add
+                        itemType = "追加";
+
+                        resultImage = cashPackageRenderNewOld[0].Render();
+                        g = Graphics.FromImage(resultImage);
+                        break;
+
+                    default:
+                        break;
+                }
+
+                if (resultImage == null || g == null)
+                {
+                    continue;
+                }
+
+                var skillTypeTextInfo = g.MeasureString(itemType, GearGraphics.ItemDetailFont);
+                int picH = 13;
+                GearGraphics.DrawPlainText(g, itemType, itemTypeFont, Color.FromArgb(255, 255, 255), 2, (int)Math.Ceiling(skillTypeTextInfo.Width) + 2, ref picH, 10);
+
+                string imageName = Path.Combine(cashPackageTooltipPath, "ポイントパッケージ_" + itemID + "_" + itemName + "_" + itemType + ".png");
+                if (!File.Exists(imageName))
+                {
+                    resultImage.Save(imageName, System.Drawing.Imaging.ImageFormat.Png);
+                }
+                resultImage.Dispose();
+                g.Dispose();
+            }
+            OutputCashPackageTooltipIDs.Clear();
+            DiffCashPackageTags.Clear();
+        }
+
+        private void GetCashPackageID(Wz_Node node, bool change)
+        {
+            if (node == null) return;
+
+            Match match = Regex.Match(node.FullPathToFile, @"^Item\\Special\\\d+.img\\(\d+)\\.*");
+            string tag = null;
+
+            if (match.Success)
+            {
+                string cashPackageID = match.Groups[1].ToString();
+
+                if (cashPackageID != null)
+                {
+                    if (!OutputCashPackageTooltipIDs.Contains(cashPackageID) && cashPackageID != null)
+                    {
+                        OutputCashPackageTooltipIDs.Add(cashPackageID);
+                        DiffCashPackageTags[cashPackageID] = new List<string>();
+                        DiffCashPackageTags[cashPackageID].Add(tag);
+                    }
+                    else if (OutputCashPackageTooltipIDs.Contains(cashPackageID) && cashPackageID != null)
+                    {
+                        if (!DiffCashPackageTags[cashPackageID].Contains(tag))
+                        {
+                            DiffCashPackageTags[cashPackageID].Add(tag);
+                        }
+                    }
+
+                    if (tag != null && !DiffCashPackageTags[cashPackageID].Contains(tag))
+                    {
+                        DiffCashPackageTags[cashPackageID].Add(tag);
+                    }
+                }
+            }
+        }
+
         // 変更されたスキルツールチップ出力
         private void SaveSkillTooltip(string skillTooltipPath)
         {
@@ -666,7 +823,7 @@ namespace WzComparerR2.Comparer
                 {
                     skillName = sr.Name;
                 }
-                skillName = Regex.Replace(skillName, "<>:\"/\\\\\\|\\?\\*", "_", RegexOptions.Compiled);
+                skillName = RemoveInvalidFileNameChars(skillName);
                 int nullSkillIdx = 0;
 
                 // 変更前後のツールチップ画像の作成
@@ -786,14 +943,14 @@ namespace WzComparerR2.Comparer
 
         private void CompareImg(Wz_Image imgNew, Wz_Image imgOld, string imgName, string anchorName, string menuAnchorName, string outputDir, StreamWriter sw)
         {
-            StateDetail = "Extracting IMG";
+            StateDetail = "IMGを抽出中";
             if (!imgNew.TryExtract() || !imgOld.TryExtract())
                 return;
-            StateDetail = "Comparing IMG";
+            StateDetail = "IMGを比較中";
             List<CompareDifference> diffList = new List<CompareDifference>(Comparer.Compare(imgNew.Node, imgOld.Node));
             StringBuilder sb = new StringBuilder();
             int[] count = new int[3];
-            StateDetail = "Total of " + diffList.Count + " changes";
+            StateDetail = "合計" + diffList.Count + "件の変更";
             foreach (var diff in diffList)
             {
                 int idx = -1;
@@ -820,7 +977,13 @@ namespace WzComparerR2.Comparer
                 sb.AppendLine("</tr>");
                 count[idx]++;
 
-                // 변경된 스킬 툴팁 출력
+                // 変更されたポイントパッケージ出力
+                if (OutputCashPackageTooltip && (outputDir.Contains("Item") || outputDir.Contains("String")))
+                {
+                    GetCashPackageID(diff.NodeNew, idx == 0 ? true : false);
+                    GetCashPackageID(diff.NodeOld, idx == 0 ? true : false);
+                }
+                // 変更されたスキルツールチップ出力
                 if (OutputSkillTooltip && (outputDir.Contains("Skill") || outputDir.Contains("String")))
                 {
                     GetSkillID(diff.NodeNew, idx == 0 ? true : false);
@@ -1048,6 +1211,12 @@ namespace WzComparerR2.Comparer
                 hex.AppendFormat("{0:x2}", b);
             }
             return hex.ToString();
+        }
+        private static string RemoveInvalidFileNameChars(string fileName)
+        {
+            string invalidChars = new string(System.IO.Path.GetInvalidFileNameChars());
+            string regexPattern = $"[{Regex.Escape(invalidChars)}]";
+            return Regex.Replace(fileName, regexPattern, "_");
         }
     }
 }
