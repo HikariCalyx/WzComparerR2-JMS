@@ -97,7 +97,7 @@ namespace WzComparerR2
             charaSimCtrl.UIEquip.Visible = false;
             charaSimCtrl.UIEquip.VisibleChanged += new EventHandler(afrm_VisibleChanged);
 
-            string[] images = new string[] { "dir", "mp3", "num", "png", "str", "uol", "vector", "img", "rawdata", "convex" };
+            string[] images = new string[] { "dir", "mp3", "num", "png", "str", "uol", "vector", "img", "rawdata", "convex", "video" };
             foreach (string img in images)
             {
                 imageList1.Images.Add(img, (Image)Properties.Resources.ResourceManager.GetObject(img));
@@ -1342,6 +1342,9 @@ namespace WzComparerR2
                 case Wz_Convex convex:
                     return $"convex [{convex.Points.Length}]";
 
+                case Wz_Video video:
+                    return $"video {video.Length}";
+
                 default:
                     string cellVal = Convert.ToString(value);
                     if (cellVal != null && cellVal.Length > 50)
@@ -1365,6 +1368,7 @@ namespace WzComparerR2
                 Wz_Image => "img",
                 Wz_RawData => "rawdata",
                 Wz_Convex => "convex",
+                Wz_Video => "video",
                 _ => null
             };
         }
@@ -1461,6 +1465,12 @@ namespace WzComparerR2
                     textBoxX1.Text = "データ長:  " + rawData.Length + " バイト\r\n" +
                         "オフセット:  " + rawData.Offset;
                     break;
+
+                case Wz_Video video:
+                    textBoxX1.Text = "データ長:  " + video.Length + " バイ\r\n" +
+                        "オフセット:  " + video.Offset;
+                    break;
+
 
                 default:
                     string valueStr = Convert.ToString(selectedNode.Value);
@@ -2963,7 +2973,7 @@ namespace WzComparerR2
             tsmi2HandleUol.Visible = false;
             if (node != null)
             {
-                if (node.Value is Wz_Sound || node.Value is Wz_Png || node.Value is string || node.Value is Wz_RawData)
+                if (node.Value is Wz_Sound || node.Value is Wz_Png || node.Value is string || node.Value is Wz_RawData || node.Value is Wz_Video)
                 {
                     tsmi2SaveAs.Visible = true;
                     tsmi2SaveAs.Enabled = true;
