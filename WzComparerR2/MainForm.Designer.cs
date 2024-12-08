@@ -503,12 +503,12 @@ namespace WzComparerR2
             // buttonItemLoadChara
             // 
             this.buttonItemLoadChara.Name = "buttonItemLoadChara";
-            this.buttonItemLoadChara.Text = "Load";
+            this.buttonItemLoadChara.Text = "ロード";
             // 
             // buttonItemSaveChara
             // 
             this.buttonItemSaveChara.Name = "buttonItemSaveChara";
-            this.buttonItemSaveChara.Text = "Save";
+            this.buttonItemSaveChara.Text = "保存";
             // 
             // itemContainer23
             // 
@@ -2326,7 +2326,7 @@ namespace WzComparerR2
             this.tsmi2SaveAs.Name = "tsmi2SaveAs";
             this.tsmi2SaveAs.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
             this.tsmi2SaveAs.Size = new System.Drawing.Size(195, 22);
-            this.tsmi2SaveAs.Text = "Save";
+            this.tsmi2SaveAs.Text = "保存";
             this.tsmi2SaveAs.Click += new System.EventHandler(this.tsmi2SaveAs_Click);
             // 
             // tsmi2HandleUol
