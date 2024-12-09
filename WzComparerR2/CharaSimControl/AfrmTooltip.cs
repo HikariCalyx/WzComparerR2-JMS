@@ -223,6 +223,7 @@ namespace WzComparerR2.CharaSimControl
         void tsmiCopyText_Click(object sender, EventArgs e)
         {
             StringBuilder sb = new StringBuilder();
+            if (this.PreferredStringCopyMethod == 2) sb.AppendLine(this.NodeID.ToString());
             if (!String.IsNullOrEmpty(this.NodeName)) sb.AppendLine(this.NodeName);
             if (String.IsNullOrEmpty(this.Desc)) this.Desc = "";
             if (String.IsNullOrEmpty(this.Pdesc)) this.Pdesc = "";
@@ -281,7 +282,6 @@ namespace WzComparerR2.CharaSimControl
                     }
                     break;
                 case 2:
-                    sb.AppendLine(this.NodeID.ToString());
                     if (!String.IsNullOrEmpty(this.Desc)) sb.AppendLine(this.Desc.Replace("\\r", "").Replace("\\n", "<br />").Replace("#c", "<span class=\"darkorange-text\">").Replace("#", "</span>"));
                     if (!String.IsNullOrEmpty(this.Pdesc)) sb.AppendLine(this.Pdesc.Replace("\\r", "").Replace("\\n", "<br />").Replace("#c", "<span class=\"darkorange-text\">").Replace("#", "</span>"));
                     if (!String.IsNullOrEmpty(this.AutoDesc)) sb.AppendLine(this.AutoDesc.Replace("\\r", "").Replace("\\n", "<br />").Replace("#c", "<span class=\"darkorange-text\">").Replace("#", "</span>"));
