@@ -3066,7 +3066,7 @@ namespace WzComparerR2
                     }
                     if (gear != null)
                     {
-                        fileName = "eqp_" + gear.ItemID + "_" + sr.Name + ".png";
+                        fileName = "eqp_" + gear.ItemID + "_" + RemoveInvalidFileNameChars(sr.Name) + ".png";
                         tooltipQuickView.NodeID = gear.ItemID;
                     }
                     break;
@@ -3084,7 +3084,7 @@ namespace WzComparerR2
                         }
                         if (item != null)
                         {
-                            fileName = "item_" + item.ItemID + "_" + sr.Name + ".png";
+                            fileName = "item_" + item.ItemID + "_" + RemoveInvalidFileNameChars(sr.Name) + ".png";
                             tooltipQuickView.NodeID = item.ItemID;
                         }
                     }
@@ -3105,7 +3105,7 @@ namespace WzComparerR2
                         }
                         if (item != null)
                         {
-                            fileName = "pet_" + item.ItemID + "_" + sr.Name + ".png";
+                            fileName = "pet_" + item.ItemID + "_" + RemoveInvalidFileNameChars(sr.Name) + ".png";
                             tooltipQuickView.NodeID = item.ItemID;
                         }
                     }
@@ -3125,7 +3125,7 @@ namespace WzComparerR2
                         }
                         if (recipe != null)
                         {
-                            fileName = "recipe_" + recipe.RecipeID + "_" + sr.Name + ".png";
+                            fileName = "recipe_" + recipe.RecipeID + "_" + RemoveInvalidFileNameChars(sr.Name) + ".png";
                             tooltipQuickView.NodeID = recipe.RecipeID;
                         }
                     }
@@ -3147,7 +3147,7 @@ namespace WzComparerR2
                                 case DefaultLevel.LevelMaxWithCO: skill.Level = skill.MaxLevel + 2; break;
                             }
                             obj = skill;
-                            fileName = "skill_" + skill.SkillID + "_" + sr.Name + ".png";
+                            fileName = "skill_" + skill.SkillID + "_" + RemoveInvalidFileNameChars(sr.Name) + ".png";
                             tooltipQuickView.NodeID = skill.SkillID;
                         }
                     }
@@ -3165,7 +3165,7 @@ namespace WzComparerR2
                     }
                     if (mob != null)
                     {
-                        fileName = "mob_" + mob.ID + "_" + sr.Name + ".png";
+                        fileName = "mob_" + mob.ID + "_" + RemoveInvalidFileNameChars(sr.Name) + ".png";
                         tooltipQuickView.NodeID = mob.ID;
                     }
                     break;
@@ -3182,7 +3182,7 @@ namespace WzComparerR2
                     }
                     if (npc != null)
                     {
-                        fileName = "npc_" + npc.ID + "_" + sr.Name + ".png";
+                        fileName = "npc_" + npc.ID + "_" + RemoveInvalidFileNameChars(sr.Name) + ".png";
                         tooltipQuickView.NodeID = npc.ID;
                     }
                     break;
@@ -3203,7 +3203,7 @@ namespace WzComparerR2
                         }
                         if (setItem != null)
                         {
-                            fileName = "set_" + setItem.SetItemID + "_" + sr.Name + ".png";
+                            fileName = "set_" + setItem.SetItemID + "_" + RemoveInvalidFileNameChars(sr.Name) + ".png";
                             tooltipQuickView.NodeID = setItem.SetItemID;
                         }
                     }
@@ -3770,6 +3770,13 @@ namespace WzComparerR2
             string registryKey = $@"HKEY_CLASSES_ROOT\{scheme}";
             object keyValue = Registry.GetValue(registryKey, "", null);
             return keyValue != null;
+        }
+
+        private static string RemoveInvalidFileNameChars(string fileName)
+        {
+            string invalidChars = new string(System.IO.Path.GetInvalidFileNameChars());
+            string regexPattern = $"[{Regex.Escape(invalidChars)}]";
+            return Regex.Replace(fileName, regexPattern, "_");
         }
     }
 
