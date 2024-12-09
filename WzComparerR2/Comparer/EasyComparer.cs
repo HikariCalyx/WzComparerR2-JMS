@@ -568,7 +568,7 @@ namespace WzComparerR2.Comparer
                     {
                         Directory.CreateDirectory(cashPackageTooltipPath);
                     }
-                    //SaveCashPackageTooltip(cashPackageTooltipPath);
+                    SaveCashPackageTooltip(cashPackageTooltipPath);
                 }
                 if (OutputGearTooltip && OutputGearTooltipIDs != null)
                 {
