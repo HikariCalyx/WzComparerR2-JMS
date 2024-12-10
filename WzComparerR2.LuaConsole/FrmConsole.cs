@@ -12,6 +12,7 @@ using DevComponents.DotNetBar;
 using System.Reflection;
 using ICSharpCode.TextEditor.Document;
 using WzComparerR2.PluginBase;
+using WzComparerR2.WzLib;
 using System.Text.RegularExpressions;
 
 namespace WzComparerR2.LuaConsole
@@ -74,6 +75,7 @@ end
                 "Lua\\?\\init.lua" };
             string packageDir = string.Join(";", Array.ConvertAll(packageFile, s => Path.Combine(baseDir, s)));
             lua.DoString(string.Format("package.path = [[{0}]]..';'..package.path", packageDir));
+            lua.RegisterLuaDelegateType(typeof(WzComparerR2.GlobalFindNodeFunction), typeof(LuaGlobalFindNodeFunctionHandler));
         }
 
         public class LuaEnvironment
@@ -192,7 +194,9 @@ env:WriteLine(string format, object[] args)");
         {
             if (this.executeThread != null)
             {
-                this.executeThread.Abort();
+                this.executeThread.Interrupt();
+                this.executeThread = null;
+                GC.Collect();
             }
         }
 
@@ -224,7 +228,7 @@ env:WriteLine(string format, object[] args)");
             if (!isRunning)
             {
                 InitLuaEnv();
-                textBoxX2.AppendText("===Reset Lua Console===\r\n");
+                textBoxX2.AppendText("===Luaコンソールをリセットする===\r\n");
             }
         }
 
@@ -266,7 +270,7 @@ env:WriteLine(string format, object[] args)");
         private void menuOpen_Click(object sender, EventArgs e)
         {
             OpenFileDialog dlg = new OpenFileDialog();
-            dlg.Filter = "Lua Script File (*.lua)|*.lua|*.*|*.*";
+            dlg.Filter = "Luaスクリプトファイル (*.lua)|*.lua|*.*|*.*";
             if (dlg.ShowDialog() == DialogResult.OK)
             {
                 FrmLuaEditor frm = new FrmLuaEditor();
@@ -289,7 +293,7 @@ env:WriteLine(string format, object[] args)");
             if (string.IsNullOrEmpty(editor.FileName))
             {
                 SaveFileDialog dlg = new SaveFileDialog();
-                dlg.Filter = "Lua Script File (*.lua)|*.lua|*.*|*.*";
+                dlg.Filter = "Luaスクリプトファイル (*.lua)|*.lua|*.*|*.*";
                 dlg.FileName = editor.Text + ".lua";
                 if (dlg.ShowDialog() != DialogResult.OK)
                 {
@@ -299,7 +303,19 @@ env:WriteLine(string format, object[] args)");
             }
 
             editor.SaveFile(editor.FileName);
-            textBoxX2.AppendText($"====Saved {editor.FileName}====");
+            textBoxX2.AppendText($"===={editor.FileName}が保存されました====");
+        }
+
+        class LuaGlobalFindNodeFunctionHandler : NLua.Method.LuaDelegate
+        {
+            Wz_Node CallFunction(string wzPath)
+            {
+                object[] args = { wzPath };
+                object[] inArgs = { wzPath };
+                int[] outArgs = { };
+                object ret = CallFunction(args, inArgs, outArgs);
+                return (Wz_Node)ret;
+            }
         }
     }
 }
