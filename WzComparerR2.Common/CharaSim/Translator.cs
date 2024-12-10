@@ -38,18 +38,18 @@ namespace WzComparerR2.CharaSim
 
         private static Dictionary<string, string> dictCurrencyName = new Dictionary<string, string>()
         {
-            { "jpy", "ƒÒ" },
-            { "krw", "¥¦¥©¥ó" },
-            { "cny", "Ôª" },
-            { "usd", "¥É¥ë" },
-            { "twd", "Ì¨Íå¥É¥ë" },
-            { "hkd", "Ïã¸Û¥É¥ë" },
-            { "mop", "¥Ş¥«¥ª¥Ñ¥¿¥«" },
-            { "sgd", "¥·¥ó¥¬¥İ©`¥ë¥É¥ë" },
-            { "eur", "¥æ©`¥í" },
-            { "cad", "¥«¥Ê¥À¥É¥ë" },
-            { "aud", "¥ª©`¥¹¥È¥é¥ê¥¢¥É¥ë" },
-            { "myr", "¥Ş¥ì©`¥·¥¢¥ê¥ó¥®¥Ã¥È" },
+            { "jpy", "å††" },
+            { "krw", "ã‚¦ã‚©ãƒ³" },
+            { "cny", "å…ƒ" },
+            { "usd", "ãƒ‰ãƒ«" },
+            { "twd", "å°æ¹¾ãƒ‰ãƒ«" },
+            { "hkd", "é¦™æ¸¯ãƒ‰ãƒ«" },
+            { "mop", "ãƒã‚«ã‚ªãƒ‘ã‚¿ã‚«" },
+            { "sgd", "ã‚·ãƒ³ã‚¬ãƒãƒ¼ãƒ«ãƒ‰ãƒ«" },
+            { "eur", "ãƒ¦ãƒ¼ãƒ­" },
+            { "cad", "ã‚«ãƒŠãƒ€ãƒ‰ãƒ«" },
+            { "aud", "ã‚ªãƒ¼ã‚¹ãƒˆãƒ©ãƒªã‚¢ãƒ‰ãƒ«" },
+            { "myr", "ãƒãƒ¬ãƒ¼ã‚·ã‚¢ãƒªãƒ³ã‚®ãƒƒãƒˆ" },
         };
 
         private static string GTranslateBaseURL = "https://translate.googleapis.com/translate_a/t";
@@ -141,7 +141,7 @@ namespace WzComparerR2.CharaSim
             }
             catch
             {
-                return JObject.Parse("{\"message\": {\"result\": {\"translatedText\": \"Ÿo„¿¤ÊNaver API¥­©`\"}}}");
+                return JObject.Parse("{\"message\": {\"result\": {\"translatedText\": \"ç„¡åŠ¹ãªNaver APIã‚­ãƒ¼\"}}}");
             }
         }
 
@@ -211,7 +211,7 @@ namespace WzComparerR2.CharaSim
                 default:
                 case 0:
                     JArray responseArr = GTranslate(orgText.Replace("\\n", "\r\n"), Translator.DefaultDesiredLanguage);
-                    translatedText = responseArr[0][0].ToString().Replace("\r\n", "\\n").Replace("££", "#");
+                    translatedText = responseArr[0][0].ToString().Replace("\r\n", "\\n").Replace("ï¼ƒ", "#");
                     break;
                 //1: Google (Mozhi)
                 case 1:
@@ -254,7 +254,7 @@ namespace WzComparerR2.CharaSim
             }
             if (isMozhiUsed)
             {
-                translatedText = MTranslate(orgText.Replace("\\n", "\r\n"), mozhiEngine, sourceLanguage, targetLanguage).SelectToken("translated-text").ToString().Replace("\r\n", "\\n").Replace("££", "#");
+                translatedText = MTranslate(orgText.Replace("\\n", "\r\n"), mozhiEngine, sourceLanguage, targetLanguage).SelectToken("translated-text").ToString().Replace("\r\n", "\\n").Replace("ï¼ƒ", "#");
             }
             if (titleCase && targetLanguage == "en")
             {
@@ -343,9 +343,9 @@ namespace WzComparerR2.CharaSim
             switch (sourceLanguage)
             {
                 case "zh-CN":
-                    irlPrice = pointValue / 100.00 * 0.98; break; // CMS¤Ç¤Ï100¥İ¥¤¥ó¥È¤¢¤¿¤ê0.98Ôª
+                    irlPrice = pointValue / 100.00 * 0.98; break; // CMSã§ã¯100ãƒã‚¤ãƒ³ãƒˆã‚ãŸã‚Š0.98å…ƒ
                 case "en":
-                    irlPrice = pointValue / 1000.00; break; // GMS¤Ç¤Ï1000¥İ¥¤¥ó¥È¤¢¤¿¤ê1¥É¥ë
+                    irlPrice = pointValue / 1000.00; break; // GMSã§ã¯1000ãƒã‚¤ãƒ³ãƒˆã‚ãŸã‚Š1ãƒ‰ãƒ«
                 default:
                     irlPrice = pointValue; break;
             }
@@ -361,7 +361,7 @@ namespace WzComparerR2.CharaSim
             double exchangeMultipler = 1;
             double.TryParse(exTable.SelectToken(DefaultDesiredCurrency + "." + sourceCurrency).ToString(), out exchangeMultipler);
             double convertedPrice = irlPrice / exchangeMultipler;
-            return "¼s" + convertedPrice.ToString("0.##") + dictCurrencyName[DefaultDesiredCurrency];
+            return "ç´„" + convertedPrice.ToString("0.##") + dictCurrencyName[DefaultDesiredCurrency];
         }
 
         public static string ConvertCurrencyToLang(string currency)
