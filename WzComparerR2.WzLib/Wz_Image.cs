@@ -243,8 +243,8 @@ namespace WzComparerR2.WzLib
                     }
                     int w = reader.ReadCompressedInt32();
                     int h = reader.ReadCompressedInt32();
-                    int form = reader.ReadCompressedInt32();
-                    reader.SkipBytes(5);
+                    int form = reader.ReadCompressedInt32() + reader.ReadByte();
+                    reader.SkipBytes(4);
                     int dataLen = reader.ReadInt32();
                     parent.Value = new Wz_Png(w, h, dataLen, form, (uint)reader.BaseStream.Position, this);
                     reader.SkipBytes(dataLen);
@@ -347,6 +347,13 @@ namespace WzComparerR2.WzLib
                     int rawDataLen = reader.ReadCompressedInt32();
                     parent.Value = new Wz_RawData((uint)reader.BaseStream.Position, rawDataLen, this);
                     reader.SkipBytes(rawDataLen);
+                    break;
+
+                case "Canvas#Video": // introduced in KMST v1181
+                    reader.SkipBytes(3);
+                    int videoLen = reader.ReadCompressedInt32();
+                    parent.Value = new Wz_Video((uint)reader.BaseStream.Position, videoLen, this);
+                    reader.SkipBytes(videoLen);
                     break;
 
                 default:

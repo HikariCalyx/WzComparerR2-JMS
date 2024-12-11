@@ -60,5 +60,7 @@ namespace WzComparerR2.CharaSim
         addTooltip_tucCnt,
         pointCost,
         tamingMob,
+        //MSN only
+        mintable,
     }
 }

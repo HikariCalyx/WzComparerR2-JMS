@@ -36,6 +36,13 @@ namespace WzComparerR2.Config
             set { this["showSoldPrice"] = value; }
         }
 
+        [ConfigurationProperty("showCashPurchasePrice", DefaultValue = true)]
+        public bool ShowCashPurchasePrice
+        {
+            get { return (bool)this["showCashPurchasePrice"]; }
+            set { this["showCashPurchasePrice"] = value; }
+        }
+
         [ConfigurationProperty("showMedalTag", DefaultValue = false)]
         public bool ShowMedalTag
         {
@@ -48,6 +55,12 @@ namespace WzComparerR2.Config
         {
             get { return (bool)this["autoTitleWrap"]; }
             set { this["autoTitleWrap"] = value; }
+        }
+        [ConfigurationProperty("showCombatPower", DefaultValue = true)]
+        public bool ShowCombatPower
+        {
+            get { return (bool)this["showCombatPower"]; }
+            set { this["showCombatPower"] = value; }
         }
     }
 }

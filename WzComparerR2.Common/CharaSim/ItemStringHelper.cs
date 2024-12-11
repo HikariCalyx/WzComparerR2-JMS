@@ -115,6 +115,7 @@ namespace WzComparerR2.CharaSim
                 case GearPropType.onlyEquip: return value == 0 ? null : "固有装備アイテム";
                 case GearPropType.notExtend: return value == 0 ? null : "有効期間延長不可";
                 case GearPropType.accountSharableAfterExchange: return value == 0 ? null : "1回交換可能\n(取引後、ワールド内のキャラクター間移動のみ可能)";
+                case GearPropType.mintable: return value == 0 ? null : "ミンティング可能";
                 case GearPropType.tradeAvailable:
                     switch (value)
                     {
@@ -136,8 +137,8 @@ namespace WzComparerR2.CharaSim
                 case GearPropType.plusToSetItem: return value == 0 ? null : "#c装備すると、アイテムセットは2つ装備したものとしてカウントされます。#";
                 case GearPropType.abilityTimeLimited: return value == 0 ? null : "期間限定能力値";
                 case GearPropType.blockGoldHammer: return value == 0 ? null : "ビシアスのハンマー使用不可";
-                case GearPropType.colorvar: return value == 0 ? null : "#cThis item can be dyed using a Dye.#";
-                case GearPropType.cantRepair: return value == 0 ? null : "Cannot be repaired";
+                case GearPropType.colorvar: return value == 0 ? null : "#cこのアイテムは染料使用可能#";
+                case GearPropType.cantRepair: return value == 0 ? null : "修理不可";
                 case GearPropType.noLookChange: return value == 0 ? null : "神秘のカナトコ使用不可";
 
                 case GearPropType.incAllStat_incMHP25: return "Allｽﾃｰﾀｽ: " + sign + value + ", 最大HP : " + sign + (value * 25);// check once Lv 250 set comes out in GMS
@@ -183,7 +184,7 @@ namespace WzComparerR2.CharaSim
                     case GearPropType.incMDD:
                     case GearPropType.incSpeed:
                     case GearPropType.incJump:
-                        subfix = $"({standardValue} #e+{value - standardValue}#)"; break;
+                        subfix = $"({standardValue} #$e+{value - standardValue}#)"; break;
                     case GearPropType.bdR:
                     case GearPropType.incBDR:
                     case GearPropType.imdR:
@@ -191,7 +192,7 @@ namespace WzComparerR2.CharaSim
                     case GearPropType.damR:
                     case GearPropType.incDAMr:
                     case GearPropType.statR:
-                        subfix = $"({standardValue}% #e+{value - standardValue}%#)"; break;
+                        subfix = $"({standardValue}% #$y+{value - standardValue}%#)"; break;
 
                     case GearPropType.addSTR:
                     case GearPropType.addDEX:
@@ -205,13 +206,13 @@ namespace WzComparerR2.CharaSim
                     case GearPropType.addSpeed:
                     case GearPropType.addJump:
                     case GearPropType.addLvlDec:
-                        openAPISubfix += $"#g+{value - standardValue}#"; break;
+                        openAPISubfix += $"#$g+{value - standardValue}#"; break;
 
 
                     case GearPropType.addBDR:
                     case GearPropType.addDamR:
                     case GearPropType.addAllStatR:
-                        openAPISubfix += $"#g+{value - standardValue}%#"; break;
+                        openAPISubfix += $"#$g+{value - standardValue}%#"; break;
 
                     case GearPropType.scrollSTR:
                     case GearPropType.scrollDEX:
@@ -224,7 +225,7 @@ namespace WzComparerR2.CharaSim
                     case GearPropType.scrollDEF:
                     case GearPropType.scrollSpeed:
                     case GearPropType.scrollJump:
-                        openAPISubfix += $" #e+{value - standardValue}#"; break;
+                        openAPISubfix += $" #$e+{value - standardValue}#"; break;
 
                     case GearPropType.starSTR:
                     case GearPropType.starDEX:
@@ -244,7 +245,7 @@ namespace WzComparerR2.CharaSim
                 {
                     openAPISubfix = $"({standardValue}" + openAPISubfix + ")";
                 }
-                propStr = "#$" + propStr + "# " + subfix + openAPISubfix;
+                propStr = "#$y" + propStr + "# " + subfix + openAPISubfix;
             }
             return propStr;
         }
@@ -278,12 +279,15 @@ namespace WzComparerR2.CharaSim
             switch (type)
             {
                 //case GearType.body: return "Avatar (Body)";
-                case GearType.head: return "スキン";
+                case GearType.head:
+                case GearType.head_n:  return "スキン";
                 case GearType.face:
-                case GearType.face2: return "顔";
+                case GearType.face2:
+                case GearType.face_n: return "顔";
                 case GearType.hair:
                 case GearType.hair2:
-                case GearType.hair3: return "髮";
+                case GearType.hair3:
+                case GearType.hair_n: return "髮";
                 case GearType.faceAccessory: return "顔の飾り";
                 case GearType.eyeAccessory: return "目の飾り";
                 case GearType.earrings: return "イヤリング";
@@ -338,8 +342,8 @@ namespace WzComparerR2.CharaSim
                 case GearType.gun: return "銃 (両手武器)";
                 case GearType.android: return "アンドロイド";
                 case GearType.machineHeart: return "機械心臓部";
-                case GearType.pickaxe: return "マイニングツール";
-                case GearType.shovel: return "薬草学ツール";
+                case GearType.pickaxe: return "採鉱工具";
+                case GearType.shovel: return "薬草採集工具";
                 case GearType.pocket: return "ポケットアイテム";
                 case GearType.dualBow: return "デュアルボウガン (両手武器)";
                 case GearType.handCannon: return "ハンドキャノン (両手武器)";
@@ -657,7 +661,9 @@ namespace WzComparerR2.CharaSim
                     return value == 0 ? null : "魔法の時間が終わらないミラクルペットです。";
                 case ItemPropType.multiPet:
                     // return value == 0 ? null : "マルチペット(他のペットと最大3個重複使用可能)";
-                    return value == 0 ? "" : "";
+                    return value == 0 ? "一般ペット(他の一般ペットと重複使用不可)" : "マルチペット(他のペットと最大3個重複使用可能)";
+                case ItemPropType.mintable:
+                    return GetGearPropString(GearPropType.mintable, value);
                 default:
                     return null;
             }
