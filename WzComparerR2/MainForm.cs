@@ -3737,7 +3737,7 @@ namespace WzComparerR2
             }
             if (compareThread != null)
             {
-                if (DialogResult.Yes == MessageBoxEx.Show("比較が進行中です。 中絶しますか?", "注意", MessageBoxButtons.YesNoCancel))
+                if (DialogResult.Yes == MessageBoxEx.Show("比較が進行中です。 中絶しますか?", "注意", MessageBoxButtons.YesNo))
                 {
                     compareThread.Interrupt();
                     compareThread = null;
