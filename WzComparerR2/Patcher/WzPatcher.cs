@@ -896,7 +896,7 @@ namespace WzComparerR2.Patcher
         {
             if (checksum0 != checksum1)
             {
-                throw new Exception(string.Format("CheckSum Error on \"{0}\"({1}). (0x{2:x8}, 0x{3:x8})", fileName, reason, checksum0, checksum1));
+                throw new Exception(string.Format("ファイル「{0}」のチェックサムが一致しません({1})。 (0x{2:x8}, 0x{3:x8})", fileName, reason, checksum0, checksum1));
             }
         }
 

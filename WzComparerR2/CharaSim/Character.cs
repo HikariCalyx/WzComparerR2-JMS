@@ -10,43 +10,44 @@ namespace WzComparerR2.CharaSim
         {
             this.Name = "光卡的拉羊羊";
             this.status = new CharacterStatus();
-            this.status.Job = 4200;
-            this.status.Level = 281;
-            this.status.MaxHP.BaseVal = 65588;
-            this.status.HP = 65588;
-            this.status.MaxMP.BaseVal = 62125;
-            this.status.MP = 62125;
+            this.status.Pop = 627;
+            this.status.Job = 16001;
+            this.status.Level = 285;
+            this.status.MaxHP.BaseVal = 56517;
+            this.status.HP = 56517;
+            this.status.MaxMP.BaseVal = 53441;
+            this.status.MP = 53441;
             this.status.SpecialValue.BaseVal = 0;
 
-            this.status.Strength.BaseVal = 2052;
-            this.status.Dexterity.BaseVal = 1670;
-            this.status.Intelligence.BaseVal = 39263;
-            this.status.Luck.BaseVal = 3011;
-            this.status.UnionLevel = 8882;
-            this.status.DojoFloor = 54;
+            this.status.Strength.BaseVal = 2278;
+            this.status.Dexterity.BaseVal = 2206;
+            this.status.Intelligence.BaseVal = 43515;
+            this.status.Luck.BaseVal = 3367;
+            this.status.UnionLevel = 9183;
+            this.status.DojoFloor = 60;
 
-            this.status.CriticalRate.BaseVal = 104;
+            this.status.CriticalRate.BaseVal = 89;
             this.status.MoveSpeed.BaseVal = 155;
             this.status.Jump.BaseVal = 123;
             this.status.CriticalDamage.BaseVal = 72;
 
-            this.status.PADamage.BaseVal = 1082;
-            this.status.MADamage.BaseVal = 3095;
+            this.status.PADamage.BaseVal = 1198;
+            this.status.MADamage.BaseVal = 4198;
 
             this.status.NormalMonsterDamR.BaseVal = 12;
             this.status.CooltimeReduceSecond.BaseVal = 5;
             this.status.CooltimeReduceR.BaseVal = 0;
             this.status.CooltimeIgnoreR.BaseVal = 0;
             this.status.AbnormalDmgR = 11.00;
-            this.status.BuffDurationIncR.BaseVal = 65;
-            this.status.TamingMobDurationIncR.BaseVal = 20;
+            this.status.BuffDurationIncR.BaseVal = 54;
+            this.status.TamingMobDurationIncR.BaseVal = 40;
             
-            this.status.MesoGainR.BaseVal = 0;
+            this.status.MesoGainR.BaseVal = 2;
             this.status.DropGainR.BaseVal = 0;
-            this.status.ExpGainR = 12.50;
-            this.status.StarForce.BaseVal = 281;
-            this.status.ArcaneForce.BaseVal = 1320;
-            this.status.AuthenticForce.BaseVal = 450;
+            this.status.ExpGainR = 36.00;
+            this.status.StarForce.BaseVal = 295;
+            this.status.ArcaneForce.BaseVal = 1350;
+            this.status.AuthenticForce.BaseVal = 600;
 
             this.itemSlots = new ItemBase[5][];
             for (int i = 0; i < this.itemSlots.Length; i++)

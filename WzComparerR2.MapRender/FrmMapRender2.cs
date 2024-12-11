@@ -562,6 +562,7 @@ namespace WzComparerR2.MapRender
                     this.ui.ChatBox.AppendTextHelp(@"/minimap ミニマップ設定");
                     this.ui.ChatBox.AppendTextHelp(@"/scene シーン設定");
                     this.ui.ChatBox.AppendTextHelp(@"/quest クエスト設定");
+                    this.ui.ChatBox.AppendTextHelp(@"/questex クエストキーの値設定");
                     this.ui.ChatBox.AppendTextHelp(@"/date 日付設定");
                     this.ui.ChatBox.AppendTextHelp(@"/multibgm マルチBGM設定");
                     break;
@@ -684,11 +685,11 @@ namespace WzComparerR2.MapRender
                                         {
                                             this.patchVisibility.SetTagVisible(tag, true);
                                         }
-                                        this.ui.ChatBox.AppendTextHelp($"Completed tag: {string.Join(", ", tags)}");
+                                        this.ui.ChatBox.AppendTextHelp($"完了タグ: {string.Join(", ", tags)}");
                                     }
                                     else
                                     {
-                                        this.ui.ChatBox.AppendTextSystem("Please enter a tag.");
+                                        this.ui.ChatBox.AppendTextSystem("タグを入力してください。");
                                     }
                                     break;
                                 case "hide":
@@ -699,11 +700,11 @@ namespace WzComparerR2.MapRender
                                         {
                                             this.patchVisibility.SetTagVisible(tag, false);
                                         }
-                                        this.ui.ChatBox.AppendTextHelp($"Completed tag: {string.Join(", ", tags)}");
+                                        this.ui.ChatBox.AppendTextHelp($"完了タグ: {string.Join(", ", tags)}");
                                     }
                                     else
                                     {
-                                        this.ui.ChatBox.AppendTextSystem("Please enter a tag.");
+                                        this.ui.ChatBox.AppendTextSystem("タグを入力してください。");
                                     }
                                     break;
                                 case "reset":
@@ -711,42 +712,42 @@ namespace WzComparerR2.MapRender
                                     if (tags.Length > 0)
                                     {
                                         this.patchVisibility.ResetTagVisible(tags);
-                                        this.ui.ChatBox.AppendTextHelp($"Completed tag display state reset: {string.Join(", ", tags)}");
+                                        this.ui.ChatBox.AppendTextHelp($"すべてのタグ表示状態のリセットが完了しました: {string.Join(", ", tags)}");
                                     }
                                     else
                                     {
-                                        this.ui.ChatBox.AppendTextSystem("Please enter a tag.");
+                                        this.ui.ChatBox.AppendTextSystem("タグを入力してください。");
                                     }
                                     break;
                                 case "reset-all":
                                     this.patchVisibility.ResetTagVisible();
-                                    this.ui.ChatBox.AppendTextHelp($"Completed all tag display state reset");
+                                    this.ui.ChatBox.AppendTextHelp($"すべてのタグ表示状態のリセットが完了しました");
                                     break;
                                 case "set-default":
                                     if (bool.TryParse(arguments.ElementAtOrDefault(3), out bool isVisible))
                                     {
                                         this.patchVisibility.DefaultTagVisible = isVisible;
-                                        this.ui.ChatBox.AppendTextHelp($"Completed tag default display state: {isVisible}");
+                                        this.ui.ChatBox.AppendTextHelp($"完了タグのデフォルト表示状態: {isVisible}");
                                     }
                                     else
                                     {
-                                        this.ui.ChatBox.AppendTextSystem("Please enter a correct value.");
+                                        this.ui.ChatBox.AppendTextSystem("正しい値を入力してください。");
                                     }
                                     break;
                                 default:
-                                    this.ui.ChatBox.AppendTextHelp(@"/scene tag list View a list of tags");
-                                    this.ui.ChatBox.AppendTextHelp(@"/scene tag info View current tag display status");
-                                    this.ui.ChatBox.AppendTextHelp(@"/scene tag show (tagName)... Show tag visibility");
-                                    this.ui.ChatBox.AppendTextHelp(@"/scene tag hide (tagName)... Hide tag visibility");
-                                    this.ui.ChatBox.AppendTextHelp(@"/scene tag reset (tagName)... Reset tag");
-                                    this.ui.ChatBox.AppendTextHelp(@"/scene tag reset-all Reset all tag visibility");
-                                    this.ui.ChatBox.AppendTextHelp(@"/scene tag set-default (true/false) Reset tag default display state");
+                                    this.ui.ChatBox.AppendTextHelp(@"/scene tag list タグのリストを表示する");
+                                    this.ui.ChatBox.AppendTextHelp(@"/scene tag info 現在のタグ表示ステータスを表示する");
+                                    this.ui.ChatBox.AppendTextHelp(@"/scene tag show (tagName)... タグの可視性を表示");
+                                    this.ui.ChatBox.AppendTextHelp(@"/scene tag hide (tagName)... タグの表示を非表示");
+                                    this.ui.ChatBox.AppendTextHelp(@"/scene tag reset (tagName)... タグをリセット");
+                                    this.ui.ChatBox.AppendTextHelp(@"/scene tag reset-all すべてのタグの表示をリセット");
+                                    this.ui.ChatBox.AppendTextHelp(@"/scene tag set-default (true/false) タグのデフォルト表示状態をリセット");
                                     break;
                             }
                             break;
 
                         default:
-                            this.ui.ChatBox.AppendTextHelp(@"/scene tag Tag display state settings");
+                            this.ui.ChatBox.AppendTextHelp(@"/scene tag タグ表示状態設定");
                             break;
                     }
                     break;
@@ -762,10 +763,11 @@ namespace WzComparerR2.MapRender
                                 .Concat(this?.mapData.Scene.Effect.Slots.Where(item => item is ParticleItem).SelectMany(item => ((ParticleItem)item).Quest))
                                 .Concat(this?.mapData.Scene.Effect.Slots.Where(item => item is ParticleItem).SelectMany(item => ((ParticleItem)item).SubItems).SelectMany(item => item.Quest))
                                 .Distinct().ToList();
-                            this.ui.ChatBox.AppendTextHelp($"Related quests: ({questList.Count()})");
+                            this.ui.ChatBox.AppendTextHelp($"関連クエスト: ({questList.Count()})");
                             foreach (Tuple<int, int> item in questList)
                             {
-                                Wz_Node questInfoNode = PluginBase.PluginManager.FindWz($@"Quest\QuestInfo.img\{item.Item1}");
+                                Wz_Node questInfoNode = PluginBase.PluginManager.FindWz($@"Quest\QuestData\{item.Item1}.img\QuestInfo")
+                                    ?? PluginBase.PluginManager.FindWz($@"Quest\QuestInfo.img\{item.Item1}");
                                 string questName = questInfoNode?.Nodes["name"].GetValueEx<string>(null) ?? "null";
                                 this.ui.ChatBox.AppendTextHelp($"  {questName}({item.Item1}) / {item.Item2}");
                             }
@@ -776,19 +778,58 @@ namespace WzComparerR2.MapRender
                             {
                                 this.patchVisibility.SetVisible(questID, questState);
                                 this.mapData.PreloadResource(resLoader);
-                                Wz_Node questInfoNode = PluginBase.PluginManager.FindWz($@"Quest\QuestInfo.img\{questID}");
+                                Wz_Node questInfoNode = PluginBase.PluginManager.FindWz($@"Quest\QuestData\{questID}.img\QuestInfo")
+                                    ?? PluginBase.PluginManager.FindWz($@"Quest\QuestInfo.img\{questID}");
                                 string questName = questInfoNode?.Nodes["name"].GetValueEx<string>(null) ?? "null";
-                                this.ui.ChatBox.AppendTextSystem($"Changed the state of {questName}({questID}) to {questState}.");
+                                this.ui.ChatBox.AppendTextSystem($"{questName}({questID})の状態を{questState}に変更しました。");
                             }
                             else
                             {
-                                this.ui.ChatBox.AppendTextSystem($"Please enter a correct quest state.");
+                                this.ui.ChatBox.AppendTextSystem($"正しいクエスト状態を入力してください。");
                             }
                             break;
 
                         default:
-                            this.ui.ChatBox.AppendTextHelp(@"/quest list View list of related quests");
-                            this.ui.ChatBox.AppendTextHelp(@"/quest set (questID) (questState) Set quest state");
+                            this.ui.ChatBox.AppendTextHelp(@"/quest list 関連クエストのリストを見る");
+                            this.ui.ChatBox.AppendTextHelp(@"/quest set (questID) (questState) クエスト状態を設定");
+                            break;
+                    }
+                    break;
+
+                case "/questex":
+                    switch (arguments.ElementAtOrDefault(1))
+                    {
+                        case "list":
+                            List<Tuple<int, string, int>> questList = this?.mapData.Scene.Layers.Nodes.SelectMany(l => ((LayerNode)l).Obj.Slots.SelectMany(item => ((ObjItem)item).Questex))
+                                .Distinct().ToList();
+                            this.ui.ChatBox.AppendTextHelp($"関連クエストキーID: ({questList.Count()})");
+                            foreach (Tuple<int, string, int> item in questList)
+                            {
+                                Wz_Node questInfoNode = PluginBase.PluginManager.FindWz($@"Quest\QuestData\{item.Item1}.img\QuestInfo")
+                                    ?? PluginBase.PluginManager.FindWz($@"Quest\QuestInfo.img\{item.Item1}");
+                                string questName = questInfoNode?.Nodes["name"].GetValueEx<string>(null) ?? "null";
+                                this.ui.ChatBox.AppendTextHelp($"  {questName}({item.Item1}) / キー: {item.Item2}, 値: {item.Item3}");
+                            }
+                            break;
+                        case "set":
+                            string qkey = arguments.ElementAtOrDefault(3);
+                            if (Int32.TryParse(arguments.ElementAtOrDefault(2), out int questID) && questID > -1 && Int32.TryParse(arguments.ElementAtOrDefault(4), out int questState) && questState >= -1 && qkey != null)
+                            {
+                                this.patchVisibility.SetVisible(questID, qkey, questState);
+                                this.mapData.PreloadResource(resLoader);
+                                Wz_Node questInfoNode = PluginBase.PluginManager.FindWz($@"Quest\QuestData\{questID}.img\QuestInfo")
+                                    ?? PluginBase.PluginManager.FindWz($@"Quest\QuestInfo.img\{questID}");
+                                string questName = questInfoNode?.Nodes["name"].GetValueEx<string>(null) ?? "null";
+                                this.ui.ChatBox.AppendTextSystem($"{questName}({questID}, キー={qkey})の状態を{questState}に変更しました。");
+                            }
+                            else
+                            {
+                                this.ui.ChatBox.AppendTextSystem($"正しいクエストID、キー、値を入力してください。");
+                            }
+                            break;
+                        default:
+                            this.ui.ChatBox.AppendTextHelp(@"/questex list 関連クエストキーのリストを見る");
+                            this.ui.ChatBox.AppendTextHelp(@"/questex set (questID) (key) (questState) 該当クエストキーの状態設定");
                             break;
                     }
                     break;
@@ -798,7 +839,7 @@ namespace WzComparerR2.MapRender
                     {
                         case "list":
                             List<Tuple<long, long>> dateList = this?.mapData.Scene.Npcs.SelectMany(item => item.Date).ToList();
-                            this.ui.ChatBox.AppendTextHelp($"Related dates: ({dateList.Count()})");
+                            this.ui.ChatBox.AppendTextHelp($"関連日付: ({dateList.Count()})");
                             foreach (Tuple<long, long> item in dateList)
                             {
                                 this.ui.ChatBox.AppendTextHelp($"  {item.Item1} - {item.Item2}");
@@ -810,17 +851,17 @@ namespace WzComparerR2.MapRender
                             {
                                 this.mapData.Date = datetime;
                                 this.mapData.PreloadResource(resLoader);
-                                this.ui.ChatBox.AppendTextSystem($"Changed rendering base time to {datetime}.");
+                                this.ui.ChatBox.AppendTextSystem($"レンダリングのベース時間を {datetime} に変更しました。");
                             }
                             else
                             {
-                                this.ui.ChatBox.AppendTextSystem($"Please enter a correct time and date.");
+                                this.ui.ChatBox.AppendTextSystem($"正しい時刻と日付を入力してください。");
                             }
                             break;
 
                         default:
-                            this.ui.ChatBox.AppendTextHelp(@"/date list View a list of related dates");
-                            this.ui.ChatBox.AppendTextHelp(@"/date set (yyyyMMddHHmm) Time and date reference settings");
+                            this.ui.ChatBox.AppendTextHelp(@"/date list 関連日付のリストを表示");
+                            this.ui.ChatBox.AppendTextHelp(@"/date set (yyyyMMddHHmm) 時間と日付の参照設定");
                             break;
                     }
                     break;
@@ -836,7 +877,7 @@ namespace WzComparerR2.MapRender
                                 path[1] += ".img";
                                 var bgmNode = PluginBase.PluginManager.FindWz(string.Join("\\", path));
                                 var subNodes = bgmNode?.Nodes ?? new Wz_Node.WzNodeCollection(null);
-                                this.ui.ChatBox.AppendTextHelp($"Multi BGM: {subNodes.Count}");
+                                this.ui.ChatBox.AppendTextHelp($"マルチBGM: {subNodes.Count}");
                                 foreach (Wz_Node subNode in subNodes)
                                 {
                                     this.ui.ChatBox.AppendTextHelp($"  {subNode.Text}");
@@ -844,7 +885,7 @@ namespace WzComparerR2.MapRender
                             }
                             else
                             {
-                                this.ui.ChatBox.AppendTextHelp($"Multi BGM: 0");
+                                this.ui.ChatBox.AppendTextHelp($"マルチBGM: 0");
                             }
                             break;
 
@@ -852,7 +893,7 @@ namespace WzComparerR2.MapRender
                             Music multiBgm = LoadBgm(this.mapData, arguments.ElementAtOrDefault(2));
                             if (multiBgm != null)
                             {
-                                this.ui.ChatBox.AppendTextSystem($"Changed the Multi BGM to {arguments.ElementAtOrDefault(2)}.");
+                                this.ui.ChatBox.AppendTextSystem($"マルチBGMを{arguments.ElementAtOrDefault(2)}に変更しました。");
 
                                 Task bgmTask = null;
                                 bool willSwitchBgm = this.bgm != multiBgm;
@@ -874,19 +915,19 @@ namespace WzComparerR2.MapRender
                             }
                             else
                             {
-                                this.ui.ChatBox.AppendTextHelp($"Please enter a correct Multi BGM.");
+                                this.ui.ChatBox.AppendTextHelp($"正しいマルチBGMを入力してください。");
                             }
                             break;
 
                         default:
-                            this.ui.ChatBox.AppendTextHelp(@"/multibgm list View list of Multi BGM(s)");
-                            this.ui.ChatBox.AppendTextHelp(@"/multibgm set (multiBgm) Plays the corresponding Multi BGM");
+                            this.ui.ChatBox.AppendTextHelp(@"/multibgm list マルチBGM一覧を見る");
+                            this.ui.ChatBox.AppendTextHelp(@"/multibgm set (multiBgm) 対応するマルチBGMを再生します");
                             break;
                     }
                     break;
 
                 default:
-                    this.ui.ChatBox.AppendTextSystem($"Unknown command: {arguments[0]}");
+                    this.ui.ChatBox.AppendTextSystem($"不明なコマンド: {arguments[0]}");
                     break;
             }
         }

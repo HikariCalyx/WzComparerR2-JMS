@@ -6,6 +6,7 @@ using System.Windows.Forms;
 using WzComparerR2.Common;
 using WzComparerR2.CharaSim;
 using WzComparerR2.Controls;
+using SharpDX.XAudio2;
 
 namespace WzComparerR2.CharaSimControl
 {
@@ -16,7 +17,8 @@ namespace WzComparerR2.CharaSimControl
             this.menu = new ContextMenuStrip();
             this.menu.Items.Add(new ToolStripMenuItem("クリップボードにコピー", null, tsmiCopy_Click));
             this.menu.Items.Add(new ToolStripMenuItem("PNGに保存", null, tsmiSave_Click));
-            this.menu.Items.Add(new ToolStripMenuItem("このダイアログを閉じるには、[Esc]キーを押します。", null));
+            this.menu.Items.Add(new ToolStripMenuItem("文字列をコピー", null, tsmiCopyText_Click));
+            this.menu.Items.Add(new ToolStripMenuItem("閉じる (Esc)", null, tsmiClose_Click));
             this.ContextMenuStrip = this.menu;
 
             this.Size = new Size(1, 1);
@@ -59,7 +61,16 @@ namespace WzComparerR2.CharaSimControl
         public SetItemTooltipRender SetItemRender { get; private set; }
 
         public string ImageFileName { get; set; }
-
+        public string NodeName { get; set; }
+        public string Desc { get; set; }
+        public string Pdesc { get; set; }
+        public string AutoDesc { get; set; }
+        public string Hdesc { get; set; }
+        public string DescLeftAlign { get; set; }
+        public int NodeID { get; set; }
+        public int PreferredStringCopyMethod { get; set; }
+        public bool CopyParsedSkillString { get; set; }
+        
         public bool ShowID
         {
             get { return this.showID; }
@@ -206,6 +217,94 @@ namespace WzComparerR2.CharaSimControl
                     dataObj.SetData(DataFormats.Dib, stream);
                     Clipboard.SetDataObject(dataObj, true);
                 }
+            }
+        }
+
+        void tsmiCopyText_Click(object sender, EventArgs e)
+        {
+            StringBuilder sb = new StringBuilder();
+            if (this.PreferredStringCopyMethod == 2) sb.AppendLine(this.NodeID.ToString());
+            if (!String.IsNullOrEmpty(this.NodeName)) sb.AppendLine(this.NodeName);
+            if (String.IsNullOrEmpty(this.Desc)) this.Desc = "";
+            if (String.IsNullOrEmpty(this.Pdesc)) this.Pdesc = "";
+            if (String.IsNullOrEmpty(this.AutoDesc)) this.AutoDesc = "";
+            if (String.IsNullOrEmpty(this.Hdesc)) this.Hdesc = "";
+            if (String.IsNullOrEmpty(this.DescLeftAlign)) this.DescLeftAlign = "";
+            if (this.CopyParsedSkillString && item is Skill) this.Hdesc = this.SkillRender.ParsedHdesc;
+            switch (this.PreferredStringCopyMethod)
+            {
+                default:
+                case 0:
+                    if (!String.IsNullOrEmpty(this.Desc)) sb.AppendLine(this.Desc);
+                    if (!String.IsNullOrEmpty(this.Pdesc)) sb.AppendLine(this.Pdesc);
+                    if (!String.IsNullOrEmpty(this.AutoDesc)) sb.AppendLine(this.AutoDesc);
+                    if (!String.IsNullOrEmpty(this.Hdesc)) sb.AppendLine(this.Hdesc);
+                    if (!String.IsNullOrEmpty(this.DescLeftAlign)) sb.AppendLine(this.DescLeftAlign);
+                    break;
+                case 1:
+                    if ((this.Desc + this.Pdesc + this.AutoDesc).Contains("\\n"))
+                    {
+                        foreach (string i in (this.Desc + this.Pdesc + this.AutoDesc).Split(new string[] { "\\n" }, StringSplitOptions.None))
+                        {
+                            sb.AppendLine(i.Replace("\\r", "").Replace("#c", "").Replace("#", ""));
+                        }
+                    }
+                    else
+                    {
+                        if (!String.IsNullOrEmpty(this.Desc)) sb.AppendLine(this.Desc);
+                        if (!String.IsNullOrEmpty(this.Pdesc)) sb.AppendLine(this.Pdesc);
+                        if (!String.IsNullOrEmpty(this.AutoDesc)) sb.AppendLine(this.AutoDesc);
+                    }
+                    if (this.Hdesc.Contains("\\n"))
+                    {
+                        foreach (string i in this.Hdesc.Split(new string[] { "\\n" }, StringSplitOptions.None))
+                        {
+                            if (this.CopyParsedSkillString)
+                            {
+                                sb.AppendLine(i.Replace("\\r", "").Replace("#c", "").Replace("#", ""));
+                            }
+                            else
+                            {
+                                sb.AppendLine(i.Replace("\\r", ""));
+                            }
+                        }
+                    }
+                    else
+                    {
+                        if (this.CopyParsedSkillString)
+                        {
+                            sb.AppendLine(this.Hdesc.Replace("#c", "").Replace("#", ""));
+                        }
+                        else
+                        {
+                            sb.AppendLine(this.Hdesc);
+                        }
+                    }
+                    break;
+                case 2:
+                    if (!String.IsNullOrEmpty(this.Desc)) sb.AppendLine(this.Desc.Replace("\\r", "").Replace("\\n", "<br />").Replace("#c", "<span class=\"darkorange-text\">").Replace("#", "</span>"));
+                    if (!String.IsNullOrEmpty(this.Pdesc)) sb.AppendLine(this.Pdesc.Replace("\\r", "").Replace("\\n", "<br />").Replace("#c", "<span class=\"darkorange-text\">").Replace("#", "</span>"));
+                    if (!String.IsNullOrEmpty(this.AutoDesc)) sb.AppendLine(this.AutoDesc.Replace("\\r", "").Replace("\\n", "<br />").Replace("#c", "<span class=\"darkorange-text\">").Replace("#", "</span>"));
+                    if (this.CopyParsedSkillString)
+                    {
+                        if (!String.IsNullOrEmpty(this.Hdesc)) sb.AppendLine(this.Hdesc.Replace("\\r", "").Replace("\\n", "<br />").Replace("#c", "<span class=\"darkorange-text\">").Replace("#", "</span>"));
+                    }
+                    else
+                    {
+                        if (!String.IsNullOrEmpty(this.Hdesc)) sb.AppendLine(this.Hdesc.Replace("\\r", "").Replace("\\n", "<br />"));
+                    }                    
+                    if (!String.IsNullOrEmpty(this.DescLeftAlign)) sb.AppendLine(this.DescLeftAlign.Replace("\\r", "").Replace("\\n", "<br />").Replace("#c", "<span class=\"darkorange-text\">").Replace("#", "</span>"));
+                    break;
+            }
+            Clipboard.SetText(sb.ToString());
+            sb.Clear();
+        }
+
+        void tsmiClose_Click(object sender, EventArgs e)
+        {
+            if (this.Bitmap != null)
+            {
+                this.Close();
             }
         }
 

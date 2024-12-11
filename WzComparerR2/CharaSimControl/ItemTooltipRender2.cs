@@ -11,6 +11,7 @@ using WzComparerR2.PluginBase;
 using WzComparerR2.WzLib;
 using WzComparerR2.Common;
 using WzComparerR2.CharaSim;
+using DevComponents.DotNetBar;
 
 namespace WzComparerR2.CharaSimControl
 {
@@ -46,11 +47,15 @@ namespace WzComparerR2.CharaSimControl
         public bool ShowLevelOrSealed { get; set; }
         public bool ShowNickTag { get; set; }
         public bool ShowSoldPrice { get; set; }
+        public bool ShowCashPurchasePrice { get; set; }
+        public CashPackage CashPackage { get; set; }
         public TooltipRender LinkRecipeInfoRender { get; set; }
         public TooltipRender LinkRecipeGearRender { get; set; }
         public TooltipRender LinkRecipeItemRender { get; set; }
         public TooltipRender SetItemRender { get; set; }
         public TooltipRender CashPackageRender { get; set; }
+        private bool isCurrencyConversionEnabled = (Translator.DefaultDesiredCurrency != "none");
+        private string titleLanguage = "";
 
         public override Bitmap Render()
         {
@@ -325,6 +330,7 @@ namespace WzComparerR2.CharaSimControl
 
         private Bitmap RenderItem(out int picH)
         {
+            bool isTranslateRequired = Translator.IsTranslateEnabled;
             Bitmap tooltip = new Bitmap(290, DefaultPicHeight);
             Graphics g = Graphics.FromImage(tooltip);
             StringFormat format = (StringFormat)StringFormat.GenericDefault.Clone();
@@ -344,10 +350,32 @@ namespace WzComparerR2.CharaSimControl
             {
                 itemName += " (" + nameAdd + ")";
             }
-
+            if (isCurrencyConversionEnabled)
+            {
+                if (Translator.DefaultDetectCurrency == "auto")
+                {
+                    titleLanguage = Translator.GetLanguage(itemName);
+                }
+                else
+                {
+                    titleLanguage = Translator.ConvertCurrencyToLang(Translator.DefaultDetectCurrency);
+                }
+            }
+            if (isTranslateRequired)
+            {
+                string translatedItemName = Translator.MergeString(itemName, Translator.TranslateString(itemName, true), 0, false, true);
+                if (translatedItemName == itemName)
+                {
+                    // isTranslateRequired = false;
+                }
+                else
+                {
+                    itemName = translatedItemName;
+                }
+            }
             //SizeF titleSize = TextRenderer.MeasureText(g, sr.Name.Replace(Environment.NewLine, ""), GearGraphics.ItemNameFont2, new Size(int.MaxValue, int.MaxValue), TextFormatFlags.NoPrefix);
             SizeF titleSize;
-            if (IsKoreanStringPresent(itemName))
+            if (Translator.IsKoreanStringPresent(itemName))
             {
                 titleSize = TextRenderer.MeasureText(g, itemName, GearGraphics.KMSItemNameFont, new Size(int.MaxValue, int.MaxValue), TextFormatFlags.NoPrefix);
             }
@@ -380,13 +408,13 @@ namespace WzComparerR2.CharaSimControl
             //绘制标题
             bool hasPart2 = false;
             format.Alignment = StringAlignment.Center;
-            if (IsKoreanStringPresent(sr.Name))
+            if (Translator.IsKoreanStringPresent(itemName))
             {
-                g.DrawString(sr.Name, GearGraphics.KMSItemNameFont, Brushes.White, tooltip.Width / 2, picH, format);
+                g.DrawString(itemName, GearGraphics.KMSItemNameFont, Brushes.White, tooltip.Width / 2, picH, format);
             }
             else
             {
-                g.DrawString(sr.Name, GearGraphics.ItemNameFont2, Brushes.White, tooltip.Width / 2, picH, format);
+                g.DrawString(itemName, GearGraphics.ItemNameFont2, Brushes.White, tooltip.Width / 2, picH, format);
             }
             picH += 22;
 
@@ -473,11 +501,11 @@ namespace WzComparerR2.CharaSimControl
                 expireTime = "";
                 if (item.ConsumableFrom != null)
                 {
-                    expireTime += string.Format("\nUsable From: {1}/{2}/{0} {3:D2}:{4:D2} UTC", Convert.ToInt32(item.ConsumableFrom.Substring(0, 4)), Convert.ToInt32(item.ConsumableFrom.Substring(4, 2)), Convert.ToInt32(item.ConsumableFrom.Substring(6, 2)), Convert.ToInt32(item.ConsumableFrom.Substring(8, 2)), Convert.ToInt32(item.ConsumableFrom.Substring(10, 2)));
+                    expireTime += string.Format("{0}年 {1}月 {2}日 {3:D2}時 {4:D2}分使用可能", Convert.ToInt32(item.ConsumableFrom.Substring(0, 4)), Convert.ToInt32(item.ConsumableFrom.Substring(4, 2)), Convert.ToInt32(item.ConsumableFrom.Substring(6, 2)), Convert.ToInt32(item.ConsumableFrom.Substring(8, 2)), Convert.ToInt32(item.ConsumableFrom.Substring(10, 2)));
                 }
                 if (item.EndUseDate != null)
                 {
-                    expireTime += string.Format("\n{0}年 {1}月 {2}日 {3:D2}時 {4:D2}分まで使用可能", Convert.ToInt32(item.EndUseDate.Substring(0, 4)), Convert.ToInt32(item.EndUseDate.Substring(4, 2)), Convert.ToInt32(item.EndUseDate.Substring(6, 2)), Convert.ToInt32(item.EndUseDate.Substring(8, 2)), Convert.ToInt32(item.EndUseDate.Substring(10, 2)));
+                    expireTime += string.Format("{0}年 {1}月 {2}日 {3:D2}時 {4:D2}分まで使用可能", Convert.ToInt32(item.EndUseDate.Substring(0, 4)), Convert.ToInt32(item.EndUseDate.Substring(4, 2)), Convert.ToInt32(item.EndUseDate.Substring(6, 2)), Convert.ToInt32(item.EndUseDate.Substring(8, 2)), Convert.ToInt32(item.EndUseDate.Substring(10, 2)));
                 }
             }
             else if ((item.Props.TryGetValue(ItemPropType.permanent, out value) && value != 0) || (item.ItemID / 10000 == 500 && item.Props.TryGetValue(ItemPropType.life, out value) && value == 0))
@@ -492,7 +520,7 @@ namespace WzComparerR2.CharaSimControl
             else if (item.ItemID / 10000 == 500 && item.Props.TryGetValue(ItemPropType.limitedLife, out value) && value > 0)
             {
                 picH -= 3;
-                expireTime = string.Format("DAYS OF MAGIC: {0}hrs. {1}min.", value / 3600, (value % 3600) / 60);
+                expireTime = string.Format("魔法の時間: {0}時間 {1}分", value / 3600, (value % 3600) / 60);
             }
             else if (item.ItemID / 10000 == 500 && item.Props.TryGetValue(ItemPropType.life, out value) && value > 0)
             {
@@ -635,7 +663,7 @@ namespace WzComparerR2.CharaSimControl
                             }
                             if (wonderGradeString != null)
                             {
-                                desc += $"\nEquipping #c{wonderGradeString}# rank #c{setItemName}# pet gives the #c{setSkillName}# set effect. (Up to 3 levels.)\nSet effects can be enhanced up to 3 times depending on the type of #c{setItemName}# pet you have equipped.";
+                                desc += $"\n#c{wonderGradeString}#ランクの#c{setItemName}#ペットを装備すると、#c{setSkillName}#セット効果が得られます。(最大3レベル)\n装備した#c{setItemName}#ペットの種類に応じて、セット効果は最大3倍まで強化されます。";
                             }
                         }
                     }
@@ -681,24 +709,54 @@ namespace WzComparerR2.CharaSimControl
             }
             if (!string.IsNullOrEmpty(desc))
             {
-                if (IsKoreanStringPresent(desc))
+                if (isTranslateRequired)
                 {
-                    GearGraphics.DrawString(g, desc, GearGraphics.KMSItemDetailFont, 100, right, ref picH, 16);
+                    string mergedDesc = Translator.MergeString(desc, Translator.TranslateString(desc), 2);
+                    if (Translator.IsKoreanStringPresent(mergedDesc))
+                    {
+                        GearGraphics.DrawString(g, mergedDesc, GearGraphics.KMSItemDetailFont, 100, right, ref picH, 16);
+                    }
+                    else
+                    {
+                        GearGraphics.DrawString(g, mergedDesc, GearGraphics.ItemDetailFont, 100, right, ref picH, 16);
+                    }
                 }
                 else
                 {
-                    GearGraphics.DrawString(g, desc, GearGraphics.ItemDetailFont, 100, right, ref picH, 16);
+                    if (Translator.IsKoreanStringPresent(desc))
+                    {
+                        GearGraphics.DrawString(g, desc, GearGraphics.KMSItemDetailFont, 100, right, ref picH, 16);
+                    }
+                    else
+                    {
+                        GearGraphics.DrawString(g, desc, GearGraphics.ItemDetailFont, 100, right, ref picH, 16);
+                    }
                 }
             }
             if (!string.IsNullOrEmpty(sr.AutoDesc))
             {
-                if (IsKoreanStringPresent(sr.AutoDesc))
+                if (isTranslateRequired)
                 {
-                    GearGraphics.DrawString(g, sr.AutoDesc, GearGraphics.KMSItemDetailFont, 100, right, ref picH, 16);
+                    string mergedAutoDesc = Translator.MergeString(sr.AutoDesc, Translator.TranslateString(sr.AutoDesc), 2);
+                    if (Translator.IsKoreanStringPresent(mergedAutoDesc))
+                    {
+                        GearGraphics.DrawString(g, mergedAutoDesc, GearGraphics.KMSItemDetailFont, 100, right, ref picH, 16);
+                    }
+                    else
+                    {
+                        GearGraphics.DrawString(g, mergedAutoDesc, GearGraphics.ItemDetailFont, 100, right, ref picH, 16);
+                    }
                 }
                 else
                 {
-                    GearGraphics.DrawString(g, sr.AutoDesc, GearGraphics.ItemDetailFont, 100, right, ref picH, 16);
+                    if (Translator.IsKoreanStringPresent(sr.AutoDesc))
+                    {
+                        GearGraphics.DrawString(g, sr.AutoDesc, GearGraphics.KMSItemDetailFont, 100, right, ref picH, 16);
+                    }
+                    else
+                    {
+                        GearGraphics.DrawString(g, sr.AutoDesc, GearGraphics.ItemDetailFont, 100, right, ref picH, 16);
+                    }
                 }
             }
             if (item.Props.TryGetValue(ItemPropType.tradeAvailable, out value) && value > 0)
@@ -749,7 +807,7 @@ namespace WzComparerR2.CharaSimControl
             }
             if (item.Props.TryGetValue(ItemPropType.noRevive, out value) && value > 0)
             {
-                GearGraphics.DrawString(g, "#cYou cannot use the Water of Life.#", GearGraphics.ItemDetailFont, 100, right, ref picH, 16);
+                GearGraphics.DrawString(g, "#c生命の水は使用できません。#", GearGraphics.ItemDetailFont, 100, right, ref picH, 16);
             }
 
             if (item.ItemID / 10000 == 500)
@@ -825,13 +883,28 @@ namespace WzComparerR2.CharaSimControl
                 if (!string.IsNullOrEmpty(descLeftAlign))
                 {
                     picH += 12;
-                    if (IsKoreanStringPresent(descLeftAlign))
+                    if (isTranslateRequired)
                     {
-                        GearGraphics.DrawString(g, descLeftAlign, GearGraphics.KMSItemDetailFont, 14, right, ref picH, 16);
+                        string mergedDescLeftAlign = Translator.MergeString(descLeftAlign, Translator.TranslateString(descLeftAlign), 2);
+                        if (Translator.IsKoreanStringPresent(mergedDescLeftAlign))
+                        {
+                            GearGraphics.DrawString(g, mergedDescLeftAlign, GearGraphics.KMSItemDetailFont, 100, right, ref picH, 16);
+                        }
+                        else
+                        {
+                            GearGraphics.DrawString(g, mergedDescLeftAlign, GearGraphics.ItemDetailFont, 100, right, ref picH, 16);
+                        }
                     }
                     else
                     {
-                        GearGraphics.DrawString(g, descLeftAlign, GearGraphics.ItemDetailFont, 14, right, ref picH, 16);
+                        if (Translator.IsKoreanStringPresent(descLeftAlign))
+                        {
+                            GearGraphics.DrawString(g, descLeftAlign, GearGraphics.KMSItemDetailFont, 14, right, ref picH, 16);
+                        }
+                        else
+                        {
+                            GearGraphics.DrawString(g, descLeftAlign, GearGraphics.ItemDetailFont, 14, right, ref picH, 16);
+                        }
                     }
                 }
                 if (item.CoreSpecs.Count > 0)
@@ -959,21 +1032,6 @@ namespace WzComparerR2.CharaSimControl
                     }
                 }
             }
-
-
-            // JMS exclusive pricing display
-            if (!item.Props.TryGetValue(ItemPropType.quest, out value) && !item.Props.TryGetValue(ItemPropType.notSale, out value) && (item.Props.TryGetValue(ItemPropType.price, out value) && value > 0) && ShowSoldPrice)
-            {
-                picH += 16;
-                GearGraphics.DrawString(g, "\r\n · 販売価額：" + value + "メル", GearGraphics.EquipDetailFont, 100, right, ref picH, 16);
-            }
-
-            if (item.Props.TryGetValue(ItemPropType.autoPrice, out value) && ShowSoldPrice)
-            {
-                picH += 16;
-                GearGraphics.DrawString(g, "\r\n · 販売価額：" + (item.Level * 2) + "メル", GearGraphics.EquipDetailFont, 100, right, ref picH, 16);
-            }
-
             //绘制配方需求
             if (item.Specs.TryGetValue(ItemSpecType.recipe, out value))
             {
@@ -1000,9 +1058,43 @@ namespace WzComparerR2.CharaSimControl
                     sr = new StringResult();
                     sr.Name = "- (null)";
                 }
-                TextRenderer.DrawText(g, string.Format("- {0} Lv {1}", sr.Name, reqSkillLevel), GearGraphics.ItemDetailFont, new Point(13, picH), ((SolidBrush)GearGraphics.SetItemNameBrush).Color, TextFormatFlags.NoPadding | TextFormatFlags.NoPrefix);
+                //Workaround for Korean profession name in JMS
+                sr.Name = sr.Name.Replace("장비제작", "装備制作").Replace("장신구제작", "アクセサリ制作").Replace("연금술", "錬金術");
+                TextRenderer.DrawText(g, string.Format("· {0} {1}レベル以上", sr.Name, reqSkillLevel), GearGraphics.ItemDetailFont, new Point(13, picH), ((SolidBrush)GearGraphics.SetItemNameBrush).Color, TextFormatFlags.NoPadding | TextFormatFlags.NoPrefix);
                 picH += 16;
                 picH += 6;
+            }
+
+            // JMS exclusive pricing display
+            if (!item.GetBooleanValue(ItemPropType.quest) && !item.GetBooleanValue(ItemPropType.notSale) && (item.Props.TryGetValue(ItemPropType.price, out value) && value > 0) && ShowSoldPrice)
+            {
+                picH += 16;
+                GearGraphics.DrawString(g, "\r\n · 販売価額：" + value + "メル", GearGraphics.EquipDetailFont, 100, right, ref picH, 16);
+            }
+
+            if (item.GetBooleanValue(ItemPropType.autoPrice) && ShowSoldPrice)
+            {
+                picH += 16;
+                GearGraphics.DrawString(g, "\r\n · 販売価額：" + (item.Level * 2) + "メル", GearGraphics.EquipDetailFont, 100, right, ref picH, 16);
+            }
+
+            if (item.Cash && ShowCashPurchasePrice)
+            {
+                Commodity commodityPackage = new Commodity();
+                if (CharaSimLoader.LoadedCommoditiesByItemId.ContainsKey(item.ItemID))
+                {
+                    commodityPackage = CharaSimLoader.LoadedCommoditiesByItemId[item.ItemID];
+                    if (commodityPackage.Price > 0)
+                    {
+                        picH += 16;
+                        GearGraphics.DrawString(g, "\r\n · 購入価額：" + commodityPackage.Price + "ポイント", GearGraphics.EquipDetailFont, 100, right, ref picH, 16);
+                        if (isCurrencyConversionEnabled)
+                        {
+                            string exchangedPrice = Translator.GetConvertedCurrency(commodityPackage.Price, titleLanguage);
+                            GearGraphics.DrawString(g, "    " + exchangedPrice, GearGraphics.EquipDetailFont, 100, right, ref picH, 16);
+                        }
+                    }
+                }
             }
 
             picH = Math.Max(iconY + 94, picH + 6);
@@ -1068,6 +1160,10 @@ namespace WzComparerR2.CharaSimControl
             else if (item.ItemID / 10000 == 500)
             {
                 tags.Add(ItemStringHelper.GetItemPropString(ItemPropType.multiPet, 0));
+            }
+            if (item.Props.TryGetValue(ItemPropType.mintable, out value))
+            {
+                tags.Add(ItemStringHelper.GetItemPropString(ItemPropType.mintable, value));
             }
 
             return tags;
@@ -1163,7 +1259,7 @@ namespace WzComparerR2.CharaSimControl
                     g = Graphics.FromImage(level);
                 }
                 picHeight += 13;
-                TextRenderer.DrawText(g, "Growth Stats", GearGraphics.ItemDetailFont, new Point(261, picHeight), ((SolidBrush)GearGraphics.GreenBrush2).Color, TextFormatFlags.HorizontalCenter);
+                TextRenderer.DrawText(g, "成長の属性", GearGraphics.ItemDetailFont, new Point(261, picHeight), ((SolidBrush)GearGraphics.GreenBrush2).Color, TextFormatFlags.HorizontalCenter);
                 picHeight += 15;
 
                 for (int i = 0; i < Item.Levels.Count; i++)
@@ -1246,14 +1342,6 @@ namespace WzComparerR2.CharaSimControl
                 picHeight += 13;
             }
             return level;
-        }
-        private bool IsKoreanStringPresent(string checkString)
-        {
-            if (checkString == null)
-            {
-                return false;
-            }
-            return checkString.Any(c => (c >= '\uAC00' && c <= '\uD7A3'));
         }
         private bool TryGetNickResource(long nickTag, out Wz_Node resNode)
         {

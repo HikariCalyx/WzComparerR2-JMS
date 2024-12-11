@@ -54,7 +54,11 @@ namespace WzComparerR2.CharaSimControl
         public bool ShowMedalTag { get; set; } = true;
         public bool IsCombineProperties { get; set; } = true;
         public bool ShowSoldPrice { get; set; }
+        public bool ShowCashPurchasePrice { get; set; }
+        public bool ShowCombatPower { get; set; }
         public bool AutoTitleWrap { get; set; }
+        private bool isCurrencyConversionEnabled = (Translator.DefaultDesiredCurrency != "none");
+        private string titleLanguage = "";
 
         public TooltipRender SetItemRender { get; set; }
 
@@ -164,6 +168,11 @@ namespace WzComparerR2.CharaSimControl
             Graphics g = Graphics.FromImage(bitmap);
             g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAliasGridFit;
             StringFormat format = (StringFormat)StringFormat.GenericTypographic.Clone();
+            var itemPropColorTable = new Dictionary<string, Color>()
+            {
+                { "$y", GearGraphics.gearCyanColor },
+                { "$e", GearGraphics.ScrollEnhancementColor },
+            };
             var orange2FontColorTable = new Dictionary<string, Color>()
             {
                 { "c", ((SolidBrush)GearGraphics.OrangeBrush2).Color },
@@ -175,7 +184,10 @@ namespace WzComparerR2.CharaSimControl
             int value, value2;
 
             picH = 13;
-            DrawStar2(g, ref picH); //绘制星星
+            if (!Gear.GetBooleanValue(GearPropType.blockUpgradeStarforce))
+            {
+                DrawStar2(g, ref picH); //绘制星星
+            }
 
             //绘制装备名称
             StringResult sr;
@@ -185,6 +197,25 @@ namespace WzComparerR2.CharaSimControl
                 sr.Name = "(null)";
             }
             string gearName = sr.Name;
+            string translatedName = "";
+            bool isTranslateRequired = Translator.IsTranslateEnabled;
+            bool isTitleTranslateRequired = !Translator.IsTranslateEnabled;
+            if (isTranslateRequired) {
+                translatedName = Translator.TranslateString(gearName, true);
+                isTitleTranslateRequired = !(translatedName == gearName);
+            }
+            if (isCurrencyConversionEnabled)
+            {
+                if (Translator.DefaultDetectCurrency == "auto")
+                {
+                    titleLanguage = Translator.GetLanguage(gearName);
+                }
+                else
+                {
+                    titleLanguage = Translator.ConvertCurrencyToLang(Translator.DefaultDetectCurrency);
+                }
+            }
+
             switch (Gear.GetGender(Gear.ItemID))
             {
                 case 0: gearName += " (♂)"; break;
@@ -199,7 +230,7 @@ namespace WzComparerR2.CharaSimControl
             if (AutoTitleWrap)
             {
                 SizeF textWidth;
-                if (IsKoreanStringPresent(gearName))
+                if (Translator.IsKoreanStringPresent(gearName))
                 {
                     textWidth = TextRenderer.MeasureText(g, gearName, GearGraphics.KMSItemNameFont, new Size(int.MaxValue, int.MaxValue), TextFormatFlags.NoPrefix);
                 }
@@ -227,24 +258,162 @@ namespace WzComparerR2.CharaSimControl
                     }
                     gearName = newGearName + gearName.Substring(gearName.Length - remainingLength, remainingLength);
                 }
+                if (isTranslateRequired)
+                {
+                    if (System.Text.Encoding.UTF8.GetByteCount(translatedName) != translatedName.Length)
+                    {
+                        titleWrapQuota = 17;
+                    }
+                    else
+                    {
+                        titleWrapQuota = 33;
+                    }
+                    if (translatedName.Length > titleWrapQuota)
+                    {
+                        int remainingLength = translatedName.Length;
+                        string newTranslatedName = "";
+                        while (remainingLength > titleWrapQuota)
+                        {
+                            newTranslatedName += translatedName.Substring(translatedName.Length - remainingLength, titleWrapQuota) + Environment.NewLine;
+                            remainingLength -= titleWrapQuota;
+                        }
+                        if (Translator.DefaultPreferredLayout != 3)
+                        {
+                            translatedName = newTranslatedName + translatedName.Substring(translatedName.Length - remainingLength, remainingLength) + Environment.NewLine;
+                        }
+                        else
+                        {
+                            translatedName = newTranslatedName + translatedName.Substring(translatedName.Length - remainingLength, remainingLength);
+                        }
+                        
+                    }
+                    else
+                    {
+                        switch (Translator.DefaultPreferredLayout)
+                        {
+                            case 1: 
+                                translatedName += Environment.NewLine;
+                                break;
+                            case 2:
+                                gearName += Environment.NewLine;
+                                break;
+                        }
+                    }
+                }
 
             }
 
             format.Alignment = StringAlignment.Center;
-            if (IsKoreanStringPresent(gearName))
+            if (isTitleTranslateRequired)
             {
-                g.DrawString(gearName, GearGraphics.KMSItemNameFont,
-                    GearGraphics.GetGearNameBrush(Gear.diff, Gear.ScrollUp > 0), 130, picH, format);
+                switch (Translator.DefaultPreferredLayout)
+                {
+                    case 1:
+                        gearName = "(" + gearName + ")";
+                        if (Translator.IsKoreanStringPresent(translatedName))
+                        {
+                            g.DrawString(translatedName, GearGraphics.KMSItemNameFont,
+                                GearGraphics.GetGearNameBrush(Gear.diff, Gear.ScrollUp > 0), 130, picH, format);
+                        }
+                        else
+                        {
+                            g.DrawString(translatedName, GearGraphics.ItemNameFont2,
+                                GearGraphics.GetGearNameBrush(Gear.diff, Gear.ScrollUp > 0), 130, picH, format);
+                        }
+                        picH += 12 * (Regex.Matches(translatedName, Environment.NewLine).Count + 1) + 1;
+                        if (Translator.IsKoreanStringPresent(gearName))
+                        {
+                            g.DrawString(gearName, GearGraphics.KMSItemNameFont,
+                                GearGraphics.GetGearNameBrush(Gear.diff, Gear.ScrollUp > 0), 130, picH, format);
+                        }
+                        else
+                        {
+                            g.DrawString(gearName, GearGraphics.ItemNameFont2,
+                                GearGraphics.GetGearNameBrush(Gear.diff, Gear.ScrollUp > 0), 130, picH, format);
+                        }
+                        if (gearName.Contains(Environment.NewLine))
+                        {
+                            picH += 12 * Regex.Matches(gearName, Environment.NewLine).Count;
+                        }
+                        break;
+                    case 2:
+                        translatedName = "(" + translatedName + ")";
+                        if (Translator.IsKoreanStringPresent(gearName))
+                        {
+                            g.DrawString(gearName, GearGraphics.KMSItemNameFont,
+                                GearGraphics.GetGearNameBrush(Gear.diff, Gear.ScrollUp > 0), 130, picH, format);
+                        }
+                        else
+                        {
+                            g.DrawString(gearName, GearGraphics.ItemNameFont2,
+                                GearGraphics.GetGearNameBrush(Gear.diff, Gear.ScrollUp > 0), 130, picH, format);
+                        }
+                        picH += 12 * (Regex.Matches(gearName, Environment.NewLine).Count + 1) + 1;
+                        if (Translator.IsKoreanStringPresent(translatedName))
+                        {
+                            g.DrawString(translatedName, GearGraphics.KMSItemNameFont,
+                                GearGraphics.GetGearNameBrush(Gear.diff, Gear.ScrollUp > 0), 130, picH, format);
+                        }
+                        else
+                        {
+                            g.DrawString(translatedName, GearGraphics.ItemNameFont2,
+                                GearGraphics.GetGearNameBrush(Gear.diff, Gear.ScrollUp > 0), 130, picH, format);
+                        }
+                        if (translatedName.Contains(Environment.NewLine))
+                        {
+                            picH += 12 * Regex.Matches(translatedName, Environment.NewLine).Count;
+                        }
+                        break;
+                    case 3:
+                        if (Translator.IsKoreanStringPresent(translatedName))
+                        {
+                            g.DrawString(translatedName, GearGraphics.KMSItemNameFont,
+                                GearGraphics.GetGearNameBrush(Gear.diff, Gear.ScrollUp > 0), 130, picH, format);
+                        }
+                        else
+                        {
+                            g.DrawString(translatedName, GearGraphics.ItemNameFont2,
+                                GearGraphics.GetGearNameBrush(Gear.diff, Gear.ScrollUp > 0), 130, picH, format);
+                        }
+                        if (translatedName.Contains(Environment.NewLine))
+                        {
+                            picH += 12 * (Regex.Matches(translatedName, Environment.NewLine).Count);
+                        }
+                        break;
+                    default:
+                        if (Translator.IsKoreanStringPresent(gearName))
+                        {
+                            g.DrawString(gearName, GearGraphics.KMSItemNameFont,
+                                GearGraphics.GetGearNameBrush(Gear.diff, Gear.ScrollUp > 0), 130, picH, format);
+                        }
+                        else
+                        {
+                            g.DrawString(gearName, GearGraphics.ItemNameFont2,
+                                GearGraphics.GetGearNameBrush(Gear.diff, Gear.ScrollUp > 0), 130, picH, format);
+                        }
+                        if (gearName.Contains(Environment.NewLine))
+                        {
+                            picH += 12 * Regex.Matches(gearName, Environment.NewLine).Count;
+                        }
+                        break;
+                }
             }
             else
             {
-                g.DrawString(gearName, GearGraphics.ItemNameFont2,
-                    GearGraphics.GetGearNameBrush(Gear.diff, Gear.ScrollUp > 0), 130, picH, format);
-            }
-
-            if (gearName.Contains(Environment.NewLine))
-            {
-                picH += 12 * Regex.Matches(gearName, Environment.NewLine).Count;
+                if (Translator.IsKoreanStringPresent(gearName))
+                {
+                    g.DrawString(gearName, GearGraphics.KMSItemNameFont,
+                        GearGraphics.GetGearNameBrush(Gear.diff, Gear.ScrollUp > 0), 130, picH, format);
+                }
+                else
+                {
+                    g.DrawString(gearName, GearGraphics.ItemNameFont2,
+                        GearGraphics.GetGearNameBrush(Gear.diff, Gear.ScrollUp > 0), 130, picH, format);
+                }
+                if (gearName.Contains(Environment.NewLine))
+                {
+                    picH += 12 * Regex.Matches(gearName, Environment.NewLine).Count;
+                }
             }
             picH += 23;
 
@@ -438,14 +607,34 @@ namespace WzComparerR2.CharaSimControl
             g.DrawImage(Resource.UIToolTip_img_Item_ItemIcon_old, 14 - 2 + 5, picH + 9 + 5);
             g.DrawImage(Resource.UIToolTip_img_Item_ItemIcon_cover, 16, picH + 14); //绘制左上角cover
 
-            //绘制攻击力变化
-            format.Alignment = StringAlignment.Far;
-            TextRenderer.DrawText(g, "攻撃力增加量", GearGraphics.EquipDetailFont, new Point(248 - TextRenderer.MeasureText(g, "攻撃力增加量", GearGraphics.EquipDetailFont, new Size(int.MaxValue, int.MaxValue), TextFormatFlags.NoPadding).Width, picH + 10), ((SolidBrush)GearGraphics.GrayBrush2).Color, TextFormatFlags.NoPadding | TextFormatFlags.NoPrefix);
-            g.DrawImage(Resource.UIToolTip_img_Item_Equip_Summary_incline_0, 249 - 19, picH + 27); //暂时画个0
+            if (ShowCombatPower)
+            {
+                //绘制攻击力变化
+                format.Alignment = StringAlignment.Far;
+                TextRenderer.DrawText(g, "攻撃力增加量", GearGraphics.EquipDetailFont, new Point(252 - TextRenderer.MeasureText(g, "攻撃力增加量", GearGraphics.EquipDetailFont, new Size(int.MaxValue, int.MaxValue), TextFormatFlags.NoPadding).Width, picH + 10), ((SolidBrush)GearGraphics.GrayBrush2).Color, TextFormatFlags.NoPadding | TextFormatFlags.NoPrefix);
+                g.DrawImage(Resource.UIToolTip_img_Item_Equip_Summary_incline_10digit_0, 253 - 15, picH + 25); //暂时画个0
 
-            //绘制属性需求
-            DrawGearReq(g, 97, picH + 59);
-            picH += 94;
+                picH += 45;
+
+                //Combat Power
+                TextRenderer.DrawText(g, "戦闘力增加量", GearGraphics.EquipDetailFont, new Point(252 - TextRenderer.MeasureText(g, "戦闘力增加量", GearGraphics.EquipDetailFont, new Size(int.MaxValue, int.MaxValue), TextFormatFlags.NoPadding).Width, picH + 10), ((SolidBrush)GearGraphics.GrayBrush2).Color, TextFormatFlags.NoPadding | TextFormatFlags.NoPrefix);
+                g.DrawImage(Resource.UIToolTip_img_Item_Equip_Summary_incline_10digit_0, 253 - 15, picH + 25); //暂时画个0
+
+                //绘制属性需求
+                DrawGearReq(g, 97, picH + 54);
+                picH += 89;
+            }
+            else
+            {
+                //绘制攻击力变化
+                format.Alignment = StringAlignment.Far;
+                TextRenderer.DrawText(g, "攻撃力增加量", GearGraphics.EquipDetailFont, new Point(248 - TextRenderer.MeasureText(g, "攻撃力增加量", GearGraphics.EquipDetailFont, new Size(int.MaxValue, int.MaxValue), TextFormatFlags.NoPadding).Width, picH + 10), ((SolidBrush)GearGraphics.GrayBrush2).Color, TextFormatFlags.NoPadding | TextFormatFlags.NoPrefix);
+                g.DrawImage(Resource.UIToolTip_img_Item_Equip_Summary_incline_0, 249 - 19, picH + 27); //暂时画个0
+
+                //绘制属性需求
+                DrawGearReq(g, 97, picH + 59);
+                picH += 94;
+            }
 
             //绘制属性变化
             DrawPropDiffEx(g, 12, picH);
@@ -645,7 +834,7 @@ namespace WzComparerR2.CharaSimControl
                 if (value > 0 || Gear.Props[type] > 0)
                 {
                     var propStr = ItemStringHelper.GetGearPropDiffString(type, Gear.Props[type], value);
-                    GearGraphics.DrawString(g, propStr, GearGraphics.EquipDetailFont, 12, 256, ref picH, 15);//changes the vertical distance of stats in tooltip, such as STR, DEX, INT etc.
+                    GearGraphics.DrawString(g, propStr, GearGraphics.EquipDetailFont, itemPropColorTable, 12, 256, ref picH, 15);//changes the vertical distance of stats in tooltip, such as STR, DEX, INT etc.
                     hasPart2 = true;
                 }
             }
@@ -667,7 +856,7 @@ namespace WzComparerR2.CharaSimControl
             bool hasReduce = Gear.Props.TryGetValue(GearPropType.reduceReq, out value);
             if (hasReduce && value > 0)
             {
-                TextRenderer.DrawText(g, ItemStringHelper.GetGearPropString(GearPropType.reduceReq, value), GearGraphics.EquipDetailFont, new Point(12, picH), Color.White, TextFormatFlags.NoPadding | TextFormatFlags.NoPrefix);
+                TextRenderer.DrawText(g, ItemStringHelper.GetGearPropString(GearPropType.reduceReq, value), GearGraphics.EquipDetailFont, new Point(12, picH), ((SolidBrush)GearGraphics.GreenBrush2).Color, TextFormatFlags.NoPadding | TextFormatFlags.NoPrefix);
                 picH += 15;
                 hasPart2 = true;
             }
@@ -676,6 +865,11 @@ namespace WzComparerR2.CharaSimControl
             if (Gear.GetBooleanValue(GearPropType.exceptUpgrade))
             {
                 TextRenderer.DrawText(g, "強化不可", GearGraphics.EquipDetailFont, new Point(12, picH), Color.White, TextFormatFlags.NoPadding | TextFormatFlags.NoPrefix);
+                picH += 15;
+            }
+            else if (Gear.GetBooleanValue(GearPropType.blockUpgradeStarforce))
+            {
+                TextRenderer.DrawText(g, "スターフォース強化不可", GearGraphics.EquipDetailFont, new Point(12, picH), ((SolidBrush)GearGraphics.BlockRedBrush).Color, TextFormatFlags.NoPadding | TextFormatFlags.NoPrefix);
                 picH += 15;
             }
             else if (hasTuc)
@@ -735,8 +929,8 @@ namespace WzComparerR2.CharaSimControl
                     if (Gear.Star > 0) //星星
                     {
                         //TextRenderer.DrawText(g, "APPLIED " + Gear.Star + " STAR ENHANCEMENT (UP TO " + maxStar + ")", GearGraphics.EquipDetailFont, new Point(11, picH), Color.White, TextFormatFlags.NoPadding | TextFormatFlags.NoPrefix);
-                        TextRenderer.DrawText(g, "Star Force:" + Gear.Star + "/" + maxStar + "Stars Infused", GearGraphics.EquipDetailFont, new Point(12, picH), Color.White, TextFormatFlags.NoPadding | TextFormatFlags.NoPrefix);
-                        picH += 15;
+                        //TextRenderer.DrawText(g, "Star Force:" + Gear.Star + "/" + maxStar + "Stars Infused", GearGraphics.EquipDetailFont, new Point(12, picH), Color.White, TextFormatFlags.NoPadding | TextFormatFlags.NoPrefix);
+                        //picH += 15;
                     }
                     else
                     {
@@ -745,7 +939,7 @@ namespace WzComparerR2.CharaSimControl
                     }
                 }
                 picH += 0;
-                if (!Gear.GetBooleanValue(GearPropType.exceptUpgrade) && !Gear.GetBooleanValue(GearPropType.blockGoldHammer))
+                if (!Gear.GetBooleanValue(GearPropType.exceptUpgrade) && !(Gear.GetBooleanValue(GearPropType.blockUpgradeStarforce)) && !Gear.GetBooleanValue(GearPropType.blockGoldHammer) && !(Gear.type == GearType.petEquip))
                 {
                     if (Gear.Hammer < 2)
                     {
@@ -759,6 +953,19 @@ namespace WzComparerR2.CharaSimControl
                     //g.DrawString(": " + Gear.Hammer.ToString() + (Gear.Hammer == 2 ? "(MAX)" : null) + "/2", GearGraphics.EquipDetailFont, Brushes.White, 168, picH);
                     picH += 15;
                     hasPart2 = true;
+                }
+                else if (Gear.GetBooleanValue(GearPropType.blockUpgradeExtraOption))
+                {
+                    TextRenderer.DrawText(g, "追加オプション設定/再設定不可", GearGraphics.EquipDetailFont, new Point(12, picH), ((SolidBrush)GearGraphics.BlockRedBrush).Color, TextFormatFlags.NoPadding | TextFormatFlags.NoPrefix);
+                    picH += 15;
+                }
+
+                if (Gear.type == GearType.petEquip)
+                {
+                    TextRenderer.DrawText(g, "ペット装備能力値移転書適用", GearGraphics.EquipDetailFont, new Point(12, picH), Color.White, TextFormatFlags.NoPadding | TextFormatFlags.NoPrefix);
+                    picH += 15;
+                    TextRenderer.DrawText(g, "黄金つち(ペット専用)使用可能回数 : 0/2", GearGraphics.EquipDetailFont, new Point(12, picH), Color.White, TextFormatFlags.NoPadding | TextFormatFlags.NoPrefix);
+                    picH += 15;
                 }
 
             }
@@ -777,30 +984,30 @@ namespace WzComparerR2.CharaSimControl
                 string skillName = null;
                 switch (Gear.type)
                 {
-                    case GearType.shovel: skillName = "Herbalism"; break;
-                    case GearType.pickaxe: skillName = "Mining"; break;
+                    case GearType.shovel: skillName = "薬草採集"; break;
+                    case GearType.pickaxe: skillName = "採鉱"; break;
                 }
                 if (Gear.Props.TryGetValue(GearPropType.gatherTool_incSkillLevel, out value) && value > 0)
                 {
-                    TextRenderer.DrawText(g, skillName + " Skill: +" + value, GearGraphics.EquipDetailFont, new Point(12, picH), Color.White, TextFormatFlags.NoPadding);
+                    TextRenderer.DrawText(g, skillName + "スキルレベル：+" + value, GearGraphics.EquipDetailFont, new Point(12, picH), Color.White, TextFormatFlags.NoPadding);
                     picH += 15;
                     hasPart2 = true;
                 }
                 if (Gear.Props.TryGetValue(GearPropType.gatherTool_incSpeed, out value) && value > 0)
                 {
-                    TextRenderer.DrawText(g, skillName + " Speed: +" + value + "%", GearGraphics.EquipDetailFont, new Point(12, picH), Color.White, TextFormatFlags.NoPadding);
+                    TextRenderer.DrawText(g, skillName + "速度增加: +" + value + "%", GearGraphics.EquipDetailFont, new Point(12, picH), Color.White, TextFormatFlags.NoPadding);
                     picH += 15;
                     hasPart2 = true;
                 }
                 if (Gear.Props.TryGetValue(GearPropType.gatherTool_incNum, out value) && value > 0)
                 {
-                    TextRenderer.DrawText(g, "Up to " + value + " items can be acquired", GearGraphics.EquipDetailFont, new Point(12, picH), Color.White, TextFormatFlags.NoPadding);
+                    TextRenderer.DrawText(g, "最大" + value + "つのアイテムを獲得可能", GearGraphics.EquipDetailFont, new Point(12, picH), Color.White, TextFormatFlags.NoPadding);
                     picH += 15;
                     hasPart2 = true;
                 }
                 if (Gear.Props.TryGetValue(GearPropType.gatherTool_reqSkillLevel, out value) && value > 0)
                 {
-                    TextRenderer.DrawText(g, "Requires " + value + " " + skillName + " Skill ", GearGraphics.EquipDetailFont, new Point(12, picH), Color.White, TextFormatFlags.NoPadding);
+                    TextRenderer.DrawText(g, skillName + "スキルレベル " + value + "以上使用可能", GearGraphics.EquipDetailFont, new Point(12, picH), Color.White, TextFormatFlags.NoPadding);
                     picH += 15;
                     hasPart2 = true;
                 }
@@ -946,14 +1153,29 @@ namespace WzComparerR2.CharaSimControl
             {
                 if (Gear.Props.TryGetValue(type, out value) && value != 0)
                 {
-                    //desc.Add(" " + ItemStringHelper.GetGearPropString(type, value)); (Korean edit code)
                     desc.Add(ItemStringHelper.GetGearPropString(type, value));
                 }
             }
 
             if (!string.IsNullOrEmpty(Gear.EpicHs) && sr[Gear.EpicHs] != null)
             {
-                desc.Add(sr[Gear.EpicHs].Replace("#", " #"));
+                switch (Translator.DefaultPreferredLayout)
+                {
+                    case 1:
+                        desc.Add(Translator.TranslateString(sr[Gear.EpicHs]).Replace("#", " #"));
+                        desc.Add(sr[Gear.EpicHs].Replace("#", " #"));
+                        break;
+                    case 2:
+                        desc.Add(sr[Gear.EpicHs].Replace("#", " #"));
+                        desc.Add(Translator.TranslateString(sr[Gear.EpicHs]).Replace("#", " #"));
+                        break;
+                    case 3:
+                        desc.Add(Translator.TranslateString(sr[Gear.EpicHs]).Replace("#", " #"));
+                        break;
+                    default:
+                        desc.Add(sr[Gear.EpicHs].Replace("#", " #"));
+                        break;
+                }
             }
 
             //绘制倾向
@@ -1024,7 +1246,7 @@ namespace WzComparerR2.CharaSimControl
 
                 if (Gear.Cash && (!Gear.Props.TryGetValue(GearPropType.noMoveToLocker, out value) || value == 0) && (!Gear.Props.TryGetValue(GearPropType.tradeBlock, out value) || value == 0) && (!Gear.Props.TryGetValue(GearPropType.accountSharable, out value) || value == 0))
                 {
-                    desc.Add("#cこのアイテムは一度使用するとトレードできません。#");
+                    desc.Add("#cこのアイテムは一度使用すると交換できません。#");
                 }
 
                 if (Gear.type != GearType.pickaxe && Gear.type != GearType.shovel && PluginBase.PluginManager.FindWz(string.Format("Effect/ItemEff.img/{0}/effect", Gear.ItemID)) != null)
@@ -1046,7 +1268,7 @@ namespace WzComparerR2.CharaSimControl
 
             //判断是否绘制徽章
             Wz_Node medalResNode = null;
-            bool willDrawMedalTag = this.ShowMedalTag
+            bool willDrawMedalTag = this.ShowMedalTag && this.Gear.Sample.Bitmap == null
                 && this.Gear.Props.TryGetValue(GearPropType.medalTag, out value)
                 && this.TryGetMedalResource(value, out medalResNode);
 
@@ -1075,7 +1297,7 @@ namespace WzComparerR2.CharaSimControl
                     picH += Gear.Sample.Bitmap.Height;
                     picH += 4;
                 }
-                if (medalResNode != null)
+                else if (medalResNode != null)
                 {
                     //GearGraphics.DrawNameTag(g, medalResNode, sr.Name, bitmap.Width, ref picH);2 juni
                     GearGraphics.DrawNameTag(g, medalResNode, sr.Name.Replace("의 훈장", "").Replace("の勲章", ""), bitmap.Width, ref picH);
@@ -1083,13 +1305,29 @@ namespace WzComparerR2.CharaSimControl
                 }
                 if (!string.IsNullOrEmpty(sr.Desc))
                 {
-                    if (IsKoreanStringPresent(sr.Desc))
+                    if (isTranslateRequired)
                     {
-                        GearGraphics.DrawString(g, sr.Desc.Replace("#", " #"), GearGraphics.KMSItemDetailFont2, orange2FontColorTable, 10, 243, ref picH, 15);
+                        string translatedDesc = Translator.MergeString(sr.Desc.Replace("#", " #"), Translator.TranslateString(sr.Desc).Replace("#", " #"), 2);
+                        if (Translator.IsKoreanStringPresent(translatedDesc))
+                        {
+                            GearGraphics.DrawString(g, translatedDesc, GearGraphics.KMSItemDetailFont2, orange2FontColorTable, 10, 243, ref picH, 15);
+                        }
+                        else
+                        {
+                            GearGraphics.DrawString(g, translatedDesc, GearGraphics.EquipDetailFont2, orange2FontColorTable, 10, 243, ref picH, 15);
+                        }
                     }
                     else
                     {
-                        GearGraphics.DrawString(g, sr.Desc.Replace("#", " #"), GearGraphics.EquipDetailFont2, orange2FontColorTable, 10, 243, ref picH, 15);
+
+                        if (Translator.IsKoreanStringPresent(sr.Desc))
+                        {
+                            GearGraphics.DrawString(g, sr.Desc.Replace("#", " #"), GearGraphics.KMSItemDetailFont2, orange2FontColorTable, 10, 243, ref picH, 15);
+                        }
+                        else
+                        {
+                            GearGraphics.DrawString(g, sr.Desc.Replace("#", " #"), GearGraphics.EquipDetailFont2, orange2FontColorTable, 10, 243, ref picH, 15);
+                        }
                     }
                 }
                 if (!string.IsNullOrEmpty(levelDesc))
@@ -1098,7 +1336,7 @@ namespace WzComparerR2.CharaSimControl
                 }
                 foreach (string str in desc)
                 {
-                    if (IsKoreanStringPresent(str))
+                    if (Translator.IsKoreanStringPresent(str))
                     {
                         GearGraphics.DrawString(g, str, GearGraphics.KMSItemDetailFont, orange2FontColorTable, 10, 243, ref picH, 15);
                     }
@@ -1106,7 +1344,6 @@ namespace WzComparerR2.CharaSimControl
                     {
                         GearGraphics.DrawString(g, str, GearGraphics.EquipDetailFont2, orange2FontColorTable, 10, 243, ref picH, 15);
                     }
-                    
                 }
                 picH += 5;
             }
@@ -1168,7 +1405,7 @@ namespace WzComparerR2.CharaSimControl
                         g.DrawImage(res["dotline"].Image, 0, picH);
                         picH += 8;
                     }
-                    if (IsKoreanStringPresent(exclusiveEquip))
+                    if (Translator.IsKoreanStringPresent(exclusiveEquip))
                     {
                         GearGraphics.DrawString(g, exclusiveEquip, GearGraphics.KMSItemDetailFont2, orange2FontColorTable, 13, 240, ref picH, 15);
                     }
@@ -1183,11 +1420,30 @@ namespace WzComparerR2.CharaSimControl
             }
 
             // JMS exclusive pricing display
-            if (!Gear.Props.TryGetValue(GearPropType.notSale, out value) && (Gear.Props.TryGetValue(GearPropType.price, out value) && value > 0) && (!Gear.Cash) && ShowSoldPrice)
+            if (!Gear.GetBooleanValue(GearPropType.notSale) && (Gear.Props.TryGetValue(GearPropType.price, out value) && value > 0) && (!Gear.Cash) && ShowSoldPrice)
             {
                 picH += 7;
                 GearGraphics.DrawString(g, "· 販売価額：" + value + "メル", GearGraphics.EquipDetailFont, 13, 244, ref picH, 16);
                 picH += 16;
+            }
+
+            if (Gear.Cash && ShowCashPurchasePrice)
+            {
+                Commodity commodityPackage = new Commodity();
+                if (CharaSimLoader.LoadedCommoditiesByItemId.ContainsKey(Gear.ItemID))
+                {
+                    commodityPackage = CharaSimLoader.LoadedCommoditiesByItemId[Gear.ItemID];
+                    if (commodityPackage.Price > 0)
+                    {
+                        picH += 16;
+                        GearGraphics.DrawString(g, "· 購入価額：" + commodityPackage.Price + "ポイント", GearGraphics.EquipDetailFont, 13, 244, ref picH, 16);
+                        if (isCurrencyConversionEnabled)
+                        {
+                            string exchangedPrice = Translator.GetConvertedCurrency(commodityPackage.Price, titleLanguage);
+                            GearGraphics.DrawString(g, "    " + exchangedPrice, GearGraphics.EquipDetailFont, 13, 244, ref picH, 16);
+                        }
+                    }
+                }
             }
 
             picH += 2;
@@ -1200,7 +1456,7 @@ namespace WzComparerR2.CharaSimControl
         {
             Bitmap addBitmap = null;
             picHeight = 0;
-            if (Gear.Additions.Count > 0)
+            if (Gear.Additions.Count > 0 && !Gear.AdditionHideDesc)
             {
                 addBitmap = new Bitmap(261, DefaultPicHeight);
                 Graphics g = Graphics.FromImage(addBitmap);
@@ -1427,6 +1683,10 @@ namespace WzComparerR2.CharaSimControl
             if (Gear.Props.TryGetValue(GearPropType.tradeBlock, out value) && value != 0)
             {
                 tags.Add(ItemStringHelper.GetGearPropString(GearPropType.tradeBlock, value));
+            }
+            if (Gear.Props.TryGetValue(GearPropType.mintable, out value) && value != 0)
+            {
+                tags.Add(ItemStringHelper.GetGearPropString(GearPropType.mintable, value));
             }
             if (Gear.Props.TryGetValue(GearPropType.abilityTimeLimited, out value) && value != 0)
             {
@@ -1656,12 +1916,12 @@ namespace WzComparerR2.CharaSimControl
             }
             
             Image jobImage = extraReq == null ? Resource.UIToolTip_img_Item_Equip_Job_normal : extraReq.Contains("\r\n") ? Resource.UIToolTip_img_Item_Equip_Job_expand2 : Resource.UIToolTip_img_Item_Equip_Job_expand;
-            g.DrawImage(jobImage, 10, picH);
+            g.DrawImage(jobImage, 12, picH);
 
             int reqJob;
             Gear.Props.TryGetValue(GearPropType.reqJob, out reqJob);
-            int[] origin = new int[] { 7, 5, 48, 4, 79, 5, 132, 4, 175, 4, 204, 4 };//changed to adapt JMS
-            int[] origin2 = new int[] { 8, 6, 50, 6, 80, 6, 134, 6, 176, 6, 206, 6 };
+            int[] origin = new int[] { 9, 5, 50, 4, 81, 5, 134, 4, 177, 4, 206, 4 };//changed to adapt JMS
+            int[] origin2 = new int[] { 10, 6, 52, 6, 82, 6, 136, 6, 178, 6, 208, 6 };
             for (int i = 0; i <= 5; i++)
             {
                 bool enable;
@@ -1859,14 +2119,6 @@ namespace WzComparerR2.CharaSimControl
         {
             resNode = PluginBase.PluginManager.FindWz("UI/NameTag.img/medal/" + medalTag);
             return resNode != null;
-        }
-        private bool IsKoreanStringPresent(string checkString)
-        {
-            if (checkString == null)
-            {
-                return false;
-            }
-            return checkString.Any(c => (c >= '\uAC00' && c <= '\uD7A3'));
         }
         private enum NumberType
         {

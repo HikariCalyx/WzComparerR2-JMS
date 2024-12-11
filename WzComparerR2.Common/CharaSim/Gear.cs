@@ -46,6 +46,7 @@ namespace WzComparerR2.CharaSim
         public List<GearSealedInfo> Seals { get; internal set; }
 
         public List<Addition> Additions { get; private set; }
+        public bool AdditionHideDesc { get; set; }
         public Dictionary<GearPropType, int> Props { get; private set; }
         public Dictionary<GearPropType, float> VariableStat { get; private set; }
         public Dictionary<GearPropType, int> AbilityTimeLimited { get; private set; }
@@ -430,6 +431,19 @@ namespace WzComparerR2.CharaSim
                         return (GearType)(code / 10);
                 }
             }
+            // MSN support
+            if (code / 10000 == 179)
+            {
+                switch (code / 1000)
+                {
+                    case 1790:
+                    case 1791:
+                    case 1792:
+                        return (GearType)(code / 1000);
+                    default:
+                        return (GearType)(code / 100 * 10);
+                }
+            }
             return (GearType)(code / 10000);
         }
 
@@ -639,9 +653,16 @@ namespace WzComparerR2.CharaSim
                         case "addition": //附加属性信息
                             foreach (Wz_Node addiNode in subNode.Nodes)
                             {
-                                Addition addi = Addition.CreateFromNode(addiNode);
-                                if (addi != null)
-                                    gear.Additions.Add(addi);
+                                if (addiNode.Text == "hideDesc")
+                                {
+                                    gear.AdditionHideDesc = true;
+                                }
+                                else
+                                {
+                                    Addition addi = Addition.CreateFromNode(addiNode);
+                                    if (addi != null)
+                                        gear.Additions.Add(addi);
+                                }
                             }
                             gear.Additions.Sort((add1, add2) => (int)add1.Type - (int)add2.Type);
                             break;

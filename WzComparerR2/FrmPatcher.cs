@@ -24,6 +24,7 @@ namespace WzComparerR2
         public FrmPatcher()
         {
             InitializeComponent();
+            this.FormClosing += new FormClosingEventHandler(FrmPatcher_FormClosing);
 #if NET6_0_OR_GREATER
             // https://learn.microsoft.com/en-us/dotnet/core/compatibility/fx-core#controldefaultfont-changed-to-segoe-ui-9pt
             this.Font = new Font(new FontFamily("MS PGothic"), 9f);
@@ -213,7 +214,7 @@ namespace WzComparerR2
         {
             if (patchThread != null && patchThread.IsAlive)
             {
-                patchThread.Interrupt();
+                patchThread = null;
             }
             ConfigManager.Reload();
             WcR2Config.Default.PatcherSettings.Clear();
@@ -396,11 +397,11 @@ namespace WzComparerR2
             }
             catch (ThreadAbortException)
             {
-                MessageBoxEx.Show("パッチは中止されました。", "Patcher");
+                // MessageBoxEx.Show("パッチは中止されました。", "Patcher");
             }
             catch (ThreadInterruptedException)
             {
-                MessageBoxEx.Show("パッチは中止されました。", "Patcher");
+                // MessageBoxEx.Show("パッチは中止されました。", "Patcher");
             }
             catch (UnauthorizedAccessException ex)
             {
@@ -663,6 +664,25 @@ namespace WzComparerR2
                 }
                 catch(Exception ex)
                 {
+                }
+            }
+        }
+
+        private void FrmPatcher_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (patchThread != null && patchThread.IsAlive)
+            {
+                DialogResult result = MessageBoxEx.Show("ゲームはパッチ適用中なので、パッチャー終了するとゲームデータが破損する可能性があります。\r\n\r\nそれでも終了しますか?", "確認", MessageBoxButtons.YesNo);
+                if (result == DialogResult.Yes)
+                {
+                    patchThread.Interrupt();
+                    patchThread = null;
+                    GC.Collect();
+                    e.Cancel = false;
+                }
+                else
+                {
+                    e.Cancel = true;
                 }
             }
         }
