@@ -9,6 +9,7 @@ using System.Diagnostics;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using DevComponents.AdvTree;
+using WzComparerR2.Common;
 
 namespace WzComparerR2
 {
@@ -49,8 +50,8 @@ namespace WzComparerR2
         {
             this.advTree1.Nodes.Clear();
 
-            this.advTree1.Nodes.Add(new Node("JMS <font color=\"#808080\">v5.6.0</font>"));
-            this.advTree1.Nodes.Add(new Node("[JMS] 日本語版 <font color=\"#808080\">Hikari Calyx</font>"));
+            this.advTree1.Nodes.Add(new Node("JMS <font color=\"#808080\">v5.7.0</font>"));
+            this.advTree1.Nodes.Add(new Node(LocalizedString_JP.FRMABOUT_VERSION));
 
             if (PluginBase.PluginManager.LoadedPlugins.Count > 0)
             {
@@ -66,7 +67,7 @@ namespace WzComparerR2
             }
             else
             {
-                string nodeTxt = "<font color=\"#808080\">利用可能なプラグインはありません。</font>";
+                string nodeTxt = "<font color=\"#808080\">" + LocalizedString_JP.FRMABOUT_NO_AVAILABLE_PLUGINS + "</font>";
                 Node node = new Node(nodeTxt);
                 this.advTree1.Nodes.Add(node);
             }

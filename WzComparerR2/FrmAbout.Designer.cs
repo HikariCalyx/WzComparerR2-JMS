@@ -133,7 +133,7 @@
             this.buttonX1.Size = new System.Drawing.Size(75, 23);
             this.buttonX1.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
             this.buttonX1.TabIndex = 8;
-            this.buttonX1.Text = "閉じる";
+            this.buttonX1.Text = LocalizedString_JP.FRMABOUT_DESIGNER_BTN_CLOSE;
             // 
             // advTree1
             // 
@@ -211,14 +211,14 @@
             this.Controls.Add(this.labelX2);
             this.Controls.Add(this.labelX1);
             this.DoubleBuffered = true;
-            this.Font = new System.Drawing.Font("MS Gothic", 9F);
+            this.Font = new System.Drawing.Font(LocalizedString_JP.DEFAULT_MONOSPACE_FONT, 9F);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "FrmAbout";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "プログラムについて";
+            this.Text = LocalizedString_JP.FRMABOUT_DESIGNER_TITLE;
             ((System.ComponentModel.ISupportInitialize)(this.advTree1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();

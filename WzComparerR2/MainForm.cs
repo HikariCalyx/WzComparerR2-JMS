@@ -107,7 +107,7 @@ namespace WzComparerR2
             if (!soundPlayer.Init())
             {
                 ManagedBass.Errors error = soundPlayer.GetLastError();
-                MessageBoxEx.Show("Failed to initialize Bass\r\n\r\nError: " + (int)error + "(" + error + ")", "エラー");
+                MessageBoxEx.Show("Failed to initialize Bass\r\n\r\nError: " + (int)error + "(" + error + ")", LocalizedString_JP.COMMON_ERROR);
             }
             soundTimer = new Timer(120d);
             soundTimer.Elapsed += new System.Timers.ElapsedEventHandler(soundTimer_Elapsed);
@@ -911,8 +911,8 @@ namespace WzComparerR2
         {
             using (OpenFileDialog dlg = new OpenFileDialog())
             {
-                dlg.Title = "WZファイルを選択";
-                dlg.Filter = "メイプルストーリーリソースファイル (Base.wz; *.wz; *.ms)|*.wz;*.ms";
+                dlg.Title = LocalizedString_JP.MAINFORM_OPENWZDLG_TITLE;
+                dlg.Filter = LocalizedString_JP.MAINFORM_OPENWZDLG_FILTER;
                 if (dlg.ShowDialog() == DialogResult.OK)
                 {
                     openWz(dlg.FileName);
@@ -928,7 +928,7 @@ namespace WzComparerR2
                 {
                     if (string.Compare(wz_f.Header.FileName, wzFilePath, true) == 0)
                     {
-                        MessageBoxEx.Show("このWZファイルはすでに開かれています。", "エラー");
+                        MessageBoxEx.Show(LocalizedString_JP.MAINFORM_OPENWZDLG_ALREADYOPENED, LocalizedString_JP.COMMON_ERROR);
                         return;
                     }
                 }
@@ -983,11 +983,11 @@ namespace WzComparerR2
             }
             catch (FileNotFoundException)
             {
-                MessageBoxEx.Show("ファイルが見つかりません。", "エラー");
+                MessageBoxEx.Show(LocalizedString_JP.MAINFORM_COMMON_FILENOTFOUND, LocalizedString_JP.COMMON_ERROR);
             }
             catch (Exception ex)
             {
-                MessageBoxEx.Show(ex.ToString(), "エラー");
+                MessageBoxEx.Show(ex.ToString(), LocalizedString_JP.COMMON_ERROR);
                 wz.Clear();
             }
             finally
@@ -1017,7 +1017,7 @@ namespace WzComparerR2
                 {
                     if (StringComparer.OrdinalIgnoreCase.Equals(wz_f.Header.FileName, imgFileName))
                     {
-                        MessageBoxEx.Show("このWZファイルはすでに開かれています。", "エラー");
+                        MessageBoxEx.Show("このWZファイルはすでに開かれています。", LocalizedString_JP.COMMON_ERROR);
                         return;
                     }
                 }
@@ -1041,11 +1041,11 @@ namespace WzComparerR2
             }
             catch (FileNotFoundException)
             {
-                MessageBoxEx.Show("ファイルが見つかりません。", "エラー");
+                MessageBoxEx.Show(LocalizedString_JP.MAINFORM_COMMON_FILENOTFOUND, LocalizedString_JP.COMMON_ERROR);
             }
             catch (Exception ex)
             {
-                MessageBoxEx.Show(ex.ToString(), "エラー");
+                MessageBoxEx.Show(ex.ToString(), LocalizedString_JP.COMMON_ERROR);
                 wz.Clear();
             }
             finally
@@ -1058,7 +1058,7 @@ namespace WzComparerR2
         {
             if (advTree1.SelectedNode == null)
             {
-                MessageBoxEx.Show("閉じたいWZファイルが選択されていません。", "エラー");
+                MessageBoxEx.Show(LocalizedString_JP.MAINFORM_CLOSEWZDLG_FILENOTSELECTED, LocalizedString_JP.COMMON_ERROR);
                 return;
             }
             Node baseWzNode = advTree1.SelectedNode;
@@ -1074,7 +1074,7 @@ namespace WzComparerR2
             Wz_File wz_f = advTree1.SelectedNode.AsWzNode()?.GetNodeWzFile();
             if (wz_f == null)
             {
-                MessageBoxEx.Show("閉じたいWZファイルが選択されていません。", "エラー");
+                MessageBoxEx.Show(LocalizedString_JP.MAINFORM_CLOSEWZDLG_FILENOTSELECTED, LocalizedString_JP.COMMON_ERROR);
                 return;
             }
             Wz_Structure wz = wz_f.WzStructure;
@@ -1997,7 +1997,7 @@ namespace WzComparerR2
                 catch (Exception ex)
                 {
                     fs?.Close();
-                    MessageBoxEx.Show(ex.ToString(), "エラー");
+                    MessageBoxEx.Show(ex.ToString(), LocalizedString_JP.COMMON_ERROR);
                 }
             }
         }
@@ -2039,7 +2039,7 @@ namespace WzComparerR2
                 }
                 catch (Exception ex)
                 {
-                    MessageBoxEx.Show(ex.ToString(), "エラー");
+                    MessageBoxEx.Show(ex.ToString(), LocalizedString_JP.COMMON_ERROR);
                 }
                 finally
                 {
@@ -2109,11 +2109,11 @@ namespace WzComparerR2
                 Node searchNode = searchAdvTree(advTree, cellIndex, searchText, exact, regex, true);
                 advTree.SelectedNode = searchNode;
                 if (searchNode == null)
-                    MessageBoxEx.Show("検索結果が見つかりませんでした。", "エラー");
+                    MessageBoxEx.Show("検索結果が見つかりませんでした。", LocalizedString_JP.COMMON_ERROR);
             }
             catch (Exception ex)
             {
-                MessageBoxEx.Show(this, ex.Message, "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBoxEx.Show(this, ex.Message, LocalizedString_JP.COMMON_ERROR, MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -2235,7 +2235,7 @@ namespace WzComparerR2
             {
                 if (!this.stringLinker.Load(findStringWz(), findItemWz(), findEtcWz()))
                 {
-                    MessageBoxEx.Show("Base.wzを選択します。", "エラー");
+                    MessageBoxEx.Show("Base.wzを選択します。", LocalizedString_JP.COMMON_ERROR);
                     return;
                 }
                 QueryPerformance.End();
@@ -2293,7 +2293,7 @@ namespace WzComparerR2
             }
             catch (Exception ex)
             {
-                MessageBoxEx.Show(ex.Message, "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBoxEx.Show(ex.Message, LocalizedString_JP.COMMON_ERROR, MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             finally
             {
@@ -2407,7 +2407,7 @@ namespace WzComparerR2
             Wz_File etcWzFile = advTree1.SelectedNode?.AsWzNode()?.FindNodeByPath("Etc").GetNodeWzFile();
             if (stringWzFile == null || itemWzFile == null || etcWzFile == null)
             {
-                MessageBoxEx.Show("Base.wzを選択します。", "エラー");
+                MessageBoxEx.Show("Base.wzを選択します。", LocalizedString_JP.COMMON_ERROR);
                 return;
             }
             QueryPerformance.Start();
@@ -2420,7 +2420,7 @@ namespace WzComparerR2
             }
             else
             {
-                MessageBoxEx.Show("文字列テーブルのリンクをリセットできません。", "エラー");
+                MessageBoxEx.Show("文字列テーブルのリンクをリセットできません。", LocalizedString_JP.COMMON_ERROR);
             }
         }
 
@@ -2635,7 +2635,7 @@ namespace WzComparerR2
                     }
                     catch (Exception ex)
                     {
-                        MessageBoxEx.Show("ファイルの保存に失敗しました。\r\n\r\n" + ex.ToString(), "エラー");
+                        MessageBoxEx.Show("ファイルの保存に失敗しました。\r\n\r\n" + ex.ToString(), LocalizedString_JP.COMMON_ERROR);
                     }
                     finally
                     {
@@ -2724,7 +2724,7 @@ namespace WzComparerR2
                     }
                     catch (Exception ex)
                     {
-                        MessageBoxEx.Show("Failed to save\r\n" + ex.ToString(), "エラー");
+                        MessageBoxEx.Show("Failed to save\r\n" + ex.ToString(), LocalizedString_JP.COMMON_ERROR);
                     }
                 }
             }
@@ -2756,7 +2756,7 @@ namespace WzComparerR2
                     }
                     catch (Exception ex)
                     {
-                        MessageBoxEx.Show("保存に失敗しました\r\n" + ex.ToString(), "エラー");
+                        MessageBoxEx.Show("保存に失敗しました\r\n" + ex.ToString(), LocalizedString_JP.COMMON_ERROR);
                     }
                 }
             }
@@ -2792,7 +2792,7 @@ namespace WzComparerR2
                     }
                     catch (Exception ex)
                     {
-                        MessageBoxEx.Show("保存に失敗しました\r\n" + ex.ToString(), "エラー");
+                        MessageBoxEx.Show("保存に失敗しました\r\n" + ex.ToString(), LocalizedString_JP.COMMON_ERROR);
                     }
                 }
             }
@@ -3520,7 +3520,7 @@ namespace WzComparerR2
 
             if (openedWz.Count < 2)
             {
-                MessageBoxEx.Show("比較を開始するには、2つ以上のWZファイルを開いてください。", "エラー");
+                MessageBoxEx.Show("比較を開始するには、2つ以上のWZファイルを開いてください。", LocalizedString_JP.COMMON_ERROR);
                 return;
             }
 
@@ -3577,11 +3577,11 @@ namespace WzComparerR2
                     }
                     catch (ThreadAbortException)
                     {
-                        MessageBoxEx.Show(this, "比較は一時停止されました。", "エラー");
+                        MessageBoxEx.Show(this, "比較は一時停止されました。", LocalizedString_JP.COMMON_ERROR);
                     }
                     catch (Exception ex)
                     {
-                        MessageBoxEx.Show(this, "比較は一時停止されました。" + ex.ToString(), "エラー");
+                        MessageBoxEx.Show(this, "比較は一時停止されました。" + ex.ToString(), LocalizedString_JP.COMMON_ERROR);
                     }
                     finally
                     {
