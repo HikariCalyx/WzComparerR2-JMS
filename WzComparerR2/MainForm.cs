@@ -3742,6 +3742,8 @@ namespace WzComparerR2
                     compareThread.Interrupt();
                     compareThread = null;
                     GC.Collect();
+                    e.Cancel = true;
+                    return;
                 }
                 else
                 {
