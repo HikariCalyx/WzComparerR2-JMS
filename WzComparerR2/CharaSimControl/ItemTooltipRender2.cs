@@ -888,11 +888,11 @@ namespace WzComparerR2.CharaSimControl
                         string mergedDescLeftAlign = Translator.MergeString(descLeftAlign, Translator.TranslateString(descLeftAlign), 2);
                         if (Translator.IsKoreanStringPresent(mergedDescLeftAlign))
                         {
-                            GearGraphics.DrawString(g, mergedDescLeftAlign, GearGraphics.KMSItemDetailFont, 100, right, ref picH, 16);
+                            GearGraphics.DrawString(g, mergedDescLeftAlign, GearGraphics.KMSItemDetailFont, 14, right, ref picH, 16);
                         }
                         else
                         {
-                            GearGraphics.DrawString(g, mergedDescLeftAlign, GearGraphics.ItemDetailFont, 100, right, ref picH, 16);
+                            GearGraphics.DrawString(g, mergedDescLeftAlign, GearGraphics.ItemDetailFont, 14, right, ref picH, 16);
                         }
                     }
                     else
