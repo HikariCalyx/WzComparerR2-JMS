@@ -611,13 +611,13 @@ namespace WzComparerR2.CharaSimControl
             {
                 //绘制攻击力变化
                 format.Alignment = StringAlignment.Far;
-                TextRenderer.DrawText(g, "攻撃力增加量", GearGraphics.EquipDetailFont, new Point(252 - TextRenderer.MeasureText(g, "攻撃力增加量", GearGraphics.EquipDetailFont, new Size(int.MaxValue, int.MaxValue), TextFormatFlags.NoPadding).Width, picH + 10), ((SolidBrush)GearGraphics.GrayBrush2).Color, TextFormatFlags.NoPadding | TextFormatFlags.NoPrefix);
+                TextRenderer.DrawText(g, "攻撃力增加量", GearGraphics.EquipDetailFont, new Point(249 - TextRenderer.MeasureText(g, "攻撃力增加量", GearGraphics.EquipDetailFont, new Size(int.MaxValue, int.MaxValue), TextFormatFlags.NoPadding).Width, picH + 10), ((SolidBrush)GearGraphics.GrayBrush2).Color, TextFormatFlags.NoPadding | TextFormatFlags.NoPrefix);
                 g.DrawImage(Resource.UIToolTip_img_Item_Equip_Summary_incline_10digit_0, 253 - 15, picH + 25); //暂时画个0
 
                 picH += 45;
 
                 //Combat Power
-                TextRenderer.DrawText(g, "戦闘力增加量", GearGraphics.EquipDetailFont, new Point(252 - TextRenderer.MeasureText(g, "戦闘力增加量", GearGraphics.EquipDetailFont, new Size(int.MaxValue, int.MaxValue), TextFormatFlags.NoPadding).Width, picH + 10), ((SolidBrush)GearGraphics.GrayBrush2).Color, TextFormatFlags.NoPadding | TextFormatFlags.NoPrefix);
+                TextRenderer.DrawText(g, "戦闘力增加量", GearGraphics.EquipDetailFont, new Point(249 - TextRenderer.MeasureText(g, "戦闘力增加量", GearGraphics.EquipDetailFont, new Size(int.MaxValue, int.MaxValue), TextFormatFlags.NoPadding).Width, picH + 10), ((SolidBrush)GearGraphics.GrayBrush2).Color, TextFormatFlags.NoPadding | TextFormatFlags.NoPrefix);
                 g.DrawImage(Resource.UIToolTip_img_Item_Equip_Summary_incline_10digit_0, 253 - 15, picH + 25); //暂时画个0
 
                 //绘制属性需求
@@ -628,8 +628,8 @@ namespace WzComparerR2.CharaSimControl
             {
                 //绘制攻击力变化
                 format.Alignment = StringAlignment.Far;
-                TextRenderer.DrawText(g, "攻撃力增加量", GearGraphics.EquipDetailFont, new Point(248 - TextRenderer.MeasureText(g, "攻撃力增加量", GearGraphics.EquipDetailFont, new Size(int.MaxValue, int.MaxValue), TextFormatFlags.NoPadding).Width, picH + 10), ((SolidBrush)GearGraphics.GrayBrush2).Color, TextFormatFlags.NoPadding | TextFormatFlags.NoPrefix);
-                g.DrawImage(Resource.UIToolTip_img_Item_Equip_Summary_incline_0, 249 - 19, picH + 27); //暂时画个0
+                TextRenderer.DrawText(g, "攻撃力增加量", GearGraphics.EquipDetailFont, new Point(249 - TextRenderer.MeasureText(g, "攻撃力增加量", GearGraphics.EquipDetailFont, new Size(int.MaxValue, int.MaxValue), TextFormatFlags.NoPadding).Width, picH + 10), ((SolidBrush)GearGraphics.GrayBrush2).Color, TextFormatFlags.NoPadding | TextFormatFlags.NoPrefix);
+                g.DrawImage(Resource.UIToolTip_img_Item_Equip_Summary_incline_0, 249 - 15, picH + 27); //暂时画个0
 
                 //绘制属性需求
                 DrawGearReq(g, 97, picH + 59);
@@ -1920,8 +1920,8 @@ namespace WzComparerR2.CharaSimControl
 
             int reqJob;
             Gear.Props.TryGetValue(GearPropType.reqJob, out reqJob);
-            int[] origin = new int[] { 9, 5, 50, 4, 81, 5, 134, 4, 177, 4, 206, 4 };//changed to adapt JMS
-            int[] origin2 = new int[] { 10, 6, 52, 6, 82, 6, 136, 6, 178, 6, 208, 6 };
+            int[] origin = new int[] { 9, 5, 50, 4, 80, 5, 134, 4, 177, 4, 206, 4 };//changed to adapt JMS
+            int[] origin2 = new int[] { 10, 6, 52, 6, 81, 6, 136, 6, 178, 6, 208, 6 };
             for (int i = 0; i <= 5; i++)
             {
                 bool enable;
