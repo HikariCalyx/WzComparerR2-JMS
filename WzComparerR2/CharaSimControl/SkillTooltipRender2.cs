@@ -32,6 +32,7 @@ namespace WzComparerR2.CharaSimControl
         public bool DisplayCooltimeMSAsSec { get; set; } = true;
         public bool DisplayPermyriadAsPercent { get; set; } = true;
         public bool IgnoreEvalError { get; set; } = false;
+        public bool ShowRangeCoordinates { get; set; } = true;
         public bool IsWideMode { get; set; } = true;
         public Dictionary<string, List<string>> DiffSkillTags { get; set; } = new Dictionary<string, List<string>>();
         public Wz_Node wzNode { get; set; } = null;
@@ -544,7 +545,7 @@ namespace WzComparerR2.CharaSimControl
                 }
             }
 
-            if (Skill.LT.X != 0)
+            if (Skill.LT.X != 0 && ShowRangeCoordinates)
             {
 
                 skillDescEx.Add("#c[範囲座標] LT(左上): (" + Skill.LT.X + "," + Skill.LT.Y + ")" + " / " +

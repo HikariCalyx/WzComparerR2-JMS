@@ -102,6 +102,13 @@ namespace WzComparerR2
         }
 
         [Link]
+        public bool Skill_ShowRangeCoordinates
+        {
+            get { return checkBoxX22.Checked; }
+            set { checkBoxX22.Checked = value; }
+        }
+
+        [Link]
         public bool Gear_ShowID
         {
             get { return checkBoxX3.Checked; }

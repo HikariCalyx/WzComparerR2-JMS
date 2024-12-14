@@ -28,6 +28,8 @@ namespace WzComparerR2
         public static string MAINFORM_COMMON_FILENOTFOUND = "ファイルが見つかりません。";
 
         public static string MAINFORM_DESIGNER_RIBBONBAR_SIMULATION = "シミュレーション";
+
+        public static string FRMQUICKVIEWSETTINGS_DESIGNER_CHK_SHOWRANGECOORDINATES = "範囲座標を表示";
         #endregion
     }
 }

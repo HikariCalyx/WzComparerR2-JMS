@@ -233,6 +233,7 @@ namespace WzComparerR2
             tooltipQuickView.SkillRender.DisplayCooltimeMSAsSec = Setting.Skill.DisplayCooltimeMSAsSec;
             tooltipQuickView.SkillRender.DisplayPermyriadAsPercent = Setting.Skill.DisplayPermyriadAsPercent;
             tooltipQuickView.SkillRender.IgnoreEvalError = Setting.Skill.IgnoreEvalError;
+            tooltipQuickView.SkillRender.ShowRangeCoordinates = Setting.Skill.ShowRangeCoordinates;
             this.skillDefaultLevel = Setting.Skill.DefaultLevel;
             this.skillInterval = Setting.Skill.IntervalLevel;
             tooltipQuickView.GearRender.ShowObjectID = Setting.Gear.ShowID;
