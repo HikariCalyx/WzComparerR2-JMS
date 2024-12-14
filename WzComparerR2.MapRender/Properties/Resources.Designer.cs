@@ -716,5 +716,17 @@ namespace WzComparerR2.MapRender.Properties
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap UI_UIMap_img_WorldMap_backgrnd
+        {
+            get
+            {
+                object obj = ResourceManager.GetObject("UI_UIMap_img_WorldMap_backgrnd", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
     }
 }

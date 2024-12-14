@@ -80,7 +80,7 @@ namespace WzComparerR2.MapRender.UI
         protected override void InitializeComponents()
         {
             var canvas = new Canvas();
-            var canvasBackTexture = Engine.Instance.AssetManager.LoadTexture(null, nameof(MRes.UIWindow2_img_WorldMap_Border_0));
+            var canvasBackTexture = Engine.Instance.AssetManager.LoadTexture(null, nameof(MRes.UI_UIMap_img_WorldMap_backgrnd));
             canvas.Background = new ImageBrush() { ImageSource = new BitmapImage() { Texture = canvasBackTexture }, Stretch = Stretch.None };
             canvas.SetBinding(Canvas.WidthProperty, new Binding(UIWorldMap.WidthProperty) { Source = this, Mode = BindingMode.TwoWay });
             canvas.SetBinding(Canvas.HeightProperty, new Binding(UIWorldMap.HeightProperty) { Source = this, Mode = BindingMode.TwoWay });
@@ -124,8 +124,8 @@ namespace WzComparerR2.MapRender.UI
             mapArea.Width = 640;
             mapArea.Height = 480;
             mapArea.InputBindings.Add(new InputBinding(new RelayCommand(MapArea_RightClick), new MouseGesture(MouseAction.RightClick)));
-            Canvas.SetLeft(mapArea, 7);
-            Canvas.SetTop(mapArea, 44);
+            Canvas.SetLeft(mapArea, 196);
+            Canvas.SetTop(mapArea, 66);
             canvas.Children.Add(mapArea);
             this.SetBinding(CurrentWorldMapProperty, new Binding(Control.DataContextProperty) { Source = mapArea, Mode = BindingMode.OneWayToSource });
             this.SetBinding(CurrentMapIDProperty, new Binding("CurrentMapID") { Source = mapArea, Mode = BindingMode.OneWayToSource });
