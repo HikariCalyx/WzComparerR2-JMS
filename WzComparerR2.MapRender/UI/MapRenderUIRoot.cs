@@ -99,6 +99,14 @@ namespace WzComparerR2.MapRender.UI
             ImageManager.Instance.AddImage(nameof(MRes.Basic_img_BtCancel4_mouseOver_0));
             ImageManager.Instance.AddImage(nameof(MRes.Basic_img_BtCancel4_pressed_0));
             ImageManager.Instance.AddImage(nameof(MRes.Basic_img_BtCancel4_disabled_0));
+            ImageManager.Instance.AddImage(nameof(MRes.UI_UIMap_img_WorldMap_button_goToCurrentMap_normal_0));
+            ImageManager.Instance.AddImage(nameof(MRes.UI_UIMap_img_WorldMap_button_goToCurrentMap_mouseOver_0));
+            ImageManager.Instance.AddImage(nameof(MRes.UI_UIMap_img_WorldMap_button_goToCurrentMap_pressed_0));
+            ImageManager.Instance.AddImage(nameof(MRes.UI_UIMap_img_WorldMap_button_goToCurrentMap_disabled_0));
+            ImageManager.Instance.AddImage(nameof(MRes.UI_UIMap_img_WorldMap_button_goToUpperWorldMap_normal_0));
+            ImageManager.Instance.AddImage(nameof(MRes.UI_UIMap_img_WorldMap_button_goToUpperWorldMap_mouseOver_0));
+            ImageManager.Instance.AddImage(nameof(MRes.UI_UIMap_img_WorldMap_button_goToUpperWorldMap_pressed_0));
+            ImageManager.Instance.AddImage(nameof(MRes.UI_UIMap_img_WorldMap_button_goToUpperWorldMap_disabled_0));
             ImageManager.Instance.AddImage(nameof(MRes.Basic_img_BtClose3_normal_0));
             ImageManager.Instance.AddImage(nameof(MRes.Basic_img_BtClose3_mouseOver_0));
             ImageManager.Instance.AddImage(nameof(MRes.Basic_img_BtClose3_pressed_0));

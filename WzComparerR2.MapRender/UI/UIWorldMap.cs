@@ -88,7 +88,7 @@ namespace WzComparerR2.MapRender.UI
             this.Content = canvas;
 
             Border title = new Border();
-            title.Height = 17;
+            title.Height = 30;
             title.SetBinding(Canvas.WidthProperty, new Binding(Canvas.WidthProperty) { Source = canvas });
             canvas.Children.Add(title);
             this.SetDragTarget(title);
@@ -96,8 +96,8 @@ namespace WzComparerR2.MapRender.UI
             ComboBox cmbMaps = new ComboBox();
             cmbMaps.Width = 150;
             cmbMaps.Height = 20;
-            Canvas.SetLeft(cmbMaps, 10);
-            Canvas.SetTop(cmbMaps, 23);
+            Canvas.SetLeft(cmbMaps, 294);
+            Canvas.SetTop(cmbMaps, 42);
             cmbMaps.SetBinding(ComboBox.SelectedItemProperty, new Binding(UIWorldMap.CurrentWorldMapProperty) { Source = this, Mode = BindingMode.TwoWay });
             canvas.Children.Add(cmbMaps);
             this.CmbMaps = cmbMaps;
@@ -133,13 +133,20 @@ namespace WzComparerR2.MapRender.UI
             this.SetBinding(SelectedFogIndexProperty, new Binding("SelectedFogIndex") { Source = mapArea, Mode = BindingMode.OneWayToSource });
             this.MapArea = mapArea;
 
-            Button btnBack = new Button();
-            btnBack.Width = 50;
-            btnBack.Height = 20;
-            btnBack.Content = "戻る";
+            ImageButton btnGoToCurrentMap = new ImageButton();
+            btnGoToCurrentMap.Name = "GoToCurrentMap";
+            btnGoToCurrentMap.Click += BtnGoToCurrentMap_Click;
+            btnGoToCurrentMap.SetResourceReference(UIElement.StyleProperty, MapRenderResourceKey.MapRenderButtonStyle);
+            Canvas.SetLeft(btnGoToCurrentMap, 205);
+            Canvas.SetTop(btnGoToCurrentMap, 40);
+            canvas.Children.Add(btnGoToCurrentMap);
+
+            ImageButton btnBack = new ImageButton();
+            btnBack.Name = "Back";
             btnBack.Click += BtnBack_Click;
-            Canvas.SetLeft(btnBack, 180);
-            Canvas.SetTop(btnBack, 23);
+            btnBack.SetResourceReference(UIElement.StyleProperty, MapRenderResourceKey.MapRenderButtonStyle);
+            Canvas.SetLeft(btnBack, 247);
+            Canvas.SetTop(btnBack, 40);
             canvas.Children.Add(btnBack);
 
             ImageButton btnClose = new ImageButton();
@@ -568,6 +575,11 @@ namespace WzComparerR2.MapRender.UI
         private void BtnBack_Click(object sender, RoutedEventArgs e)
         {
             this.GoBack();
+        }
+
+        private void BtnGoToCurrentMap_Click(object sender, RoutedEventArgs e)
+        {
+            this.JumpToCurrentMap();
         }
 
         private void MapArea_RightClick(object obj)

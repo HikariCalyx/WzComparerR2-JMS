@@ -149,31 +149,31 @@ namespace WzComparerR2.MapRender.UI
             Image imgMapMark = new Image();
             imgMapMark.SetBinding(Image.SourceProperty, new Binding("MapMark") { Source = this, Converter = new TextureImageConverter() });
             Canvas.SetLeft(imgMapMark, 7);
-            Canvas.SetTop(imgMapMark, 17);
+            Canvas.SetTop(imgMapMark, 29);
             canvas.Children.Add(imgMapMark);
 
             TextBlock lblStreetName = new TextBlock();
             lblStreetName.Name = "lblStreetName";
-            lblStreetName.FontStyle = FontStyle.Bold;
-            lblStreetName.Foreground = Brushes.White;
+            //lblStreetName.FontStyle = FontStyle.Bold;
+            lblStreetName.Foreground = new SolidColorBrush(new ColorW() { R = 0xD4, G = 0xE1, B = 0xE5, A = 0xFF });
             lblStreetName.Padding = new Thickness(0, 0, 6, 0);
             lblStreetName.SetBinding(TextBlock.TextProperty, new Binding("StreetName") { Source = this });
             lblStreetName.SetResourceReference(TextBlock.FontFamilyProperty, MapRenderResourceKey.DefaultFontFamily);
             lblStreetName.SetResourceReference(TextBlock.FontSizeProperty, MapRenderResourceKey.DefaultFontSize);
-            Canvas.SetLeft(lblStreetName, 48);
-            Canvas.SetTop(lblStreetName, 20);
+            Canvas.SetLeft(lblStreetName, 51);
+            Canvas.SetTop(lblStreetName, 32);
             canvas.Children.Add(lblStreetName);
 
             TextBlock lblMapName = new TextBlock();
             lblMapName.Name = "lblMapName";
-            lblMapName.FontStyle = FontStyle.Bold;
+            //lblMapName.FontStyle = FontStyle.Bold;
             lblMapName.Foreground = Brushes.White;
             lblMapName.Padding = new Thickness(0, 0, 6, 0);
             lblMapName.SetBinding(TextBlock.TextProperty, new Binding("MapName") { Source = this });
             lblMapName.SetResourceReference(TextBlock.FontFamilyProperty, MapRenderResourceKey.DefaultFontFamily);
             lblMapName.SetResourceReference(TextBlock.FontSizeProperty, MapRenderResourceKey.DefaultFontSize);
-            Canvas.SetLeft(lblMapName, 48);
-            Canvas.SetTop(lblMapName, 34);
+            Canvas.SetLeft(lblMapName, 51);
+            Canvas.SetTop(lblMapName, 50);
             canvas.Children.Add(lblMapName);
 
             ComboBox cb = new ComboBox();
@@ -616,16 +616,16 @@ namespace WzComparerR2.MapRender.UI
             {
                 if (!mirror)
                 {
-                    this.NW1 = assetManager.LoadTexture(null, nameof(Res.UIWindow2_img_MiniMap_MaxMap_nw));
-                    this.NW2 = assetManager.LoadTexture(null, nameof(Res.UIWindow2_img_MiniMap_MaxMap_nw2));
-                    this.N = assetManager.LoadTexture(null, nameof(Res.UIWindow2_img_MiniMap_MaxMap_n));
-                    this.NE = assetManager.LoadTexture(null, nameof(Res.UIWindow2_img_MiniMap_MaxMap_ne));
-                    this.W = assetManager.LoadTexture(null, nameof(Res.UIWindow2_img_MiniMap_MaxMap_w));
-                    //this.C = assetManager.LoadTexture(null, nameof(Res.UIWindow2_img_MiniMap_MaxMap_c);
-                    this.E = assetManager.LoadTexture(null, nameof(Res.UIWindow2_img_MiniMap_MaxMap_e));
-                    this.SW = assetManager.LoadTexture(null, nameof(Res.UIWindow2_img_MiniMap_MaxMap_sw));
-                    this.S = assetManager.LoadTexture(null, nameof(Res.UIWindow2_img_MiniMap_MaxMap_s));
-                    this.SE = assetManager.LoadTexture(null, nameof(Res.UIWindow2_img_MiniMap_MaxMap_se));
+                    this.NW1 = assetManager.LoadTexture(null, nameof(MRes.UI_UIMap_img_MiniMap_MaxMap_nw));
+                    this.NW2 = assetManager.LoadTexture(null, nameof(MRes.UI_UIMap_img_MiniMap_MaxMap_nw));
+                    this.N = assetManager.LoadTexture(null, nameof(MRes.UI_UIMap_img_MiniMap_MaxMap_n));
+                    this.NE = assetManager.LoadTexture(null, nameof(MRes.UI_UIMap_img_MiniMap_MaxMap_ne));
+                    this.W = assetManager.LoadTexture(null, nameof(MRes.UI_UIMap_img_MiniMap_MaxMap_w));
+                    //this.C = assetManager.LoadTexture(null, nameof(MRes.UI_UIMap_img_MiniMap_MaxMap_c);
+                    this.E = assetManager.LoadTexture(null, nameof(MRes.UI_UIMap_img_MiniMap_MaxMap_e));
+                    this.SW = assetManager.LoadTexture(null, nameof(MRes.UI_UIMap_img_MiniMap_MaxMap_sw));
+                    this.S = assetManager.LoadTexture(null, nameof(MRes.UI_UIMap_img_MiniMap_MaxMap_s));
+                    this.SE = assetManager.LoadTexture(null, nameof(MRes.UI_UIMap_img_MiniMap_MaxMap_se));
                 }
                 else
                 {

@@ -50,6 +50,22 @@ namespace WzComparerR2.MapRender.UI
             };
             trigger.Setters.AddRange(GetMapRenderButtonSetters("Cancel"));
             style.Triggers.Add(trigger);
+            //btnGoToCurrentMap
+            trigger = new Trigger()
+            {
+                Property = UIElement.NameProperty,
+                Value = "GoToCurrentMap"
+            };
+            trigger.Setters.AddRange(GetMapRenderButtonSetters("GoToCurrentMap"));
+            style.Triggers.Add(trigger);
+            //btnBack
+            trigger = new Trigger()
+            {
+                Property = UIElement.NameProperty,
+                Value = "Back"
+            };
+            trigger.Setters.AddRange(GetMapRenderButtonSetters("Back"));
+            style.Triggers.Add(trigger);
             //btnClose
             trigger = new Trigger()
             {
@@ -87,6 +103,20 @@ namespace WzComparerR2.MapRender.UI
                         nameof(MRes.Basic_img_BtCancel4_mouseOver_0),
                         nameof(MRes.Basic_img_BtCancel4_pressed_0),
                         nameof(MRes.Basic_img_BtCancel4_disabled_0));
+
+                case "GoToCurrentMap":
+                    return CreateButtonSetters(37, 25,
+                        nameof(MRes.UI_UIMap_img_WorldMap_button_goToCurrentMap_normal_0),
+                        nameof(MRes.UI_UIMap_img_WorldMap_button_goToCurrentMap_mouseOver_0),
+                        nameof(MRes.UI_UIMap_img_WorldMap_button_goToCurrentMap_pressed_0),
+                        nameof(MRes.UI_UIMap_img_WorldMap_button_goToCurrentMap_disabled_0));
+
+                case "Back":
+                    return CreateButtonSetters(37, 25,
+                        nameof(MRes.UI_UIMap_img_WorldMap_button_goToUpperWorldMap_normal_0),
+                        nameof(MRes.UI_UIMap_img_WorldMap_button_goToUpperWorldMap_mouseOver_0),
+                        nameof(MRes.UI_UIMap_img_WorldMap_button_goToUpperWorldMap_pressed_0),
+                        nameof(MRes.UI_UIMap_img_WorldMap_button_goToUpperWorldMap_disabled_0));
 
                 case "Close":
                     return CreateButtonSetters(13, 13,
