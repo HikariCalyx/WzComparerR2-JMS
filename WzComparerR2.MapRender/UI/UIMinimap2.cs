@@ -662,7 +662,7 @@ namespace WzComparerR2.MapRender.UI
                 return new Microsoft.Xna.Framework.Point(texture.Width, texture.Height);
             }
 
-            public void LoadResource(AssetManager assetManager, bool mirror)
+            public void LoadResource(AssetManager assetManager, bool mirror = false)
             {
                 this.NW1 = assetManager.LoadTexture(null, nameof(MRes.UI_UIMap_img_MiniMap_MaxMap_nw));
                 this.NW2 = assetManager.LoadTexture(null, nameof(MRes.UI_UIMap_img_MiniMap_MaxMap_nw));
