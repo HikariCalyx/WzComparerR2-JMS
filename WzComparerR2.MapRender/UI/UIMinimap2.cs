@@ -662,34 +662,18 @@ namespace WzComparerR2.MapRender.UI
                 return new Microsoft.Xna.Framework.Point(texture.Width, texture.Height);
             }
 
-            public void LoadResource(AssetManager assetManager, bool mirror = false)
+            public void LoadResource(AssetManager assetManager, bool mirror)
             {
-                if (!mirror)
-                {
-                    this.NW1 = assetManager.LoadTexture(null, nameof(MRes.UI_UIMap_img_MiniMap_MaxMap_nw));
-                    this.NW2 = assetManager.LoadTexture(null, nameof(MRes.UI_UIMap_img_MiniMap_MaxMap_nw));
-                    this.N = assetManager.LoadTexture(null, nameof(MRes.UI_UIMap_img_MiniMap_MaxMap_n));
-                    this.NE = assetManager.LoadTexture(null, nameof(MRes.UI_UIMap_img_MiniMap_MaxMap_ne));
-                    this.W = assetManager.LoadTexture(null, nameof(MRes.UI_UIMap_img_MiniMap_MaxMap_w));
-                    //this.C = assetManager.LoadTexture(null, nameof(MRes.UI_UIMap_img_MiniMap_MaxMap_c);
-                    this.E = assetManager.LoadTexture(null, nameof(MRes.UI_UIMap_img_MiniMap_MaxMap_e));
-                    this.SW = assetManager.LoadTexture(null, nameof(MRes.UI_UIMap_img_MiniMap_MaxMap_sw2));
-                    this.S = assetManager.LoadTexture(null, nameof(MRes.UI_UIMap_img_MiniMap_MaxMap_s));
-                    this.SE = assetManager.LoadTexture(null, nameof(MRes.UI_UIMap_img_MiniMap_MaxMap_se));
-                }
-                else
-                {
-                    this.NW1 = assetManager.LoadTexture(null, nameof(Res.UIWindow2_img_MiniMap_MaxMapMirror_nw));
-                    this.NW2 = assetManager.LoadTexture(null, nameof(Res.UIWindow2_img_MiniMap_MaxMapMirror_nw2));
-                    this.N = assetManager.LoadTexture(null, nameof(Res.UIWindow2_img_MiniMap_MaxMapMirror_n));
-                    this.NE = assetManager.LoadTexture(null, nameof(Res.UIWindow2_img_MiniMap_MaxMapMirror_ne));
-                    this.W = assetManager.LoadTexture(null, nameof(Res.UIWindow2_img_MiniMap_MaxMapMirror_w));
-                    //this.C = assetManager.LoadTexture(null, nameof(Res.UIWindow2_img_MiniMap_MaxMapMirror_c);
-                    this.E = assetManager.LoadTexture(null, nameof(Res.UIWindow2_img_MiniMap_MaxMapMirror_e));
-                    this.SW = assetManager.LoadTexture(null, nameof(Res.UIWindow2_img_MiniMap_MaxMapMirror_sw));
-                    this.S = assetManager.LoadTexture(null, nameof(Res.UIWindow2_img_MiniMap_MaxMapMirror_s));
-                    this.SE = assetManager.LoadTexture(null, nameof(Res.UIWindow2_img_MiniMap_MaxMapMirror_se));
-                }
+                this.NW1 = assetManager.LoadTexture(null, nameof(MRes.UI_UIMap_img_MiniMap_MaxMap_nw));
+                this.NW2 = assetManager.LoadTexture(null, nameof(MRes.UI_UIMap_img_MiniMap_MaxMap_nw));
+                this.N = assetManager.LoadTexture(null, nameof(MRes.UI_UIMap_img_MiniMap_MaxMap_n));
+                this.NE = assetManager.LoadTexture(null, nameof(MRes.UI_UIMap_img_MiniMap_MaxMap_ne));
+                this.W = assetManager.LoadTexture(null, nameof(MRes.UI_UIMap_img_MiniMap_MaxMap_w));
+                //this.C = assetManager.LoadTexture(null, nameof(MRes.UI_UIMap_img_MiniMap_MaxMap_c);
+                this.E = assetManager.LoadTexture(null, nameof(MRes.UI_UIMap_img_MiniMap_MaxMap_e));
+                this.SW = assetManager.LoadTexture(null, nameof(MRes.UI_UIMap_img_MiniMap_MaxMap_sw2));
+                this.S = assetManager.LoadTexture(null, nameof(MRes.UI_UIMap_img_MiniMap_MaxMap_s));
+                this.SE = assetManager.LoadTexture(null, nameof(MRes.UI_UIMap_img_MiniMap_MaxMap_se));
             }
         }
 
