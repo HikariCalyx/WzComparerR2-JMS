@@ -582,7 +582,6 @@ namespace WzComparerR2.CharaSim
         {
             switch (specJob)
             {
-                case 2: return "ｱｰｸﾒｲｼﾞ(氷･雷)､ｱｰｸﾒｲｼﾞ(火･毒)､ﾋﾞｼｮｯﾌﾟ､\r\nﾌﾚｲﾑｳｨｻﾞｰﾄﾞ､ｴｳﾞｧﾝ､ﾊﾞﾄﾙﾒｲｼﾞ､ﾘﾝ着用可能";
                 case 21: return "アラン着用可能";
                 case 22: return "エヴァン着用可能";
                 case 23: return "メルセデス着用可能";
@@ -631,6 +630,31 @@ namespace WzComparerR2.CharaSim
 
                 default: return null;
             }
+        }
+
+        public static string GetExtraJobReqString(IEnumerable<int> specJobs)
+        {
+            List<string> extraJobNames = new List<string>();
+            foreach (int specJob in specJobs)
+            {
+                switch (specJob)
+                {
+                    case 1: extraJobNames.AddRange(new[] { "ﾋｰﾛｰ", "ﾊﾟﾗﾃﾞｨﾝ" }); break;
+                    case 2: extraJobNames.AddRange(new[] { "ｱｰｸﾒｲｼﾞ(氷･雷)", "ｱｰｸﾒｲｼﾞ(火･毒)", "ﾋﾞｼｮｯﾌﾟ" }); break;
+                    case 4: extraJobNames.Add("シャドー"); break;
+                    case 11: extraJobNames.Add("ｿｳﾙﾏｽﾀｰ"); break;
+                    case 12: extraJobNames.Add("ﾌﾚｲﾑｳｨｻﾞｰﾄﾞ"); break;
+                    case 22: extraJobNames.Add("ｴｳﾞｧﾝ"); break;
+                    case 32: extraJobNames.Add("ﾊﾞﾄﾙﾒｲｼﾞ"); break;
+                    case 172: extraJobNames.Add("ﾘﾝ"); break;
+                    default: extraJobNames.Add(specJob.ToString()); break;
+                }
+            }
+            if (extraJobNames.Count == 0)
+            {
+                return null;
+            }
+            return string.Join("､", extraJobNames) + "着用可能";
         }
 
         public static string GetItemPropString(ItemPropType propType, int value)
