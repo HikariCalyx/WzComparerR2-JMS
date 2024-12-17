@@ -153,8 +153,8 @@ namespace WzComparerR2.MapRender.UI
             btnClose.Name = "Close";
             btnClose.Click += BtnClose_Click;
             btnClose.SetResourceReference(UIElement.StyleProperty, MapRenderResourceKey.MapRenderButtonStyle);
-            Canvas.SetRight(btnClose, 7);
-            Canvas.SetTop(btnClose, 5);
+            Canvas.SetRight(btnClose, 12);
+            Canvas.SetTop(btnClose, 12);
             canvas.Children.Add(btnClose);
 
             this.Width = canvasBackTexture.Width;

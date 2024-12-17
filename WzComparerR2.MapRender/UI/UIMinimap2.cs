@@ -191,7 +191,57 @@ namespace WzComparerR2.MapRender.UI
 
             FontManager.Instance.AddFont(lblStreetName.FontFamily.Source, lblStreetName.FontSize, lblStreetName.FontStyle);
             FontManager.Instance.AddFont(lblMapName.FontFamily.Source, lblMapName.FontSize, lblMapName.FontStyle);
+
+            ImageButton btnReturnToTown = new ImageButton();
+            btnReturnToTown.Name = "ReturnToTown";
+            btnReturnToTown.Click += BtnReturnToTown_Click;
+            btnReturnToTown.SetResourceReference(UIElement.StyleProperty, MapRenderResourceKey.MapRenderButtonStyle);
+            Canvas.SetRight(btnReturnToTown, 88);
+            Canvas.SetTop(btnReturnToTown, 4);
+            canvas.Children.Add(btnReturnToTown);
+
+            ImageButton btnShowWorldMap = new ImageButton();
+            btnShowWorldMap.Name = "ShowWorldMap";
+            btnShowWorldMap.Click += BtnShowWorldMap_Click;
+            btnShowWorldMap.SetResourceReference(UIElement.StyleProperty, MapRenderResourceKey.MapRenderButtonStyle);
+            Canvas.SetRight(btnShowWorldMap, 67);
+            Canvas.SetTop(btnShowWorldMap, 4);
+            canvas.Children.Add(btnShowWorldMap);
+
+            ImageButton btnNavigation = new ImageButton();
+            btnNavigation.Name = "Navigation";
+            //btnNavigation.Click += BtnNavigation_Click;
+            btnNavigation.SetResourceReference(UIElement.StyleProperty, MapRenderResourceKey.MapRenderButtonStyle);
+            Canvas.SetRight(btnNavigation, 46);
+            Canvas.SetTop(btnNavigation, 4);
+            canvas.Children.Add(btnNavigation);
+
+            ImageButton btnNpcList = new ImageButton();
+            btnNpcList.Name = "NpcList";
+            //btnNpcList.Click += BtnNpcList_Click;
+            btnNpcList.SetResourceReference(UIElement.StyleProperty, MapRenderResourceKey.MapRenderButtonStyle);
+            Canvas.SetRight(btnNpcList, 25);
+            Canvas.SetTop(btnNpcList, 4);
+            canvas.Children.Add(btnNpcList);
+
+            ImageButton btnFilter = new ImageButton();
+            btnFilter.Name = "Filter";
+            //btnFilter.Click += BtnFilter_Click;
+            btnFilter.SetResourceReference(UIElement.StyleProperty, MapRenderResourceKey.MapRenderButtonStyle);
+            Canvas.SetRight(btnFilter, 4);
+            Canvas.SetTop(btnFilter, 4);
+            canvas.Children.Add(btnFilter);
             base.InitializeComponents();
+        }
+
+        private void BtnReturnToTown_Click(object sender, RoutedEventArgs e)
+        {
+            ;
+        }
+
+        private void BtnShowWorldMap_Click(object sender, RoutedEventArgs e)
+        {
+            ;
         }
 
         protected override void OnPropertyChanged(DependencyProperty property)
@@ -623,7 +673,7 @@ namespace WzComparerR2.MapRender.UI
                     this.W = assetManager.LoadTexture(null, nameof(MRes.UI_UIMap_img_MiniMap_MaxMap_w));
                     //this.C = assetManager.LoadTexture(null, nameof(MRes.UI_UIMap_img_MiniMap_MaxMap_c);
                     this.E = assetManager.LoadTexture(null, nameof(MRes.UI_UIMap_img_MiniMap_MaxMap_e));
-                    this.SW = assetManager.LoadTexture(null, nameof(MRes.UI_UIMap_img_MiniMap_MaxMap_sw));
+                    this.SW = assetManager.LoadTexture(null, nameof(MRes.UI_UIMap_img_MiniMap_MaxMap_sw2));
                     this.S = assetManager.LoadTexture(null, nameof(MRes.UI_UIMap_img_MiniMap_MaxMap_s));
                     this.SE = assetManager.LoadTexture(null, nameof(MRes.UI_UIMap_img_MiniMap_MaxMap_se));
                 }

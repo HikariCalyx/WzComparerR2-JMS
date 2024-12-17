@@ -483,6 +483,206 @@ namespace WzComparerR2.MapRender.Properties {
         /// <summary>
         ///   查找 System.Drawing.Bitmap 类型的本地化资源。
         /// </summary>
+        internal static System.Drawing.Bitmap UI_UIMap_img_MiniMap_BtFilter_disabled_0 {
+            get {
+                object obj = ResourceManager.GetObject("UI_UIMap_img_MiniMap_BtFilter_disabled_0", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   查找 System.Drawing.Bitmap 类型的本地化资源。
+        /// </summary>
+        internal static System.Drawing.Bitmap UI_UIMap_img_MiniMap_BtFilter_mouseOver_0 {
+            get {
+                object obj = ResourceManager.GetObject("UI_UIMap_img_MiniMap_BtFilter_mouseOver_0", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   查找 System.Drawing.Bitmap 类型的本地化资源。
+        /// </summary>
+        internal static System.Drawing.Bitmap UI_UIMap_img_MiniMap_BtFilter_normal_0 {
+            get {
+                object obj = ResourceManager.GetObject("UI_UIMap_img_MiniMap_BtFilter_normal_0", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   查找 System.Drawing.Bitmap 类型的本地化资源。
+        /// </summary>
+        internal static System.Drawing.Bitmap UI_UIMap_img_MiniMap_BtFilter_pressed_0 {
+            get {
+                object obj = ResourceManager.GetObject("UI_UIMap_img_MiniMap_BtFilter_pressed_0", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   查找 System.Drawing.Bitmap 类型的本地化资源。
+        /// </summary>
+        internal static System.Drawing.Bitmap UI_UIMap_img_MiniMap_BtMap_disabled_0 {
+            get {
+                object obj = ResourceManager.GetObject("UI_UIMap_img_MiniMap_BtMap_disabled_0", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   查找 System.Drawing.Bitmap 类型的本地化资源。
+        /// </summary>
+        internal static System.Drawing.Bitmap UI_UIMap_img_MiniMap_BtMap_mouseOver_0 {
+            get {
+                object obj = ResourceManager.GetObject("UI_UIMap_img_MiniMap_BtMap_mouseOver_0", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   查找 System.Drawing.Bitmap 类型的本地化资源。
+        /// </summary>
+        internal static System.Drawing.Bitmap UI_UIMap_img_MiniMap_BtMap_normal_0 {
+            get {
+                object obj = ResourceManager.GetObject("UI_UIMap_img_MiniMap_BtMap_normal_0", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   查找 System.Drawing.Bitmap 类型的本地化资源。
+        /// </summary>
+        internal static System.Drawing.Bitmap UI_UIMap_img_MiniMap_BtMap_pressed_0 {
+            get {
+                object obj = ResourceManager.GetObject("UI_UIMap_img_MiniMap_BtMap_pressed_0", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   查找 System.Drawing.Bitmap 类型的本地化资源。
+        /// </summary>
+        internal static System.Drawing.Bitmap UI_UIMap_img_MiniMap_BtNavigation_disabled_0 {
+            get {
+                object obj = ResourceManager.GetObject("UI_UIMap_img_MiniMap_BtNavigation_disabled_0", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   查找 System.Drawing.Bitmap 类型的本地化资源。
+        /// </summary>
+        internal static System.Drawing.Bitmap UI_UIMap_img_MiniMap_BtNavigation_mouseOver_0 {
+            get {
+                object obj = ResourceManager.GetObject("UI_UIMap_img_MiniMap_BtNavigation_mouseOver_0", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   查找 System.Drawing.Bitmap 类型的本地化资源。
+        /// </summary>
+        internal static System.Drawing.Bitmap UI_UIMap_img_MiniMap_BtNavigation_normal_0 {
+            get {
+                object obj = ResourceManager.GetObject("UI_UIMap_img_MiniMap_BtNavigation_normal_0", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   查找 System.Drawing.Bitmap 类型的本地化资源。
+        /// </summary>
+        internal static System.Drawing.Bitmap UI_UIMap_img_MiniMap_BtNavigation_pressed_0 {
+            get {
+                object obj = ResourceManager.GetObject("UI_UIMap_img_MiniMap_BtNavigation_pressed_0", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   查找 System.Drawing.Bitmap 类型的本地化资源。
+        /// </summary>
+        internal static System.Drawing.Bitmap UI_UIMap_img_MiniMap_BtNpc_disabled_0 {
+            get {
+                object obj = ResourceManager.GetObject("UI_UIMap_img_MiniMap_BtNpc_disabled_0", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   查找 System.Drawing.Bitmap 类型的本地化资源。
+        /// </summary>
+        internal static System.Drawing.Bitmap UI_UIMap_img_MiniMap_BtNpc_mouseOver_0 {
+            get {
+                object obj = ResourceManager.GetObject("UI_UIMap_img_MiniMap_BtNpc_mouseOver_0", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   查找 System.Drawing.Bitmap 类型的本地化资源。
+        /// </summary>
+        internal static System.Drawing.Bitmap UI_UIMap_img_MiniMap_BtNpc_normal_0 {
+            get {
+                object obj = ResourceManager.GetObject("UI_UIMap_img_MiniMap_BtNpc_normal_0", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   查找 System.Drawing.Bitmap 类型的本地化资源。
+        /// </summary>
+        internal static System.Drawing.Bitmap UI_UIMap_img_MiniMap_BtNpc_pressed_0 {
+            get {
+                object obj = ResourceManager.GetObject("UI_UIMap_img_MiniMap_BtNpc_pressed_0", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   查找 System.Drawing.Bitmap 类型的本地化资源。
+        /// </summary>
+        internal static System.Drawing.Bitmap UI_UIMap_img_MiniMap_BtTown_disabled_0 {
+            get {
+                object obj = ResourceManager.GetObject("UI_UIMap_img_MiniMap_BtTown_disabled_0", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   查找 System.Drawing.Bitmap 类型的本地化资源。
+        /// </summary>
+        internal static System.Drawing.Bitmap UI_UIMap_img_MiniMap_BtTown_mouseOver_0 {
+            get {
+                object obj = ResourceManager.GetObject("UI_UIMap_img_MiniMap_BtTown_mouseOver_0", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   查找 System.Drawing.Bitmap 类型的本地化资源。
+        /// </summary>
+        internal static System.Drawing.Bitmap UI_UIMap_img_MiniMap_BtTown_normal_0 {
+            get {
+                object obj = ResourceManager.GetObject("UI_UIMap_img_MiniMap_BtTown_normal_0", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   查找 System.Drawing.Bitmap 类型的本地化资源。
+        /// </summary>
+        internal static System.Drawing.Bitmap UI_UIMap_img_MiniMap_BtTown_pressed_0 {
+            get {
+                object obj = ResourceManager.GetObject("UI_UIMap_img_MiniMap_BtTown_pressed_0", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   查找 System.Drawing.Bitmap 类型的本地化资源。
+        /// </summary>
         internal static System.Drawing.Bitmap UI_UIMap_img_MiniMap_MaxMap_c {
             get {
                 object obj = ResourceManager.GetObject("UI_UIMap_img_MiniMap_MaxMap_c", resourceCulture);
@@ -563,6 +763,16 @@ namespace WzComparerR2.MapRender.Properties {
         /// <summary>
         ///   查找 System.Drawing.Bitmap 类型的本地化资源。
         /// </summary>
+        internal static System.Drawing.Bitmap UI_UIMap_img_MiniMap_MaxMap_sw2 {
+            get {
+                object obj = ResourceManager.GetObject("UI_UIMap_img_MiniMap_MaxMap_sw2", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   查找 System.Drawing.Bitmap 类型的本地化资源。
+        /// </summary>
         internal static System.Drawing.Bitmap UI_UIMap_img_MiniMap_MaxMap_w {
             get {
                 object obj = ResourceManager.GetObject("UI_UIMap_img_MiniMap_MaxMap_w", resourceCulture);
@@ -576,6 +786,46 @@ namespace WzComparerR2.MapRender.Properties {
         internal static System.Drawing.Bitmap UI_UIMap_img_WorldMap_backgrnd {
             get {
                 object obj = ResourceManager.GetObject("UI_UIMap_img_WorldMap_backgrnd", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   查找 System.Drawing.Bitmap 类型的本地化资源。
+        /// </summary>
+        internal static System.Drawing.Bitmap UI_UIMap_img_WorldMap_button_close_disabled_0 {
+            get {
+                object obj = ResourceManager.GetObject("UI_UIMap_img_WorldMap_button_close_disabled_0", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   查找 System.Drawing.Bitmap 类型的本地化资源。
+        /// </summary>
+        internal static System.Drawing.Bitmap UI_UIMap_img_WorldMap_button_close_mouseOver_0 {
+            get {
+                object obj = ResourceManager.GetObject("UI_UIMap_img_WorldMap_button_close_mouseOver_0", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   查找 System.Drawing.Bitmap 类型的本地化资源。
+        /// </summary>
+        internal static System.Drawing.Bitmap UI_UIMap_img_WorldMap_button_close_normal_0 {
+            get {
+                object obj = ResourceManager.GetObject("UI_UIMap_img_WorldMap_button_close_normal_0", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   查找 System.Drawing.Bitmap 类型的本地化资源。
+        /// </summary>
+        internal static System.Drawing.Bitmap UI_UIMap_img_WorldMap_button_close_pressed_0 {
+            get {
+                object obj = ResourceManager.GetObject("UI_UIMap_img_WorldMap_button_close_pressed_0", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -656,6 +906,16 @@ namespace WzComparerR2.MapRender.Properties {
         internal static System.Drawing.Bitmap UI_UIMap_img_WorldMap_button_goToUpperWorldMap_pressed_0 {
             get {
                 object obj = ResourceManager.GetObject("UI_UIMap_img_WorldMap_button_goToUpperWorldMap_pressed_0", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   查找 System.Drawing.Bitmap 类型的本地化资源。
+        /// </summary>
+        internal static System.Drawing.Bitmap UI_UIMap_img_WorldMap_mapInfo_layer_mapInfoCover {
+            get {
+                object obj = ResourceManager.GetObject("UI_UIMap_img_WorldMap_mapInfo_layer_mapInfoCover", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
