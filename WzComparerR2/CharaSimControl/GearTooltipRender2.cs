@@ -1933,19 +1933,12 @@ namespace WzComparerR2.CharaSimControl
         {
             int value;
             string extraReq;
-            // Temporarily change, will be removed later
-            Wz_Node reqSpecJobs = PluginManager.FindWz("Character/Shield/" + Gear.ItemID.ToString("d8") + ".img/info/reqSpecJobs");
-            if (reqSpecJobs != null)
+            if (Gear.ReqSpecJobs != null)
             {
                 extraReq = "";
-                foreach (Wz_Node jobCode in reqSpecJobs.Nodes)
+                foreach (int jobCode in Gear.ReqSpecJobs)
                 {
-                    int jobCodeValue;
-                    if (Int32.TryParse(jobCode.Value.ToString(), out jobCodeValue))
-                    {
-
-                        extraReq = extraReq + ItemStringHelper.GetReqSpecJobMultipleString(jobCodeValue);
-                    }
+                    extraReq = extraReq + ItemStringHelper.GetReqSpecJobMultipleString(jobCode);
                 }
                 char[] NewLine = { '\r', '\n' };
                 extraReq = extraReq.TrimEnd('､').TrimEnd(NewLine) + "着用可能";
