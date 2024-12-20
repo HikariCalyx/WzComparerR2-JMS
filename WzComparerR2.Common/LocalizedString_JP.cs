@@ -30,6 +30,8 @@ namespace WzComparerR2
         public static string MAINFORM_DESIGNER_RIBBONBAR_SIMULATION = "シミュレーション";
 
         public static string FRMQUICKVIEWSETTINGS_DESIGNER_CHK_SHOWRANGECOORDINATES = "範囲座標を表示";
+
+        public static string GEARTOOLTIP_GENESIS_SKILL_POSSIBLE = "使用可能";
         #endregion
     }
 }
