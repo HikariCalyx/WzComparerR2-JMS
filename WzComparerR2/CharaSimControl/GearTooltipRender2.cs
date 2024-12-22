@@ -1933,7 +1933,7 @@ namespace WzComparerR2.CharaSimControl
         {
             int value;
             string extraReq;
-            if (Gear.ReqSpecJobs != null)
+            if (Gear.ReqSpecJobs.Count > 0)
             {
                 extraReq = "";
                 foreach (int jobCode in Gear.ReqSpecJobs)
