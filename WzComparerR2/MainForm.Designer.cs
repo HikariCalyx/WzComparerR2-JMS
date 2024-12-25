@@ -393,7 +393,7 @@ namespace WzComparerR2
             this.ribbonBar8.Size = new System.Drawing.Size(270, 91);
             this.ribbonBar8.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
             this.ribbonBar8.TabIndex = 1;
-            this.ribbonBar8.Text = "シミュレーション";
+            this.ribbonBar8.Text = LocalizedString_JP.MAINFORM_DESIGNER_RIBBONBAR_SIMULATION;
             // 
             // 
             // 

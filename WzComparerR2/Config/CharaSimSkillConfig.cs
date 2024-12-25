@@ -57,6 +57,13 @@ namespace WzComparerR2.Config
             set { this["ignoreEvalError"] = value; }
         }
 
+        [ConfigurationProperty("showRangeCoordinates", DefaultValue = true)]
+        public bool ShowRangeCoordinates
+        {
+            get { return (bool)this["showRangeCoordinates"]; }
+            set { this["showRangeCoordinates"] = value; }
+        }
+
         [ConfigurationProperty("defaultLevel", DefaultValue = DefaultLevel.LevelMax)]
         public DefaultLevel DefaultLevel
         {
