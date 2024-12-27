@@ -105,8 +105,8 @@ namespace WzComparerR2.MapRender.UI
             ComboBox cmbQuestList = new ComboBox();
             cmbQuestList.Width = 100;
             cmbQuestList.Height = 20;
-            Canvas.SetLeft(cmbQuestList, 250);
-            Canvas.SetTop(cmbQuestList, 23);
+            Canvas.SetLeft(cmbQuestList, 450);
+            Canvas.SetTop(cmbQuestList, 42);
             cmbQuestList.SetBinding(ComboBox.SelectedIndexProperty, new Binding(UIWorldMap.SelectedQuestLimitIndexProperty) { Source = this, Mode = BindingMode.TwoWay });
             canvas.Children.Add(cmbQuestList);
             this.CmbQuestList = cmbQuestList;
@@ -114,8 +114,8 @@ namespace WzComparerR2.MapRender.UI
             ComboBox cmbFogList = new ComboBox();
             cmbFogList.Width = 100;
             cmbFogList.Height = 20;
-            Canvas.SetLeft(cmbFogList, 250);
-            Canvas.SetTop(cmbFogList, 23);
+            Canvas.SetLeft(cmbFogList, 450);
+            Canvas.SetTop(cmbFogList, 42);
             cmbFogList.SetBinding(ComboBox.SelectedIndexProperty, new Binding(UIWorldMap.SelectedFogIndexProperty) { Source = this, Mode = BindingMode.TwoWay });
             canvas.Children.Add(cmbFogList);
             this.CmbFogList = cmbFogList;

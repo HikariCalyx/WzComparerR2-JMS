@@ -148,8 +148,8 @@ namespace WzComparerR2.MapRender.UI
 
             Image imgMapMark = new Image();
             imgMapMark.SetBinding(Image.SourceProperty, new Binding("MapMark") { Source = this, Converter = new TextureImageConverter() });
-            Canvas.SetLeft(imgMapMark, 7);
-            Canvas.SetTop(imgMapMark, 29);
+            Canvas.SetLeft(imgMapMark, 6);
+            Canvas.SetTop(imgMapMark, 28);
             canvas.Children.Add(imgMapMark);
 
             TextBlock lblStreetName = new TextBlock();
