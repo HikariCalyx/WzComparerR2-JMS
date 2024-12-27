@@ -10,7 +10,6 @@ using Resource = CharaSimResource.Resource;
 using WzComparerR2.Common;
 using WzComparerR2.CharaSim;
 using WzComparerR2.WzLib;
-using WzComparerR2.PluginBase;
 using System.Collections;
 
 namespace WzComparerR2.CharaSimControl
