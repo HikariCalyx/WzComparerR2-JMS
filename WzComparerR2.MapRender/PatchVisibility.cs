@@ -83,6 +83,7 @@ namespace WzComparerR2.MapRender
         public bool PortalInEditMode { get; set; }
 
         public bool IlluminantClusterVisible { get; set; }
+        public bool SpringPortalPathVisible { get; set; }
 
         public bool FrontVisible
         {
