@@ -1557,6 +1557,20 @@ namespace WzComparerR2.Avatar.UI
                     return;
             }
         }
+
+        private void btnDskytian_Click(object sender, EventArgs e)
+        {
+            switch (MessageBoxEx.Show("廉姫のアバターを呼びますか？", "確認", MessageBoxButtons.YesNo))
+            {
+                case DialogResult.Yes:
+                    LoadCode("2018,12018,21078,61510,1053614", 0);
+                    return;
+
+                case DialogResult.No:
+                default:
+                    return;
+            }
+        }
         private void btnAngelicBuster_Click(object sender, EventArgs e)
         {
             switch (MessageBoxEx.Show("基本エンジェリックバスターを呼びますか？\r\n\r\nYes - 新\r\nNo - 古", "確認", MessageBoxButtons.YesNoCancel))
@@ -2095,6 +2109,8 @@ namespace WzComparerR2.Avatar.UI
             }
 
             //刷新
+            //Use stand1 pose by request
+            this.SelectBodyAction("stand1" ?? "default");
             this.FillAvatarParts();
             this.UpdateDisplay();
 
