@@ -72,6 +72,10 @@ If you see message says You'll need a new app to open this ngm link, please down
 - [ビルド] - [ソリューションのビルド] を選択してコンパイルします。
 - ビルドは WzComparerR2\bin\Release ディレクトリにあります。
 
+# 問題の報告
+- WzComparerR2-JMS で問題が見つかった場合は、[Kagamiaのビルド](https://github.com/Kagamia/WzComparerR2/releases/latest)で問題が再現できるかどうかを確認してください。Kagamia のビルドで再現可能な場合は、そのリポジトリで問題を作成してください。そうでない場合は、このリポジトリで問題を作成できます。
+
+
 # Credits
 - **Fiel** ([Southperry](http://www.southperry.net))  wz文件读取代码改造自WzExtract 以及WzPatcher
 - **Index** ([Exrpg](http://bbs.exrpg.com/space-uid-137285.html)) MapRender的原始代码 以及libgif
