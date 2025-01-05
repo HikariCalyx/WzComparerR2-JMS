@@ -176,7 +176,7 @@
             // 
             // comboItem7
             // 
-            this.comboItem7.Text = "FFMPEGエンコーダ";
+            this.comboItem7.Text = "FFmpegエンコーダ";
             // 
             // labelX3
             // 
