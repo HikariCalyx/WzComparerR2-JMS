@@ -17,6 +17,7 @@ using WzComparerR2.WzLib;
 using WzComparerR2.PluginBase;
 using WzComparerR2.Config;
 using WzComparerR2.Controls;
+using WzComparerR2.Encoders;
 
 namespace WzComparerR2.Avatar.UI
 {
@@ -1706,7 +1707,7 @@ namespace WzComparerR2.Avatar.UI
                 // no animation is playing, save as png
                 var dlg = new SaveFileDialog()
                 {
-                    Title = "Save avatar frame",
+                    Title = "アバターフレームを保存",
                     Filter = "PNG (*.png)|*.png|*.*|*.*",
                     FileName = string.Format("avatar{0}{1}{2}.png",
                         string.IsNullOrEmpty(avatar.ActionName) ? "" : ("_" + avatar.ActionName + "(" + bodyFrame + ")"),
@@ -1726,17 +1727,19 @@ namespace WzComparerR2.Avatar.UI
             else
             {
                 var config = ImageHandlerConfig.Default;
-                var encParams = AnimateEncoderFactory.GetEncoderParams(config.GifEncoder.Value);
+                using var encoder = AnimateEncoderFactory.CreateEncoder(config);
+                var cap = encoder.Compatibility;
+                string extensionFilter = string.Join(";", cap.SupportedExtensions.Select(ext => $"*{ext}"));
 
                 var dlg = new SaveFileDialog()
                 {
-                    Title = "Save avatar",
-                    Filter = string.Format("{0} (*{1})|*{1}|모든 파일(*.*)|*.*", encParams.FileDescription, encParams.FileExtension),
+                    Title = "アバターを保存",
+                    Filter = string.Format("{0} (*{1})|*{1}|すべてのファイル(*.*)|*.*", encoder.Name, extensionFilter),
                     FileName = string.Format("avatar{0}{1}{2}{3}",
                         string.IsNullOrEmpty(avatar.ActionName) ? "" : ("_" + avatar.ActionName),
                         string.IsNullOrEmpty(avatar.EmotionName) ? "" : ("_" + avatar.EmotionName),
                         string.IsNullOrEmpty(avatar.TamingActionName) ? "" : ("_" + avatar.TamingActionName),
-                        encParams.FileExtension)
+                        cap.DefaultExtension)
                 };
 
                 if (dlg.ShowDialog() != DialogResult.OK)
@@ -1744,6 +1747,7 @@ namespace WzComparerR2.Avatar.UI
                     return;
                 }
 
+                string outputFileName = dlg.FileName;
                 var actPlaying = new[] { bodyPlaying, emoPlaying, tamingPlaying };
                 var actFrames = new[] { cmbBodyFrame, cmbEmotionFrame, cmbTamingFrame }
                     .Select((cmb, i) =>
@@ -1788,7 +1792,7 @@ namespace WzComparerR2.Avatar.UI
 
                 var gifLayer = new GifLayer();
 
-                if (aniCount == 1)
+                if (aniCount == 1 && !cap.IsFixedFrameRate)
                 {
                     int aniActIndex = Array.FindIndex(actPlaying, b => b);
                     for (int fIdx = 0, fCnt = actFrames[aniActIndex].Length; fIdx < fCnt; fIdx++)
@@ -1817,8 +1821,8 @@ namespace WzComparerR2.Avatar.UI
                 {
                     // more than 2 animating action parts, for simplicity, we use fixed frame delay.
                     actFrames = actFrames.Concat(effectActFrames).ToArray();
-                    var aniLength = actFrames.Max(layer => layer == null ? 0 : layer.Sum(f => f.actionFrame.AbsoluteDelay));
-                    var aniDelay = 30;
+                    int aniLength = actFrames.Max(layer => layer == null ? 0 : layer.Sum(f => f.actionFrame.AbsoluteDelay));
+                    int aniDelay = config.MinDelay;
 
                     // pipeline functions
                     IEnumerable<int> RenderDelay()
@@ -1917,7 +1921,7 @@ namespace WzComparerR2.Avatar.UI
                     // build pipeline
                     var step1 = RenderDelay();
                     var step2 = GetFrameActionIndices(step1);
-                    var step3 = MergeFrames(step2);
+                    var step3 = cap.IsFixedFrameRate ? step2 : MergeFrames(step2);
                     var step4 = step3.Select(tp => ApplyFrame(tp.Item1, tp.Item2));
 
                     // run pipeline
@@ -1969,27 +1973,24 @@ namespace WzComparerR2.Avatar.UI
                     }
                 }
 
-                var bgBrush = CreateBackgroundBrush();
-                using (var enc = AnimateEncoderFactory.CreateEncoder(dlg.FileName, clientRect.Width, clientRect.Height, config))
+                using var bgBrush = CreateBackgroundBrush();
+                encoder.Init(outputFileName, clientRect.Width, clientRect.Height);
+                foreach (IGifFrame gifFrame in gifLayer.Frames)
                 {
-                    foreach (IGifFrame gifFrame in gifLayer.Frames)
+                    using (var bmp = new Bitmap(clientRect.Width, clientRect.Height, System.Drawing.Imaging.PixelFormat.Format32bppArgb))
                     {
-                        using (var bmp = new Bitmap(clientRect.Width, clientRect.Height, System.Drawing.Imaging.PixelFormat.Format32bppArgb))
+                        using (var g = Graphics.FromImage(bmp))
                         {
-                            using (var g = Graphics.FromImage(bmp))
+                            // draw background
+                            if (bgBrush != null)
                             {
-                                // draw background
-                                if (bgBrush != null)
-                                {
-                                    g.FillRectangle(bgBrush, 0, 0, bmp.Width, bmp.Height);
-                                }
-                                gifFrame.Draw(g, clientRect);
+                                g.FillRectangle(bgBrush, 0, 0, bmp.Width, bmp.Height);
                             }
-                            enc.AppendFrame(bmp, Math.Max(10, gifFrame.Delay));
+                            gifFrame.Draw(g, clientRect);
                         }
+                        encoder.AppendFrame(bmp, Math.Max(cap.MinFrameDelay, gifFrame.Delay));
                     }
                 }
-                bgBrush?.Dispose();
             }
         }
 
@@ -2374,7 +2375,10 @@ namespace WzComparerR2.Avatar.UI
             }
 
             var config = ImageHandlerConfig.Default;
-            var encParams = AnimateEncoderFactory.GetEncoderParams(config.GifEncoder.Value);
+            using var encoder = AnimateEncoderFactory.CreateEncoder(config);
+            var cap = encoder.Compatibility;
+
+            string extensionFilter = string.Join(";", cap.SupportedExtensions.Select(ext => $"*{ext}"));
 
             FolderBrowserDialog dlg = new FolderBrowserDialog();
             dlg.Description = "エクスポートしたいフォルダを選択してください。";
@@ -2405,13 +2409,13 @@ namespace WzComparerR2.Avatar.UI
                     }
                 }
 
-                string fileName = System.IO.Path.Combine(dlg.SelectedPath, actionName.Replace('\\', '.') + encParams.FileExtension);
+                string fileName = System.IO.Path.Combine(dlg.SelectedPath, actionName.Replace('\\', '.') + cap.DefaultExtension);
 
                 var tasks = new List<Task>();
 
                 tasks.Add(Task.Run(() =>
                 {
-                    GifEncoder enc = AnimateEncoderFactory.CreateEncoder(fileName, gif.GetRect().Width, gif.GetRect().Height, config);
+                    GifEncoder enc = AnimateEncoderFactory.CreateEncoder(config);
                     gif.SaveGif(enc, fileName, Color.Transparent);
                 }));
 

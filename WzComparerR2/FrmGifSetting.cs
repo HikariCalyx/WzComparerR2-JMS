@@ -130,6 +130,33 @@ namespace WzComparerR2
             get { return checkBoxX3.Checked; }
             set { checkBoxX3.Checked = value; }
         }
+        public string FFmpegBinPath
+        {
+            get { return textBoxX1.Text; }
+            set { textBoxX1.Text = value; }
+        }
+        public string FFmpegArgument
+        {
+            get { return textBoxX2.Text; }
+            set { textBoxX2.Text = value; }
+        }
+        public string FFmpegDefaultExtension
+        {
+            get { return textBoxX3.Text; }
+            set { textBoxX3.Text = value; }
+        }
+        public string FFmpegBinPathHint
+        {
+            set { textBoxX1.WatermarkText = value; }
+        }
+        public string FFmpegArgumentHint
+        {
+            set { textBoxX2.WatermarkText = value; }
+        }
+        public string FFmpegDefaultExtensionHint
+        {
+            set { textBoxX3.WatermarkText = value; }
+        }
 
         public void Load(ImageHandlerConfig config)
         {
@@ -146,6 +173,9 @@ namespace WzComparerR2
             this.MosaicBlockSize = config.MosaicInfo.BlockSize;
 
             this.PaletteOptimized = config.PaletteOptimized;
+            this.FFmpegBinPath = config.FFmpegBinPath;
+            this.FFmpegArgument = config.FFmpegArgument;
+            this.FFmpegDefaultExtension = config.FFmpegOutputFileExtension;
         }
 
         public void Save(ImageHandlerConfig config)
@@ -163,18 +193,20 @@ namespace WzComparerR2
             config.MosaicInfo.BlockSize = this.MosaicBlockSize;
 
             config.PaletteOptimized = this.PaletteOptimized;
+            config.FFmpegBinPath = this.FFmpegBinPath;
+            config.FFmpegArgument = this.FFmpegArgument;
+            config.FFmpegOutputFileExtension = this.FFmpegDefaultExtension;
         }
-
-        private void buttonX1_Click(object sender, EventArgs e)
+        private void buttonX3_Click(object sender, EventArgs e)
         {
-            this.DialogResult = DialogResult.OK;
-            this.Close();
-        }
-
-        private void buttonX2_Click(object sender, EventArgs e)
-        {
-            this.DialogResult = DialogResult.Cancel;
-            this.Close();
+            OpenFileDialog dlg = new();
+            dlg.Title = "FFMPEGプログラムを見つけてください";
+            dlg.Filter = "ffmpeg.exe|*.exe|*.*|*.*";
+            dlg.FileName = this.FFmpegBinPath;
+            if (dlg.ShowDialog(this) == DialogResult.OK)
+            {
+                this.FFmpegBinPath = dlg.FileName;
+            }
         }
 
         private void slider1_ValueChanged(object sender, EventArgs e)

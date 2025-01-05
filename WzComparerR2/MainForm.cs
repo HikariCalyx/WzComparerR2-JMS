@@ -26,9 +26,11 @@ using WzComparerR2.Controls;
 using WzComparerR2.Rendering;
 using WzComparerR2.Config;
 using WzComparerR2.Animation;
+using WzComparerR2.Encoders;
 using static Microsoft.Xna.Framework.MathHelper;
 using Microsoft.Win32;
 using SharpDX;
+using System.Drawing.Imaging;
 
 namespace WzComparerR2
 {
@@ -620,7 +622,7 @@ namespace WzComparerR2
                 return;
 
             Wz_Node node = advTree3.SelectedNode.AsWzNode();
-            string aniName = "중첩_" + GetSelectedNodeImageName();
+            string aniName = "ネスト_" + GetSelectedNodeImageName();
 
             if (node.Value is Wz_Png)
             {
@@ -656,7 +658,7 @@ namespace WzComparerR2
                     this.cmbItemSkins.SelectedIndex = aniItem.Skins.IndexOf(aniItem.SelectedSkin);
                 }
                 */
-                MessageBoxEx.Show("Spine 애니메이션은 중첩시킬 수 없습니다.", "미지원");
+                MessageBoxEx.Show("Spineアニメーションネストにすることはできません。", "未実装");
                 return;
             }
             else
@@ -683,7 +685,7 @@ namespace WzComparerR2
                         this.cmbItemAniNames.Items.AddRange(aniItem.Animations.ToArray());
                         this.cmbItemAniNames.SelectedIndex = 0;
                         */
-                        MessageBoxEx.Show("Multi 프레임 애니메이션은 중첩시킬 수 없습니다.", "미지원");
+                        MessageBoxEx.Show("マルチフレームアニメーションネストにすることはできません。", "未実装");
                         return;
                     }
                 }
@@ -720,6 +722,9 @@ namespace WzComparerR2
         {
             FrmGifSetting frm = new FrmGifSetting();
             frm.Load(ImageHandlerConfig.Default);
+            frm.FFmpegBinPathHint = FFmpegEncoder.DefaultExecutionFileName;
+            frm.FFmpegArgumentHint = FFmpegEncoder.DefaultArgumentFormat;
+            frm.FFmpegDefaultExtensionHint = FFmpegEncoder.DefaultOutputFileExtension;
             if (frm.ShowDialog() == DialogResult.OK)
             {
                 ConfigManager.Reload();
@@ -866,12 +871,13 @@ namespace WzComparerR2
         private void OnSaveGifFile(AnimationItem aniItem, bool options)
         {
             var config = ImageHandlerConfig.Default;
-            var encParams = AnimateEncoderFactory.GetEncoderParams(config.GifEncoder.Value);
+            using var encoder = AnimateEncoderFactory.CreateEncoder(config);
+            var cap = encoder.Compatibility;
 
             string aniName = this.cmbItemAniNames.SelectedItem as string;
             string aniFileName = pictureBoxEx1.PictureName
                     + (string.IsNullOrEmpty(aniName) ? "" : ("." + aniName))
-                    + encParams.FileExtension;
+                    + cap.DefaultExtension;
 
             if (config.AutoSaveEnabled)
             {
@@ -888,8 +894,8 @@ namespace WzComparerR2
             else
             {
                 var dlg = new SaveFileDialog();
-
-                dlg.Filter = string.Format("{0} (*{1})|*{1}|すべてのファイル (*.*)|*.*", encParams.FileDescription, encParams.FileExtension);
+                string extensionFilter = string.Join(";", cap.SupportedExtensions.Select(ext => $"*{ext}"));
+                dlg.Filter = string.Format("{0} (*{1})|*{1}|すべてのファイル (*.*)|*.*", encoder.Name, extensionFilter);
                 dlg.FileName = aniFileName;
 
                 if (dlg.ShowDialog() != DialogResult.OK)
@@ -900,7 +906,7 @@ namespace WzComparerR2
             }
 
             var clonedAniItem = (AnimationItem)aniItem.Clone();
-            if (this.pictureBoxEx1.SaveAsGif(clonedAniItem, aniFileName, config, options))
+            if (this.pictureBoxEx1.SaveAsGif(clonedAniItem, aniFileName, config, encoder, options))
             {
                 labelItemStatus.Text = "保存された画像: " + aniFileName;
             }
