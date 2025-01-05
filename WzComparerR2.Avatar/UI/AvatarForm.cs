@@ -2095,6 +2095,8 @@ namespace WzComparerR2.Avatar.UI
             }
 
             //刷新
+            //Use stand1 pose by request
+            this.SelectBodyAction("stand1" ?? "default");
             this.FillAvatarParts();
             this.UpdateDisplay();
 
