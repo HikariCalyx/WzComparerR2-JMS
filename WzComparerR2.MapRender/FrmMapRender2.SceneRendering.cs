@@ -262,6 +262,53 @@ namespace WzComparerR2.MapRender
             {
                 var reactor = (ReactorItem)item;
                 reactor.View.NextStage = reactor.View.Stage + 1;
+
+                Music soundEff = LoadSoundEff($@"Sound\Reactor.img\{reactor.ID}\{reactor.View.Stage}");
+                if (soundEff != null)
+                {
+                    soundEff.Volume = bgm.Volume;
+                    soundEff.Play();
+                    soundEff.soundEffDispose();
+                }
+            }
+            else if (item is LifeItem)
+            {
+                var life = (LifeItem)item;
+                if (life.Type == LifeItem.LifeType.Mob)
+                {
+                    var ani = life.View.Animator as StateMachineAnimator;
+                    var soundEffPath = $@"Sound\Mob.img\{life.ID:D7}\";
+
+                    if (ani.Data.SelectedState != "die1")
+                    {
+                        if (life.View.Time % 4 == 0)
+                        {
+                            if (ani.Data.States.Contains("die1"))
+                            {
+                                ani.SetAnimation("die1");
+                            }
+
+                            soundEffPath += "Die";
+                        }
+                        else
+                        {
+                            if (ani.Data.States.Contains("hit1"))
+                            {
+                                ani.SetAnimation("hit1");
+                            }
+
+                            soundEffPath += "Damage";
+                        }
+
+                        Music soundEff = LoadSoundEff(soundEffPath);
+                        if (soundEff != null)
+                        {
+                            soundEff.Volume = bgm.Volume;
+                            soundEff.Play();
+                            soundEff.soundEffDispose();
+                        }
+                    }
+                }
             }
         }
 
@@ -948,6 +995,30 @@ namespace WzComparerR2.MapRender
             mesh.FlipX = obj.Flip;
             mesh.Z0 = obj.Z;
             mesh.Z1 = obj.Index;
+
+            if (obj.MoveW != 0 || obj.MoveH != 0)
+            {
+                double movingX = 0;
+                double movingY = 0;
+                double time = obj.View.Time / Math.PI / 1000 * 4 / obj.MoveP * 5000;
+                switch (obj.MoveType)
+                {
+                    case 0: // none
+                        break;
+                    case 1:
+                    case 2: // line
+                        movingX = obj.MoveW * Math.Cos(time);
+                        movingY = obj.MoveH * Math.Cos(time);
+                        break;
+                    case 3: // circle
+                        movingX = obj.MoveW * Math.Cos(time);
+                        movingY = obj.MoveH * Math.Sin(time);
+                        break;
+                    default:
+                        break;
+                }
+                mesh.Position += new Vector2((float)movingX, (float)movingY);
+            }
             return mesh;
         }
 
