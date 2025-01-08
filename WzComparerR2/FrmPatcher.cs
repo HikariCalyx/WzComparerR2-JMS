@@ -412,6 +412,7 @@ namespace WzComparerR2
                         }
                     }
                 }
+                else AppendStateText("完了\r\n");
                 if (prePatch)
                 {
                     AppendStateText("パッチを準備中... \r\n");
@@ -537,6 +538,7 @@ namespace WzComparerR2
 
         private void patcher_PatchingStateChanged(object sender, PatchingEventArgs e)
         {
+            string currentWzPart = "";
             switch (e.State)
             {
                 case PatchingState.PatchStart:
@@ -624,8 +626,25 @@ namespace WzComparerR2
                     {
                         if (patcher.IsKMST1125Format.Value)
                         {
-                            // TODO: we should build the file dependency tree to make sure all old files could be overridden safely.
-                            AppendStateText("  (即時パッチ)ファイル適用の延期...\r\n");
+                            string[] currentFiles = e.Part.FileName.Split('\\');
+                            if (currentFiles[0] == "Data")
+                            {
+                                if (currentWzPart != currentFiles[1])
+                                {
+                                    patcher.SafeMove(e.Part.TempFilePath, e.Part.OldFilePath);
+                                    AppendStateText("  (即時パッチ)ファイルを適用しています...\r\n");
+                                }
+                                else
+                                {
+                                    AppendStateText("  (即時パッチ)ファイル適用の延期...\r\n");
+                                }
+                                currentWzPart = currentFiles[1];
+                            }
+                            else
+                            {
+                                // TODO: we should build the file dependency tree to make sure all old files could be overridden safely.
+                                AppendStateText("  (即時パッチ)ファイル適用の延期...\r\n");
+                            }
                         }
                         else
                         {
@@ -803,6 +822,12 @@ namespace WzComparerR2
                     e.Cancel = true;
                 }
             }
+        }
+
+        protected void chkDeadPatch_CheckedChanged(object sender, EventArgs e)
+        {
+            chkCheckDiskSpace.Checked = true;
+            chkCheckDiskSpace.Enabled = !chkDeadPatch.Checked;
         }
     }
 }

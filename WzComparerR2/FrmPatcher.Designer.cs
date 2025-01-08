@@ -187,7 +187,7 @@ namespace WzComparerR2
             this.chkDeadPatch.Size = new System.Drawing.Size(78, 18);
             this.chkDeadPatch.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
             superTooltipInfo2.BodyText = "起動後、各ファイルを更新した後、一時ファイルは元のファイルで上書きされます。\r\nこれを行うと、ファイルに必要なスペースが減りますが、問題が発生する可能性があります" +
-    "。";
+    "。\r\n即時パッチを有効にすると、ディスク容量の確認が強制されます。";
             superTooltipInfo2.Color = DevComponents.DotNetBar.eTooltipColor.System;
             superTooltipInfo2.CustomSize = new System.Drawing.Size(180, 230);
             superTooltipInfo2.FooterVisible = false;
@@ -195,6 +195,7 @@ namespace WzComparerR2
             this.superTooltip1.SetSuperTooltip(this.chkDeadPatch, superTooltipInfo2);
             this.chkDeadPatch.TabIndex = 7;
             this.chkDeadPatch.Text = "即時パッチ";
+            this.chkDeadPatch.CheckedChanged += new System.EventHandler(this.chkDeadPatch_CheckedChanged);
             // 
             // chkPrePatch
             // 
