@@ -627,7 +627,7 @@ namespace WzComparerR2
                         }
                     }
 
-                    if (string.IsNullOrEmpty(this.compareFolder) && this.deadPatch && e.Part.Type == 1 && sender is WzPatcher patcher)
+                    if (string.IsNullOrEmpty(this.compareFolder) && this.deadPatch && sender is WzPatcher patcher)
                     {
                         if (patcher.IsKMST1125Format.Value)
                         {
@@ -660,7 +660,7 @@ namespace WzComparerR2
                                 AppendStateText("  (即時パッチ)ファイル適用の延期...\r\n");
                             }
                         }
-                        else
+                        else if (e.Part.Type == 1)
                         {
                             patcher.SafeMove(e.Part.TempFilePath, e.Part.OldFilePath);
                             AppendStateText("  (即時パッチ)ファイルを適用しています...\r\n");
