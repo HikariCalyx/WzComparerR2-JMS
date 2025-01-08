@@ -3738,14 +3738,14 @@ namespace WzComparerR2
                 {
                     form.Show();
                     form.BringToFront();
-                    MessageBoxEx.Show("終了する前にゲームパッチャーを閉じてください。", "注意", MessageBoxButtons.OK);
+                    MessageBoxEx.Show(this, "終了する前にゲームパッチャーを閉じてください。", "注意", MessageBoxButtons.OK);
                     e.Cancel = true;
                     return;
                 }
             }
             if (compareThread != null)
             {
-                if (DialogResult.Yes == MessageBoxEx.Show("比較が進行中です。 中絶しますか?", "注意", MessageBoxButtons.YesNo))
+                if (DialogResult.Yes == MessageBoxEx.Show(this, "比較が進行中です。 中絶しますか?", "注意", MessageBoxButtons.YesNo))
                 {
                     compareThread.Interrupt();
                     compareThread = null;
@@ -3759,7 +3759,7 @@ namespace WzComparerR2
                     return;
                 }
             }
-            DialogResult result = MessageBoxEx.Show("終了しますか?", "確認", MessageBoxButtons.YesNo);
+            DialogResult result = MessageBoxEx.Show(this, "終了しますか?", "確認", MessageBoxButtons.YesNo);
             if (result == DialogResult.Yes)
             {
                 e.Cancel = false;  //点击OK

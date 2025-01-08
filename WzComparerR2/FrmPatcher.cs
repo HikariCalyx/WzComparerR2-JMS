@@ -12,6 +12,7 @@ using System.Windows.Forms;
 using DevComponents.AdvTree;
 using DevComponents.DotNetBar;
 using DevComponents.Editors;
+using Microsoft.Xna.Framework.Input;
 using WzComparerR2.Comparer;
 using WzComparerR2.Config;
 using WzComparerR2.Patcher;
@@ -300,7 +301,7 @@ namespace WzComparerR2
                 }
             }
 
-            patchThread = new Thread(() => ExecutePatch(patchFile, msFolder, prePatch));
+            patchThread = new Thread(() => ExecutePatch(patchFile, msFolder, prePatch, checkDiskSpace));
             patchThread.Priority = ThreadPriority.Highest;
             waitHandle = new EventWaitHandle(false, EventResetMode.AutoReset);
             waiting = false;
@@ -314,18 +315,23 @@ namespace WzComparerR2
         string compareFolder;
         bool prePatch;
         bool deadPatch;
+        bool checkDiskSpace;
         string htmlFilePath;
         FileStream htmlFile;
         StreamWriter sw;
         Dictionary<Wz_Type, List<PatchPartContext>> typedParts;
 
-        private void ExecutePatch(string patchFile, string msFolder, bool prePatch)
+        private void ExecutePatch(string patchFile, string msFolder, bool prePatch, bool checkDiskSpace)
         {
             WzPatcher patcher = null;
             advTreePatchFiles.Nodes.Clear();
             txtNotice.Clear();
             txtPatchState.Clear();
             this.loggingFileName = Path.Combine(msFolder, $"wcpatcher_{DateTime.Now:yyyyMMdd_HHmmssfff}.log");
+            long patchedAllFileSize = 0;
+            long decompressedSize = 0;
+            SortedDictionary<string, long> patchedFileSizes = new SortedDictionary<string, long>();
+            patchedFileSizes.Add("ZOther", 0);
             try
             {
                 patcher = new WzPatcher(patchFile);
@@ -334,11 +340,83 @@ namespace WzComparerR2
                 AppendStateText($"パッチファイル名: {patchFile}\r\n");
                 AppendStateText("パッチを分析中...");
                 patcher.OpenDecompress();
-                AppendStateText("完了\r\n");
+                if (checkDiskSpace)
+                {
+                    decompressedSize = patcher.PrePatch();
+                    long availableDiskSpace = RemainingDiskSpace(msFolder);
+                    AppendStateText("完了\r\n");
+                    foreach (PatchPartContext part in patcher.PatchParts)
+                    {
+                        switch (part.Type)
+                        {
+                            case 0:
+                            case 1:
+                                patchedAllFileSize += part.NewFileLength;
+                                break;
+                            case 2:
+                                patchedAllFileSize -= part.NewFileLength;
+                                break;
+                        }
+                        if (patcher.IsKMST1125Format.Value)
+                        {
+                            string[] patchedFileDirectory = part.FileName.Split('\\');
+                            if (patchedFileDirectory[0] == "Data")
+                            {
+                                if (!patchedFileSizes.ContainsKey(patchedFileDirectory[1])) patchedFileSizes.Add(patchedFileDirectory[1], 0);
+                                switch (part.Type)
+                                {
+                                    case 0:
+                                    case 1:
+                                        patchedFileSizes[patchedFileDirectory[1]] += part.NewFileLength;
+                                        break;
+                                    case 2:
+                                        patchedFileSizes[patchedFileDirectory[1]] -= part.NewFileLength;
+                                        break;
+                                }
+                            }
+                            else
+                            {
+                                switch (part.Type)
+                                {
+                                    case 0:
+                                    case 1:
+                                        patchedFileSizes["ZOther"] += part.NewFileLength;
+                                        break;
+                                    case 2:
+                                        patchedFileSizes["ZOther"] -= part.NewFileLength;
+                                        break;
+                                }
+                            }
+                        }
+                    }
+                    foreach (string key in patchedFileSizes.Keys)
+                    {
+                        switch (key)
+                        {
+                            case "ZOther":
+                                AppendStateText(string.Format("他のファイルに必要なスペース: {0}\r\n", GetBothByteAndGBValue(patchedFileSizes[key])));
+                                break;
+                            default:
+                                AppendStateText(string.Format("「{0}」に必要なスペース: {1}\r\n", key, GetBothByteAndGBValue(patchedFileSizes[key])));
+                                break;
+                        }
+                    }
+                    AppendStateText(string.Format("必要なスペース: {0}\r\n", GetBothByteAndGBValue(patchedAllFileSize)));
+                    AppendStateText(string.Format("使用可能なディスク容量: {0}\r\n", GetBothByteAndGBValue(availableDiskSpace)));
+                    if (patchedAllFileSize > availableDiskSpace)
+                    {
+                        DialogResult PatcherPromptResult = MessageBoxEx.Show(this, "パッチを適用するには残りのディスク容量が不足しています。\r\nそれでも続行しますか?", "警告", MessageBoxButtons.YesNo);
+                        if (PatcherPromptResult == DialogResult.No)
+                        {
+                            throw new ThreadInterruptedException("パッチは中止されました。");
+                        }
+                    }
+                }
                 if (prePatch)
                 {
                     AppendStateText("パッチを準備中... \r\n");
-                    long decompressedSize = patcher.PrePatch();
+                    if (!checkDiskSpace) decompressedSize = patcher.PrePatch();
+                    
                     if (patcher.IsKMST1125Format.Value)
                     {
                         AppendStateText("パッチのタイプ: KMST1125\r\n");
@@ -620,6 +698,42 @@ namespace WzComparerR2
             return node;
         }
 
+        private long RemainingDiskSpace(string path)
+        {
+            string diskDrive = path.Substring(0, 2);
+            try
+            {
+                DriveInfo dinfo = new DriveInfo(diskDrive);
+                return dinfo.AvailableFreeSpace;
+            }
+            catch
+            {
+                return 0;
+            }
+        }
+
+        private string GetBothByteAndGBValue(long size)
+        {
+            string[] sizes = { "B", "KB", "MB", "GB" };
+            double targetbytes = size;
+            int order = 0;
+
+            while (targetbytes >= 1024 && order < sizes.Length)
+            {
+                order++;
+                targetbytes /= 1024;
+            }
+
+            if (size <= 1024)
+            {
+                return $"{size:N0} バイト";
+            }
+            else
+            {
+                return $"{size:N0} バイト ({targetbytes:0.##} {sizes[order]})";
+            }
+        }
+
         private void buttonXOpen3_Click(object sender, EventArgs e)
         {
             OpenFileDialog dlg = new OpenFileDialog();
@@ -676,7 +790,7 @@ namespace WzComparerR2
         {
             if (patchThread != null && patchThread.IsAlive)
             {
-                DialogResult result = MessageBoxEx.Show("ゲームはパッチ適用中なので、パッチャー終了するとゲームデータが破損する可能性があります。\r\n\r\nそれでも終了しますか?", "確認", MessageBoxButtons.YesNo);
+                DialogResult result = MessageBoxEx.Show(this, "ゲームはパッチ適用中なので、パッチャー終了するとゲームデータが破損する可能性があります。\r\n\r\nそれでも終了しますか?", "確認", MessageBoxButtons.YesNo);
                 if (result == DialogResult.Yes)
                 {
                     patchThread.Interrupt();

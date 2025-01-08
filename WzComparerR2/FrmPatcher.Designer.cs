@@ -1,4 +1,6 @@
-﻿namespace WzComparerR2
+﻿using DevComponents.DotNetBar;
+
+namespace WzComparerR2
 {
     partial class FrmPatcher
     {
@@ -38,6 +40,7 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FrmPatcher));
             DevComponents.DotNetBar.SuperTooltipInfo superTooltipInfo9 = new DevComponents.DotNetBar.SuperTooltipInfo();
             DevComponents.DotNetBar.SuperTooltipInfo superTooltipInfo10 = new DevComponents.DotNetBar.SuperTooltipInfo();
+            DevComponents.DotNetBar.SuperTooltipInfo superTooltipInfo11 = new DevComponents.DotNetBar.SuperTooltipInfo();
             DevComponents.DotNetBar.SuperTooltipInfo superTooltipInfo1 = new DevComponents.DotNetBar.SuperTooltipInfo();
             this.comboBoxEx1 = new DevComponents.DotNetBar.Controls.ComboBoxEx();
             this.integerInput1 = new DevComponents.Editors.IntegerInput();
@@ -45,6 +48,7 @@
             this.buttonXPatch = new DevComponents.DotNetBar.ButtonX();
             this.chkDeadPatch = new DevComponents.DotNetBar.Controls.CheckBoxX();
             this.chkPrePatch = new DevComponents.DotNetBar.Controls.CheckBoxX();
+            this.chkCheckDiskSpace = new DevComponents.DotNetBar.Controls.CheckBoxX();
             this.buttonXOpen2 = new DevComponents.DotNetBar.ButtonX();
             this.txtMSFolder = new DevComponents.DotNetBar.Controls.TextBoxX();
             this.labelX2 = new DevComponents.DotNetBar.LabelX();
@@ -178,14 +182,14 @@
             // 
             // 
             this.chkDeadPatch.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
-            this.chkDeadPatch.Location = new System.Drawing.Point(130, 87);
+            this.chkDeadPatch.Location = new System.Drawing.Point(120, 87);
             this.chkDeadPatch.Name = "chkDeadPatch";
-            this.chkDeadPatch.Size = new System.Drawing.Size(88, 18);
+            this.chkDeadPatch.Size = new System.Drawing.Size(78, 18);
             this.chkDeadPatch.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
             superTooltipInfo2.BodyText = "起動後、各ファイルを更新した後、一時ファイルは元のファイルで上書きされます。\r\nこれを行うと、ファイルに必要なスペースが減りますが、問題が発生する可能性があります" +
     "。";
             superTooltipInfo2.Color = DevComponents.DotNetBar.eTooltipColor.System;
-            superTooltipInfo2.CustomSize = new System.Drawing.Size(180, 130);
+            superTooltipInfo2.CustomSize = new System.Drawing.Size(180, 230);
             superTooltipInfo2.FooterVisible = false;
             superTooltipInfo2.HeaderText = "即時パッチ";
             this.superTooltip1.SetSuperTooltip(this.chkDeadPatch, superTooltipInfo2);
@@ -367,6 +371,7 @@
             this.expandablePanel2.Controls.Add(this.buttonXPatch);
             this.expandablePanel2.Controls.Add(this.chkDeadPatch);
             this.expandablePanel2.Controls.Add(this.chkPrePatch);
+            this.expandablePanel2.Controls.Add(this.chkCheckDiskSpace);
             this.expandablePanel2.Controls.Add(this.txtPatchFile);
             this.expandablePanel2.Controls.Add(this.buttonXOpen2);
             this.expandablePanel2.Controls.Add(this.buttonXOpen1);
@@ -488,14 +493,14 @@
             this.cmbComparePng.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.cmbComparePng.FormattingEnabled = true;
             this.cmbComparePng.ItemHeight = 13;
-            this.cmbComparePng.Location = new System.Drawing.Point(79, 108);
+            this.cmbComparePng.Location = new System.Drawing.Point(79, 111);
             this.cmbComparePng.Name = "cmbComparePng";
             this.cmbComparePng.Size = new System.Drawing.Size(120, 19);
             this.cmbComparePng.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
             superTooltipInfo8.BodyText = "画像の比較に関する情報。\r\nSizeOnly - ファイルサイズを比較して、トリミングまたはスキップされたファイルがあるかどうかを確認します。\r\nSizeAndDataLength - 画像を同時に圧縮する場合のサイズと時間を比較してください。" +
             "\r\nPixel - ピクセル精度の画像比較。比較プロセスを注意深くチェックします。これには時間がかかる場合がありますが、画像のサイズが同じであることが確認されます。";
             superTooltipInfo8.Color = DevComponents.DotNetBar.eTooltipColor.System;
-            superTooltipInfo8.CustomSize = new System.Drawing.Size(300, 130);
+            superTooltipInfo8.CustomSize = new System.Drawing.Size(300, 230);
             superTooltipInfo8.HeaderText = "PNG比較";
             this.superTooltip1.SetSuperTooltip(this.cmbComparePng, superTooltipInfo8);
             this.cmbComparePng.TabIndex = 12;
@@ -538,12 +543,36 @@
             this.chkCompare.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
             superTooltipInfo10.BodyText = "2つの異なるパッチバージョンを比較します。\r\nこの機能はパッチファイルには影響しません。";
             superTooltipInfo10.Color = DevComponents.DotNetBar.eTooltipColor.System;
-            superTooltipInfo10.CustomSize = new System.Drawing.Size(238, 130);
+            superTooltipInfo10.CustomSize = new System.Drawing.Size(238, 230);
             superTooltipInfo10.FooterVisible = false;
             superTooltipInfo10.HeaderText = "WZ比較";
             this.superTooltip1.SetSuperTooltip(this.chkCompare, superTooltipInfo10);
             this.chkCompare.TabIndex = 10;
             this.chkCompare.Text = "WZ比較";
+            // 
+            // chkCheckDiskSpace
+            // 
+            this.chkCheckDiskSpace.AutoSize = true;
+            this.chkCheckDiskSpace.BackColor = System.Drawing.Color.Transparent;
+            // 
+            // 
+            // 
+            this.chkCheckDiskSpace.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
+            this.chkCheckDiskSpace.Location = new System.Drawing.Point(208, 87);
+            this.chkCheckDiskSpace.Name = "chkCheckDiskSpace";
+            this.chkCheckDiskSpace.Checked = true;
+            this.chkCheckDiskSpace.Size = new System.Drawing.Size(88, 18);
+            this.chkCheckDiskSpace.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
+            superTooltipInfo11.BodyText = "これを選択すると、パッチ適用に十分なディスク容量があるかどうかがパッチャーによってチェックされます。" + 
+                "\r\n不十分な場合は、ゲームパッチャーによってユーザーに警告が表示されます。" +
+                "\r\n\r\nこのオプションを無効にすることはお勧めしません。";
+            superTooltipInfo11.Color = DevComponents.DotNetBar.eTooltipColor.System;
+            superTooltipInfo11.CustomSize = new System.Drawing.Size(180, 230);
+            superTooltipInfo11.FooterVisible = false;
+            superTooltipInfo11.HeaderText = "ﾃﾞｨｽｸ容量の確認";
+            this.superTooltip1.SetSuperTooltip(this.chkCheckDiskSpace, superTooltipInfo11);
+            this.chkCheckDiskSpace.TabIndex = 11;
+            this.chkCheckDiskSpace.Text = "ﾃﾞｨｽｸ容量の確認";
             // 
             // panelEx2
             // 
@@ -999,6 +1028,7 @@
         private DevComponents.DotNetBar.ButtonX buttonXPatch;
         private DevComponents.DotNetBar.Controls.CheckBoxX chkDeadPatch;
         private DevComponents.DotNetBar.Controls.CheckBoxX chkPrePatch;
+        private DevComponents.DotNetBar.Controls.CheckBoxX chkCheckDiskSpace;
         private DevComponents.DotNetBar.ExpandablePanel expandablePanel1;
         private DevComponents.DotNetBar.ExpandablePanel expandablePanel2;
         private DevComponents.DotNetBar.PanelEx panelEx1;
