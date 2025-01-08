@@ -11,7 +11,7 @@ using WzComparerR2.PluginBase;
 using WzComparerR2.WzLib;
 using WzComparerR2.Common;
 using WzComparerR2.CharaSim;
-using DevComponents.DotNetBar;
+using WzComparerR2.AvatarCommon;
 
 namespace WzComparerR2.CharaSimControl
 {
@@ -54,6 +54,7 @@ namespace WzComparerR2.CharaSimControl
         public TooltipRender LinkRecipeItemRender { get; set; }
         public TooltipRender SetItemRender { get; set; }
         public TooltipRender CashPackageRender { get; set; }
+        private AvatarCanvasManager avatar { get; set; }
         private bool isCurrencyConversionEnabled = (Translator.DefaultDesiredCurrency != "none");
         private string titleLanguage = "";
 
@@ -878,7 +879,7 @@ namespace WzComparerR2.CharaSimControl
             long minLev = 0, maxLev = 0;
             bool willDrawExp = item.Props.TryGetValue(ItemPropType.exp_minLev, out minLev) && item.Props.TryGetValue(ItemPropType.exp_maxLev, out maxLev);
 
-            if (!string.IsNullOrEmpty(descLeftAlign) || item.CoreSpecs.Count > 0 || item.Sample.Bitmap != null || item.DamageSkinID != null || item.SamplePath != null || willDrawNickTag || willDrawExp)
+            if (!string.IsNullOrEmpty(descLeftAlign) || item.CoreSpecs.Count > 0 || item.Sample.Bitmap != null || item.DamageSkinID != null || item.SamplePath != null || item.ShowCosmetic || willDrawNickTag || willDrawExp)
             {
                 if (picH < iconY + 84)
                 {
@@ -967,6 +968,35 @@ namespace WzComparerR2.CharaSimControl
                         picH += sample.Bitmap.Height;
                         picH += 2;
                     }
+                }
+                if (this.item.Specs.TryGetValue(ItemSpecType.cosmetic, out value) && value > 0)
+                {
+                    if (this.avatar == null)
+                    {
+                        this.avatar = new AvatarCanvasManager();
+                    }
+
+                    if (value < 1000)
+                    {
+                        this.avatar.addBodyFromSkin3((int)value);
+                    }
+                    else
+                    {
+                        this.avatar.addBodyFromSkin4(2015);
+                        this.avatar.addHairOrFace((int)value);
+                    }
+
+                    this.avatar.addGears([1042194, 1062153]);
+
+                    var frame = this.avatar.getBitmapOrigin();
+                    if (frame.Bitmap != null)
+                    {
+                        g.DrawImage(frame.Bitmap, (tooltip.Width - frame.Bitmap.Width) / 2, picH);
+                        picH += frame.Bitmap.Height;
+                        picH += 2;
+                    }
+
+                    this.avatar.clearCanvas();
                 }
                 if (item.SamplePath != null)
                 {
