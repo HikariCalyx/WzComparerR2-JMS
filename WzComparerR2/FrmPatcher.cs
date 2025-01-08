@@ -69,6 +69,10 @@ namespace WzComparerR2
         string loggingFileName;
         bool isUpdating;
 
+        SortedDictionary<string, long> patchedFileSizes = new SortedDictionary<string, long>();
+        List<string> patchedFileIndex = new List<string>();
+        Dictionary<string, string> finishedFileIndex = new Dictionary<string, string>();
+
         private PatcherSetting SelectedPatcherSetting => comboBoxEx1.SelectedItem as PatcherSetting;
 
         private void MigrateSetting(PatcherSetting patcherSetting)
@@ -291,6 +295,7 @@ namespace WzComparerR2
             msFolder = txtMSFolder.Text;
             prePatch = chkPrePatch.Checked;
             deadPatch = chkDeadPatch.Checked;
+            checkDiskSpace = chkCheckDiskSpace.Checked;
 
             if (!File.Exists(msFolder + "//MapleStory.exe") && !File.Exists(msFolder + "//MapleStoryT.exe"))
             {
@@ -330,7 +335,6 @@ namespace WzComparerR2
             this.loggingFileName = Path.Combine(msFolder, $"wcpatcher_{DateTime.Now:yyyyMMdd_HHmmssfff}.log");
             long patchedAllFileSize = 0;
             long decompressedSize = 0;
-            SortedDictionary<string, long> patchedFileSizes = new SortedDictionary<string, long>();
             patchedFileSizes.Add("ZOther", 0);
             try
             {
@@ -360,6 +364,7 @@ namespace WzComparerR2
                         if (patcher.IsKMST1125Format.Value)
                         {
                             string[] patchedFileDirectory = part.FileName.Split('\\');
+                            if (part.FileName.StartsWith("Data\\") || part.FileName.EndsWith(".wz") || part.FileName.StartsWith("NxOverlay\\")) patchedFileIndex.Add(part.FileName);
                             if (patchedFileDirectory[0] == "Data")
                             {
                                 if (!patchedFileSizes.ContainsKey(patchedFileDirectory[1])) patchedFileSizes.Add(patchedFileDirectory[1], 0);
@@ -401,6 +406,7 @@ namespace WzComparerR2
                                 break;
                         }
                     }
+                    patchedFileIndex.Sort();
                     AppendStateText(string.Format("必要なスペース: {0}\r\n", GetBothByteAndGBValue(patchedAllFileSize)));
                     AppendStateText(string.Format("使用可能なディスク容量: {0}\r\n", GetBothByteAndGBValue(availableDiskSpace)));
                     if (patchedAllFileSize > availableDiskSpace)
@@ -538,7 +544,6 @@ namespace WzComparerR2
 
         private void patcher_PatchingStateChanged(object sender, PatchingEventArgs e)
         {
-            string currentWzPart = "";
             switch (e.State)
             {
                 case PatchingState.PatchStart:
@@ -626,23 +631,32 @@ namespace WzComparerR2
                     {
                         if (patcher.IsKMST1125Format.Value)
                         {
-                            string[] currentFiles = e.Part.FileName.Split('\\');
-                            if (currentFiles[0] == "Data")
+                            int targetDirectoryDepth = GetDirectoryDepth(e.Part.FileName);
+                            if (targetDirectoryDepth > 1 && e.Part.FileName.StartsWith("Data"))
                             {
-                                if (currentWzPart != currentFiles[1])
+                                string currentSubdirectory = e.Part.FileName.Split('\\')[1];
+                                if (patchedFileIndex.Contains(e.Part.FileName))
                                 {
-                                    patcher.SafeMove(e.Part.TempFilePath, e.Part.OldFilePath);
-                                    AppendStateText("  (即時パッチ)ファイルを適用しています...\r\n");
+                                    patchedFileIndex.Remove(e.Part.FileName);
+                                    finishedFileIndex.Add(e.Part.TempFilePath, e.Part.OldFilePath);
                                 }
-                                else
+                                if (patchedFileIndex.Any(item => item.StartsWith("Data\\" + currentSubdirectory)))
                                 {
                                     AppendStateText("  (即時パッチ)ファイル適用の延期...\r\n");
                                 }
-                                currentWzPart = currentFiles[1];
+                                else
+                                {
+                                    AppendStateText("  (即時パッチ)ファイルを適用しています...\r\n");
+                                    foreach (string k in finishedFileIndex.Keys)
+                                    {
+                                        patcher.SafeMove(k, finishedFileIndex[k]);
+                                        finishedFileIndex.Remove(k);
+                                    }
+                                    
+                                }
                             }
                             else
                             {
-                                // TODO: we should build the file dependency tree to make sure all old files could be overridden safely.
                                 AppendStateText("  (即時パッチ)ファイル適用の延期...\r\n");
                             }
                         }
@@ -675,6 +689,15 @@ namespace WzComparerR2
                     AppendStateText($"ファイルの適用: {e.Part.FileName}\r\n");
                     break;
             }
+        }
+        static int GetDirectoryDepth(string inputString)
+        {
+            int count = 0;
+            foreach (char c in inputString)
+            {
+                if (c == '\\') count++;
+            }
+            return count;
         }
 
         private void AppendStateText(string text)

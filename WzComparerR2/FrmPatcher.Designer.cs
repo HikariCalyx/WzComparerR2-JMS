@@ -37,8 +37,8 @@ namespace WzComparerR2
             DevComponents.DotNetBar.SuperTooltipInfo superTooltipInfo6 = new DevComponents.DotNetBar.SuperTooltipInfo();
             DevComponents.DotNetBar.SuperTooltipInfo superTooltipInfo7 = new DevComponents.DotNetBar.SuperTooltipInfo();
             DevComponents.DotNetBar.SuperTooltipInfo superTooltipInfo8 = new DevComponents.DotNetBar.SuperTooltipInfo();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FrmPatcher));
             DevComponents.DotNetBar.SuperTooltipInfo superTooltipInfo9 = new DevComponents.DotNetBar.SuperTooltipInfo();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FrmPatcher));
             DevComponents.DotNetBar.SuperTooltipInfo superTooltipInfo10 = new DevComponents.DotNetBar.SuperTooltipInfo();
             DevComponents.DotNetBar.SuperTooltipInfo superTooltipInfo11 = new DevComponents.DotNetBar.SuperTooltipInfo();
             DevComponents.DotNetBar.SuperTooltipInfo superTooltipInfo1 = new DevComponents.DotNetBar.SuperTooltipInfo();
@@ -68,9 +68,6 @@ namespace WzComparerR2
             this.chkCompare = new DevComponents.DotNetBar.Controls.CheckBoxX();
             this.panelEx2 = new DevComponents.DotNetBar.PanelEx();
             this.superTabControl1 = new DevComponents.DotNetBar.SuperTabControl();
-            this.superTabControlPanel1 = new DevComponents.DotNetBar.SuperTabControlPanel();
-            this.txtNotice = new DevComponents.DotNetBar.Controls.TextBoxX();
-            this.superTabItem1 = new DevComponents.DotNetBar.SuperTabItem();
             this.superTabControlPanel2 = new DevComponents.DotNetBar.SuperTabControlPanel();
             this.advTreePatchFiles = new DevComponents.AdvTree.AdvTree();
             this.columnHeader1 = new DevComponents.AdvTree.ColumnHeader();
@@ -82,6 +79,9 @@ namespace WzComparerR2
             this.nodeConnector1 = new DevComponents.AdvTree.NodeConnector();
             this.elementStyle1 = new DevComponents.DotNetBar.ElementStyle();
             this.superTabItem2 = new DevComponents.DotNetBar.SuperTabItem();
+            this.superTabControlPanel1 = new DevComponents.DotNetBar.SuperTabControlPanel();
+            this.txtNotice = new DevComponents.DotNetBar.Controls.TextBoxX();
+            this.superTabItem1 = new DevComponents.DotNetBar.SuperTabItem();
             this.superTabControlPanel3 = new DevComponents.DotNetBar.SuperTabControlPanel();
             this.txtPatchState = new DevComponents.DotNetBar.Controls.TextBoxX();
             this.progressBarX1 = new DevComponents.DotNetBar.Controls.ProgressBarX();
@@ -104,9 +104,9 @@ namespace WzComparerR2
             this.panelEx2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.superTabControl1)).BeginInit();
             this.superTabControl1.SuspendLayout();
-            this.superTabControlPanel1.SuspendLayout();
             this.superTabControlPanel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.advTreePatchFiles)).BeginInit();
+            this.superTabControlPanel1.SuspendLayout();
             this.superTabControlPanel3.SuspendLayout();
             this.panelEx1.SuspendLayout();
             this.expandablePanel3.SuspendLayout();
@@ -184,7 +184,7 @@ namespace WzComparerR2
             this.chkDeadPatch.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
             this.chkDeadPatch.Location = new System.Drawing.Point(120, 87);
             this.chkDeadPatch.Name = "chkDeadPatch";
-            this.chkDeadPatch.Size = new System.Drawing.Size(78, 18);
+            this.chkDeadPatch.Size = new System.Drawing.Size(88, 18);
             this.chkDeadPatch.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
             superTooltipInfo2.BodyText = "起動後、各ファイルを更新した後、一時ファイルは元のファイルで上書きされます。\r\nこれを行うと、ファイルに必要なスペースが減りますが、問題が発生する可能性があります" +
     "。\r\n即時パッチを有効にすると、ディスク容量の確認が強制されます。";
@@ -218,6 +218,31 @@ namespace WzComparerR2
             this.superTooltip1.SetSuperTooltip(this.chkPrePatch, superTooltipInfo3);
             this.chkPrePatch.TabIndex = 6;
             this.chkPrePatch.Text = "プリロードパッチ";
+            // 
+            // chkCheckDiskSpace
+            // 
+            this.chkCheckDiskSpace.AutoSize = true;
+            this.chkCheckDiskSpace.BackColor = System.Drawing.Color.Transparent;
+            // 
+            // 
+            // 
+            this.chkCheckDiskSpace.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
+            this.chkCheckDiskSpace.Checked = true;
+            this.chkCheckDiskSpace.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkCheckDiskSpace.CheckValue = "Y";
+            this.chkCheckDiskSpace.Location = new System.Drawing.Point(208, 87);
+            this.chkCheckDiskSpace.Name = "chkCheckDiskSpace";
+            this.chkCheckDiskSpace.Size = new System.Drawing.Size(119, 18);
+            this.chkCheckDiskSpace.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
+            superTooltipInfo4.BodyText = "これを選択すると、パッチ適用に十分なディスク容量があるかどうかがパッチャーによってチェックされます。\r\n不十分な場合は、ゲームパッチャーによってユーザーに警告が表" +
+    "示されます。\r\n\r\nこのオプションを無効にすることはお勧めしません。";
+            superTooltipInfo4.Color = DevComponents.DotNetBar.eTooltipColor.System;
+            superTooltipInfo4.CustomSize = new System.Drawing.Size(180, 230);
+            superTooltipInfo4.FooterVisible = false;
+            superTooltipInfo4.HeaderText = "ﾃﾞｨｽｸ容量の確認";
+            this.superTooltip1.SetSuperTooltip(this.chkCheckDiskSpace, superTooltipInfo4);
+            this.chkCheckDiskSpace.TabIndex = 11;
+            this.chkCheckDiskSpace.Text = "ﾃﾞｨｽｸ容量の確認";
             // 
             // buttonXOpen2
             // 
@@ -414,12 +439,12 @@ namespace WzComparerR2
             this.chkResolvePngLink.Name = "chkResolvePngLink";
             this.chkResolvePngLink.Size = new System.Drawing.Size(101, 18);
             this.chkResolvePngLink.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
-            superTooltipInfo4.BodyText = "比較レポートは、リンクされた画像を分析して比較します。\r\nこれにより、冗長な変更が除外されます。";
-            superTooltipInfo4.Color = DevComponents.DotNetBar.eTooltipColor.System;
-            superTooltipInfo4.CustomSize = new System.Drawing.Size(180, 90);
-            superTooltipInfo4.FooterVisible = false;
-            superTooltipInfo4.HeaderText = "リンクの解決";
-            this.superTooltip1.SetSuperTooltip(this.chkResolvePngLink, superTooltipInfo4);
+            superTooltipInfo5.BodyText = "比較レポートは、リンクされた画像を分析して比較します。\r\nこれにより、冗長な変更が除外されます。";
+            superTooltipInfo5.Color = DevComponents.DotNetBar.eTooltipColor.System;
+            superTooltipInfo5.CustomSize = new System.Drawing.Size(180, 90);
+            superTooltipInfo5.FooterVisible = false;
+            superTooltipInfo5.HeaderText = "リンクの解決";
+            this.superTooltip1.SetSuperTooltip(this.chkResolvePngLink, superTooltipInfo5);
             this.chkResolvePngLink.TabIndex = 18;
             this.chkResolvePngLink.Text = "リンクの解決";
             // 
@@ -435,12 +460,12 @@ namespace WzComparerR2
             this.chkEnableDarkMode.Name = "chkEnableDarkMode";
             this.chkEnableDarkMode.Size = new System.Drawing.Size(101, 18);
             this.chkEnableDarkMode.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
-            superTooltipInfo5.BodyText = "ダークモードHTMLとの比較を出力します。";
-            superTooltipInfo5.Color = DevComponents.DotNetBar.eTooltipColor.System;
-            superTooltipInfo5.CustomSize = new System.Drawing.Size(180, 80);
-            superTooltipInfo5.FooterVisible = false;
-            superTooltipInfo5.HeaderText = "ダークモード";
-            this.superTooltip1.SetSuperTooltip(this.chkEnableDarkMode, superTooltipInfo5);
+            superTooltipInfo6.BodyText = "ダークモードHTMLとの比較を出力します。";
+            superTooltipInfo6.Color = DevComponents.DotNetBar.eTooltipColor.System;
+            superTooltipInfo6.CustomSize = new System.Drawing.Size(180, 80);
+            superTooltipInfo6.FooterVisible = false;
+            superTooltipInfo6.HeaderText = "ダークモード";
+            this.superTooltip1.SetSuperTooltip(this.chkEnableDarkMode, superTooltipInfo6);
             this.chkEnableDarkMode.TabIndex = 14;
             this.chkEnableDarkMode.Text = "ダークモード";
             // 
@@ -456,12 +481,12 @@ namespace WzComparerR2
             this.chkOutputRemovedImg.Name = "chkOutputRemovedImg";
             this.chkOutputRemovedImg.Size = new System.Drawing.Size(125, 18);
             this.chkOutputRemovedImg.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
-            superTooltipInfo6.BodyText = "削除されたファイルを表示します。";
-            superTooltipInfo6.Color = DevComponents.DotNetBar.eTooltipColor.System;
-            superTooltipInfo6.CustomSize = new System.Drawing.Size(180, 80);
-            superTooltipInfo6.FooterVisible = false;
-            superTooltipInfo6.HeaderText = "削除済みファイル";
-            this.superTooltip1.SetSuperTooltip(this.chkOutputRemovedImg, superTooltipInfo6);
+            superTooltipInfo7.BodyText = "削除されたファイルを表示します。";
+            superTooltipInfo7.Color = DevComponents.DotNetBar.eTooltipColor.System;
+            superTooltipInfo7.CustomSize = new System.Drawing.Size(180, 80);
+            superTooltipInfo7.FooterVisible = false;
+            superTooltipInfo7.HeaderText = "削除済みファイル";
+            this.superTooltip1.SetSuperTooltip(this.chkOutputRemovedImg, superTooltipInfo7);
             this.chkOutputRemovedImg.TabIndex = 14;
             this.chkOutputRemovedImg.Text = "削除済みファイル";
             // 
@@ -477,12 +502,12 @@ namespace WzComparerR2
             this.chkOutputAddedImg.Name = "chkOutputAddedImg";
             this.chkOutputAddedImg.Size = new System.Drawing.Size(101, 18);
             this.chkOutputAddedImg.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
-            superTooltipInfo7.BodyText = "追加されたファイルを表示する。";
-            superTooltipInfo7.Color = DevComponents.DotNetBar.eTooltipColor.System;
-            superTooltipInfo7.CustomSize = new System.Drawing.Size(180, 80);
-            superTooltipInfo7.FooterVisible = false;
-            superTooltipInfo7.HeaderText = "追加ファイル";
-            this.superTooltip1.SetSuperTooltip(this.chkOutputAddedImg, superTooltipInfo7);
+            superTooltipInfo8.BodyText = "追加されたファイルを表示する。";
+            superTooltipInfo8.Color = DevComponents.DotNetBar.eTooltipColor.System;
+            superTooltipInfo8.CustomSize = new System.Drawing.Size(180, 80);
+            superTooltipInfo8.FooterVisible = false;
+            superTooltipInfo8.HeaderText = "追加ファイル";
+            this.superTooltip1.SetSuperTooltip(this.chkOutputAddedImg, superTooltipInfo8);
             this.chkOutputAddedImg.TabIndex = 13;
             this.chkOutputAddedImg.Text = "追加ファイル";
             // 
@@ -498,12 +523,11 @@ namespace WzComparerR2
             this.cmbComparePng.Name = "cmbComparePng";
             this.cmbComparePng.Size = new System.Drawing.Size(120, 19);
             this.cmbComparePng.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
-            superTooltipInfo8.BodyText = "画像の比較に関する情報。\r\nSizeOnly - ファイルサイズを比較して、トリミングまたはスキップされたファイルがあるかどうかを確認します。\r\nSizeAndDataLength - 画像を同時に圧縮する場合のサイズと時間を比較してください。" +
-            "\r\nPixel - ピクセル精度の画像比較。比較プロセスを注意深くチェックします。これには時間がかかる場合がありますが、画像のサイズが同じであることが確認されます。";
-            superTooltipInfo8.Color = DevComponents.DotNetBar.eTooltipColor.System;
-            superTooltipInfo8.CustomSize = new System.Drawing.Size(300, 230);
-            superTooltipInfo8.HeaderText = "PNG比較";
-            this.superTooltip1.SetSuperTooltip(this.cmbComparePng, superTooltipInfo8);
+            superTooltipInfo9.BodyText = resources.GetString("superTooltipInfo9.BodyText");
+            superTooltipInfo9.Color = DevComponents.DotNetBar.eTooltipColor.System;
+            superTooltipInfo9.CustomSize = new System.Drawing.Size(300, 230);
+            superTooltipInfo9.HeaderText = "PNG比較";
+            this.superTooltip1.SetSuperTooltip(this.cmbComparePng, superTooltipInfo9);
             this.cmbComparePng.TabIndex = 12;
             // 
             // chkOutputPng
@@ -521,12 +545,12 @@ namespace WzComparerR2
             this.chkOutputPng.Name = "chkOutputPng";
             this.chkOutputPng.Size = new System.Drawing.Size(85, 16);
             this.chkOutputPng.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
-            superTooltipInfo9.BodyText = "PNGファイルと音声ファイルを表示します。";
-            superTooltipInfo9.Color = DevComponents.DotNetBar.eTooltipColor.System;
-            superTooltipInfo9.CustomSize = new System.Drawing.Size(180, 80);
-            superTooltipInfo9.FooterVisible = false;
-            superTooltipInfo9.HeaderText = "PNGと音声";
-            this.superTooltip1.SetSuperTooltip(this.chkOutputPng, superTooltipInfo9);
+            superTooltipInfo10.BodyText = "PNGファイルと音声ファイルを表示します。";
+            superTooltipInfo10.Color = DevComponents.DotNetBar.eTooltipColor.System;
+            superTooltipInfo10.CustomSize = new System.Drawing.Size(180, 80);
+            superTooltipInfo10.FooterVisible = false;
+            superTooltipInfo10.HeaderText = "PNGと音声";
+            this.superTooltip1.SetSuperTooltip(this.chkOutputPng, superTooltipInfo10);
             this.chkOutputPng.TabIndex = 11;
             this.chkOutputPng.Text = "PNGと音声";
             // 
@@ -542,38 +566,14 @@ namespace WzComparerR2
             this.chkCompare.Name = "chkCompare";
             this.chkCompare.Size = new System.Drawing.Size(67, 16);
             this.chkCompare.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
-            superTooltipInfo10.BodyText = "2つの異なるパッチバージョンを比較します。\r\nこの機能はパッチファイルには影響しません。";
-            superTooltipInfo10.Color = DevComponents.DotNetBar.eTooltipColor.System;
-            superTooltipInfo10.CustomSize = new System.Drawing.Size(238, 230);
-            superTooltipInfo10.FooterVisible = false;
-            superTooltipInfo10.HeaderText = "WZ比較";
-            this.superTooltip1.SetSuperTooltip(this.chkCompare, superTooltipInfo10);
+            superTooltipInfo11.BodyText = "2つの異なるパッチバージョンを比較します。\r\nこの機能はパッチファイルには影響しません。";
+            superTooltipInfo11.Color = DevComponents.DotNetBar.eTooltipColor.System;
+            superTooltipInfo11.CustomSize = new System.Drawing.Size(238, 230);
+            superTooltipInfo11.FooterVisible = false;
+            superTooltipInfo11.HeaderText = "WZ比較";
+            this.superTooltip1.SetSuperTooltip(this.chkCompare, superTooltipInfo11);
             this.chkCompare.TabIndex = 10;
             this.chkCompare.Text = "WZ比較";
-            // 
-            // chkCheckDiskSpace
-            // 
-            this.chkCheckDiskSpace.AutoSize = true;
-            this.chkCheckDiskSpace.BackColor = System.Drawing.Color.Transparent;
-            // 
-            // 
-            // 
-            this.chkCheckDiskSpace.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
-            this.chkCheckDiskSpace.Location = new System.Drawing.Point(208, 87);
-            this.chkCheckDiskSpace.Name = "chkCheckDiskSpace";
-            this.chkCheckDiskSpace.Checked = true;
-            this.chkCheckDiskSpace.Size = new System.Drawing.Size(88, 18);
-            this.chkCheckDiskSpace.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
-            superTooltipInfo11.BodyText = "これを選択すると、パッチ適用に十分なディスク容量があるかどうかがパッチャーによってチェックされます。" + 
-                "\r\n不十分な場合は、ゲームパッチャーによってユーザーに警告が表示されます。" +
-                "\r\n\r\nこのオプションを無効にすることはお勧めしません。";
-            superTooltipInfo11.Color = DevComponents.DotNetBar.eTooltipColor.System;
-            superTooltipInfo11.CustomSize = new System.Drawing.Size(180, 230);
-            superTooltipInfo11.FooterVisible = false;
-            superTooltipInfo11.HeaderText = "ﾃﾞｨｽｸ容量の確認";
-            this.superTooltip1.SetSuperTooltip(this.chkCheckDiskSpace, superTooltipInfo11);
-            this.chkCheckDiskSpace.TabIndex = 11;
-            this.chkCheckDiskSpace.Text = "ﾃﾞｨｽｸ容量の確認";
             // 
             // panelEx2
             // 
@@ -632,40 +632,6 @@ namespace WzComparerR2
             this.superTabItem2,
             this.superTabItem3});
             this.superTabControl1.Text = "superTabControl1";
-            // 
-            // superTabControlPanel1
-            // 
-            this.superTabControlPanel1.Controls.Add(this.txtNotice);
-            this.superTabControlPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.superTabControlPanel1.Location = new System.Drawing.Point(63, 0);
-            this.superTabControlPanel1.Name = "superTabControlPanel1";
-            this.superTabControlPanel1.Size = new System.Drawing.Size(297, 180);
-            this.superTabControlPanel1.TabIndex = 1;
-            this.superTabControlPanel1.TabItem = this.superTabItem1;
-            this.superTabControlPanel1.Visible = false;
-            // 
-            // txtNotice
-            // 
-            // 
-            // 
-            // 
-            this.txtNotice.Border.Class = "TextBoxBorder";
-            this.txtNotice.Border.CornerType = DevComponents.DotNetBar.eCornerType.Square;
-            this.txtNotice.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.txtNotice.Location = new System.Drawing.Point(0, 0);
-            this.txtNotice.Multiline = true;
-            this.txtNotice.Name = "txtNotice";
-            this.txtNotice.ReadOnly = true;
-            this.txtNotice.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txtNotice.Size = new System.Drawing.Size(297, 180);
-            this.txtNotice.TabIndex = 0;
-            // 
-            // superTabItem1
-            // 
-            this.superTabItem1.AttachedControl = this.superTabControlPanel1;
-            this.superTabItem1.GlobalItem = false;
-            this.superTabItem1.Name = "superTabItem1";
-            this.superTabItem1.Text = "通知";
             // 
             // superTabControlPanel2
             // 
@@ -767,6 +733,40 @@ namespace WzComparerR2
             this.superTabItem2.GlobalItem = false;
             this.superTabItem2.Name = "superTabItem2";
             this.superTabItem2.Text = "ファイル";
+            // 
+            // superTabControlPanel1
+            // 
+            this.superTabControlPanel1.Controls.Add(this.txtNotice);
+            this.superTabControlPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.superTabControlPanel1.Location = new System.Drawing.Point(63, 0);
+            this.superTabControlPanel1.Name = "superTabControlPanel1";
+            this.superTabControlPanel1.Size = new System.Drawing.Size(297, 180);
+            this.superTabControlPanel1.TabIndex = 1;
+            this.superTabControlPanel1.TabItem = this.superTabItem1;
+            this.superTabControlPanel1.Visible = false;
+            // 
+            // txtNotice
+            // 
+            // 
+            // 
+            // 
+            this.txtNotice.Border.Class = "TextBoxBorder";
+            this.txtNotice.Border.CornerType = DevComponents.DotNetBar.eCornerType.Square;
+            this.txtNotice.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.txtNotice.Location = new System.Drawing.Point(0, 0);
+            this.txtNotice.Multiline = true;
+            this.txtNotice.Name = "txtNotice";
+            this.txtNotice.ReadOnly = true;
+            this.txtNotice.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.txtNotice.Size = new System.Drawing.Size(297, 180);
+            this.txtNotice.TabIndex = 0;
+            // 
+            // superTabItem1
+            // 
+            this.superTabItem1.AttachedControl = this.superTabControlPanel1;
+            this.superTabItem1.GlobalItem = false;
+            this.superTabItem1.Name = "superTabItem1";
+            this.superTabItem1.Text = "通知";
             // 
             // superTabControlPanel3
             // 
@@ -1004,9 +1004,9 @@ namespace WzComparerR2
             this.panelEx2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.superTabControl1)).EndInit();
             this.superTabControl1.ResumeLayout(false);
-            this.superTabControlPanel1.ResumeLayout(false);
             this.superTabControlPanel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.advTreePatchFiles)).EndInit();
+            this.superTabControlPanel1.ResumeLayout(false);
             this.superTabControlPanel3.ResumeLayout(false);
             this.panelEx1.ResumeLayout(false);
             this.expandablePanel3.ResumeLayout(false);
