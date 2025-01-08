@@ -273,7 +273,6 @@ namespace WzComparerR2.MapRender
             }), KeyCode.D8, ModifierKeys.Control));
             this.ui.InputBindings.Add(new KeyBinding(new RelayCommand(_ => this.patchVisibility.FrontVisible = !this.patchVisibility.FrontVisible), KeyCode.D9, ModifierKeys.Control));
             this.ui.InputBindings.Add(new KeyBinding(new RelayCommand(_ => this.patchVisibility.EffectVisible = !this.patchVisibility.EffectVisible), KeyCode.D0, ModifierKeys.Control));
-
             //移动操作
             #region 移动操作
             {
@@ -519,10 +518,10 @@ namespace WzComparerR2.MapRender
 
             StringResult sr = null;
             this.StringLinker?.StringMap.TryGetValue(mapID, out sr);
-            //string mapName = sr?["mapName"] ?? "(null)"; //Kenny ver.
-            //int last = (mapName.LastOrDefault(c => c >= '가' && c <= '힣') - '가') % 28; //Kenny ver.
-            var message = string.Format("このマップにテレポートしますか?\r\n{0} ({1})", sr?.Name ?? "null", mapID);
-            //var message = mapName + (last == 0 || last == 8 ? "" : "으") + "로 이동하시겠습니까?"; //Kenny ver.
+            string mapName = sr?["mapName"] ?? "(null)";
+            int last = (mapName.LastOrDefault(c => c >= '가' && c <= '힣') - '가') % 28;
+            //var message = string.Format("このマップにテレポートしますか?\r\n{0} ({1})", sr?.Name ?? "null", mapID);
+            var message = mapName + "に移動しますか？" + "\r\n" + "マップID: " + mapID;
             MessageBox.Show(message, "", MessageBoxButton.OKCancel, callback, false);
         }
 
@@ -584,7 +583,7 @@ namespace WzComparerR2.MapRender
                     }
                     break;
 
-                case "/return":
+                case "/back":
                     if (this.viewHistory.Count > 0)
                     {
                         this.MoveToLastMap();
@@ -630,7 +629,7 @@ namespace WzComparerR2.MapRender
                         historyCount--;
                     }
                     break;
-
+                    
                 case "/minimap":
                     var canvasList = this.mapData?.MiniMap?.ExtraCanvas;
                     switch (arguments.ElementAtOrDefault(1))
@@ -726,7 +725,7 @@ namespace WzComparerR2.MapRender
                                     break;
                                 case "reset-all":
                                     this.patchVisibility.ResetTagVisible();
-                                    this.ui.ChatBox.AppendTextHelp($"すべてのタグ表示状態のリセットが完了しました");
+                                    this.ui.ChatBox.AppendTextHelp($"すべてのタグ表示状態のリセットが完了しました。");
                                     break;
                                 case "set-default":
                                     if (bool.TryParse(arguments.ElementAtOrDefault(3), out bool isVisible))
@@ -757,87 +756,7 @@ namespace WzComparerR2.MapRender
                     }
                     break;
 
-                case "/quest":
-                    switch (arguments.ElementAtOrDefault(1))
-                    {
-                        case "list":
-                            List<Tuple<int, int>> questList = this?.mapData.Scene.Back.Slots.SelectMany(item => ((BackItem)item).Quest)
-                                .Concat(this?.mapData.Scene.Layers.Nodes.SelectMany(l => ((LayerNode)l).Obj.Slots.SelectMany(item => ((ObjItem)item).Quest)))
-                                .Concat(this?.mapData.Scene.Npcs.SelectMany(item => item.Quest))
-                                .Concat(this?.mapData.Scene.Front.Slots.SelectMany(item => ((BackItem)item).Quest))
-                                .Concat(this?.mapData.Scene.Effect.Slots.Where(item => item is ParticleItem).SelectMany(item => ((ParticleItem)item).Quest))
-                                .Concat(this?.mapData.Scene.Effect.Slots.Where(item => item is ParticleItem).SelectMany(item => ((ParticleItem)item).SubItems).SelectMany(item => item.Quest))
-                                .Distinct().ToList();
-                            this.ui.ChatBox.AppendTextHelp($"関連クエスト: ({questList.Count()})");
-                            foreach (Tuple<int, int> item in questList)
-                            {
-                                Wz_Node questInfoNode = PluginBase.PluginManager.FindWz($@"Quest\QuestData\{item.Item1}.img\QuestInfo")
-                                    ?? PluginBase.PluginManager.FindWz($@"Quest\QuestInfo.img\{item.Item1}");
-                                string questName = questInfoNode?.Nodes["name"].GetValueEx<string>(null) ?? "null";
-                                this.ui.ChatBox.AppendTextHelp($"  {questName}({item.Item1}) / {item.Item2}");
-                            }
-                            break;
 
-                        case "set":
-                            if (Int32.TryParse(arguments.ElementAtOrDefault(2), out int questID) && questID > -1 && Int32.TryParse(arguments.ElementAtOrDefault(3), out int questState) && questState >= -1 && questState <= 2)
-                            {
-                                this.patchVisibility.SetVisible(questID, questState);
-                                this.mapData.PreloadResource(resLoader);
-                                Wz_Node questInfoNode = PluginBase.PluginManager.FindWz($@"Quest\QuestData\{questID}.img\QuestInfo")
-                                    ?? PluginBase.PluginManager.FindWz($@"Quest\QuestInfo.img\{questID}");
-                                string questName = questInfoNode?.Nodes["name"].GetValueEx<string>(null) ?? "null";
-                                this.ui.ChatBox.AppendTextSystem($"{questName}({questID})の状態を{questState}に変更しました。");
-                            }
-                            else
-                            {
-                                this.ui.ChatBox.AppendTextSystem($"正しいクエスト状態を入力してください。");
-                            }
-                            break;
-
-                        default:
-                            this.ui.ChatBox.AppendTextHelp(@"/quest list 関連クエストのリストを見る");
-                            this.ui.ChatBox.AppendTextHelp(@"/quest set (questID) (questState) クエスト状態を設定");
-                            break;
-                    }
-                    break;
-
-                case "/questex":
-                    switch (arguments.ElementAtOrDefault(1))
-                    {
-                        case "list":
-                            List<Tuple<int, string, int>> questList = this?.mapData.Scene.Layers.Nodes.SelectMany(l => ((LayerNode)l).Obj.Slots.SelectMany(item => ((ObjItem)item).Questex))
-                                .Distinct().ToList();
-                            this.ui.ChatBox.AppendTextHelp($"関連クエストキーID: ({questList.Count()})");
-                            foreach (Tuple<int, string, int> item in questList)
-                            {
-                                Wz_Node questInfoNode = PluginBase.PluginManager.FindWz($@"Quest\QuestData\{item.Item1}.img\QuestInfo")
-                                    ?? PluginBase.PluginManager.FindWz($@"Quest\QuestInfo.img\{item.Item1}");
-                                string questName = questInfoNode?.Nodes["name"].GetValueEx<string>(null) ?? "null";
-                                this.ui.ChatBox.AppendTextHelp($"  {questName}({item.Item1}) / キー: {item.Item2}, 値: {item.Item3}");
-                            }
-                            break;
-                        case "set":
-                            string qkey = arguments.ElementAtOrDefault(3);
-                            if (Int32.TryParse(arguments.ElementAtOrDefault(2), out int questID) && questID > -1 && Int32.TryParse(arguments.ElementAtOrDefault(4), out int questState) && questState >= -1 && qkey != null)
-                            {
-                                this.patchVisibility.SetVisible(questID, qkey, questState);
-                                this.mapData.PreloadResource(resLoader);
-                                Wz_Node questInfoNode = PluginBase.PluginManager.FindWz($@"Quest\QuestData\{questID}.img\QuestInfo")
-                                    ?? PluginBase.PluginManager.FindWz($@"Quest\QuestInfo.img\{questID}");
-                                string questName = questInfoNode?.Nodes["name"].GetValueEx<string>(null) ?? "null";
-                                this.ui.ChatBox.AppendTextSystem($"{questName}({questID}, キー={qkey})の状態を{questState}に変更しました。");
-                            }
-                            else
-                            {
-                                this.ui.ChatBox.AppendTextSystem($"正しいクエストID、キー、値を入力してください。");
-                            }
-                            break;
-                        default:
-                            this.ui.ChatBox.AppendTextHelp(@"/questex list 関連クエストキーのリストを見る");
-                            this.ui.ChatBox.AppendTextHelp(@"/questex set (questID) (key) (questState) 該当クエストキーの状態設定");
-                            break;
-                    }
-                    break;
 
                 case "/date":
                     switch (arguments.ElementAtOrDefault(1))
@@ -925,8 +844,92 @@ namespace WzComparerR2.MapRender
                             break;
 
                         default:
-                            this.ui.ChatBox.AppendTextHelp(@"/multibgm list マルチBGM一覧を見る");
-                            this.ui.ChatBox.AppendTextHelp(@"/multibgm set (multiBgm) 対応するマルチBGMを再生します");
+                            this.ui.ChatBox.AppendTextHelp(@"/multibgm list マルチBGMリストを見る");
+                            this.ui.ChatBox.AppendTextHelp(@"/multibgm set (multiBgm) 対応するマルチBGM再生");
+                            break;
+                    }
+                    break;
+
+                case "/quest":
+                    switch (arguments.ElementAtOrDefault(1))
+                    {
+                        case "list":
+                            List<QuestInfo> questList = this?.mapData.Scene.Back.Slots.SelectMany(item => ((BackItem)item).Quest)
+                                .Concat(this?.mapData.Scene.Layers.Nodes.SelectMany(l => ((LayerNode)l).Obj.Slots.SelectMany(item => ((ObjItem)item).Quest)))
+                                .Concat(this?.mapData.Scene.Npcs.SelectMany(item => item.Quest))
+                                .Concat(this?.mapData.Scene.Front.Slots.SelectMany(item => ((BackItem)item).Quest))
+                                .Concat(this?.mapData.Scene.Effect.Slots.Where(item => item is ParticleItem).SelectMany(item => ((ParticleItem)item).Quest))
+                                .Concat(this?.mapData.Scene.Effect.Slots.Where(item => item is ParticleItem).SelectMany(item => ((ParticleItem)item).SubItems).SelectMany(item => item.Quest))
+                                .Distinct().ToList();
+                            this.ui.ChatBox.AppendTextHelp($"関連クエスト: ({questList.Count()})");
+                            foreach (QuestInfo item in questList)
+                            {
+                                Wz_Node questInfoNode = PluginBase.PluginManager.FindWz($@"Quest\QuestData\{item.ID}.img\QuestInfo")
+                                    ?? PluginBase.PluginManager.FindWz($@"Quest\QuestInfo.img\{item.ID}");
+                                string questName = questInfoNode?.Nodes["name"].GetValueEx<string>(null) ?? "null";
+                                this.ui.ChatBox.AppendTextHelp($"  {questName}({item.ID}) / {item.State}");
+                            }
+                            break;
+
+                        case "set":
+                            if (Int32.TryParse(arguments.ElementAtOrDefault(2), out int questID) && questID > -1 && Int32.TryParse(arguments.ElementAtOrDefault(3), out int questState) && questState >= -1 && questState <= 2)
+                            {
+                                this.patchVisibility.SetQuestVisible(questID, questState);
+                                this.mapData.PreloadResource(resLoader);
+                                Wz_Node questInfoNode = PluginBase.PluginManager.FindWz($@"Quest\QuestData\{questID}.img\QuestInfo")
+                                    ?? PluginBase.PluginManager.FindWz($@"Quest\QuestInfo.img\{questID}");
+                                string questName = questInfoNode?.Nodes["name"].GetValueEx<string>(null) ?? "null";
+                                this.ui.ChatBox.AppendTextSystem($"{questName}({questID})の状態を{questState}に変更しました。");
+                            }
+                            else
+                            {
+                                this.ui.ChatBox.AppendTextSystem($"正しいクエスト状態を入力してください。");
+                            }
+                            break;
+
+                        default:
+                            this.ui.ChatBox.AppendTextHelp(@"/quest list 関連クエストのリストを見る");
+                            this.ui.ChatBox.AppendTextHelp(@"/quest set (questID) (questState) クエスト状態を設定");
+                            break;
+                    }
+                    break;
+
+                case "/questex":
+                    switch (arguments.ElementAtOrDefault(1))
+                    {
+                        case "list":
+                            List<QuestExInfo> questList = this?.mapData.Scene.Layers.Nodes.SelectMany(l => ((LayerNode)l).Obj.Slots.SelectMany(item => ((ObjItem)item).Questex))
+                                .Distinct().ToList();
+                            this.ui.ChatBox.AppendTextHelp($"関連クエストキーID: ({questList.Count()})");
+                            foreach (QuestExInfo item in questList)
+                            {
+                                Wz_Node questInfoNode = PluginBase.PluginManager.FindWz($@"Quest\QuestData\{item.ID}.img\QuestInfo")
+                                    ?? PluginBase.PluginManager.FindWz($@"Quest\QuestInfo.img\{item.ID}");
+                                string questName = questInfoNode?.Nodes["name"].GetValueEx<string>(null) ?? "null";
+                                this.ui.ChatBox.AppendTextHelp($"  {questName}({item.ID}) / キー: {item.Key}, 値: {item.State}");
+                            }
+                            break;
+
+                        case "set":
+                            string qkey = arguments.ElementAtOrDefault(3);
+                            if (Int32.TryParse(arguments.ElementAtOrDefault(2), out int questID) && questID > -1 && Int32.TryParse(arguments.ElementAtOrDefault(4), out int questState) && questState >= -1 && qkey != null)
+                            {
+                                this.patchVisibility.SetQuestVisible(questID, qkey, questState);
+                                this.mapData.PreloadResource(resLoader);
+                                Wz_Node questInfoNode = PluginBase.PluginManager.FindWz($@"Quest\QuestData\{questID}.img\QuestInfo")
+                                    ?? PluginBase.PluginManager.FindWz($@"Quest\QuestInfo.img\{questID}");
+                                string questName = questInfoNode?.Nodes["name"].GetValueEx<string>(null) ?? "null";
+                                this.ui.ChatBox.AppendTextSystem($"{questName}({questID}, キー={qkey})の状態を{questState}に変更しました。");
+                            }
+                            else
+                            {
+                                this.ui.ChatBox.AppendTextSystem($"正しいクエストID、キー、値を入力してください。");
+                            }
+                            break;
+
+                        default:
+                            this.ui.ChatBox.AppendTextHelp(@"/questex list 関連クエストキーのリストを見る");
+                            this.ui.ChatBox.AppendTextHelp(@"/questex set (questID) (key) (questState) 該当クエストキーの状態設定");
                             break;
                     }
                     break;

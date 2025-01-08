@@ -12,7 +12,6 @@ using WzComparerR2.Animation;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using WzComparerR2.Controls;
-using WzComparerR2.CharaSim;
 
 namespace WzComparerR2.MapRender
 {
@@ -216,6 +215,7 @@ namespace WzComparerR2.MapRender
             var mousePos = this.renderEnv.Camera.CameraToWorld(mouse);
             sb.AppendFormat("{0},{1}", mousePos.X, mousePos.Y);
 
+
             //Power Requirement
             if (this.mapData?.Barrier > 0 || this.mapData?.BarrierArc > 0 || this.mapData?.BarrierAut > 0)
             {
@@ -279,7 +279,7 @@ namespace WzComparerR2.MapRender
                     var ani = life.View.Animator as StateMachineAnimator;
                     var soundEffPath = $@"Sound\Mob.img\{life.ID:D7}\";
 
-                    if (ani.Data.SelectedState != "die1")
+                    if (ani.Data.SelectedState != "die1" && ani.Data.SelectedState != "regen")
                     {
                         if (life.View.Time % 4 == 0)
                         {
@@ -503,16 +503,19 @@ namespace WzComparerR2.MapRender
                 foreach (var item in portalList)
                 {
                     if (!item.IsSpring) continue;
+
                     var angle = Math.Atan2(item.VerticalImpact, item.HorizontalImpact);
                     var sin = Math.Sin(angle);
                     var cos = Math.Cos(angle);
                     Point arrow1 = new Point((int)((cos + sin) * -arrowScaler), (int)((cos - sin) * -arrowScaler));
                     Point arrow2 = new Point((int)((sin - cos) * arrowScaler), (int)((cos + sin) * arrowScaler));
+
                     foreach (var d in new[] { -3, 0, 3 })
                     {
                         var d2 = Math.Abs(d) * barScaler + 1;
                         Point start = new Point(item.X + d * 15, item.Y);
                         Point end = new Point((int)(item.X + item.HorizontalImpact / (d2 * 5) + d * 15), (int)(item.Y - item.VerticalImpact / (d2 * 5)));
+
                         lines.Add(start);
                         lines.Add(end);
                         lines.Add(end);
@@ -521,6 +524,7 @@ namespace WzComparerR2.MapRender
                         lines.Add(new Point((int)(end.X + arrow2.X / d2), (int)(end.Y + arrow2.Y / d2)));
                     }
                 }
+
                 if (lines.Count > 0)
                 {
                     var meshItem = this.batcher.MeshPop();
@@ -530,8 +534,6 @@ namespace WzComparerR2.MapRender
                 }
             }
         }
-
-
 
         private void DrawName(SceneItem item)
         {
@@ -611,11 +613,8 @@ namespace WzComparerR2.MapRender
                     case LifeItem.LifeType.Npc:
                         if (this.patchVisibility.NpcNameVisible)
                         {
-                            var npcNode = PluginBase.PluginManager.FindWz(string.Format("Npc/{0:D7}.img/info", life.ID));
-                            if ((npcNode?.Nodes["hideName"].GetValueEx(0) ?? 0) != 0)
-                            {
-                                break;
-                            }
+                            if (life.HideName) break;
+
                             string name, desc;
                             if (this.StringLinker?.StringNpc.TryGetValue(life.ID, out sr) ?? false)
                             {
@@ -648,6 +647,7 @@ namespace WzComparerR2.MapRender
                             {
                                 mesh = batcher.MeshPop();
                                 mesh.Position = new Vector2(life.X, life.Cy + 21);
+                                // temporarily ignore font name and size here.
                                 mesh.RenderObject = new TextMesh()
                                 {
                                     Align = Alignment.Center,
@@ -679,7 +679,7 @@ namespace WzComparerR2.MapRender
                 this.lightRenderer.DrawSpotLight(light2D);
             }
             // render texture light
-            foreach (var container in GetSceneContainers(this.mapData.Scene))
+            foreach(var container in GetSceneContainers(this.mapData.Scene))
             {
                 foreach (var item in container.Slots)
                 {
@@ -747,7 +747,7 @@ namespace WzComparerR2.MapRender
                     }
                 }
 
-            _pop:
+                _pop:
                 if (sceneStack.Count > 0)
                 {
                     currNode = sceneStack.Pop();
@@ -804,73 +804,73 @@ namespace WzComparerR2.MapRender
                 return null;
             }
 
-            if (item is BackItem)
+            switch (item)
             {
-                var back = (BackItem)item;
-                if (back.Quest.Exists(quest => !patchVisibility.IsVisible(quest.Item1, quest.Item2)))
-                {
-                    return null;
-                }
-                if (back.IsFront ? patchVisibility.FrontVisible : patchVisibility.BackVisible)
-                {
-                    return GetMeshBack(back);
-                }
-            }
-            else if (item is ObjItem obj)
-            {
-                if (patchVisibility.ObjVisible && !obj.Light)
-                {
-                    if (((ObjItem)item).Quest.Exists(quest => !patchVisibility.IsVisible(quest.Item1, quest.Item2)))
+                case BackItem back:
+                    if (back.Quest.Exists(quest => !patchVisibility.IsQuestVisible(quest.ID, quest.State)))
                     {
                         return null;
                     }
-                    if (((ObjItem)item).Questex.Exists(questex => !patchVisibility.IsVisible(questex.Item1, questex.Item2, questex.Item3)))
+                    if (back.IsFront ? patchVisibility.FrontVisible : patchVisibility.BackVisible)
+                    {
+                        return GetMeshBack(back);
+                    }
+                    break;
+
+                case ObjItem obj:
+                    if (patchVisibility.ObjVisible && !obj.Light)
+                    {
+                        if (obj.Quest.Exists(quest => !patchVisibility.IsQuestVisible(quest.ID, quest.State)))
+                        {
+                            return null;
+                        }
+                        if (obj.Questex.Exists(questex => !patchVisibility.IsQuestVisible(questex.ID, questex.Key, questex.State)))
+                        {
+                            return null;
+                        }
+                        return GetMeshObj(obj);
+                    }
+                    break;
+
+                case TileItem tile:
+                    if (patchVisibility.TileVisible)
+                    {
+                        return GetMeshTile(tile);
+                    }
+                    break;
+
+                case LifeItem life:
+                    if ((life.Type == LifeItem.LifeType.Mob && patchVisibility.MobVisible)
+                        || (life.Type == LifeItem.LifeType.Npc && patchVisibility.NpcVisible))
+                    {
+                        return GetMeshLife(life);
+                    }
+                    break;
+
+                case PortalItem portal:
+                    if (patchVisibility.PortalVisible)
+                    {
+                        return GetMeshPortal(portal);
+                    }
+                    break;
+
+                case ReactorItem reactor:
+                    if (patchVisibility.ReactorVisible)
+                    {
+                        return GetMeshReactor(reactor);
+                    }
+                    break;
+
+                case ParticleItem particle:
+                    if (particle.Quest.Exists(quest => !patchVisibility.IsQuestVisible(quest.ID, quest.State)))
                     {
                         return null;
                     }
-                    return GetMeshObj(obj);
-                }
-            }
-            else if (item is TileItem)
-            {
-                if (patchVisibility.TileVisible)
-                {
-                    return GetMeshTile((TileItem)item);
-                }
-            }
-            else if (item is LifeItem)
-            {
-                var life = (LifeItem)item;
-                if ((life.Type == LifeItem.LifeType.Mob && patchVisibility.MobVisible)
-                    || (life.Type == LifeItem.LifeType.Npc && patchVisibility.NpcVisible))
-                {
-                    return GetMeshLife(life);
-                }
-            }
-            else if (item is PortalItem)
-            {
-                if (patchVisibility.PortalVisible)
-                {
-                    return GetMeshPortal((PortalItem)item);
-                }
-            }
-            else if (item is ReactorItem)
-            {
-                if (patchVisibility.ReactorVisible)
-                {
-                    return GetMeshReactor((ReactorItem)item);
-                }
-            }
-            else if (item is ParticleItem)
-            {
-                if (((ParticleItem)item).Quest.Exists(quest => !patchVisibility.IsVisible(quest.Item1, quest.Item2)))
-                {
-                    return null;
-                }
-                if (patchVisibility.EffectVisible)
-                {
-                    return GetMeshParticle((ParticleItem)item);
-                }
+                    if (patchVisibility.EffectVisible)
+                    {
+                        return GetMeshParticle((ParticleItem)item);
+                    }
+                    break;
             }
             return null;
         }
@@ -1001,6 +1001,7 @@ namespace WzComparerR2.MapRender
                 double movingX = 0;
                 double movingY = 0;
                 double time = obj.View.Time / Math.PI / 1000 * 4 / obj.MoveP * 5000;
+
                 switch (obj.MoveType)
                 {
                     case 0: // none
@@ -1010,15 +1011,19 @@ namespace WzComparerR2.MapRender
                         movingX = obj.MoveW * Math.Cos(time);
                         movingY = obj.MoveH * Math.Cos(time);
                         break;
+
                     case 3: // circle
                         movingX = obj.MoveW * Math.Cos(time);
                         movingY = obj.MoveH * Math.Sin(time);
                         break;
+
                     default:
                         break;
                 }
+
                 mesh.Position += new Vector2((float)movingX, (float)movingY);
             }
+
             return mesh;
         }
 
