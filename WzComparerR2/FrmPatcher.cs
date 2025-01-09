@@ -504,6 +504,9 @@ namespace WzComparerR2
             }
             finally
             {
+                patchedFileSizes.Clear();
+                patchedFileIndex.Clear();
+                finishedFileIndex.Clear();
                 try
                 {
                     if (sw != null)
