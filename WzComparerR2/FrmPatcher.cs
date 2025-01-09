@@ -640,7 +640,8 @@ namespace WzComparerR2
                                     patchedFileIndex.Remove(e.Part.FileName);
                                     finishedFileIndex.Add(e.Part.TempFilePath, e.Part.OldFilePath);
                                 }
-                                if (patchedFileIndex.Any(item => item.StartsWith("Data\\" + currentSubdirectory)))
+                                //if (patchedFileIndex.Any(item => item.StartsWith("Data\\" + currentSubdirectory)))
+                                if (FileInsideThisDirectoryExists(patchedFileIndex, Path.GetDirectoryName(e.Part.FileName)))
                                 {
                                     AppendStateText("  (即時パッチ)ファイル適用の延期...\r\n");
                                 }
@@ -698,6 +699,14 @@ namespace WzComparerR2
                 if (c == '\\') count++;
             }
             return count;
+        }
+
+        private bool FileInsideThisDirectoryExists(List<string> fileList, string directoryPath)
+        {
+            string normalizedDirectoryPath = directoryPath.TrimEnd('\\') + "\\";
+            bool exists = fileList.Any(filePath => filePath.StartsWith(normalizedDirectoryPath)
+                                                    && filePath.Substring(normalizedDirectoryPath.Length).IndexOf('\\') == -1);
+            return exists;
         }
 
         private void AppendStateText(string text)
