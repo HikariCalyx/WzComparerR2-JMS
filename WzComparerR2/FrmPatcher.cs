@@ -364,7 +364,7 @@ namespace WzComparerR2
                         if (patcher.IsKMST1125Format.Value)
                         {
                             string[] patchedFileDirectory = part.FileName.Split('\\');
-                            if (part.FileName.StartsWith("Data\\") || part.FileName.EndsWith(".wz") || part.FileName.StartsWith("NxOverlay\\")) patchedFileIndex.Add(part.FileName);
+                            if (part.Type == 1 && (patchedFileDirectory[0] == "Data" || patchedFileDirectory[0] == "NxOverlay")) patchedFileIndex.Add(part.FileName);
                             if (patchedFileDirectory[0] == "Data")
                             {
                                 if (!patchedFileSizes.ContainsKey(patchedFileDirectory[1])) patchedFileSizes.Add(patchedFileDirectory[1], 0);
