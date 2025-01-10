@@ -337,6 +337,7 @@ namespace WzComparerR2
             this.loggingFileName = Path.Combine(msFolder, $"wcpatcher_{DateTime.Now:yyyyMMdd_HHmmssfff}.log");
             long patchedAllFileSize = 0;
             long decompressedSize = 0;
+            StringBuilder diskSpaceMessage = new StringBuilder();
             patchedFileSizes.Add("ZOther", 0);
             try
             {
@@ -402,18 +403,22 @@ namespace WzComparerR2
                         {
                             case "ZOther":
                                 AppendStateText(string.Format("他のファイルに必要なスペース: {0}\r\n", GetBothByteAndGBValue(patchedFileSizes[key])));
+                                diskSpaceMessage.AppendLine(string.Format("他のファイルに必要なスペース: {0}", GetBothByteAndGBValue(patchedFileSizes[key])));
                                 break;
                             default:
                                 AppendStateText(string.Format("「{0}」に必要なスペース: {1}\r\n", key, GetBothByteAndGBValue(patchedFileSizes[key])));
+                                diskSpaceMessage.AppendLine(string.Format("「{0}」に必要なスペース: {1}", key, GetBothByteAndGBValue(patchedFileSizes[key])));
                                 break;
                         }
                     }
                     patchedFileIndex.Sort();
                     AppendStateText(string.Format("必要なスペース: {0}\r\n", GetBothByteAndGBValue(patchedAllFileSize)));
+                    diskSpaceMessage.AppendLine(string.Format("必要なスペース: {0}", GetBothByteAndGBValue(patchedAllFileSize)));
                     AppendStateText(string.Format("使用可能なディスク容量: {0}\r\n", GetBothByteAndGBValue(availableDiskSpace)));
+                    diskSpaceMessage.AppendLine(string.Format("使用可能なディスク容量: {0}\r\n\r\n", GetBothByteAndGBValue(availableDiskSpace)));
                     if (patchedAllFileSize > availableDiskSpace)
                     {
-                        DialogResult PatcherPromptResult = MessageBoxEx.Show(this, "パッチを適用するには残りのディスク容量が不足しています。\r\nそれでも続行しますか?", "警告", MessageBoxButtons.YesNo);
+                        DialogResult PatcherPromptResult = MessageBoxEx.Show(this, diskSpaceMessage.ToString() + "パッチを適用するには残りのディスク容量が不足しています。\r\nそれでも続行しますか?", "警告", MessageBoxButtons.YesNo);
                         if (PatcherPromptResult == DialogResult.No)
                         {
                             throw new ThreadInterruptedException("パッチは中止されました。");
@@ -645,7 +650,8 @@ namespace WzComparerR2
                                     patchedFileIndex.Remove(e.Part.FileName);
                                     finishedFileIndex.Add(e.Part.TempFilePath, e.Part.OldFilePath);
                                 }
-                                if (patchedFileIndex.Any(item => item.StartsWith("Data\\" + currentSubdirectory)))
+                                //if (patchedFileIndex.Any(item => item.StartsWith("Data\\" + currentSubdirectory)))
+                                if (FileInsideThisDirectoryExists(patchedFileIndex, Path.GetDirectoryName(e.Part.FileName)))
                                 {
                                     AppendStateText("  (即時パッチ)ファイル適用の延期...\r\n");
                                 }
@@ -705,6 +711,14 @@ namespace WzComparerR2
                 if (c == '\\') count++;
             }
             return count;
+        }
+
+        private bool FileInsideThisDirectoryExists(List<string> fileList, string directoryPath)
+        {
+            string normalizedDirectoryPath = directoryPath.TrimEnd('\\') + "\\";
+            bool exists = fileList.Any(filePath => filePath.StartsWith(normalizedDirectoryPath)
+                                                    && filePath.Substring(normalizedDirectoryPath.Length).IndexOf('\\') == -1);
+            return exists;
         }
 
         private void AppendStateText(string text)
