@@ -73,6 +73,8 @@ namespace WzComparerR2
         List<string> patchedFileIndex = new List<string>();
         Dictionary<string, string> finishedFileIndex = new Dictionary<string, string>();
 
+        long availableDiskSpace;
+
         private PatcherSetting SelectedPatcherSetting => comboBoxEx1.SelectedItem as PatcherSetting;
 
         private void MigrateSetting(PatcherSetting patcherSetting)
@@ -347,7 +349,7 @@ namespace WzComparerR2
                 if (checkDiskSpace)
                 {
                     decompressedSize = patcher.PrePatch();
-                    long availableDiskSpace = RemainingDiskSpace(msFolder);
+                    availableDiskSpace = RemainingDiskSpace(msFolder);
                     AppendStateText("完了\r\n");
                     foreach (PatchPartContext part in patcher.PatchParts)
                     {
@@ -649,6 +651,8 @@ namespace WzComparerR2
                                 }
                                 else
                                 {
+                                    long currentUsedDiskSpace = RemainingDiskSpace(e.Part.FileName) - availableDiskSpace;
+                                    AppendStateText(string.Format("  (即時パッチ)占有ハードディスク容量: {0}\r\n", GetBothByteAndGBValue(currentUsedDiskSpace)));
                                     AppendStateText("  (即時パッチ)ファイルを適用しています...\r\n");
                                     foreach (string k in finishedFileIndex.Keys)
                                     {
