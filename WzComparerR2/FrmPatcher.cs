@@ -69,6 +69,12 @@ namespace WzComparerR2
         string loggingFileName;
         bool isUpdating;
 
+        SortedDictionary<string, long> patchedFileSizes = new SortedDictionary<string, long>();
+        List<string> patchedFileIndex = new List<string>();
+        Dictionary<string, string> finishedFileIndex = new Dictionary<string, string>();
+
+        long availableDiskSpace;
+
         private PatcherSetting SelectedPatcherSetting => comboBoxEx1.SelectedItem as PatcherSetting;
 
         private void MigrateSetting(PatcherSetting patcherSetting)
@@ -291,6 +297,7 @@ namespace WzComparerR2
             msFolder = txtMSFolder.Text;
             prePatch = chkPrePatch.Checked;
             deadPatch = chkDeadPatch.Checked;
+            checkDiskSpace = chkCheckDiskSpace.Checked;
 
             if (!File.Exists(msFolder + "//MapleStory.exe") && !File.Exists(msFolder + "//MapleStoryT.exe"))
             {
@@ -330,7 +337,7 @@ namespace WzComparerR2
             this.loggingFileName = Path.Combine(msFolder, $"wcpatcher_{DateTime.Now:yyyyMMdd_HHmmssfff}.log");
             long patchedAllFileSize = 0;
             long decompressedSize = 0;
-            SortedDictionary<string, long> patchedFileSizes = new SortedDictionary<string, long>();
+            StringBuilder diskSpaceMessage = new StringBuilder();
             patchedFileSizes.Add("ZOther", 0);
             try
             {
@@ -343,7 +350,7 @@ namespace WzComparerR2
                 if (checkDiskSpace)
                 {
                     decompressedSize = patcher.PrePatch();
-                    long availableDiskSpace = RemainingDiskSpace(msFolder);
+                    availableDiskSpace = RemainingDiskSpace(msFolder);
                     AppendStateText("完了\r\n");
                     foreach (PatchPartContext part in patcher.PatchParts)
                     {
@@ -360,6 +367,7 @@ namespace WzComparerR2
                         if (patcher.IsKMST1125Format.Value)
                         {
                             string[] patchedFileDirectory = part.FileName.Split('\\');
+                            if (part.Type == 1 && (patchedFileDirectory[0] == "Data" || patchedFileDirectory[0] == "NxOverlay")) patchedFileIndex.Add(part.FileName);
                             if (patchedFileDirectory[0] == "Data")
                             {
                                 if (!patchedFileSizes.ContainsKey(patchedFileDirectory[1])) patchedFileSizes.Add(patchedFileDirectory[1], 0);
@@ -395,23 +403,29 @@ namespace WzComparerR2
                         {
                             case "ZOther":
                                 AppendStateText(string.Format("他のファイルに必要なスペース: {0}\r\n", GetBothByteAndGBValue(patchedFileSizes[key])));
+                                diskSpaceMessage.AppendLine(string.Format("他のファイルに必要なスペース: {0}", GetBothByteAndGBValue(patchedFileSizes[key])));
                                 break;
                             default:
                                 AppendStateText(string.Format("「{0}」に必要なスペース: {1}\r\n", key, GetBothByteAndGBValue(patchedFileSizes[key])));
+                                diskSpaceMessage.AppendLine(string.Format("「{0}」に必要なスペース: {1}", key, GetBothByteAndGBValue(patchedFileSizes[key])));
                                 break;
                         }
                     }
+                    patchedFileIndex.Sort();
                     AppendStateText(string.Format("必要なスペース: {0}\r\n", GetBothByteAndGBValue(patchedAllFileSize)));
+                    diskSpaceMessage.AppendLine(string.Format("必要なスペース: {0}", GetBothByteAndGBValue(patchedAllFileSize)));
                     AppendStateText(string.Format("使用可能なディスク容量: {0}\r\n", GetBothByteAndGBValue(availableDiskSpace)));
+                    diskSpaceMessage.AppendLine(string.Format("使用可能なディスク容量: {0}\r\n\r\n", GetBothByteAndGBValue(availableDiskSpace)));
                     if (patchedAllFileSize > availableDiskSpace)
                     {
-                        DialogResult PatcherPromptResult = MessageBoxEx.Show(this, "パッチを適用するには残りのディスク容量が不足しています。\r\nそれでも続行しますか?", "警告", MessageBoxButtons.YesNo);
+                        DialogResult PatcherPromptResult = MessageBoxEx.Show(this, diskSpaceMessage.ToString() + "パッチを適用するには残りのディスク容量が不足しています。\r\nそれでも続行しますか?", "警告", MessageBoxButtons.YesNo);
                         if (PatcherPromptResult == DialogResult.No)
                         {
                             throw new ThreadInterruptedException("パッチは中止されました。");
                         }
                     }
                 }
+                else AppendStateText("完了\r\n");
                 if (prePatch)
                 {
                     AppendStateText("パッチを準備中... \r\n");
@@ -497,6 +511,9 @@ namespace WzComparerR2
             }
             finally
             {
+                patchedFileSizes.Clear();
+                patchedFileIndex.Clear();
+                finishedFileIndex.Clear();
                 try
                 {
                     if (sw != null)
@@ -624,8 +641,37 @@ namespace WzComparerR2
                     {
                         if (patcher.IsKMST1125Format.Value)
                         {
-                            // TODO: we should build the file dependency tree to make sure all old files could be overridden safely.
-                            AppendStateText("  (即時パッチ)ファイル適用の延期...\r\n");
+                            int targetDirectoryDepth = GetDirectoryDepth(e.Part.FileName);
+                            if (targetDirectoryDepth > 1 && e.Part.FileName.StartsWith("Data"))
+                            {
+                                string currentSubdirectory = e.Part.FileName.Split('\\')[1];
+                                if (patchedFileIndex.Contains(e.Part.FileName))
+                                {
+                                    patchedFileIndex.Remove(e.Part.FileName);
+                                    finishedFileIndex.Add(e.Part.TempFilePath, e.Part.OldFilePath);
+                                }
+                                //if (patchedFileIndex.Any(item => item.StartsWith("Data\\" + currentSubdirectory)))
+                                if (FileInsideThisDirectoryExists(patchedFileIndex, Path.GetDirectoryName(e.Part.FileName)))
+                                {
+                                    AppendStateText("  (即時パッチ)ファイル適用の延期...\r\n");
+                                }
+                                else
+                                {
+                                    long currentUsedDiskSpace = availableDiskSpace - RemainingDiskSpace(msFolder);
+                                    AppendStateText(string.Format("  (即時パッチ)占有ハードディスク容量: {0}\r\n", GetBothByteAndGBValue(currentUsedDiskSpace)));
+                                    AppendStateText("  (即時パッチ)ファイルを適用しています...\r\n");
+                                    foreach (string k in finishedFileIndex.Keys)
+                                    {
+                                        patcher.SafeMove(k, finishedFileIndex[k]);
+                                        finishedFileIndex.Remove(k);
+                                    }
+                                    
+                                }
+                            }
+                            else
+                            {
+                                AppendStateText("  (即時パッチ)ファイル適用の延期...\r\n");
+                            }
                         }
                         else
                         {
@@ -656,6 +702,23 @@ namespace WzComparerR2
                     AppendStateText($"ファイルの適用: {e.Part.FileName}\r\n");
                     break;
             }
+        }
+        static int GetDirectoryDepth(string inputString)
+        {
+            int count = 0;
+            foreach (char c in inputString)
+            {
+                if (c == '\\') count++;
+            }
+            return count;
+        }
+
+        private bool FileInsideThisDirectoryExists(List<string> fileList, string directoryPath)
+        {
+            string normalizedDirectoryPath = directoryPath.TrimEnd('\\') + "\\";
+            bool exists = fileList.Any(filePath => filePath.StartsWith(normalizedDirectoryPath)
+                                                    && filePath.Substring(normalizedDirectoryPath.Length).IndexOf('\\') == -1);
+            return exists;
         }
 
         private void AppendStateText(string text)
@@ -803,6 +866,12 @@ namespace WzComparerR2
                     e.Cancel = true;
                 }
             }
+        }
+
+        protected void chkDeadPatch_CheckedChanged(object sender, EventArgs e)
+        {
+            chkCheckDiskSpace.Checked = true;
+            chkCheckDiskSpace.Enabled = !chkDeadPatch.Checked;
         }
     }
 }
