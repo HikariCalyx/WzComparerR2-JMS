@@ -657,7 +657,7 @@ namespace WzComparerR2
                                 }
                                 else
                                 {
-                                    long currentUsedDiskSpace = RemainingDiskSpace(e.Part.FileName) - availableDiskSpace;
+                                    long currentUsedDiskSpace = availableDiskSpace - RemainingDiskSpace(msFolder);
                                     AppendStateText(string.Format("  (即時パッチ)占有ハードディスク容量: {0}\r\n", GetBothByteAndGBValue(currentUsedDiskSpace)));
                                     AppendStateText("  (即時パッチ)ファイルを適用しています...\r\n");
                                     foreach (string k in finishedFileIndex.Keys)
