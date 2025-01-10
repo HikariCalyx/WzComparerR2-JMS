@@ -402,20 +402,17 @@ namespace WzComparerR2
                         switch (key)
                         {
                             case "ZOther":
-                                AppendStateText(string.Format("他のファイルに必要なスペース: {0}\r\n", GetBothByteAndGBValue(patchedFileSizes[key])));
                                 diskSpaceMessage.AppendLine(string.Format("他のファイルに必要なスペース: {0}", GetBothByteAndGBValue(patchedFileSizes[key])));
                                 break;
                             default:
-                                AppendStateText(string.Format("「{0}」に必要なスペース: {1}\r\n", key, GetBothByteAndGBValue(patchedFileSizes[key])));
                                 diskSpaceMessage.AppendLine(string.Format("「{0}」に必要なスペース: {1}", key, GetBothByteAndGBValue(patchedFileSizes[key])));
                                 break;
                         }
                     }
                     patchedFileIndex.Sort();
-                    AppendStateText(string.Format("必要なスペース: {0}\r\n", GetBothByteAndGBValue(patchedAllFileSize)));
-                    diskSpaceMessage.AppendLine(string.Format("必要なスペース: {0}", GetBothByteAndGBValue(patchedAllFileSize)));
-                    AppendStateText(string.Format("使用可能なディスク容量: {0}\r\n", GetBothByteAndGBValue(availableDiskSpace)));
+                    diskSpaceMessage.AppendLine(string.Format("必要な合計スペース: {0}", GetBothByteAndGBValue(patchedAllFileSize)));
                     diskSpaceMessage.AppendLine(string.Format("使用可能なディスク容量: {0}\r\n\r\n", GetBothByteAndGBValue(availableDiskSpace)));
+                    AppendStateText(diskSpaceMessage.ToString());
                     if (patchedAllFileSize > availableDiskSpace)
                     {
                         DialogResult PatcherPromptResult = MessageBoxEx.Show(this, diskSpaceMessage.ToString() + "パッチを適用するには残りのディスク容量が不足しています。\r\nそれでも続行しますか?", "警告", MessageBoxButtons.YesNo);
