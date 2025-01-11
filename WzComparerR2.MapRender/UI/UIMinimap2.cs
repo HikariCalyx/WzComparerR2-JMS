@@ -37,6 +37,9 @@ namespace WzComparerR2.MapRender.UI
             this.Icons = new List<MapIcon>();
         }
 
+        public MapRenderUIRoot uiRoot { get; set; }
+        public event EventHandler<MapSpotEventArgs> ReturnToTownClick;
+
         public string StreetName
         {
             get { return (string)GetValue(StreetNameProperty); }
@@ -236,12 +239,13 @@ namespace WzComparerR2.MapRender.UI
 
         private void BtnReturnToTown_Click(object sender, RoutedEventArgs e)
         {
-            ;
+            uiRoot.ChatBox.TextBoxChat.Text = "/home";
+            
         }
 
         private void BtnShowWorldMap_Click(object sender, RoutedEventArgs e)
         {
-            ;
+            uiRoot.WorldMap.Toggle();
         }
 
         protected override void OnPropertyChanged(DependencyProperty property)
@@ -286,6 +290,7 @@ namespace WzComparerR2.MapRender.UI
 
             this.Width = MathHelper.Clamp(desireSize.Width, this.MinWidth, this.MaxWidth);
             this.Height = MathHelper.Clamp(desireSize.Height, this.MinHeight, this.MaxHeight);
+            if (this.Width < 116) this.Width = 116;
             this.MapAreaControl.Width = Math.Max(0, this.Width - left - right);
             this.MapAreaControl.Height = Math.Max(0, this.Height - top - bottom);
         }
@@ -769,6 +774,16 @@ namespace WzComparerR2.MapRender.UI
                 }
                 return null;
             }
+        }
+
+        public class MapSpotEventArgs : EventArgs
+        {
+            public MapSpotEventArgs(int mapID)
+            {
+                this.MapID = mapID;
+            }
+
+            public int MapID { get; private set; }
         }
     }
 }

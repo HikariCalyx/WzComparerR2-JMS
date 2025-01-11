@@ -165,6 +165,7 @@ namespace WzComparerR2.MapRender
             this.resLoader = new ResourceLoader(this.Services);
             this.resLoader.PatchVisibility = this.patchVisibility;
             this.ui = new MapRenderUIRoot();
+            this.ui.Minimap.uiRoot = this.ui;
             this.BindingUIInput();
             this.tooltip = new Tooltip2(this.Content);
             this.tooltip.StringLinker = this.StringLinker;
