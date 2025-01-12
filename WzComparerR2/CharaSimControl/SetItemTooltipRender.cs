@@ -435,8 +435,17 @@ namespace WzComparerR2.CharaSimControl
                                 sr = new StringResult();
                                 sr.Name = p.SkillID.ToString();
                             }
-                            string summary = $"スキル<{sr.Name.Replace(Environment.NewLine, "")}>使用可能";
-                            GearGraphics.DrawPlainText(g, summary, GearGraphics.EquipDetailFont2, color, 10, 244, ref picHeight, 15);
+                            string summary;
+                            if (Translator.IsKoreanStringPresent(sr.Name))
+                            {
+                                summary = $"<{sr.Name.Replace(Environment.NewLine, "")}> 스킬 사용 가능";
+                                GearGraphics.DrawPlainText(g, summary, GearGraphics.KMSItemDetailFont2, color, 10, 244, ref picHeight, 15);
+                            }
+                            else
+                            {
+                                summary = $"スキル<{sr.Name.Replace(Environment.NewLine, "")}>使用可能";
+                                GearGraphics.DrawPlainText(g, summary, GearGraphics.EquipDetailFont2, color, 10, 244, ref picHeight, 15);
+                            }
                         }
                     }
                     else if (prop.Key == GearPropType.bonusByTime)
