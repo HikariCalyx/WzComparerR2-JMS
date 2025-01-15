@@ -261,7 +261,7 @@ namespace WzComparerR2
 
         private void buttonXPatch_Click(object sender, EventArgs e)
         {
-            if (!File.Exists(this.patcherSession.MSFolder + "//MapleStory.exe") && !File.Exists(this.patcherSession.MSFolder + "//MapleStoryT.exe"))
+            if (!File.Exists(txtMSFolder.Text + "//MapleStory.exe") && !File.Exists(txtMSFolder.Text + "//MapleStoryT.exe"))
             {
                 DialogResult PatcherPromptResult = MessageBoxEx.Show("選択したフォルダは有効なメイプルフォルダではないようです。\r\nそれでも続行しますか?", "警告", MessageBoxButtons.YesNo);
                 if (PatcherPromptResult == System.Windows.Forms.DialogResult.No)
@@ -338,6 +338,7 @@ namespace WzComparerR2
                 AppendStateText("パッチを分析中...");
                 long patchedAllFileSize = 0;
                 long decompressedSize = patcher.PrePatch(cancellationToken);
+                availableDiskSpace = RemainingDiskSpace(session.MSFolder);
                 this.Invoke(() =>
                 {
                     this.txtNotice.Text = patcher.NoticeText;
@@ -413,7 +414,7 @@ namespace WzComparerR2
                 AppendStateText("完了\r\n");
                 if (patchedAllFileSize > availableDiskSpace)
                 {
-                    DialogResult PatcherPromptResult = MessageBoxEx.Show(this, diskSpaceMessage.ToString() + "パッチを適用するには残りのディスク容量が不足しています。\r\nそれでも続行しますか?", "警告", MessageBoxButtons.YesNo);
+                    DialogResult PatcherPromptResult = MessageBoxEx.Show(this, diskSpaceMessage.ToString() + "\r\nパッチを適用するには残りのディスク容量が不足しています。\r\nそれでも続行しますか?", "警告", MessageBoxButtons.YesNo);
                     if (PatcherPromptResult == DialogResult.No)
                     {
                         throw new OperationCanceledException("パッチは中止されました。");
@@ -751,7 +752,7 @@ namespace WzComparerR2
 
         private void FrmPatcher_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (this.patcherSession != null && this.patcherSession.State != PatcherTaskState.NotStarted)
+            if (this.patcherSession != null && this.patcherSession.State != PatcherTaskState.NotStarted && this.patcherSession.State != PatcherTaskState.Complete)
             {
                 DialogResult result = MessageBoxEx.Show(this, "ゲームはパッチ適用中なので、パッチャー終了するとゲームデータが破損する可能性があります。\r\n\r\nそれでも終了しますか?", "確認", MessageBoxButtons.YesNo);
                 if (result == DialogResult.Yes)

@@ -60,7 +60,7 @@ namespace WzComparerR2.Patcher
             var patchBlock = TrySplit(this.patchFile);
             if (patchBlock == null)
             {
-                throw new Exception("Decompress Error, cannot find patch block from the stream.");
+                throw new Exception("解凍エラー。ストリームからパッチブロックが見つかりません。");
             }
 
             BinaryReader r = new BinaryReader(patchBlock);
@@ -909,7 +909,8 @@ namespace WzComparerR2.Patcher
         {
             if (expected != actual)
             {
-                throw new Exception(string.Format("CheckSum Error on \"{0}\"({1}). (expected: 0x{2:x8}, actual: 0x{3:x8})", fileName, reason, expected, actual));
+                if (fileName == "MapleStory.exe" || fileName == "MapleStoryT.exe") reason = "このクライアントに最新の「Minor Patch」をインストールしましたか? ";
+                throw new Exception(string.Format("ファイル「{0}」のチェックサムが一致しません({1})。 (予想: 0x{2:x8}, 実際: 0x{3:x8})", fileName, reason, expected, actual));
             }
         }
 
