@@ -11,6 +11,8 @@ using System.Threading;
 using DevComponents.DotNetBar;
 using System.Reflection;
 using ICSharpCode.TextEditor.Document;
+using WzComparerR2.Config;
+using WzComparerR2.LuaConsole.Config;
 using WzComparerR2.PluginBase;
 using WzComparerR2.WzLib;
 using System.Text.RegularExpressions;
@@ -19,12 +21,18 @@ namespace WzComparerR2.LuaConsole
 {
     public partial class FrmConsole : DevComponents.DotNetBar.Office2007Form
     {
+        static bool globalInit = false;
         //NoOptimization防止Assembly.GetCallingAssembly因尾调用优化出错
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoOptimization)]
         public FrmConsole()
         {
             InitializeComponent();
-            HighlightingManager.Manager.AddSyntaxModeFileProvider(new AppSyntaxModeProvider());
+            this.refreshRecentDocItems();
+            if (!globalInit)
+            {
+                HighlightingManager.Manager.AddSyntaxModeFileProvider(new AppSyntaxModeProvider());
+                globalInit = true;
+            }
             this.env = new LuaEnvironment(this);
             this.InitLuaEnv();
         }
@@ -273,11 +281,7 @@ env:WriteLine(string format, object[] args)");
             dlg.Filter = "Luaスクリプトファイル (*.lua)|*.lua|*.*|*.*";
             if (dlg.ShowDialog() == DialogResult.OK)
             {
-                FrmLuaEditor frm = new FrmLuaEditor();
-                frm.MdiParent = this;
-                frm.WindowState = FormWindowState.Maximized;
-                frm.LoadFile(dlg.FileName);
-                frm.Show();
+                OpenFile(dlg.FileName);
             }
         }
 
@@ -306,6 +310,54 @@ env:WriteLine(string format, object[] args)");
             textBoxX2.AppendText($"===={editor.FileName}が保存されました====");
         }
 
+        private void refreshRecentDocItems()
+        {
+            this.menuRecent.SubItems.Clear();
+            foreach (var doc in LuaConsoleConfig.Default.RecentDocuments)
+            {
+                ButtonItem item = new ButtonItem() { Text = "&" + (this.menuRecent.SubItems.Count + 1) + ". " + Path.GetFileName(doc), Tooltip = doc, Tag = doc };
+                item.Click += RecentDocumentItem_Click;
+                this.menuRecent.SubItems.Add(item);
+            }
+        }
+        private void RecentDocumentItem_Click(object sender, EventArgs e)
+        {
+            if (sender is ButtonItem item && item.Tag is string fileName)
+            {
+                OpenFile(fileName);
+            }
+        }
+        private void menuExit_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
+        private void OpenFile(string fileName)
+        {
+            FrmLuaEditor frm = new FrmLuaEditor();
+            try
+            {
+                frm.LoadFile(fileName);
+                frm.MdiParent = this;
+                frm.WindowState = FormWindowState.Maximized;
+                frm.Show();
+            }
+            catch (Exception ex)
+            {
+                frm.Dispose();
+                MessageBoxEx.Show(this, ex.ToString(), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+            ConfigManager.Reload();
+            var config = LuaConsoleConfig.Default;
+            config.RecentDocuments.Remove(fileName);
+            config.RecentDocuments.Insert(0, fileName);
+            for (int i = config.RecentDocuments.Count - 1; i >= 10; i--)
+            {
+                config.RecentDocuments.RemoveAt(i);
+            }
+            ConfigManager.Save();
+            refreshRecentDocItems();
+        }
         class LuaGlobalFindNodeFunctionHandler : NLua.Method.LuaDelegate
         {
             Wz_Node CallFunction(string wzPath)
