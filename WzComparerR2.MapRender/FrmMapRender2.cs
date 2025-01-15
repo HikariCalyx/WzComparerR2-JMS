@@ -176,7 +176,7 @@ namespace WzComparerR2.MapRender
             this.Components.Add(fpsCounter);
 
             this.ApplySetting();
-            SwitchResolution(Resolution.Window_800_600);
+            SwitchResolution(Resolution.Window_1366_768);
             base.Initialize();
 
             //init UI teleport
@@ -1285,6 +1285,9 @@ namespace WzComparerR2.MapRender
             switch (r)
             {
                 case Resolution.Window_800_600:
+                    this.ui.ChatBox.AppendTextSystem(@"推奨されない表示サイズです。一部の機能が意図したとおりに動作しない可能性があります。");
+                    gameWindow.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+                    break;
                 case Resolution.Window_1024_768:
                 case Resolution.Window_1280_720:
                 case Resolution.Window_1366_768:
