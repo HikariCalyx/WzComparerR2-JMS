@@ -48,7 +48,6 @@ namespace WzComparerR2
             this.buttonXPatch = new DevComponents.DotNetBar.ButtonX();
             this.chkDeadPatch = new DevComponents.DotNetBar.Controls.CheckBoxX();
             this.chkPrePatch = new DevComponents.DotNetBar.Controls.CheckBoxX();
-            this.chkCheckDiskSpace = new DevComponents.DotNetBar.Controls.CheckBoxX();
             this.buttonXOpen2 = new DevComponents.DotNetBar.ButtonX();
             this.txtMSFolder = new DevComponents.DotNetBar.Controls.TextBoxX();
             this.labelX2 = new DevComponents.DotNetBar.LabelX();
@@ -195,7 +194,6 @@ namespace WzComparerR2
             this.superTooltip1.SetSuperTooltip(this.chkDeadPatch, superTooltipInfo2);
             this.chkDeadPatch.TabIndex = 7;
             this.chkDeadPatch.Text = "即時パッチ";
-            this.chkDeadPatch.CheckedChanged += new System.EventHandler(this.chkDeadPatch_CheckedChanged);
             // 
             // chkPrePatch
             // 
@@ -218,31 +216,6 @@ namespace WzComparerR2
             this.superTooltip1.SetSuperTooltip(this.chkPrePatch, superTooltipInfo3);
             this.chkPrePatch.TabIndex = 6;
             this.chkPrePatch.Text = "プリロードパッチ";
-            // 
-            // chkCheckDiskSpace
-            // 
-            this.chkCheckDiskSpace.AutoSize = true;
-            this.chkCheckDiskSpace.BackColor = System.Drawing.Color.Transparent;
-            // 
-            // 
-            // 
-            this.chkCheckDiskSpace.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
-            this.chkCheckDiskSpace.Checked = true;
-            this.chkCheckDiskSpace.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkCheckDiskSpace.CheckValue = "Y";
-            this.chkCheckDiskSpace.Location = new System.Drawing.Point(208, 87);
-            this.chkCheckDiskSpace.Name = "chkCheckDiskSpace";
-            this.chkCheckDiskSpace.Size = new System.Drawing.Size(119, 18);
-            this.chkCheckDiskSpace.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
-            superTooltipInfo4.BodyText = "これを選択すると、パッチ適用に十分なディスク容量があるかどうかがパッチャーによってチェックされます。\r\n不十分な場合は、ゲームパッチャーによってユーザーに警告が表" +
-    "示されます。\r\n\r\nこのオプションを無効にすることはお勧めしません。";
-            superTooltipInfo4.Color = DevComponents.DotNetBar.eTooltipColor.System;
-            superTooltipInfo4.CustomSize = new System.Drawing.Size(180, 230);
-            superTooltipInfo4.FooterVisible = false;
-            superTooltipInfo4.HeaderText = "ﾃﾞｨｽｸ容量の確認";
-            this.superTooltip1.SetSuperTooltip(this.chkCheckDiskSpace, superTooltipInfo4);
-            this.chkCheckDiskSpace.TabIndex = 11;
-            this.chkCheckDiskSpace.Text = "ﾃﾞｨｽｸ容量の確認";
             // 
             // buttonXOpen2
             // 
@@ -397,7 +370,6 @@ namespace WzComparerR2
             this.expandablePanel2.Controls.Add(this.buttonXPatch);
             this.expandablePanel2.Controls.Add(this.chkDeadPatch);
             this.expandablePanel2.Controls.Add(this.chkPrePatch);
-            this.expandablePanel2.Controls.Add(this.chkCheckDiskSpace);
             this.expandablePanel2.Controls.Add(this.txtPatchFile);
             this.expandablePanel2.Controls.Add(this.buttonXOpen2);
             this.expandablePanel2.Controls.Add(this.buttonXOpen1);
@@ -1029,7 +1001,6 @@ namespace WzComparerR2
         private DevComponents.DotNetBar.ButtonX buttonXPatch;
         private DevComponents.DotNetBar.Controls.CheckBoxX chkDeadPatch;
         private DevComponents.DotNetBar.Controls.CheckBoxX chkPrePatch;
-        private DevComponents.DotNetBar.Controls.CheckBoxX chkCheckDiskSpace;
         private DevComponents.DotNetBar.ExpandablePanel expandablePanel1;
         private DevComponents.DotNetBar.ExpandablePanel expandablePanel2;
         private DevComponents.DotNetBar.PanelEx panelEx1;
