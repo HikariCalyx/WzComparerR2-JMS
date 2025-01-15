@@ -3784,6 +3784,7 @@ namespace WzComparerR2
 
         private static string RemoveInvalidFileNameChars(string fileName)
         {
+            if (String.IsNullOrEmpty(fileName)) return "未知";
             string invalidChars = new string(System.IO.Path.GetInvalidFileNameChars());
             string regexPattern = $"[{Regex.Escape(invalidChars)}]";
             return Regex.Replace(fileName, regexPattern, "_");
