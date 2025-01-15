@@ -343,7 +343,7 @@ namespace WzComparerR2.CharaSim
             switch (sourceLanguage)
             {
                 case "zh-CN":
-                    irlPrice = pointValue / 100.00 * 0.98; break; // CMSでは100ポイントあたり0.98元
+                    irlPrice = pointValue / 100.00; break; // CMSでは100ポイントあたり1元
                 case "en":
                     irlPrice = pointValue / 1000.00; break; // GMSでは1000ポイントあたり1ドル
                 default:
