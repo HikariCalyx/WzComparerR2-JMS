@@ -139,7 +139,23 @@ namespace WzComparerR2
         }
 
         static string GetManagedDllDirectory() => Path.Combine(Application.StartupPath, "Lib");
-        static string GetUnmanagedDllDirectory() => Path.Combine(Application.StartupPath, "Lib", Environment.Is64BitProcess ? "x64" : "x86");
+        static string GetUnmanagedDllDirectory() => Path.Combine(Application.StartupPath, "Lib", GetArchitecture());
+
+        private static string GetArchitecture()
+        {
+            switch (RuntimeInformation.ProcessArchitecture)
+            {
+                case Architecture.X86:
+                    return "x86";
+                case Architecture.X64:
+                    return "x64";
+                case Architecture.Arm64:
+                    return "arm64";
+                default:
+                    return "unknown";
+
+            }
+        }
 
         [DllImport("kernel32.dll")]
         static extern bool SetDllDirectory(string path);

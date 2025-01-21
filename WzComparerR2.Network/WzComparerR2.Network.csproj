@@ -6,6 +6,7 @@
     <RootNamespace>WzComparerR2.Network</RootNamespace>
     <IsPublishable>false</IsPublishable>
     <WcR2Plugin>true</WcR2Plugin>
+    <Platforms>AnyCPU;ARM64</Platforms>
   </PropertyGroup>
   <Import Project="$(ProjectDir)..\Build\Common.props" />
   <PropertyGroup Condition="$(DotnetEdition) == 'core'">
