@@ -260,6 +260,10 @@ namespace WzComparerR2.CharaSim
                 {
                     h = sr.SkillH[0];
                 }
+                if (String.IsNullOrEmpty(h))
+                {
+                    h = sr.SkillH[0];
+                }
                 var levelCommon = level <= skill.levelCommon.Count ? skill.levelCommon[level - 1] : skill.common;
 
                 if (doHighlight && DiffSkillTags != null && skillID != null)
