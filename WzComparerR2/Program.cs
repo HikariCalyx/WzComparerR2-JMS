@@ -141,7 +141,7 @@ namespace WzComparerR2
         static string GetManagedDllDirectory() => Path.Combine(Application.StartupPath, "Lib");
         static string GetUnmanagedDllDirectory() => Path.Combine(Application.StartupPath, "Lib", GetArchitecture());
 
-        private static string GetArchitecture()
+        public static string GetArchitecture()
         {
             switch (RuntimeInformation.ProcessArchitecture)
             {
