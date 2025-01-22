@@ -150,7 +150,7 @@ namespace WzComparerR2
                 case Architecture.X64:
                     return "x64";
                 case Architecture.Arm64:
-                    return "arm64";
+                    return "ARM64";
                 default:
                     return "unknown";
 
