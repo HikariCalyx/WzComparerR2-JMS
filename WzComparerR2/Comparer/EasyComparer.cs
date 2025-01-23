@@ -394,7 +394,7 @@ namespace WzComparerR2.Comparer
                 //输出目录
                 StringBuilder[] sb = { new StringBuilder(), new StringBuilder(), new StringBuilder() };
                 int[] count = new int[6];
-                string[] diffStr = { "Modified", "Added", "Removed" };
+                string[] diffStr = { "変更", "追加", "削除" };
                 foreach (CompareDifference diff in diffLst)
                 {
                     int idx = -1;
