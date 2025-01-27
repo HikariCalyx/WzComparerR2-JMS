@@ -185,15 +185,15 @@ namespace WzComparerR2
                     switch (MessageBoxEx.Show(string.Format("サイズ: {0:N0} バイト\r\n最終更新日: {1:yyyy年M月d日 HH:mm:ss}\r\nダウンロードしますか？\r\n\r\nYes - ダウンロード\r\nNo - パッチファイルのURLをクリップボードにコピー\r\nCancel - ダウンロードしないこと", item.FileLength, item.LastModified), "確認", MessageBoxButtons.YesNoCancel))
                     {
                         case DialogResult.Yes:
-                            #if NET6_0_OR_GREATER
+#if NET6_0_OR_GREATER
                             Process.Start(new ProcessStartInfo
                             {
                                 UseShellExecute = true,
                                 FileName = txtUrl.Text,
                             });
-                            #else
+#else
                             Process.Start(txtUrl.Text);
-                            #endif
+#endif
                             return;
 
                         case DialogResult.No:
@@ -269,7 +269,7 @@ namespace WzComparerR2
                     return;
                 }
             }
-                if (this.patcherSession != null)
+            if (this.patcherSession != null)
             {
                 if (this.patcherSession.State == PatcherTaskState.WaitForContinue)
                 {
@@ -414,7 +414,7 @@ namespace WzComparerR2
                 AppendStateText("完了\r\n");
                 if (patchedAllFileSize > availableDiskSpace)
                 {
-                    DialogResult PatcherPromptResult = MessageBoxEx.Show(this, diskSpaceMessage.ToString() + "\r\nパッチを適用するには残りのディスク容量が不足しています。\r\nそれでも続行しますか?", "警告", MessageBoxButtons.YesNo);
+                    DialogResult PatcherPromptResult = MessageBoxEx.Show(this, diskSpaceMessage.ToString() + "\r\nパッチを適用するにはディスク容量が足りない可能性があります。\r\nそれでも続行しますか?", "警告", MessageBoxButtons.YesNo);
                     if (PatcherPromptResult == DialogResult.No)
                     {
                         throw new OperationCanceledException("パッチは中止されました。");
@@ -456,6 +456,29 @@ namespace WzComparerR2
                         {
                             patcher.PatchParts.Add(part);
                         }
+                    }
+                    if (patcher.IsKMST1125Format.Value && session.DeadPatch)
+                    {
+                        AppendStateText("即時パッチ実行プラン\r\n");
+                        session.deadPatchExecutionPlan = new();
+                        session.deadPatchExecutionPlan.Build(patcher.PatchParts);
+                        foreach (var part in patcher.PatchParts)
+                        {
+                            if (session.deadPatchExecutionPlan.Check(part.FileName, out var filesCanInstantUpdate))
+                            {
+                                AppendStateText($"+ ファイル[{part.FileName}]実行\r\n");
+                                foreach (var fileName in filesCanInstantUpdate)
+                                {
+                                    AppendStateText($"  - ファイル[{fileName}]適用\r\n");
+                                }
+                            }
+                            else
+                            {
+                                AppendStateText($"- ファイル[{part.FileName}]を実行しますが、適用は延期されます\r\n");
+                            }
+                        }
+                        // disable force validation
+                        patcher.ThrowOnValidationFailed = false;
                     }
                 }
                 AppendStateText("パッチ適用中\r\n");
@@ -519,6 +542,7 @@ namespace WzComparerR2
                 case PatchingState.TempFileCreated:
                     logFunc("  一時ファイルの作成中...\r\n");
                     progressBarX1.Maximum = e.Part.NewFileLength;
+                    session.TemporaryFileMapping.Add(e.Part.FileName, e.Part.TempFilePath);
                     break;
                 case PatchingState.TempFileBuildProcessChanged:
                     progressBarX1.Value = (int)e.CurrentFileLength;
@@ -567,31 +591,15 @@ namespace WzComparerR2
                     {
                         if (patcher.IsKMST1125Format.Value)
                         {
-                            int targetDirectoryDepth = GetDirectoryDepth(e.Part.FileName);
-                            if (targetDirectoryDepth > 1 && e.Part.FileName.StartsWith("Data"))
+                            if (session.deadPatchExecutionPlan?.Check(e.Part.FileName, out var filesCanInstantUpdate) ?? false)
                             {
-                                string currentSubdirectory = e.Part.FileName.Split('\\')[1];
-                                if (patchedFileIndex.Contains(e.Part.FileName))
+                                foreach (string fileName in filesCanInstantUpdate)
                                 {
-                                    patchedFileIndex.Remove(e.Part.FileName);
-                                    finishedFileIndex.Add(e.Part.TempFilePath, e.Part.OldFilePath);
-                                }
-                                //if (patchedFileIndex.Any(item => item.StartsWith("Data\\" + currentSubdirectory)))
-                                if (FileInsideThisDirectoryExists(patchedFileIndex, Path.GetDirectoryName(e.Part.FileName)))
-                                {
-                                    logFunc("  (即時パッチ)ファイル適用の延期...\r\n");
-                                }
-                                else
-                                {
-                                    long currentUsedDiskSpace = availableDiskSpace - RemainingDiskSpace(session.MSFolder);
-                                    logFunc(string.Format("  (即時パッチ)占有ハードディスク容量: {0}\r\n", GetBothByteAndGBValue(currentUsedDiskSpace)));
-                                    logFunc("  (即時パッチ)ファイルを適用しています...\r\n");
-                                    foreach (string k in finishedFileIndex.Keys)
+                                    if (session.TemporaryFileMapping.TryGetValue(fileName, out var temporaryFileName))
                                     {
-                                        patcher.SafeMove(k, finishedFileIndex[k]);
-                                        finishedFileIndex.Remove(k);
+                                        logFunc($"  (即時パッチ)ファイル[{fileName}]を適用中...\r\n");
+                                        patcher.SafeMove(temporaryFileName, Path.Combine(session.MSFolder, fileName));
                                     }
-
                                 }
                             }
                             else
@@ -601,8 +609,8 @@ namespace WzComparerR2
                         }
                         else
                         {
-                            patcher.SafeMove(e.Part.TempFilePath, e.Part.OldFilePath);
                             logFunc("  (即時パッチ)ファイルを適用しています...\r\n");
+                            patcher.SafeMove(e.Part.TempFilePath, e.Part.OldFilePath);
                         }
                     }
                     break;
@@ -610,30 +618,22 @@ namespace WzComparerR2
                     logFunc($"パッチ前のチェックサムを確認中: {e.Part.FileName}");
                     break;
                 case PatchingState.PrepareVerifyOldChecksumEnd:
-                    logFunc(" 完了\r\n");
+                    if (e.Part.OldChecksum != e.Part.OldChecksumActual)
+                    {
+                        logFunc(" 不一致\r\n");
+                    }
+                    else
+                    {
+                        logFunc(" 完了\r\n");
+                    }
                     break;
                 case PatchingState.ApplyFile:
                     logFunc($"ファイルの適用: {e.Part.FileName}\r\n");
                     break;
+                case PatchingState.FileSkipped:
+                    logFunc("  スキップされたファイル: " + e.Part.FileName + "\r\n");
+                    break;
             }
-        }
-
-        static int GetDirectoryDepth(string inputString)
-        {
-            int count = 0;
-            foreach (char c in inputString)
-            {
-                if (c == '\\') count++;
-            }
-            return count;
-        }
-
-        private bool FileInsideThisDirectoryExists(List<string> fileList, string directoryPath)
-        {
-            string normalizedDirectoryPath = directoryPath.TrimEnd('\\') + "\\";
-            bool exists = fileList.Any(filePath => filePath.StartsWith(normalizedDirectoryPath)
-                                                    && filePath.Substring(normalizedDirectoryPath.Length).IndexOf('\\') == -1);
-            return exists;
         }
 
         private Node CreateFileNode(PatchPartContext part)
@@ -661,46 +661,9 @@ namespace WzComparerR2
             return node;
         }
 
-        private long RemainingDiskSpace(string path)
-        {
-            string diskDrive = path.Substring(0, 2);
-            try
-            {
-                DriveInfo dinfo = new DriveInfo(diskDrive);
-                return dinfo.AvailableFreeSpace;
-            }
-            catch
-            {
-                return 0;
-            }
-        }
-
-        private string GetBothByteAndGBValue(long size)
-        {
-            string[] sizes = { "B", "KB", "MB", "GB" };
-            double targetbytes = size;
-            int order = 0;
-
-            while (targetbytes >= 1024 && order < sizes.Length)
-            {
-                order++;
-                targetbytes /= 1024;
-            }
-
-            if (size <= 1024)
-            {
-                return $"{size:N0} バイト";
-            }
-            else
-            {
-                return $"{size:N0} バイト ({targetbytes:0.##} {sizes[order]})";
-            }
-        }
-
         private void buttonXOpen3_Click(object sender, EventArgs e)
         {
             OpenFileDialog dlg = new OpenFileDialog();
-
             dlg.Title = "パッチファイルの選択";
             dlg.Filter = "パッチファイル (*.patch;*.exe)|*.patch;*.exe";
             if (dlg.ShowDialog(this) == DialogResult.OK)
@@ -766,6 +729,42 @@ namespace WzComparerR2
             }
         }
 
+        private long RemainingDiskSpace(string path)
+        {
+            string diskDrive = path.Substring(0, 2);
+            try
+            {
+                DriveInfo dinfo = new DriveInfo(diskDrive);
+                return dinfo.AvailableFreeSpace;
+            }
+            catch
+            {
+                return 0;
+            }
+        }
+
+        private string GetBothByteAndGBValue(long size)
+        {
+            string[] sizes = { "B", "KB", "MB", "GB" };
+            double targetbytes = size;
+            int order = 0;
+
+            while (targetbytes >= 1024 && order < sizes.Length)
+            {
+                order++;
+                targetbytes /= 1024;
+            }
+
+            if (size <= 1024)
+            {
+                return $"{size:N0} バイト";
+            }
+            else
+            {
+                return $"{size:N0} バイト ({targetbytes:0.##} {sizes[order]})";
+            }
+        }
+
         class PatcherSession
         {
             public PatcherSession()
@@ -782,6 +781,9 @@ namespace WzComparerR2
             public Task PatchExecTask;
             public string LoggingFileName;
             public PatcherTaskState State;
+
+            public DeadPatchExecutionPlan deadPatchExecutionPlan;
+            public Dictionary<string, string> TemporaryFileMapping = new();
 
             public CancellationToken CancellationToken => this.cancellationTokenSource.Token;
             private CancellationTokenSource cancellationTokenSource;
@@ -818,6 +820,80 @@ namespace WzComparerR2
             WaitForContinue = 2,
             Patching = 3,
             Complete = 4,
+        }
+
+        class DeadPatchExecutionPlan
+        {
+            public DeadPatchExecutionPlan()
+            {
+                this.FileUpdateDependencies = new Dictionary<string, List<string>>();
+            }
+
+            public Dictionary<string, List<string>> FileUpdateDependencies { get; private set; }
+
+            public void Build(IEnumerable<PatchPartContext> orderedParts)
+            {
+                /*
+                 *  for examle:
+                 *    fileName   | type | dependencies               
+                 *    -----------|------|---------------     
+                 *    Mob_000.wz | 1    | Mob_000.wz   (self update)
+                 *    Mob_001.wz | 1    | Mob_001.wz, Mob_002.wz  (merge data)
+                 *    Mob_002.wz | 1    | Mob_001.wz, Mob_002.wz  (merge data)
+                 *    Mob_003.wz | 1    | Mob_001.wz, Mob_002.wz  (balance size from other file)
+                 *                                                 
+                 *  fileLastDependecy:                             
+                 *    key        | value                           
+                 *    -----------|----------------                 
+                 *    Mob_000.wz | Mob_000.wz
+                 *    Mob_001.wz | Mob_003.wz
+                 *    Mob_002.wz | Mob_003.wz
+                 *    Mob_003.wz | Mob_003.wz
+                 *    
+                 *  FileUpdateDependencies:
+                 *    key        | value
+                 *    -----------|----------------
+                 *    Mob_000.wz | Mob000.wz
+                 *    Mob_003.wz | Mob001.wz, Mob002.wz, Mob003.wz
+                 */
+
+                // find the last dependency
+                Dictionary<string, string> fileLastDependecy = new();
+                foreach (var part in orderedParts)
+                {
+                    if (part.Type == 0)
+                    {
+                        fileLastDependecy[part.FileName] = part.FileName;
+                    }
+                    else if (part.Type == 1)
+                    {
+                        fileLastDependecy[part.FileName] = part.FileName;
+                        foreach (var dep in part.DependencyFiles)
+                        {
+                            fileLastDependecy[dep] = part.FileName;
+                        }
+                    }
+                }
+
+                // reverse key and value
+                this.FileUpdateDependencies.Clear();
+                foreach (var grp in fileLastDependecy.GroupBy(kv => kv.Value, kv => kv.Key))
+                {
+                    this.FileUpdateDependencies.Add(grp.Key, grp.ToList());
+                }
+            }
+
+            public bool Check(string fileName, out IReadOnlyList<string> filesCanInstantUpdate)
+            {
+                if (this.FileUpdateDependencies.TryGetValue(fileName, out var value) && value != null && value.Count > 0)
+                {
+                    filesCanInstantUpdate = value;
+                    return true;
+                }
+
+                filesCanInstantUpdate = null;
+                return false;
+            }
         }
     }
 }
