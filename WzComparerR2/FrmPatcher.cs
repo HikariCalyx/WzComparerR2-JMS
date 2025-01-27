@@ -457,29 +457,29 @@ namespace WzComparerR2
                             patcher.PatchParts.Add(part);
                         }
                     }
-                    if (patcher.IsKMST1125Format.Value && session.DeadPatch)
+                }
+                if (patcher.IsKMST1125Format.Value && session.DeadPatch)
+                {
+                    AppendStateText("即時パッチ実行プラン\r\n");
+                    session.deadPatchExecutionPlan = new();
+                    session.deadPatchExecutionPlan.Build(patcher.PatchParts);
+                    foreach (var part in patcher.PatchParts)
                     {
-                        AppendStateText("即時パッチ実行プラン\r\n");
-                        session.deadPatchExecutionPlan = new();
-                        session.deadPatchExecutionPlan.Build(patcher.PatchParts);
-                        foreach (var part in patcher.PatchParts)
+                        if (session.deadPatchExecutionPlan.Check(part.FileName, out var filesCanInstantUpdate))
                         {
-                            if (session.deadPatchExecutionPlan.Check(part.FileName, out var filesCanInstantUpdate))
+                            AppendStateText($"+ ファイル[{part.FileName}]実行\r\n");
+                            foreach (var fileName in filesCanInstantUpdate)
                             {
-                                AppendStateText($"+ ファイル[{part.FileName}]実行\r\n");
-                                foreach (var fileName in filesCanInstantUpdate)
-                                {
-                                    AppendStateText($"  - ファイル[{fileName}]適用\r\n");
-                                }
-                            }
-                            else
-                            {
-                                AppendStateText($"- ファイル[{part.FileName}]を実行しますが、適用は延期されます\r\n");
+                                AppendStateText($"  - ファイル[{fileName}]適用\r\n");
                             }
                         }
-                        // disable force validation
-                        patcher.ThrowOnValidationFailed = false;
+                        else
+                        {
+                            AppendStateText($"- ファイル[{part.FileName}]を実行しますが、適用は延期されます\r\n");
+                        }
                     }
+                    // disable force validation
+                    patcher.ThrowOnValidationFailed = false;
                 }
                 AppendStateText("パッチ適用中\r\n");
                 var sw = Stopwatch.StartNew();
@@ -593,6 +593,8 @@ namespace WzComparerR2
                         {
                             if (session.deadPatchExecutionPlan?.Check(e.Part.FileName, out var filesCanInstantUpdate) ?? false)
                             {
+                                long currentUsedDiskSpace = availableDiskSpace - RemainingDiskSpace(session.MSFolder);
+                                logFunc(string.Format("  (即時パッチ)占有ハードディスク容量: {0}\r\n", GetBothByteAndGBValue(currentUsedDiskSpace)));
                                 foreach (string fileName in filesCanInstantUpdate)
                                 {
                                     if (session.TemporaryFileMapping.TryGetValue(fileName, out var temporaryFileName))
