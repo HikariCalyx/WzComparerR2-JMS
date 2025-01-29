@@ -68,7 +68,7 @@ namespace WzComparerR2.CharaSimControl
             if (CharaSimLoader.LoadedCommoditiesByItemId.ContainsKey(CashPackage.ItemID))
                 commodityPackage = CharaSimLoader.LoadedCommoditiesByItemId[CashPackage.ItemID];
 
-            int fullWidth = Math.Max(220, TextRenderer.MeasureText(g, CashPackage.name, GearGraphics.ItemNameFont2, new Size(int.MaxValue, int.MaxValue), TextFormatFlags.NoPrefix).Width + 12 * 2);
+            int fullWidth = Math.Max(290, TextRenderer.MeasureText(g, CashPackage.name, GearGraphics.ItemNameFont2, new Size(int.MaxValue, int.MaxValue), TextFormatFlags.NoPrefix).Width + 12 * 2);
             int[] columnWidth = { CashPackage.SN.Count < 8 ? fullWidth : 220, 220, 220 };
 
             for (int i = 0; i < CashPackage.SN.Count; ++i)
@@ -661,10 +661,10 @@ namespace WzComparerR2.CharaSimControl
             g.DrawLine(Pens.White, 13, picH, cashBitmap.Width - 8, picH);
             picH += 11;
 
-            g.DrawImage(Resource.CSDiscount_total, 9, picH + 1);
+            g.DrawImage(Resource.CSDiscount_total, 9, picH + 2, Resource.CSDiscount_total.Width, Resource.CSDiscount_total.Height);
             if (totalOriginalPrice == totalPrice)
             {
-                TextRenderer.DrawText(g, totalPrice + "ポイント", GearGraphics.ItemDetailFont, new Point(64, picH), Color.White, TextFormatFlags.NoPadding | TextFormatFlags.NoPrefix);
+                TextRenderer.DrawText(g, totalPrice + "ポイント", GearGraphics.ItemDetailFont, new Point(55, picH), Color.White, TextFormatFlags.NoPadding | TextFormatFlags.NoPrefix);
                 if (isCurrencyConversionEnabled)
                 {
                     string exchangedPrice = Translator.GetConvertedCurrency(totalPrice, titleLanguage);
@@ -677,9 +677,9 @@ namespace WzComparerR2.CharaSimControl
             }
             else
             {
-                TextRenderer.DrawText(g, totalOriginalPrice + "ポイント   " + totalPrice + "ポイント", GearGraphics.ItemDetailFont, new Point(64, picH), Color.White, TextFormatFlags.NoPadding | TextFormatFlags.NoPrefix);
-                TextRenderer.DrawText(g, totalOriginalPrice + "ポイント", GearGraphics.ItemDetailFont, new Point(64, picH), Color.Red, TextFormatFlags.NoPadding | TextFormatFlags.NoPrefix);
-                g.DrawImage(Resource.CSDiscount_arrow, 64 + TextRenderer.MeasureText(g, totalOriginalPrice + "ポイント", GearGraphics.ItemDetailFont, new Size(int.MaxValue, int.MaxValue), TextFormatFlags.NoPadding).Width + 5, picH + 1);
+                TextRenderer.DrawText(g, totalOriginalPrice + "ポイント   " + totalPrice + "ポイント", GearGraphics.ItemDetailFont, new Point(55, picH), Color.White, TextFormatFlags.NoPadding | TextFormatFlags.NoPrefix);
+                TextRenderer.DrawText(g, totalOriginalPrice + "ポイント", GearGraphics.ItemDetailFont, new Point(55, picH), Color.Red, TextFormatFlags.NoPadding | TextFormatFlags.NoPrefix);
+                g.DrawImage(Resource.CSDiscount_arrow, 55 + TextRenderer.MeasureText(g, totalOriginalPrice + "ポイント", GearGraphics.ItemDetailFont, new Size(int.MaxValue, int.MaxValue), TextFormatFlags.NoPadding).Width + 5, picH + 1);
                 if ((int)((100 - 100.0 * totalPrice / totalOriginalPrice)) > 0) 
                 {
                     DrawDiscountNum(g, "-" + (int)((100 - 100.0 * totalPrice / totalOriginalPrice)) + "%", cashBitmap.Width - 40, picH - 1, StringAlignment.Near);
