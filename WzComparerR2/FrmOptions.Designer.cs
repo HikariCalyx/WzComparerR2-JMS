@@ -149,7 +149,7 @@
             this.txtOpenAIBackend.Name = "txtOpenAIBackend";
             this.txtOpenAIBackend.Size = new System.Drawing.Size(178, 23);
             this.txtOpenAIBackend.TabIndex = 10;
-            this.txtOpenAIBackend.WatermarkText = "https://api.openai.com";
+            this.txtOpenAIBackend.WatermarkText = "https://api.openai.com/v1";
             // 
             // buttonXCheck
             // 

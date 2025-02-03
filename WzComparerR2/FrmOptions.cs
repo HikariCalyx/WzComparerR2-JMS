@@ -342,7 +342,7 @@ namespace WzComparerR2
             {
                 case 8:
                 case 9:
-                    req = WebRequest.Create(backendAddress + "/v1/models") as HttpWebRequest;
+                    req = WebRequest.Create(backendAddress + "/models") as HttpWebRequest;
                     req.Timeout = 15000;
                     if (!string.IsNullOrEmpty(NxSecretKey))
                     {
@@ -364,7 +364,7 @@ namespace WzComparerR2
                         cmbLanguageModel.SelectedIndex = 0;
                         respText = sb.ToString();
                     }
-                    catch (WebException ex)
+                    catch
                     {
                         respText = "APIが有効になっていません。";
                     }

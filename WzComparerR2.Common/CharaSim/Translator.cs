@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Text.RegularExpressions;
 using WzComparerR2.Config;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -99,8 +100,8 @@ namespace WzComparerR2.CharaSim
 
         private static string OAITranslate(string text, string desiredLanguage)
         {
-            if (string.IsNullOrEmpty(OAITranslateBaseURL)) OAITranslateBaseURL = "https://api.openai.com";
-            var request = (HttpWebRequest)WebRequest.Create(OAITranslateBaseURL + "/v1/chat/completions");
+            if (string.IsNullOrEmpty(OAITranslateBaseURL)) OAITranslateBaseURL = "https://api.openai.com/v1";
+            var request = (HttpWebRequest)WebRequest.Create(OAITranslateBaseURL + "/chat/completions");
             request.Method = "POST";
             request.ContentType = "application/json";
             if (!string.IsNullOrEmpty(DefaultTranslateAPIKey))
@@ -113,7 +114,7 @@ namespace WzComparerR2.CharaSim
                 new JProperty("messages", new JArray(
                     new JObject(
                         new JProperty("role", "user"),
-                        new JProperty("content", "Please translate following content into " + dictL2LM[desiredLanguage] + ": " + text)
+                        new JProperty("content", "Please translate following in-game content into " + dictL2LM[desiredLanguage] + ": " + text)
                     )
                 )),
                 new JProperty("temperature", 0.7),
@@ -263,8 +264,8 @@ namespace WzComparerR2.CharaSim
                 //0: Google (Non-Mozhi)
                 default:
                 case 0:
-                    JArray responseArr = GTranslate(orgText.Replace("\\n", "\r\n"), Translator.DefaultDesiredLanguage);
-                    translatedText = responseArr[0][0].ToString().Replace("\r\n", "\\n").Replace("＃", "#");
+                    JArray responseArr = GTranslate(ConvHashTagToHTMLTag(orgText), Translator.DefaultDesiredLanguage);
+                    translatedText = responseArr[0][0].ToString().Replace("＃", "#");
                     break;
                 //1: Google (Mozhi)
                 case 1:
@@ -300,17 +301,17 @@ namespace WzComparerR2.CharaSim
                 //6: Naver Papago (Non-Mozhi)
                 case 6:
                     if (targetLanguage == "yue") targetLanguage = "zh-TW";
-                    JObject responseObj = NTranslate(orgText.Replace("\\n", "\r\n"), Translator.DefaultDesiredLanguage);
+                    JObject responseObj = NTranslate(ConvHashTagToHTMLTag(orgText), Translator.DefaultDesiredLanguage);
                     translatedText = responseObj.SelectToken("message.result.translatedText").ToString();
                     break;
-                //9: LM Studio
+                //9: OpenAI Compatible
                 case 9:
-                    translatedText = OAITranslate(orgText.Replace("\\n", "\r\n"), Translator.DefaultDesiredLanguage);
+                    translatedText = OAITranslate(ConvHashTagToHTMLTag(orgText), Translator.DefaultDesiredLanguage);
                     break;
             }
             if (isMozhiUsed)
             {
-                translatedText = MTranslate(orgText.Replace("\\n", "\r\n"), mozhiEngine, sourceLanguage, targetLanguage).SelectToken("translated-text").ToString().Replace("\r\n", "\\n").Replace("＃", "#");
+                translatedText = MTranslate(ConvHashTagToHTMLTag(orgText), mozhiEngine, sourceLanguage, targetLanguage).SelectToken("translated-text").ToString().Replace("＃", "#");
             }
             if (titleCase && targetLanguage == "en")
             {
@@ -318,7 +319,40 @@ namespace WzComparerR2.CharaSim
                 TextInfo textInfo = cultureInfo.TextInfo;
                 translatedText = textInfo.ToTitleCase(translatedText);
             }
+            translatedText = ConvHTMLTagToHashTag(translatedText);
             return translatedText;
+        }
+
+        public static string ConvHashTagToHTMLTag(string orgText)
+        {
+            if (!string.IsNullOrEmpty(orgText))
+            {
+                return orgText.Replace("#c", "<CHL>").Replace("#", "</CHL>").Replace("\\r\\n", "<BR/>").Replace("\\n", "<BR/>");
+            }
+            else
+            {
+                return orgText;
+            }
+        }
+
+        public static string ConvHTMLTagToHashTag(string orgText)
+        {
+            if (!string.IsNullOrEmpty(orgText))
+            {
+                return Regex.Replace(
+                    Regex.Replace(
+                        Regex.Replace(
+                            Regex.Replace(
+                                orgText.Replace("< ", "<").Replace(" >", ">"), 
+                                "<CHL>", "#c", RegexOptions.IgnoreCase),
+                            "</CHL>", "#", RegexOptions.IgnoreCase),
+                        "<BR/>", "\r\n", RegexOptions.IgnoreCase),
+                    "CHL>", "#c", RegexOptions.IgnoreCase);
+            }
+            else
+            {
+                return orgText;
+            }
         }
 
         public static string GetLanguage(string orgText)
@@ -334,7 +368,7 @@ namespace WzComparerR2.CharaSim
                 //0: Google (Non-Mozhi)
                 default:
                 case 0:
-                    JArray responseArr = GTranslate(orgText.Replace("\\n", "\r\n"), Translator.DefaultDesiredLanguage);
+                    JArray responseArr = GTranslate(orgText, Translator.DefaultDesiredLanguage);
                     orgLanguage = responseArr[0][1].ToString();
                     break;
                 //1: Google (Mozhi)
@@ -371,14 +405,14 @@ namespace WzComparerR2.CharaSim
                 //6: Naver Papago (Non-Mozhi)
                 case 6:
                     if (targetLanguage == "yue") targetLanguage = "zh-TW";
-                    JObject responseObj = NTranslate(orgText.Replace("\\n", "\r\n"), Translator.DefaultDesiredLanguage);
+                    JObject responseObj = NTranslate(orgText, Translator.DefaultDesiredLanguage);
                     orgLanguage = responseObj.SelectToken("message.result.srcLangType").ToString();
                     break;
                     //7: iFlyTek (Non-Mozhi)
             }
             if (isMozhiUsed)
             {
-                orgLanguage = MTranslate(orgText.Replace("\\n", "\r\n"), mozhiEngine, sourceLanguage, targetLanguage).SelectToken("detected").ToString();
+                orgLanguage = MTranslate(orgText, mozhiEngine, sourceLanguage, targetLanguage).SelectToken("detected").ToString();
             }
             return orgLanguage;
         }
