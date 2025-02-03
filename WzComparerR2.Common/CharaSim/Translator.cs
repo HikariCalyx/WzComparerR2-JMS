@@ -117,8 +117,8 @@ namespace WzComparerR2.CharaSim
                         new JProperty("content", "Please translate following in-game content into " + dictL2LM[desiredLanguage] + ": " + text)
                     )
                 )),
-                new JProperty("temperature", 0.7),
-                new JProperty("max_tokens", -1),
+                new JProperty("temperature", DefaultLMTemperature),
+                new JProperty("max_tokens", DefaultMaximumToken),
                 new JProperty("stream", false)
             );
             var byteArray = System.Text.Encoding.UTF8.GetBytes(postData.ToString());
@@ -508,6 +508,8 @@ namespace WzComparerR2.CharaSim
         public static bool IsTranslateEnabled { get; set; }
         public static string DefaultDetectCurrency { get; set; }
         public static string DefaultDesiredCurrency { get; set; }
+        public static double DefaultLMTemperature { get; set; }
+        public static int DefaultMaximumToken {  get; set; }
         #endregion
     }
 

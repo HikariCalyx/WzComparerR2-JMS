@@ -24,6 +24,8 @@ namespace WzComparerR2.Config
             this.MozhiBackend = "https://mozhi.aryak.me";
             this.DetectCurrency = "auto";
             this.DesiredCurrency = "none";
+            this.LMTemperature = 0.7;
+            this.MaximumToken = -1;
         }
 
         /// <summary>
@@ -98,6 +100,28 @@ namespace WzComparerR2.Config
         {
             get { return (ConfigItem<string>)this["OpenAIBackend"]; }
             set { this["OpenAIBackend"] = value; }
+        }
+
+        /// <summary>
+        /// Language Model Temperature Configuration
+        /// </summary>
+        [ConfigurationProperty("LMTemperature")]
+        [ConfigurationCollection(typeof(ConfigArrayList<double>.ItemElement))]
+        public ConfigItem<double> LMTemperature
+        {
+            get { return (ConfigItem<double>)this["LMTemperature"]; }
+            set { this["LMTemperature"] = value; }
+        }
+
+        /// <summary>
+        /// Language Model Maximum Token Configuration
+        /// </summary>
+        [ConfigurationProperty("MaximumToken")]
+        [ConfigurationCollection(typeof(ConfigArrayList<int>.ItemElement))]
+        public ConfigItem<int> MaximumToken
+        {
+            get { return (ConfigItem<int>)this["MaximumToken"]; }
+            set { this["MaximumToken"] = value; }
         }
 
         /// <summary>

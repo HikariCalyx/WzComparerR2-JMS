@@ -236,6 +236,29 @@ namespace WzComparerR2
             }
         }
 
+        public double LMTemperature
+        {
+            get
+            {
+                return Double.Parse(txtLMTemperature.Text);
+            }
+            set
+            {
+                txtLMTemperature.Text = value.ToString();
+            }
+        }
+        public int MaximumToken
+        {
+            get
+            {
+                return int.Parse(txtMaximumToken.Text);
+            }
+            set
+            {
+                txtMaximumToken.Text = value.ToString();
+            }
+        }
+
         public string DetectCurrency
         {
             get
@@ -425,7 +448,11 @@ namespace WzComparerR2
                     labelX5.Enabled = false;
                     labelX11.Visible = false;
                     labelX12.Enabled = false;
+                    labelX13.Enabled = false;
+                    labelX14.Enabled = false;
                     txtOpenAIBackend.Enabled = false;
+                    txtLMTemperature.Enabled = false;
+                    txtMaximumToken.Enabled = false;
                     cmbMozhiBackend.Visible = true;
                     cmbMozhiBackend.Enabled = false;
                     cmbLanguageModel.Visible = false;
@@ -436,7 +463,11 @@ namespace WzComparerR2
                     labelX5.Visible = false;
                     labelX11.Visible = true;
                     labelX12.Enabled = true;
+                    labelX13.Enabled = true;
+                    labelX14.Enabled = true;
                     txtOpenAIBackend.Enabled = true;
+                    txtLMTemperature.Enabled = true;
+                    txtMaximumToken.Enabled = true;
                     cmbMozhiBackend.Visible = false;
                     cmbLanguageModel.Visible = true;
                     buttonXCheck2.Enabled = true;
@@ -446,7 +477,11 @@ namespace WzComparerR2
                     labelX5.Enabled = true;
                     labelX11.Visible = false;
                     labelX12.Enabled = false;
+                    labelX13.Enabled = false;
+                    labelX14.Enabled = false;
                     txtOpenAIBackend.Enabled = false;
+                    txtLMTemperature.Enabled = false;
+                    txtMaximumToken.Enabled = false;
                     cmbMozhiBackend.Visible = true;
                     cmbMozhiBackend.Enabled = true;
                     cmbLanguageModel.Visible = false;
@@ -480,6 +515,8 @@ namespace WzComparerR2
             this.MozhiBackend = config.MozhiBackend;
             this.LanguageModel = config.LanguageModel;
             this.OpenAIBackend = config.OpenAIBackend;
+            this.LMTemperature = config.LMTemperature;
+            this.MaximumToken = config.MaximumToken;
             this.PreferredTranslateEngine = config.PreferredTranslateEngine;
             this.DesiredLanguage = config.DesiredLanguage;
             this.PreferredLayout = config.PreferredLayout;
@@ -500,6 +537,8 @@ namespace WzComparerR2
             config.MozhiBackend = this.MozhiBackend;
             if (this.LanguageModel != "none") config.LanguageModel = this.LanguageModel;
             config.OpenAIBackend = this.OpenAIBackend;
+            config.LMTemperature = this.LMTemperature;
+            config.MaximumToken = this.MaximumToken;
             config.PreferredTranslateEngine = this.PreferredTranslateEngine;
             config.DesiredLanguage = this.DesiredLanguage;
             config.PreferredLayout = this.PreferredLayout;

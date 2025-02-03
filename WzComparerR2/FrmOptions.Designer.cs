@@ -34,6 +34,8 @@
             this.txtAPIkey = new DevComponents.DotNetBar.Controls.TextBoxX();
             this.txtOpenAIBackend = new DevComponents.DotNetBar.Controls.TextBoxX();
             this.txtSecretkey = new DevComponents.DotNetBar.Controls.TextBoxX();
+            this.txtLMTemperature = new DevComponents.Editors.DoubleInput();
+            this.txtMaximumToken = new DevComponents.Editors.IntegerInput();
             this.buttonXCheck = new DevComponents.DotNetBar.ButtonX();
             this.buttonXCheck2 = new DevComponents.DotNetBar.ButtonX();
             this.buttonXCheck3 = new DevComponents.DotNetBar.ButtonX();
@@ -69,6 +71,8 @@
             this.labelX10 = new DevComponents.DotNetBar.LabelX();
             this.labelX11 = new DevComponents.DotNetBar.LabelX();
             this.labelX12 = new DevComponents.DotNetBar.LabelX();
+            this.labelX13 = new DevComponents.DotNetBar.LabelX();
+            this.labelX14 = new DevComponents.DotNetBar.LabelX();
             this.superTabItem4 = new DevComponents.DotNetBar.SuperTabItem();
             this.superTabControlPanel4 = new DevComponents.DotNetBar.SuperTabControlPanel();
             this.panelEx1.SuspendLayout();
@@ -150,6 +154,39 @@
             this.txtOpenAIBackend.Size = new System.Drawing.Size(178, 23);
             this.txtOpenAIBackend.TabIndex = 10;
             this.txtOpenAIBackend.WatermarkText = "https://api.openai.com/v1";
+            //
+            // txtLMTemperature
+            //
+            //
+            //
+            this.txtLMTemperature.BackgroundStyle.Class = "DateTimeInputBackground";
+            this.txtLMTemperature.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
+            this.txtLMTemperature.ButtonFreeText.Shortcut = DevComponents.DotNetBar.eShortcut.F2;
+            this.txtLMTemperature.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.txtLMTemperature.Location = new System.Drawing.Point(140, 40);
+            this.txtLMTemperature.MinValue = 0;
+            this.txtLMTemperature.MaxValue = 2;
+            this.txtLMTemperature.Increment = 0.1;
+            this.txtLMTemperature.DisplayFormat = "0.0";
+            this.txtLMTemperature.Name = "txtLMTemperature";
+            this.txtLMTemperature.ShowUpDown = true;
+            this.txtLMTemperature.Size = new System.Drawing.Size(70, 21);
+            this.txtLMTemperature.TabIndex = 14;
+            //
+            // txtMaximumToken
+            //
+            //
+            //
+            this.txtMaximumToken.BackgroundStyle.Class = "DateTimeInputBackground";
+            this.txtMaximumToken.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
+            this.txtMaximumToken.ButtonFreeText.Shortcut = DevComponents.DotNetBar.eShortcut.F2;
+            this.txtMaximumToken.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.txtMaximumToken.Location = new System.Drawing.Point(140, 67);
+            this.txtMaximumToken.MinValue = -1;
+            this.txtMaximumToken.Name = "txtMaximumToken";
+            this.txtMaximumToken.ShowUpDown = true;
+            this.txtMaximumToken.Size = new System.Drawing.Size(70, 21);
+            this.txtMaximumToken.TabIndex = 15;
             // 
             // buttonXCheck
             // 
@@ -511,6 +548,32 @@
             this.labelX12.TabIndex = 9;
             this.labelX12.Text = "バックエンドのアドレス";
             // 
+            // labelX13
+            // 
+            this.labelX13.AutoSize = true;
+            this.labelX13.BackColor = System.Drawing.Color.Transparent;
+            // 
+            // 
+            // 
+            this.labelX13.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
+            this.labelX13.Location = new System.Drawing.Point(14, 42);
+            this.labelX13.Name = "labelX13";
+            this.labelX13.TabIndex = 9;
+            this.labelX13.Text = "言語モデル温度値";
+            // 
+            // labelX14
+            // 
+            this.labelX14.AutoSize = true;
+            this.labelX14.BackColor = System.Drawing.Color.Transparent;
+            // 
+            // 
+            // 
+            this.labelX14.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
+            this.labelX14.Location = new System.Drawing.Point(14, 69);
+            this.labelX14.Name = "labelX14";
+            this.labelX14.TabIndex = 9;
+            this.labelX14.Text = "最大トークン制限";
+            // 
             // cmbDesiredLanguage
             // 
             this.cmbDesiredLanguage.DisplayMember = "Text";
@@ -621,7 +684,11 @@
             // superTabControlPanel3
             // 
             this.superTabControlPanel3.Controls.Add(this.labelX12);
+            this.superTabControlPanel3.Controls.Add(this.labelX13);
+            this.superTabControlPanel3.Controls.Add(this.labelX14);
             this.superTabControlPanel3.Controls.Add(this.txtOpenAIBackend);
+            this.superTabControlPanel3.Controls.Add(this.txtLMTemperature);
+            this.superTabControlPanel3.Controls.Add(this.txtMaximumToken);
             this.superTabControlPanel3.Dock = System.Windows.Forms.DockStyle.Fill;
             this.superTabControlPanel3.Location = new System.Drawing.Point(39, 0);
             this.superTabControlPanel3.Name = "superTabControlPanel3";
@@ -716,6 +783,8 @@
         private DevComponents.DotNetBar.Controls.TextBoxX txtNxAPIkey;
         private DevComponents.DotNetBar.Controls.TextBoxX txtOpenAIBackend;
         private DevComponents.DotNetBar.Controls.TextBoxX txtSecretkey;
+        private DevComponents.Editors.DoubleInput txtLMTemperature;
+        private DevComponents.Editors.IntegerInput txtMaximumToken;
         private DevComponents.DotNetBar.SuperTabControl superTabControl1;
         private DevComponents.DotNetBar.SuperTabControlPanel superTabControlPanel1;
         private DevComponents.DotNetBar.SuperTabControlPanel superTabControlPanel2;
@@ -756,5 +825,7 @@
         private DevComponents.DotNetBar.LabelX labelX10;
         private DevComponents.DotNetBar.LabelX labelX11;
         private DevComponents.DotNetBar.LabelX labelX12;
+        private DevComponents.DotNetBar.LabelX labelX13;
+        private DevComponents.DotNetBar.LabelX labelX14;
     }
 }

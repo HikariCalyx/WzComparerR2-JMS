@@ -289,6 +289,8 @@ namespace WzComparerR2
             Translator.IsTranslateEnabled = (config.PreferredLayout > 0);
             Translator.DefaultDetectCurrency = config.DetectCurrency;
             Translator.DefaultDesiredCurrency = config.DesiredCurrency;
+            Translator.DefaultLMTemperature = config.LMTemperature;
+            Translator.DefaultMaximumToken = config.MaximumToken;
             Translator.ExchangeTable = null;
         }
 
