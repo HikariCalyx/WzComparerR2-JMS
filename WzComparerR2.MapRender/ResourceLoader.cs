@@ -6,7 +6,6 @@ using WzComparerR2.WzLib;
 using WzComparerR2.PluginBase;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Content;
 using WzComparerR2.Animation;
 using WzComparerR2.Rendering;
 using WzComparerR2.Common;
@@ -438,6 +437,7 @@ namespace WzComparerR2.MapRender
             if (detectionResult.Success)
             {
                 var textureLoader = new SpineTextureLoader(this, detectionResult.SourceNode.ParentNode);
+                textureLoader.EnableTextureMissingFallback = true;
                 if (detectionResult.Version == SpineVersion.V2)
                 {
                     return SpineAnimationDataV2.Create(detectionResult, textureLoader);
@@ -506,6 +506,10 @@ namespace WzComparerR2.MapRender
                     page.rendererObject = texture;
                     page.width = texture.Width;
                     page.height = texture.Height;
+                }
+                else if (this.EnableTextureMissingFallback && page.width > 0 && page.height > 0)
+                {
+                    page.rendererObject = this.CreateEmptyTexture(path, page.width, page.height);
                 }
             }
 
