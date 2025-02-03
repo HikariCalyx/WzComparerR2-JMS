@@ -65,7 +65,7 @@ namespace WzComparerR2.CharaSim
 
         private static string GTranslateBaseURL = "https://translate.googleapis.com/translate_a/t";
         private static string NTranslateBaseURL = "https://naveropenapi.apigw.ntruss.com";
-        private static string LMSTranslateBaseURL = "http://localhost:1234/v1/";
+        public static string OAITranslateBaseURL { get; set; }
 
         private static List<string> CurrencyBaseURL = new List<string>()
         {
@@ -97,11 +97,17 @@ namespace WzComparerR2.CharaSim
             }            
         }
 
-        private static string LMSTranslate(string text, string desiredLanguage)
+        private static string OAITranslate(string text, string desiredLanguage)
         {
-            var request = (HttpWebRequest)WebRequest.Create(LMSTranslateBaseURL + "chat/completions");
+            if (string.IsNullOrEmpty(OAITranslateBaseURL)) OAITranslateBaseURL = "https://api.openai.com";
+            var request = (HttpWebRequest)WebRequest.Create(OAITranslateBaseURL + "/v1/chat/completions");
             request.Method = "POST";
             request.ContentType = "application/json";
+            if (!string.IsNullOrEmpty(DefaultTranslateAPIKey))
+            {
+                JObject reqHeaders = JObject.Parse(DefaultTranslateAPIKey);
+                foreach (var property in reqHeaders.Properties()) request.Headers.Add(property.Name, property.Value.ToString());
+            }
             var postData = new JObject(
                 new JProperty("model", DefaultLanguageModel),
                 new JProperty("messages", new JArray(
@@ -299,7 +305,7 @@ namespace WzComparerR2.CharaSim
                     break;
                 //9: LM Studio
                 case 9:
-                    translatedText = LMSTranslate(orgText.Replace("\\n", "\r\n"), Translator.DefaultDesiredLanguage);
+                    translatedText = OAITranslate(orgText.Replace("\\n", "\r\n"), Translator.DefaultDesiredLanguage);
                     break;
             }
             if (isMozhiUsed)

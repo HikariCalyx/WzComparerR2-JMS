@@ -85,7 +85,7 @@ namespace WzComparerR2
                 new ComboItem("Naver Papago (非Mozhi)"){ Value = 6 },
                 //new ComboItem("ディープシークAPI"){ Value = 7 },
                 //new ComboItem("オラマLLM (ローカル)"){ Value = 8 },
-                new ComboItem("LM Studio (ローカル)"){ Value = 9 },
+                new ComboItem("OpenAI互換"){ Value = 9 },
             });
 
             cmbPreferredLayout.Items.AddRange(new[]
@@ -126,7 +126,7 @@ namespace WzComparerR2
 
             cmbLanguageModel.Items.AddRange(new[]
             {
-                new ComboItem("未知"){ Value = "none" },
+                new ComboItem("そのままにしておく"){ Value = "none" },
             });
         }
 
@@ -176,10 +176,10 @@ namespace WzComparerR2
             set { txtAPIkey.Text = value; }
         }
 
-        public string GCloudAPIKey
+        public string OpenAIBackend
         {
-            get { return txtGCloudTranslateAPIkey.Text; }
-            set { txtGCloudTranslateAPIkey.Text = value; }
+            get { return txtOpenAIBackend.Text; }
+            set { txtOpenAIBackend.Text = value; }
         }
 
         public string NxSecretKey
@@ -329,24 +329,39 @@ namespace WzComparerR2
             ComboItem selectedItem = (ComboItem)cmbPreferredTranslateEngine.SelectedItem;
             string respText;
             HttpWebRequest req;
+            string backendAddress;
+            if (string.IsNullOrEmpty(OpenAIBackend))
+            {
+                backendAddress = txtOpenAIBackend.WatermarkText;
+            }
+            else
+            {
+                backendAddress = OpenAIBackend;
+            }
             switch ((int)selectedItem.Value)
             {
                 case 8:
                 case 9:
-                    req = WebRequest.Create("http://localhost:1234/v1/models") as HttpWebRequest;
-                    req.Timeout = 4000;
+                    req = WebRequest.Create(backendAddress + "/v1/models") as HttpWebRequest;
+                    req.Timeout = 15000;
+                    if (!string.IsNullOrEmpty(NxSecretKey))
+                    {
+                        JObject reqHeaders = JObject.Parse(NxSecretKey);
+                        foreach (var property in reqHeaders.Properties()) req.Headers.Add(property.Name, property.Value.ToString());
+                    }
                     try
                     {
                         string respJson = new StreamReader(req.GetResponse().GetResponseStream(), Encoding.UTF8).ReadToEnd();
                         JObject jsonResp = JObject.Parse(respJson);
                         JArray dataArray = (JArray)jsonResp["data"];
                         StringBuilder sb = new StringBuilder();
+                        cmbLanguageModel.Items.Clear();
                         foreach (JObject dataItem in dataArray)
                         {
                             sb.AppendLine(dataItem["id"].ToString());
                             cmbLanguageModel.Items.Add(new ComboItem(dataItem["id"].ToString()) { Value = dataItem["id"].ToString() });
                         }
-                        cmbLanguageModel.SelectedIndex = 1;
+                        cmbLanguageModel.SelectedIndex = 0;
                         respText = sb.ToString();
                     }
                     catch (WebException ex)
@@ -409,14 +424,19 @@ namespace WzComparerR2
                     labelX5.Visible = true;
                     labelX5.Enabled = false;
                     labelX11.Visible = false;
+                    labelX12.Enabled = false;
+                    txtOpenAIBackend.Enabled = false;
                     cmbMozhiBackend.Visible = true;
                     cmbMozhiBackend.Enabled = false;
+                    cmbLanguageModel.Visible = false;
                     buttonXCheck2.Enabled = false;
                     break;
                 case 8:
                 case 9:
                     labelX5.Visible = false;
                     labelX11.Visible = true;
+                    labelX12.Enabled = true;
+                    txtOpenAIBackend.Enabled = true;
                     cmbMozhiBackend.Visible = false;
                     cmbLanguageModel.Visible = true;
                     buttonXCheck2.Enabled = true;
@@ -425,6 +445,8 @@ namespace WzComparerR2
                     labelX5.Visible = true;
                     labelX5.Enabled = true;
                     labelX11.Visible = false;
+                    labelX12.Enabled = false;
+                    txtOpenAIBackend.Enabled = false;
                     cmbMozhiBackend.Visible = true;
                     cmbMozhiBackend.Enabled = true;
                     cmbLanguageModel.Visible = false;
@@ -457,6 +479,7 @@ namespace WzComparerR2
             this.NxSecretKey = config.NxSecretKey;
             this.MozhiBackend = config.MozhiBackend;
             this.LanguageModel = config.LanguageModel;
+            this.OpenAIBackend = config.OpenAIBackend;
             this.PreferredTranslateEngine = config.PreferredTranslateEngine;
             this.DesiredLanguage = config.DesiredLanguage;
             this.PreferredLayout = config.PreferredLayout;
@@ -475,7 +498,8 @@ namespace WzComparerR2
             config.NxOpenAPIKey = this.NxOpenAPIKey;
             config.NxSecretKey = this.NxSecretKey;
             config.MozhiBackend = this.MozhiBackend;
-            config.LanguageModel = this.LanguageModel;
+            if (this.LanguageModel != "none") config.LanguageModel = this.LanguageModel;
+            config.OpenAIBackend = this.OpenAIBackend;
             config.PreferredTranslateEngine = this.PreferredTranslateEngine;
             config.DesiredLanguage = this.DesiredLanguage;
             config.PreferredLayout = this.PreferredLayout;

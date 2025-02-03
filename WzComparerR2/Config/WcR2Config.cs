@@ -90,6 +90,17 @@ namespace WzComparerR2.Config
         }
 
         /// <summary>
+        /// OpenAI Backend Configuration
+        /// </summary>
+        [ConfigurationProperty("OpenAIBackend")]
+        [ConfigurationCollection(typeof(ConfigArrayList<string>.ItemElement))]
+        public ConfigItem<string> OpenAIBackend
+        {
+            get { return (ConfigItem<string>)this["OpenAIBackend"]; }
+            set { this["OpenAIBackend"] = value; }
+        }
+
+        /// <summary>
         /// Desired Language Configuration
         /// </summary>
         [ConfigurationProperty("DesiredLanguage")]
