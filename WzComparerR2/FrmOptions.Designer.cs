@@ -46,6 +46,7 @@
             this.chkAutoCheckExtFiles = new DevComponents.DotNetBar.Controls.CheckBoxX();
             this.cmbDesiredLanguage = new DevComponents.DotNetBar.Controls.ComboBoxEx();
             this.cmbMozhiBackend = new DevComponents.DotNetBar.Controls.ComboBoxEx();
+            this.cmbLanguageModel = new DevComponents.DotNetBar.Controls.ComboBoxEx();
             this.cmbDetectCurrency = new DevComponents.DotNetBar.Controls.ComboBoxEx();
             this.cmbDesiredCurrency = new DevComponents.DotNetBar.Controls.ComboBoxEx();
             this.cmbPreferredLayout = new DevComponents.DotNetBar.Controls.ComboBoxEx();
@@ -65,6 +66,7 @@
             this.labelX8 = new DevComponents.DotNetBar.LabelX();
             this.labelX9 = new DevComponents.DotNetBar.LabelX();
             this.labelX10 = new DevComponents.DotNetBar.LabelX();
+            this.labelX11 = new DevComponents.DotNetBar.LabelX();
             this.superTabItem3 = new DevComponents.DotNetBar.SuperTabItem();
             this.panelEx1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.superTabControl1)).BeginInit();
@@ -363,6 +365,7 @@
             this.superTabControlPanel2.Controls.Add(this.labelX5);
             this.superTabControlPanel2.Controls.Add(this.buttonXCheck2);
             this.superTabControlPanel2.Controls.Add(this.cmbMozhiBackend);
+            this.superTabControlPanel2.Controls.Add(this.cmbLanguageModel);
             this.superTabControlPanel2.Controls.Add(this.labelX6);
             this.superTabControlPanel2.Controls.Add(this.cmbDesiredLanguage);
             this.superTabControlPanel2.Controls.Add(this.labelX7);
@@ -372,6 +375,7 @@
             this.superTabControlPanel2.Controls.Add(this.labelX9);
             this.superTabControlPanel2.Controls.Add(this.cmbDetectCurrency);
             this.superTabControlPanel2.Controls.Add(this.labelX10);
+            this.superTabControlPanel2.Controls.Add(this.labelX11);
             this.superTabControlPanel2.Controls.Add(this.cmbDesiredCurrency);
             this.superTabControlPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.superTabControlPanel2.Location = new System.Drawing.Point(49, 0);
@@ -473,6 +477,20 @@
             this.labelX10.TabIndex = 9;
             this.labelX10.Text = "ご希望の単位";
             // 
+            // labelX11
+            // 
+            this.labelX11.AutoSize = true;
+            this.labelX11.BackColor = System.Drawing.Color.Transparent;
+            // 
+            // 
+            // 
+            this.labelX11.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
+            this.labelX11.Location = new System.Drawing.Point(14, 15);
+            this.labelX11.Name = "labelX11";
+            this.labelX11.TabIndex = 9;
+            this.labelX11.Text = "言語モデル";
+            this.labelX11.Visible = false;
+            // 
             // cmbDesiredLanguage
             // 
             this.cmbDesiredLanguage.DisplayMember = "Text";
@@ -501,6 +519,21 @@
             this.cmbMozhiBackend.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
             this.cmbMozhiBackend.TabIndex = 12;
             // 
+            // cmbLanguageModel
+            // 
+            this.cmbLanguageModel.DisplayMember = "Text";
+            this.cmbLanguageModel.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
+            this.cmbLanguageModel.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbLanguageModel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.cmbLanguageModel.FormattingEnabled = true;
+            this.cmbLanguageModel.ItemHeight = 13;
+            this.cmbLanguageModel.Width = 148;
+            this.cmbLanguageModel.Location = new System.Drawing.Point(110, 13);
+            this.cmbLanguageModel.Name = "cmbLanguageModel";
+            this.cmbLanguageModel.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
+            this.cmbLanguageModel.TabIndex = 12;
+            this.cmbLanguageModel.Visible = false;
+            // 
             // cmbPreferredTranslateEngine
             // 
             this.cmbPreferredTranslateEngine.DisplayMember = "Text";
@@ -514,6 +547,7 @@
             this.cmbPreferredTranslateEngine.Name = "cmbPreferredTranslateEngine";
             this.cmbPreferredTranslateEngine.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
             this.cmbPreferredTranslateEngine.TabIndex = 13;
+            this.cmbPreferredTranslateEngine.SelectedIndexChanged += cmbPreferredTranslateEngine_SelectedIndexChanged;
             // 
             // cmbPreferredLayout
             // 
@@ -665,6 +699,7 @@
         private DevComponents.DotNetBar.Controls.ComboBoxEx cmbWzVersionVerifyMode;
         private DevComponents.DotNetBar.Controls.ComboBoxEx cmbDesiredLanguage;
         private DevComponents.DotNetBar.Controls.ComboBoxEx cmbMozhiBackend;
+        private DevComponents.DotNetBar.Controls.ComboBoxEx cmbLanguageModel;
         private DevComponents.DotNetBar.Controls.ComboBoxEx cmbDetectCurrency;
         private DevComponents.DotNetBar.Controls.ComboBoxEx cmbDesiredCurrency;
         private DevComponents.DotNetBar.Controls.ComboBoxEx cmbPreferredLayout;
@@ -678,5 +713,6 @@
         private DevComponents.DotNetBar.LabelX labelX8;
         private DevComponents.DotNetBar.LabelX labelX9;
         private DevComponents.DotNetBar.LabelX labelX10;
+        private DevComponents.DotNetBar.LabelX labelX11;
     }
 }

@@ -79,6 +79,17 @@ namespace WzComparerR2.Config
         }
 
         /// <summary>
+        /// Language Model Configuration
+        /// </summary>
+        [ConfigurationProperty("LanguageModel")]
+        [ConfigurationCollection(typeof(ConfigArrayList<string>.ItemElement))]
+        public ConfigItem<string> LanguageModel
+        {
+            get { return (ConfigItem<string>)this["LanguageModel"]; }
+            set { this["LanguageModel"] = value; }
+        }
+
+        /// <summary>
         /// Desired Language Configuration
         /// </summary>
         [ConfigurationProperty("DesiredLanguage")]

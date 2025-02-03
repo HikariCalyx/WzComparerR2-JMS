@@ -36,6 +36,17 @@ namespace WzComparerR2.CharaSim
             { "sgd", "en" }
         };
 
+        // Language Model Expression
+        private static Dictionary<string, string> dictL2LM = new Dictionary<string, string>()
+        {
+            { "ja", "Japanese" },
+            { "ko", "Korean" },
+            { "zh-CN", "Simplified Chinese" },
+            { "en", "English" },
+            { "zh-TW", "Traditional Chinese" },
+            { "yue", "Cantonese" }
+        };
+
         private static Dictionary<string, string> dictCurrencyName = new Dictionary<string, string>()
         {
             { "jpy", "円" },
@@ -54,6 +65,7 @@ namespace WzComparerR2.CharaSim
 
         private static string GTranslateBaseURL = "https://translate.googleapis.com/translate_a/t";
         private static string NTranslateBaseURL = "https://naveropenapi.apigw.ntruss.com";
+        private static string LMSTranslateBaseURL = "http://localhost:1234/v1/";
 
         private static List<string> CurrencyBaseURL = new List<string>()
         {
@@ -83,6 +95,41 @@ namespace WzComparerR2.CharaSim
             {
                 return JArray.Parse($"[[\"{text}\",\"{desiredLanguage}\"]]");
             }            
+        }
+
+        private static string LMSTranslate(string text, string desiredLanguage)
+        {
+            var request = (HttpWebRequest)WebRequest.Create(LMSTranslateBaseURL + "chat/completions");
+            request.Method = "POST";
+            request.ContentType = "application/json";
+            var postData = new JObject(
+                new JProperty("model", DefaultLanguageModel),
+                new JProperty("messages", new JArray(
+                    new JObject(
+                        new JProperty("role", "user"),
+                        new JProperty("content", "Please translate following content into " + dictL2LM[desiredLanguage] + ": " + text)
+                    )
+                )),
+                new JProperty("temperature", 0.7),
+                new JProperty("max_tokens", -1),
+                new JProperty("stream", false)
+            );
+            var byteArray = System.Text.Encoding.UTF8.GetBytes(postData.ToString());
+            request.ContentLength = byteArray.Length;
+            Stream newStream = request.GetRequestStream();
+            newStream.Write(byteArray, 0, byteArray.Length);
+            newStream.Close();
+            try
+            {
+                var response = (HttpWebResponse)request.GetResponse();
+                var responseString = new StreamReader(response.GetResponseStream()).ReadToEnd();
+                JObject jrResponse = JObject.Parse(responseString);
+                return jrResponse.SelectToken("choices[0].message.content").ToString().Split(new String[] { "</think>\n\n" }, StringSplitOptions.None)[1];
+            }
+            catch
+            {
+                return text;
+            }
         }
 
         public static bool IsKoreanStringPresent(string checkString)
@@ -250,7 +297,10 @@ namespace WzComparerR2.CharaSim
                     JObject responseObj = NTranslate(orgText.Replace("\\n", "\r\n"), Translator.DefaultDesiredLanguage);
                     translatedText = responseObj.SelectToken("message.result.translatedText").ToString();
                     break;
-                //7: iFlyTek (Non-Mozhi)
+                //9: LM Studio
+                case 9:
+                    translatedText = LMSTranslate(orgText.Replace("\\n", "\r\n"), Translator.DefaultDesiredLanguage);
+                    break;
             }
             if (isMozhiUsed)
             {
@@ -411,6 +461,7 @@ namespace WzComparerR2.CharaSim
         public static string ExchangeTable { get; set; }
         public static string DefaultDesiredLanguage { get; set; }
         public static string DefaultMozhiBackend { get; set; }
+        public static string DefaultLanguageModel { get; set; }
         public static string DefaultTranslateAPIKey { get; set; }
         public static int DefaultPreferredLayout { get; set; }
         public static int DefaultPreferredTranslateEngine { get; set; }
