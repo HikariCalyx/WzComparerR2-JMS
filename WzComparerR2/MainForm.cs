@@ -8,6 +8,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using System.Linq;
+using System.Reflection;
 using System.IO;
 using System.Xml;
 using Timer = System.Timers.Timer;
@@ -16,6 +17,7 @@ using System.Threading.Tasks;
 using DevComponents.DotNetBar;
 using DevComponents.DotNetBar.Controls;
 using DevComponents.AdvTree;
+using DevComponents.AdvTree.Display;
 using WzComparerR2.WzLib;
 using WzComparerR2.Common;
 using WzComparerR2.CharaSimControl;
@@ -1118,8 +1120,11 @@ namespace WzComparerR2
         private void buttonItemCloseAll_Click(object sender, EventArgs e)
         {
             advTree1.ClearAndDisposeAllNodes();
+            advTree1.ClearLayoutCellInfo();
             advTree2.ClearAndDisposeAllNodes();
+            advTree2.ClearLayoutCellInfo();
             advTree3.ClearAndDisposeAllNodes();
+            advTree3.ClearLayoutCellInfo();
             foreach (Wz_Structure wz in openedWz)
             {
                 OnWzClosing(new WzStructureEventArgs(wz));
@@ -3799,6 +3804,42 @@ namespace WzComparerR2
         public static Wz_Node AsWzNode(this Node node)
         {
             return (node?.Tag as WeakReference)?.Target as Wz_Node;
+        }
+
+        public static void ClearLayoutCellInfo(this AdvTree advTree)
+        {
+            var bindingPrivateField = BindingFlags.NonPublic | BindingFlags.Instance;
+            {
+                var field1 = advTree.GetType().GetField("Ֆ", bindingPrivateField);
+                var obj1 = field1.GetValue(advTree);
+                if (obj1 != null)
+                {
+                    var field2 = obj1.GetType().BaseType.GetField("ӹ", bindingPrivateField);
+                    var obj2 = field2.GetValue(obj1);
+                    if (obj2 != null)
+                    {
+                        var field3 = obj2.GetType().GetField("ܦ", bindingPrivateField);
+                        var obj3 = field3.GetValue(obj2);
+                        if (obj3 != null)
+                        {
+                            field3.SetValue(obj2, null);
+                        }
+                    }
+                }
+            }
+            {
+                var display = advTree.NodeDisplay as NodeTreeDisplay;
+                if (display != null)
+                {
+                    var field4 = display.GetType().GetField("☼", bindingPrivateField);
+                    var obj4 = field4.GetValue(display) as NodeCellRendererEventArgs;
+                    if (obj4 != null)
+                    {
+                        obj4.Node = null;
+                        obj4.Cell = null;
+                    }
+                }
+            }
         }
     }
     #endregion
