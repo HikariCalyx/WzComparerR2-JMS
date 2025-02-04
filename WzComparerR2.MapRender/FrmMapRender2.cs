@@ -10,6 +10,8 @@ using WzComparerR2.MapRender.Config;
 using WzComparerR2.MapRender.Patches2;
 using WzComparerR2.MapRender.UI;
 using WzComparerR2.Rendering;
+using WzComparerR2.CharaSim;
+using static System.Net.Mime.MediaTypeNames;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Form = System.Windows.Forms.Form;
@@ -22,6 +24,8 @@ using RelayCommand = EmptyKeys.UserInterface.Input.RelayCommand;
 using KeyCode = EmptyKeys.UserInterface.Input.KeyCode;
 using ModifierKeys = EmptyKeys.UserInterface.Input.ModifierKeys;
 using ServiceManager = EmptyKeys.UserInterface.Mvvm.ServiceManager;
+using System.Net.Http;
+using Newtonsoft.Json.Linq;
 #endregion
 
 namespace WzComparerR2.MapRender
@@ -140,6 +144,14 @@ namespace WzComparerR2.MapRender
         Tooltip2 tooltip;
         WcR2Engine engine;
         Music bgm;
+
+        string OAIBackend = Translator.OAITranslateBaseURL;
+        string LanguageModel = Translator.DefaultLanguageModel;
+        double LMTemperature = Translator.DefaultLMTemperature;
+        int MaximumToken = Translator.DefaultMaximumToken;
+        string APIKey = Translator.DefaultTranslateAPIKey;
+
+        private static readonly HttpClient client = new HttpClient();
 
         CoroutineManager cm;
         FpsCounter fpsCounter;
@@ -571,6 +583,7 @@ namespace WzComparerR2.MapRender
                     this.ui.ChatBox.AppendTextHelp(@"/questex クエストキーの値設定");
                     this.ui.ChatBox.AppendTextHelp(@"/date 日付設定");
                     this.ui.ChatBox.AppendTextHelp(@"/multibgm マルチBGM設定");
+                    this.ui.ChatBox.AppendTextHelp(@"/talk (メッセージ) 事前設定されたAI言語モデルにメッセージを送信する");
                     break;
 
                 case "/map":
@@ -933,6 +946,51 @@ namespace WzComparerR2.MapRender
                             this.ui.ChatBox.AppendTextHelp(@"/questex list 関連クエストキーのリストを見る");
                             this.ui.ChatBox.AppendTextHelp(@"/questex set (questID) (key) (questState) 該当クエストキーの状態設定");
                             break;
+                    }
+                    break;
+
+                case "/talk":
+                    string message = command.Substring(5).Trim();
+                    if (string.IsNullOrEmpty(message))
+                    {
+                        this.ui.ChatBox.AppendTextSystem($"AIにメッセージを送信しませんでした。");
+                        return;
+                    }
+                    this.ui.ChatBox.AppendTextSystem($"Current API Backend: " + OAIBackend + "\r\n");
+                    this.ui.ChatBox.AppendTextSystem($"Temperature: " + LMTemperature.ToString() + "\r\n");
+                    this.ui.ChatBox.AppendTextSystem($"Maximum Token: " + MaximumToken.ToString() + "\r\n");
+                    if (string.IsNullOrEmpty(OAIBackend)) OAIBackend = "https://api.openai.com/v1";
+                    var request = new HttpRequestMessage(HttpMethod.Post, OAIBackend + "/chat/completions");
+                    if (!string.IsNullOrEmpty(APIKey))
+                    {
+                        JObject reqHeaders = JObject.Parse(APIKey);
+                        foreach (var property in reqHeaders.Properties()) request.Headers.Add(property.Name, property.Value.ToString());
+                    }
+                    var postData = new JObject(
+                        new JProperty("model", LanguageModel),
+                        new JProperty("messages", new JArray(
+                            new JObject(
+                    new JProperty("role", "user"),
+                                new JProperty("content", message)
+                            )
+                        )),
+                        new JProperty("temperature", LMTemperature),
+                        new JProperty("max_tokens", MaximumToken),
+                        new JProperty("stream", true)
+                    );
+                    request.Content = new StringContent(postData.ToString(), System.Text.Encoding.UTF8, "application/json");
+                    var response = await client.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
+                    var stream = await response.Content.ReadAsStreamAsync();
+                    using (var reader = new System.IO.StreamReader(stream))
+                    {
+                        while (!reader.EndOfStream)
+                        {
+                            var line = await reader.ReadLineAsync();
+                            if (!string.IsNullOrWhiteSpace(line))
+                            {
+                                this.ui.ChatBox.AppendTextNormal(line);
+                            }
+                        }
                     }
                     break;
 
