@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using System.Reflection;
@@ -10,6 +11,9 @@ using WzComparerR2.PluginBase;
 using WzComparerR2.Network.Contracts;
 using System.Security.Cryptography;
 using DevComponents.DotNetBar;
+using WzComparerR2.CharaSim;
+using Newtonsoft.Json.Linq;
+using static System.Net.Mime.MediaTypeNames;
 
 
 namespace WzComparerR2.Network
@@ -31,6 +35,14 @@ namespace WzComparerR2.Network
         }
 
         public WcClient Client { get; private set; }
+
+        string OAIBackend = Translator.OAITranslateBaseURL;
+        string LanguageModel = Translator.DefaultLanguageModel;
+        double LMTemperature = Translator.DefaultLMTemperature;
+        int MaximumToken = Translator.DefaultMaximumToken;
+        string APIKey = Translator.DefaultTranslateAPIKey;
+
+        private static readonly HttpClient client = new HttpClient();
 
         private Dictionary<Type, Action<object>> handlers;
         private Session session;
@@ -161,11 +173,17 @@ namespace WzComparerR2.Network
                         }
                         break;
 
+                    case "/talk":
+                        string message = e.Command.Substring(5).Trim();
+                        TalkToAI(message, sender, e);
+                        break;
+
                     case "/help":
                         var sbHelp = new StringBuilder();
                         sbHelp.AppendFormat("ネットワークロガー コマンドの使用方法\r\n");
                         sbHelp.AppendFormat("/users : オンラインのユーザーを一覧表示します。\r\n");
                         sbHelp.AppendFormat("/name [名前] : ユーザー名を指定の名前に変更します。\r\n");
+                        sbHelp.AppendFormat("/talk [メッセージ] : 事前設定されたAI言語モデルにメッセージを送信します。\r\n");
                         sbHelp.AppendFormat("/help : このヘルプを表示します。");
                         Log.Info(sbHelp.ToString());
                         break;
@@ -247,6 +265,53 @@ namespace WzComparerR2.Network
         {
             var req = new PackGetAllUsersReq();
             this.Client.Send(req);
+        }
+
+        private async void TalkToAI(string message, object sender, CommandEventArgs e)
+        {
+            if (string.IsNullOrEmpty(message))
+            {
+                Log.Warn("コマンドが失敗しました: AIにメッセージを送信しませんでした。");
+                return;
+            }
+            Log.Info("Current API Backend: " + OAIBackend + "\r\n");
+            Log.Info("Temperature: " + LMTemperature.ToString() + "\r\n");
+            Log.Info("Maximum Token: " + MaximumToken.ToString() + "\r\n");
+            if (string.IsNullOrEmpty(OAIBackend)) OAIBackend = "https://api.openai.com/v1";
+            var request = new HttpRequestMessage(HttpMethod.Post, OAIBackend + "/chat/completions");
+            if (!string.IsNullOrEmpty(APIKey))
+            {
+                JObject reqHeaders = JObject.Parse(APIKey);
+                foreach (var property in reqHeaders.Properties()) request.Headers.Add(property.Name, property.Value.ToString());
+            }
+
+            var postData = new JObject(
+                new JProperty("model", LanguageModel),
+                new JProperty("messages", new JArray(
+                    new JObject(
+            new JProperty("role", "user"),
+                        new JProperty("content", message)
+                    )
+                )),
+                new JProperty("temperature", LMTemperature),
+                new JProperty("max_tokens", MaximumToken),
+                new JProperty("stream", false)
+            );
+
+            request.Content = new StringContent(postData.ToString(), System.Text.Encoding.UTF8, "application/json");
+
+            var response = await client.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
+            var stream = await response.Content.ReadAsStreamAsync();
+            using var reader = new System.IO.StreamReader(stream);
+
+            while (!reader.EndOfStream)
+            {
+                var line = await reader.ReadLineAsync();
+                if (!string.IsNullOrWhiteSpace(line))
+                {
+                    Log.Info(line);
+                }
+            }
         }
 
         private void LoginRequest()
