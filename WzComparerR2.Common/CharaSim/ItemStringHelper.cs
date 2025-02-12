@@ -427,6 +427,8 @@ namespace WzComparerR2.CharaSim
 
                 case GearType.boxingCannon: return "拳封 (両手武器)";
                 case GearType.boxingSky: return "拳天";
+
+                case GearType.jewel: return "宝玉";
                 default: return null;
             }
         }

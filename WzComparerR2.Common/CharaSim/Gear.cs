@@ -448,6 +448,11 @@ namespace WzComparerR2.CharaSim
                         return (GearType)(code / 10);
                 }
             }
+            // Jewel support
+            if (code / 10000 == 178)
+            {
+                return (GearType)(code / 10000);
+            }
             // MSN support
             if (code / 10000 == 179)
             {

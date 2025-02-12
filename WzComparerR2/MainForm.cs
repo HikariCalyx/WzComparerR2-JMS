@@ -1485,6 +1485,10 @@ namespace WzComparerR2
                 case Wz_Video video:
                     textBoxX1.Text = "データ長:  " + video.Length + " バイ\r\n" +
                         "オフセット:  " + video.Offset;
+                    var videoFrameData = this.pictureBoxEx1.LoadVideo(video);
+                    pictureBoxEx1.PictureName = GetSelectedNodeImageName();
+                    this.pictureBoxEx1.ShowAnimation(videoFrameData);
+                    this.cmbItemAniNames.Items.Clear();
                     break;
 
 
