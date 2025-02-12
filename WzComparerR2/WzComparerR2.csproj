@@ -13,6 +13,7 @@
     <ApplicationIcon>wcr2_256.ico</ApplicationIcon>
     <GenerateResourceUsePreserializedResources>true</GenerateResourceUsePreserializedResources>
     <Platforms>AnyCPU;ARM64</Platforms>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <Import Project="$(ProjectDir)..\Build\Common.props" />
   <PropertyGroup Condition="$(DotnetEdition) == 'core'">
