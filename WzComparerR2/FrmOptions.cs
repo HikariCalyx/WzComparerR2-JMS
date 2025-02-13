@@ -469,8 +469,8 @@ namespace WzComparerR2
                     labelX5.Visible = false;
                     labelX11.Visible = true;
                     labelX12.Enabled = true;
-                    labelX13.Enabled = true;
-                    labelX14.Enabled = true;
+                    labelX13.Enabled = chkOpenAIExtraOption.Checked;
+                    labelX14.Enabled = chkOpenAIExtraOption.Checked;
                     txtOpenAIBackend.Enabled = true;
                     txtLMTemperature.Enabled = chkOpenAIExtraOption.Checked;
                     txtMaximumToken.Enabled = chkOpenAIExtraOption.Checked;
