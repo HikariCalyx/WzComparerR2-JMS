@@ -24,6 +24,7 @@ namespace WzComparerR2.Config
             this.MozhiBackend = "https://mozhi.aryak.me";
             this.DetectCurrency = "auto";
             this.DesiredCurrency = "none";
+            this.OpenAIExtraOption = false;
             this.LMTemperature = 0.7;
             this.MaximumToken = -1;
         }
@@ -100,6 +101,16 @@ namespace WzComparerR2.Config
         {
             get { return (ConfigItem<string>)this["OpenAIBackend"]; }
             set { this["OpenAIBackend"] = value; }
+        }
+
+        /// <summary>
+        /// Enable Open AI Extra Option Configuration
+        /// </summary>
+        [ConfigurationProperty("OpenAIExtraOption")]
+        public ConfigItem<bool> OpenAIExtraOption
+        {
+            get { return (ConfigItem<bool>)this["OpenAIExtraOption"]; }
+            set { this["OpenAIExtraOption"] = value; }
         }
 
         /// <summary>

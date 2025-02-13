@@ -9,7 +9,6 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Net;
 using System.IO;
-using DevComponents.DotNetBar;
 using System.Globalization;
 using System.Threading;
 using static System.Net.Mime.MediaTypeNames;
@@ -24,7 +23,7 @@ namespace WzComparerR2.CharaSim
             { "ko", "krw" },
             { "zh-CN", "cny" },
             { "en", "usd" },
-            { "zh-TW", "twd" }            
+            { "zh-TW", "twd" }
         };
 
         private static Dictionary<string, string> dictC2L = new Dictionary<string, string>()
@@ -98,7 +97,7 @@ namespace WzComparerR2.CharaSim
             }            
         }
 
-        private static string OAITranslate(string text, string desiredLanguage)
+        private static string OAITranslate(string text, string desiredLanguage, bool singleLine = false)
         {
             if (string.IsNullOrEmpty(OAITranslateBaseURL)) OAITranslateBaseURL = "https://api.openai.com/v1";
             var request = (HttpWebRequest)WebRequest.Create(OAITranslateBaseURL + "/chat/completions");
@@ -113,14 +112,21 @@ namespace WzComparerR2.CharaSim
                 new JProperty("model", DefaultLanguageModel),
                 new JProperty("messages", new JArray(
                     new JObject(
+                        new JProperty("role", "system"),
+                        new JProperty("content", "You are an automated translator for a community game engine.")
+                    ),
+                    new JObject(
                         new JProperty("role", "user"),
                         new JProperty("content", "Please translate following in-game content into " + dictL2LM[desiredLanguage] + ": " + text)
                     )
                 )),
-                new JProperty("temperature", DefaultLMTemperature),
-                new JProperty("max_tokens", DefaultMaximumToken),
                 new JProperty("stream", false)
             );
+            if (IsExtraParamEnabled)
+            {
+                postData.Add(new JProperty("temperature", DefaultLMTemperature));
+                postData.Add(new JProperty("max_tokens", DefaultMaximumToken));
+            }
             var byteArray = System.Text.Encoding.UTF8.GetBytes(postData.ToString());
             request.ContentLength = byteArray.Length;
             Stream newStream = request.GetRequestStream();
@@ -131,9 +137,29 @@ namespace WzComparerR2.CharaSim
                 var response = (HttpWebResponse)request.GetResponse();
                 var responseString = new StreamReader(response.GetResponseStream()).ReadToEnd();
                 JObject jrResponse = JObject.Parse(responseString);
-                return jrResponse.SelectToken("choices[0].message.content").ToString().Split(new String[] { "</think>\n\n" }, StringSplitOptions.None)[1];
+                string responseResult = jrResponse.SelectToken("choices[0].message.content").ToString();
+                if (responseResult.Contains("</think>"))
+                {
+                    responseResult = responseResult.Split(new String[] { "</think>\n\n" }, StringSplitOptions.None)[1];
+                }
+                if (responseResult.Contains("：\n\n") || responseResult.Contains(":\n\n") || responseResult.Contains(": \n\n"))
+                {
+                    // TO DO: Put extra output to NetworkLogger.
+                    responseResult = responseResult.Split(new String[] { "\n\n" }, StringSplitOptions.None)[1];
+                    if (responseResult.Contains("\r")) responseResult = responseResult.Split(new String[] { "\r" }, StringSplitOptions.None)[0];
+                    if (responseResult.Contains("\n")) responseResult = responseResult.Split(new String[] { "\n" }, StringSplitOptions.None)[0];
+                }
+                if (singleLine)
+                {
+                    return responseResult.Replace("\r\n", " ").Replace("\n", "").Replace("  ", " ");
+                }
+                else
+                {
+                    return responseResult;
+                }
+                
             }
-            catch
+            catch (Exception e)
             {
                 return text;
             }
@@ -306,7 +332,14 @@ namespace WzComparerR2.CharaSim
                     break;
                 //9: OpenAI Compatible
                 case 9:
-                    translatedText = OAITranslate(ConvHashTagToHTMLTag(orgText), Translator.DefaultDesiredLanguage);
+                    if (titleCase && targetLanguage == "en")
+                    {
+                        translatedText = OAITranslate(ConvHashTagToHTMLTag(orgText), Translator.DefaultDesiredLanguage, true);
+                    }
+                    else
+                    {
+                        translatedText = OAITranslate(ConvHashTagToHTMLTag(orgText), Translator.DefaultDesiredLanguage);
+                    }
                     break;
             }
             if (isMozhiUsed)
@@ -509,7 +542,8 @@ namespace WzComparerR2.CharaSim
         public static string DefaultDetectCurrency { get; set; }
         public static string DefaultDesiredCurrency { get; set; }
         public static double DefaultLMTemperature { get; set; }
-        public static int DefaultMaximumToken {  get; set; }
+        public static int DefaultMaximumToken { get; set; }
+        public static bool IsExtraParamEnabled { get; set; }
         #endregion
     }
 

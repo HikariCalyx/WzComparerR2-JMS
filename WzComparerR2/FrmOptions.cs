@@ -235,6 +235,11 @@ namespace WzComparerR2
                 cmbLanguageModel.SelectedItem = item;
             }
         }
+        public bool OpenAIExtraOption
+        {
+            get { return chkOpenAIExtraOption.Checked; }
+            set { chkOpenAIExtraOption.Checked = value; }
+        }
 
         public double LMTemperature
         {
@@ -456,6 +461,7 @@ namespace WzComparerR2
                     cmbMozhiBackend.Visible = true;
                     cmbMozhiBackend.Enabled = false;
                     cmbLanguageModel.Visible = false;
+                    chkOpenAIExtraOption.Enabled = false;
                     buttonXCheck2.Enabled = false;
                     break;
                 case 8:
@@ -466,10 +472,11 @@ namespace WzComparerR2
                     labelX13.Enabled = true;
                     labelX14.Enabled = true;
                     txtOpenAIBackend.Enabled = true;
-                    txtLMTemperature.Enabled = true;
-                    txtMaximumToken.Enabled = true;
+                    txtLMTemperature.Enabled = chkOpenAIExtraOption.Checked;
+                    txtMaximumToken.Enabled = chkOpenAIExtraOption.Checked;
                     cmbMozhiBackend.Visible = false;
                     cmbLanguageModel.Visible = true;
+                    chkOpenAIExtraOption.Enabled = true;
                     buttonXCheck2.Enabled = true;
                     break;
                 default:
@@ -485,9 +492,15 @@ namespace WzComparerR2
                     cmbMozhiBackend.Visible = true;
                     cmbMozhiBackend.Enabled = true;
                     cmbLanguageModel.Visible = false;
+                    chkOpenAIExtraOption.Enabled = false;
                     buttonXCheck2.Enabled = true;
                     break;
             }
+        }
+        private void chkOpenAIExtraOption_CheckedChanged(object sender, EventArgs e)
+        {
+            txtLMTemperature.Enabled = chkOpenAIExtraOption.Checked;
+            txtMaximumToken.Enabled = chkOpenAIExtraOption.Checked;
         }
 
         public WzLib.WzVersionVerifyMode WzVersionVerifyMode
@@ -515,6 +528,7 @@ namespace WzComparerR2
             this.MozhiBackend = config.MozhiBackend;
             this.LanguageModel = config.LanguageModel;
             this.OpenAIBackend = config.OpenAIBackend;
+            this.OpenAIExtraOption = config.OpenAIExtraOption;
             this.LMTemperature = config.LMTemperature;
             this.MaximumToken = config.MaximumToken;
             this.PreferredTranslateEngine = config.PreferredTranslateEngine;
@@ -537,6 +551,7 @@ namespace WzComparerR2
             config.MozhiBackend = this.MozhiBackend;
             if (this.LanguageModel != "none") config.LanguageModel = this.LanguageModel;
             config.OpenAIBackend = this.OpenAIBackend;
+            config.OpenAIExtraOption = this.OpenAIExtraOption;
             config.LMTemperature = this.LMTemperature;
             config.MaximumToken = this.MaximumToken;
             config.PreferredTranslateEngine = this.PreferredTranslateEngine;

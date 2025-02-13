@@ -291,6 +291,7 @@ namespace WzComparerR2
             Translator.DefaultDesiredCurrency = config.DesiredCurrency;
             Translator.DefaultLMTemperature = config.LMTemperature;
             Translator.DefaultMaximumToken = config.MaximumToken;
+            Translator.IsExtraParamEnabled = config.OpenAIExtraOption;
             Translator.ExchangeTable = null;
         }
 

@@ -46,6 +46,7 @@
             this.chkImgCheckDisabled = new DevComponents.DotNetBar.Controls.CheckBoxX();
             this.chkWzSortByImgID = new DevComponents.DotNetBar.Controls.CheckBoxX();
             this.chkAutoCheckExtFiles = new DevComponents.DotNetBar.Controls.CheckBoxX();
+            this.chkOpenAIExtraOption = new DevComponents.DotNetBar.Controls.CheckBoxX();
             this.cmbDesiredLanguage = new DevComponents.DotNetBar.Controls.ComboBoxEx();
             this.cmbMozhiBackend = new DevComponents.DotNetBar.Controls.ComboBoxEx();
             this.cmbLanguageModel = new DevComponents.DotNetBar.Controls.ComboBoxEx();
@@ -154,6 +155,22 @@
             this.txtOpenAIBackend.Size = new System.Drawing.Size(178, 23);
             this.txtOpenAIBackend.TabIndex = 10;
             this.txtOpenAIBackend.WatermarkText = "https://api.openai.com/v1";
+            // 
+            // chkOpenAIExtraOption
+            // 
+            this.chkOpenAIExtraOption.AutoSize = true;
+            this.chkOpenAIExtraOption.BackColor = System.Drawing.Color.Transparent;
+            // 
+            // 
+            // 
+            this.chkOpenAIExtraOption.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
+            this.chkOpenAIExtraOption.Location = new System.Drawing.Point(14, 40);
+            this.chkOpenAIExtraOption.Name = "chkOpenAIExtraOption";
+            this.chkOpenAIExtraOption.Size = new System.Drawing.Size(212, 16);
+            this.chkOpenAIExtraOption.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
+            this.chkOpenAIExtraOption.TabIndex = 11;
+            this.chkOpenAIExtraOption.Text = "以下のパラメータを使用します";
+            this.chkOpenAIExtraOption.CheckedChanged += new System.EventHandler(this.chkOpenAIExtraOption_CheckedChanged);
             //
             // txtLMTemperature
             //
@@ -163,7 +180,7 @@
             this.txtLMTemperature.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
             this.txtLMTemperature.ButtonFreeText.Shortcut = DevComponents.DotNetBar.eShortcut.F2;
             this.txtLMTemperature.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.txtLMTemperature.Location = new System.Drawing.Point(140, 40);
+            this.txtLMTemperature.Location = new System.Drawing.Point(140, 67);
             this.txtLMTemperature.MinValue = 0;
             this.txtLMTemperature.MaxValue = 2;
             this.txtLMTemperature.Increment = 0.1;
@@ -181,7 +198,7 @@
             this.txtMaximumToken.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
             this.txtMaximumToken.ButtonFreeText.Shortcut = DevComponents.DotNetBar.eShortcut.F2;
             this.txtMaximumToken.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.txtMaximumToken.Location = new System.Drawing.Point(140, 67);
+            this.txtMaximumToken.Location = new System.Drawing.Point(140, 96);
             this.txtMaximumToken.MinValue = -1;
             this.txtMaximumToken.Name = "txtMaximumToken";
             this.txtMaximumToken.ShowUpDown = true;
@@ -556,7 +573,7 @@
             // 
             // 
             this.labelX13.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
-            this.labelX13.Location = new System.Drawing.Point(14, 42);
+            this.labelX13.Location = new System.Drawing.Point(14, 69);
             this.labelX13.Name = "labelX13";
             this.labelX13.TabIndex = 9;
             this.labelX13.Text = "言語モデル温度値";
@@ -569,7 +586,7 @@
             // 
             // 
             this.labelX14.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
-            this.labelX14.Location = new System.Drawing.Point(14, 69);
+            this.labelX14.Location = new System.Drawing.Point(14, 96);
             this.labelX14.Name = "labelX14";
             this.labelX14.TabIndex = 9;
             this.labelX14.Text = "最大トークン制限";
@@ -689,6 +706,7 @@
             this.superTabControlPanel3.Controls.Add(this.txtOpenAIBackend);
             this.superTabControlPanel3.Controls.Add(this.txtLMTemperature);
             this.superTabControlPanel3.Controls.Add(this.txtMaximumToken);
+            this.superTabControlPanel3.Controls.Add(this.chkOpenAIExtraOption);
             this.superTabControlPanel3.Dock = System.Windows.Forms.DockStyle.Fill;
             this.superTabControlPanel3.Location = new System.Drawing.Point(39, 0);
             this.superTabControlPanel3.Name = "superTabControlPanel3";
@@ -806,6 +824,7 @@
         private DevComponents.DotNetBar.Controls.CheckBoxX chkAutoCheckExtFiles;
         private DevComponents.DotNetBar.Controls.CheckBoxX chkWzSortByImgID;
         private DevComponents.DotNetBar.Controls.CheckBoxX chkImgCheckDisabled;
+        private DevComponents.DotNetBar.Controls.CheckBoxX chkOpenAIExtraOption;
         private DevComponents.DotNetBar.Controls.ComboBoxEx cmbWzVersionVerifyMode;
         private DevComponents.DotNetBar.Controls.ComboBoxEx cmbDesiredLanguage;
         private DevComponents.DotNetBar.Controls.ComboBoxEx cmbMozhiBackend;
