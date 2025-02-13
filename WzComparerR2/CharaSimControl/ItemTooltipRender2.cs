@@ -1009,24 +1009,32 @@ namespace WzComparerR2.CharaSimControl
                 {
                     Wz_Node sampleNode = PluginManager.FindWz(item.SamplePath);
                     int sampleW = 15;
-                    for (int i = 1; ; i++)
+                    // Workaround for KMST 1.2.1184
+                    if (sampleNode == null && item.SamplePath.Contains("ChatEmoticon.img"))
                     {
-                        Wz_Node effectNode = sampleNode.FindNodeByPath(string.Format("{0}{1:D4}\\effect\\0", sampleNode.Text, i));
-                        if (effectNode == null)
-                        {
-                            break;
-                        }
-
-                        BitmapOrigin effect = BitmapOrigin.CreateFromNode(effectNode, PluginManager.FindWz);
-                        if (sampleW + 87 >= tooltip.Width)
-                        {
-                            picH += 62;
-                            sampleW = 15;
-                        }
-                        g.DrawImage(effect.Bitmap, sampleW + (85 - effect.Bitmap.Width - 1) / 2, picH + (62 - effect.Bitmap.Height - 1) / 2);
-                        sampleW += 87;
+                        sampleNode = PluginManager.FindWz(item.SamplePath.Replace("ChatEmoticon.img/", "ChatEmoticon.img/Emoticon/"));
                     }
-                    picH += 62;
+                    if (sampleNode != null)
+                    {
+                        for (int i = 1; ; i++)
+                        {
+                            Wz_Node effectNode = sampleNode.FindNodeByPath(string.Format("{0}{1:D4}\\effect\\0", sampleNode.Text, i));
+                            if (effectNode == null)
+                            {
+                                break;
+                            }
+
+                            BitmapOrigin effect = BitmapOrigin.CreateFromNode(effectNode, PluginManager.FindWz);
+                            if (sampleW + 87 >= tooltip.Width)
+                            {
+                                picH += 62;
+                                sampleW = 15;
+                            }
+                            g.DrawImage(effect.Bitmap, sampleW + (85 - effect.Bitmap.Width - 1) / 2, picH + (62 - effect.Bitmap.Height - 1) / 2);
+                            sampleW += 87;
+                        }
+                        picH += 62;
+                    }
                 }
                 if (nickResNode != null)
                 {
