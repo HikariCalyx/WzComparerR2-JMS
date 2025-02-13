@@ -1021,12 +1021,9 @@ namespace WzComparerR2.CharaSim
                 case 11211: return "ビーストテイマー(エカ)";
                 case 11212: return "ビーストテイマー(アル)";
 
-                case 12000: return "炭治郎";
-                case 12100: return "炭治郎(1次)";
-                case 12110: return "炭治郎(2次)";
-                case 12111: return "炭治郎(3次)";
-                case 12112: return "炭治郎(4次)";
-                case 12114: return "炭治郎(6次)";
+                case 12000:
+                case 12005:
+                case 12100: return "竈門炭治郎";
 
                 case 13000: return "ピンクビーン";
                 case 13001: return "イェティ";
