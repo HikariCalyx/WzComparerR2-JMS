@@ -359,13 +359,13 @@ namespace WzComparerR2
             // 
             this.expandablePanel2.CanvasColor = System.Drawing.SystemColors.Control;
             this.expandablePanel2.ColorSchemeStyle = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
-            this.expandablePanel2.Controls.Add(this.chkResolvePngLink);
-            this.expandablePanel2.Controls.Add(this.chkEnableDarkMode);
-            this.expandablePanel2.Controls.Add(this.chkOutputRemovedImg);
-            this.expandablePanel2.Controls.Add(this.chkOutputAddedImg);
-            this.expandablePanel2.Controls.Add(this.cmbComparePng);
-            this.expandablePanel2.Controls.Add(this.chkOutputPng);
-            this.expandablePanel2.Controls.Add(this.chkCompare);
+            //this.expandablePanel2.Controls.Add(this.chkResolvePngLink);
+            //this.expandablePanel2.Controls.Add(this.chkEnableDarkMode);
+            //this.expandablePanel2.Controls.Add(this.chkOutputRemovedImg);
+            //this.expandablePanel2.Controls.Add(this.chkOutputAddedImg);
+            //this.expandablePanel2.Controls.Add(this.cmbComparePng);
+            //this.expandablePanel2.Controls.Add(this.chkOutputPng);
+            //this.expandablePanel2.Controls.Add(this.chkCompare);
             this.expandablePanel2.Controls.Add(this.panelEx2);
             this.expandablePanel2.Controls.Add(this.buttonXPatch);
             this.expandablePanel2.Controls.Add(this.chkDeadPatch);
