@@ -183,6 +183,7 @@ namespace WzComparerR2.CharaSim
             }
             
         }
+
         private static JObject MTranslate(string text, string engine, string sourceLanguage, string desiredLanguage)
         {
             var request = (HttpWebRequest)WebRequest.Create(DefaultMozhiBackend + "/api/translate?engine=" + engine + "&from=" + sourceLanguage + "&to=" + desiredLanguage + "&text=" + Uri.EscapeDataString(text));
