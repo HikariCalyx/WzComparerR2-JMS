@@ -113,7 +113,7 @@ namespace WzComparerR2.CharaSim
                 new JProperty("messages", new JArray(
                     new JObject(
                         new JProperty("role", "system"),
-                        new JProperty("content", "You are an automated translator for a community game engine.")
+                        new JProperty("content", "You are an automated translator for a community game engine, and I only need translated result in output.")
                     ),
                     new JObject(
                         new JProperty("role", "user"),
@@ -142,6 +142,14 @@ namespace WzComparerR2.CharaSim
                 {
                     responseResult = responseResult.Split(new String[] { "</think>\n\n" }, StringSplitOptions.None)[1];
                 }
+                if (responseResult.Contains("**\""))
+                {
+                    responseResult = responseResult.Split(new String[] { "**" }, StringSplitOptions.None)[1];
+                }
+                if (responseResult.Contains(text))
+                {
+                    responseResult = responseResult.Split(new String[] { "**" }, StringSplitOptions.None)[1];
+                }
                 if (responseResult.Contains("：\n\n") || responseResult.Contains(":\n\n") || responseResult.Contains(": \n\n"))
                 {
                     // TO DO: Put extra output to NetworkLogger.
@@ -151,7 +159,7 @@ namespace WzComparerR2.CharaSim
                 }
                 if (singleLine)
                 {
-                    return responseResult.Replace("\r\n", " ").Replace("\n", "").Replace("  ", " ");
+                    return responseResult.Replace("\r\n", " ").Replace("\n", "").Replace("  ", " ").Replace("\"", "");
                 }
                 else
                 {
