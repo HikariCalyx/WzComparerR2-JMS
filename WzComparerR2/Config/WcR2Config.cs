@@ -25,6 +25,7 @@ namespace WzComparerR2.Config
             this.DetectCurrency = "auto";
             this.DesiredCurrency = "none";
             this.OpenAIExtraOption = false;
+            this.OpenAISystemMessage = "";
             this.LMTemperature = 0.7;
             this.MaximumToken = -1;
         }
@@ -104,13 +105,24 @@ namespace WzComparerR2.Config
         }
 
         /// <summary>
-        /// Enable Open AI Extra Option Configuration
+        /// Enable OpenAI Extra Option Configuration
         /// </summary>
         [ConfigurationProperty("OpenAIExtraOption")]
         public ConfigItem<bool> OpenAIExtraOption
         {
             get { return (ConfigItem<bool>)this["OpenAIExtraOption"]; }
             set { this["OpenAIExtraOption"] = value; }
+        }
+
+        /// <summary>
+        /// OpenAI System Message Configuration
+        /// </summary>
+        [ConfigurationProperty("OpenAISystemMessage")]
+        [ConfigurationCollection(typeof(ConfigArrayList<string>.ItemElement))]
+        public ConfigItem<string> OpenAISystemMessage
+        {
+            get { return (ConfigItem<string>)this["OpenAISystemMessage"]; }
+            set { this["OpenAISystemMessage"] = value; }
         }
 
         /// <summary>

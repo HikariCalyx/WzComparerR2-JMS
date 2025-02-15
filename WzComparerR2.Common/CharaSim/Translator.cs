@@ -99,6 +99,7 @@ namespace WzComparerR2.CharaSim
 
         private static string OAITranslate(string text, string desiredLanguage, bool singleLine = false)
         {
+            if (string.IsNullOrEmpty(DefaultOpenAISystemMessage)) DefaultOpenAISystemMessage = "You are an automated translator for a community game engine, and I only need translated result in output.";
             if (string.IsNullOrEmpty(OAITranslateBaseURL)) OAITranslateBaseURL = "https://api.openai.com/v1";
             var request = (HttpWebRequest)WebRequest.Create(OAITranslateBaseURL + "/chat/completions");
             request.Method = "POST";
@@ -113,7 +114,7 @@ namespace WzComparerR2.CharaSim
                 new JProperty("messages", new JArray(
                     new JObject(
                         new JProperty("role", "system"),
-                        new JProperty("content", "You are an automated translator for a community game engine, and I only need translated result in output.")
+                        new JProperty("content", DefaultOpenAISystemMessage)
                     ),
                     new JObject(
                         new JProperty("role", "user"),
@@ -545,6 +546,7 @@ namespace WzComparerR2.CharaSim
         public static string DefaultMozhiBackend { get; set; }
         public static string DefaultLanguageModel { get; set; }
         public static string DefaultTranslateAPIKey { get; set; }
+        public static string DefaultOpenAISystemMessage { get; set; }
         public static int DefaultPreferredLayout { get; set; }
         public static int DefaultPreferredTranslateEngine { get; set; }
         public static bool IsTranslateEnabled { get; set; }

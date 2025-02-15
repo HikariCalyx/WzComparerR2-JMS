@@ -283,6 +283,7 @@ namespace WzComparerR2
             Translator.DefaultMozhiBackend = config.MozhiBackend;
             Translator.DefaultLanguageModel = config.LanguageModel;
             Translator.OAITranslateBaseURL = config.OpenAIBackend;
+            Translator.DefaultOpenAISystemMessage = config.OpenAISystemMessage;
             Translator.DefaultPreferredTranslateEngine = config.PreferredTranslateEngine;
             Translator.DefaultTranslateAPIKey = config.NxSecretKey;
             Translator.DefaultPreferredLayout = config.PreferredLayout;

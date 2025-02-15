@@ -182,6 +182,12 @@ namespace WzComparerR2
             set { txtOpenAIBackend.Text = value; }
         }
 
+        public string OpenAISystemMessage
+        {
+            get { return txtOpenAISystemMessage.Text; }
+            set { txtOpenAISystemMessage.Text = value; }
+        }
+
         public string NxSecretKey
         {
             get { return txtSecretkey.Text; }
@@ -455,7 +461,9 @@ namespace WzComparerR2
                     labelX12.Enabled = false;
                     labelX13.Enabled = false;
                     labelX14.Enabled = false;
+                    labelX15.Enabled = false;
                     txtOpenAIBackend.Enabled = false;
+                    txtOpenAISystemMessage.Enabled = false;
                     txtLMTemperature.Enabled = false;
                     txtMaximumToken.Enabled = false;
                     cmbMozhiBackend.Visible = true;
@@ -471,7 +479,9 @@ namespace WzComparerR2
                     labelX12.Enabled = true;
                     labelX13.Enabled = chkOpenAIExtraOption.Checked;
                     labelX14.Enabled = chkOpenAIExtraOption.Checked;
+                    labelX15.Enabled = true;
                     txtOpenAIBackend.Enabled = true;
+                    txtOpenAISystemMessage.Enabled = true;
                     txtLMTemperature.Enabled = chkOpenAIExtraOption.Checked;
                     txtMaximumToken.Enabled = chkOpenAIExtraOption.Checked;
                     cmbMozhiBackend.Visible = false;
@@ -486,7 +496,9 @@ namespace WzComparerR2
                     labelX12.Enabled = false;
                     labelX13.Enabled = false;
                     labelX14.Enabled = false;
+                    labelX15.Enabled = false;
                     txtOpenAIBackend.Enabled = false;
+                    txtOpenAISystemMessage.Enabled = false;
                     txtLMTemperature.Enabled = false;
                     txtMaximumToken.Enabled = false;
                     cmbMozhiBackend.Visible = true;
@@ -529,6 +541,7 @@ namespace WzComparerR2
             this.LanguageModel = config.LanguageModel;
             this.OpenAIBackend = config.OpenAIBackend;
             this.OpenAIExtraOption = config.OpenAIExtraOption;
+            this.OpenAISystemMessage = config.OpenAISystemMessage;
             this.LMTemperature = config.LMTemperature;
             this.MaximumToken = config.MaximumToken;
             this.PreferredTranslateEngine = config.PreferredTranslateEngine;
@@ -552,6 +565,7 @@ namespace WzComparerR2
             if (this.LanguageModel != "none") config.LanguageModel = this.LanguageModel;
             config.OpenAIBackend = this.OpenAIBackend;
             config.OpenAIExtraOption = this.OpenAIExtraOption;
+            config.OpenAISystemMessage = this.OpenAISystemMessage;
             config.LMTemperature = this.LMTemperature;
             config.MaximumToken = this.MaximumToken;
             config.PreferredTranslateEngine = this.PreferredTranslateEngine;
