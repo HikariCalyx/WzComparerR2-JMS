@@ -3311,19 +3311,19 @@ namespace WzComparerR2
             {
                 case Keys.Escape:
                     frm.Hide();
-                    break;
+                    return;
                 case Keys.Up:
                     frm.Top -= 1;
-                    break;
+                    return;
                 case Keys.Down:
                     frm.Top += 1;
-                    break;
+                    return;
                 case Keys.Left:
                     frm.Left -= 1;
-                    break;
+                    return;
                 case Keys.Right:
                     frm.Left += 1;
-                    break;
+                    return;
             }
 
             Skill skill = frm.TargetItem as Skill;
@@ -3347,6 +3347,8 @@ namespace WzComparerR2
                     case Keys.OemCloseBrackets:
                         skill.Level += this.skillInterval;
                         break;
+                    default:
+                        return;
                 }
                 frm.Refresh();
             }
