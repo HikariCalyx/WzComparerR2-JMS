@@ -51,6 +51,8 @@ namespace WzComparerR2.Network
         private bool ExtraParamEnabled = false;
         private bool AIChatEnabled = false;
 
+        private JObject AIChatJson = new JObject();
+
         protected override void OnLoad()
         {
             WzComparerR2.Config.ConfigManager.RegisterAllSection();
@@ -79,6 +81,8 @@ namespace WzComparerR2.Network
             if (!string.IsNullOrEmpty(Translator.OAITranslateBaseURL)) AIBaseURL = Translator.OAITranslateBaseURL;
             if (!string.IsNullOrEmpty(Translator.DefaultLanguageModel)) selectedLM = Translator.DefaultLanguageModel;
             if (!string.IsNullOrEmpty(Translator.DefaultTranslateAPIKey)) APIKeyJSON = Translator.DefaultTranslateAPIKey;
+
+            AIChatJson = InitiateChatCompletion(selectedLM, false);
         }
 
         private void CheckConfig()
@@ -204,17 +208,33 @@ namespace WzComparerR2.Network
                         Log.Info(sbAi.ToString());
                         break;
 
+                    case "/new":
+                        var sbNewMsg = new StringBuilder();
+                        if (AIChatEnabled)
+                        {
+                            AIChatJson = InitiateChatCompletion(selectedLM, false);
+                            sbNewMsg.AppendFormat("AIチャットが初期化されました。以前のチャットはAIに送信されません。");
+                            Log.Info(sbNewMsg.ToString());
+                        }
+                        break;
+
                     case "/sysmsg":
                         var sbSysMsg = new StringBuilder();
                         systemMessage = e.Command.Substring(7).Trim();
                         if (!string.IsNullOrEmpty(systemMessage))
                         {
-                            sbSysMsg.AppendFormat("AIへの現在のシステムメッセージは「{0}」です。", systemMessage);
+                            AIChatJson = InitiateChatCompletion(selectedLM, false);
+                            ((JArray)AIChatJson["messages"]).Add(new JObject(
+                                new JProperty("role", "system"),
+                                new JProperty("content", systemMessage)
+                            ));
+                            sbSysMsg.AppendFormat("AIへの現在のシステムメッセージは「{0}」です。AIチャットが初期化されました。", systemMessage);
                             Log.Info(sbSysMsg.ToString());
                         }
                         else
                         {
-                            sbSysMsg.AppendFormat("AIへの現在のシステムメッセージはクリアされます。");
+                            AIChatJson = InitiateChatCompletion(selectedLM, false);
+                            sbSysMsg.AppendFormat("AIへの現在のシステムメッセージはクリアされます。AIチャットが初期化されました。");
                             Log.Info(sbSysMsg.ToString());
                         }
                         break;
@@ -225,6 +245,7 @@ namespace WzComparerR2.Network
                         sbHelp.AppendFormat("/users : オンラインのユーザーを一覧表示します。\r\n");
                         sbHelp.AppendFormat("/name [名前] : ユーザー名を指定の名前に変更します。\r\n");
                         sbHelp.AppendFormat("/aichat [on|off] : AIチャット機能の切り替え。\r\n");
+                        sbHelp.AppendFormat("/new : AIチャットを再初期化します。\r\n");
                         sbHelp.AppendFormat("/sysmsg [メッセージ] : AIチャットへのシステムメッセージを指定します。\r\n");
                         sbHelp.AppendFormat("/help : このヘルプを表示します。");
                         Log.Info(sbHelp.ToString());
@@ -266,23 +287,13 @@ namespace WzComparerR2.Network
                 JObject reqHeaders = JObject.Parse(APIKeyJSON);
                 foreach (var property in reqHeaders.Properties()) request.Headers.Add(property.Name, property.Value.ToString());
             }
-            var postData = new JObject(
-                new JProperty("model", selectedLM),
-                new JProperty("messages", new JArray(
-                    new JObject(
-                        new JProperty("role", "user"),
-                        new JProperty("content", message)
-                    )
-                )),
-                new JProperty("stream", false)
-            );
-            if (!string.IsNullOrEmpty(systemMessage))
-            {
-                ((JArray)postData["messages"]).Add(new JObject(
-                        new JProperty("role", "system"),
-                        new JProperty("content", systemMessage)
-                    ));
-            }
+            ((JArray)AIChatJson["messages"]).Add(new JObject(
+                new JProperty("role", "user"),
+                new JProperty("content", message)
+            ));
+
+            var postData = AIChatJson;
+
             if (ExtraParamEnabled)
             {
                 postData.Add(new JProperty("temperature", LMTemperature));
@@ -299,12 +310,25 @@ namespace WzComparerR2.Network
                 var responseString = new StreamReader(response.GetResponseStream()).ReadToEnd();
                 JObject jrResponse = JObject.Parse(responseString);
                 string responseResult = jrResponse.SelectToken("choices[0].message.content").ToString();
+                ((JArray)AIChatJson["messages"]).Add(new JObject(
+                    new JProperty("role", "assistant"),
+                    new JProperty("content", responseResult)
+                ));
                 Log.Info(responseResult);
             }
             catch
             {
                 Log.Warn("AIとのチャットに失敗しました。");
             }
+        }
+
+        private JObject InitiateChatCompletion(string languageModel, bool isStreamEnabled)
+        {
+            return new JObject(
+                new JProperty("model", languageModel),
+                new JProperty("messages", new JArray()),
+                new JProperty("stream", isStreamEnabled)
+            );
         }
 
         private void RegisterAllHandlers()
