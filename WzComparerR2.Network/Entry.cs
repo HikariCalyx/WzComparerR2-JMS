@@ -5,11 +5,17 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using WzComparerR2.Common;
 using WzComparerR2.Config;
 using WzComparerR2.PluginBase;
 using WzComparerR2.Network.Contracts;
 using System.Security.Cryptography;
 using DevComponents.DotNetBar;
+using WzComparerR2.CharaSim;
+using System.Net;
+using Newtonsoft.Json.Linq;
+using static System.Net.Mime.MediaTypeNames;
+using System.IO;
 
 
 namespace WzComparerR2.Network
@@ -36,6 +42,15 @@ namespace WzComparerR2.Network
         private Session session;
         private LoggerForm.LogPrinter logger;
 
+        private string AIBaseURL = "https://api.openai.com/v1";
+        private string selectedLM = "gpt-4o-mini";
+        private string systemMessage = "";
+        private string APIKeyJSON = "";
+        private double LMTemperature = 0.2;
+        private int MaximumToken = -1;
+        private bool ExtraParamEnabled = false;
+        private bool AIChatEnabled = false;
+
         protected override void OnLoad()
         {
             WzComparerR2.Config.ConfigManager.RegisterAllSection();
@@ -60,6 +75,10 @@ namespace WzComparerR2.Network
             this.Client.Disconnected += Client_Disconnected;
             this.Client.OnPackReceived += Client_OnPackReceived;
             var task = this.Client.Connect();
+
+            if (!string.IsNullOrEmpty(Translator.OAITranslateBaseURL)) AIBaseURL = Translator.OAITranslateBaseURL;
+            if (!string.IsNullOrEmpty(Translator.DefaultLanguageModel)) selectedLM = Translator.DefaultLanguageModel;
+            if (!string.IsNullOrEmpty(Translator.DefaultTranslateAPIKey)) APIKeyJSON = Translator.DefaultTranslateAPIKey;
         }
 
         private void CheckConfig()
@@ -121,7 +140,7 @@ namespace WzComparerR2.Network
             }
         }
 
-        private void Form1_OnCommand(object sender, CommandEventArgs e)
+        private async void Form1_OnCommand(object sender, CommandEventArgs e)
         {
             if (e.Command.StartsWith("/"))
             {
@@ -161,11 +180,52 @@ namespace WzComparerR2.Network
                         }
                         break;
 
+                    case "/aichat":
+                        var sbAi = new StringBuilder();
+                        string aiExtraParam = e.Command.Substring(7).Trim();
+                        if (aiExtraParam == "on")
+                        {
+                            AIChatEnabled = true;
+                            sbAi.Append("AIチャット機能が有効になっています。無効にするまで他のユーザーとチャットすることはできません。");
+                        }
+                        else if (aiExtraParam == "off")
+                        {
+                            AIChatEnabled = false;
+                            sbAi.Append("AIチャット機能は無効になっています。他のユーザーとチャットできるようになりました。");
+                        }
+                        else if (AIChatEnabled)
+                        {
+                            sbAi.Append("AIチャット機能が有効になっています。");
+                        }
+                        else
+                        {
+                            sbAi.Append("AIチャット機能が無効になっています。");
+                        }
+                        Log.Info(sbAi.ToString());
+                        break;
+
+                    case "/sysmsg":
+                        var sbSysMsg = new StringBuilder();
+                        systemMessage = e.Command.Substring(7).Trim();
+                        if (!string.IsNullOrEmpty(systemMessage))
+                        {
+                            sbSysMsg.AppendFormat("AIへの現在のシステムメッセージは「{0}」です。", systemMessage);
+                            Log.Info(sbSysMsg.ToString());
+                        }
+                        else
+                        {
+                            sbSysMsg.AppendFormat("AIへの現在のシステムメッセージはクリアされます。");
+                            Log.Info(sbSysMsg.ToString());
+                        }
+                        break;
+
                     case "/help":
                         var sbHelp = new StringBuilder();
                         sbHelp.AppendFormat("ネットワークロガー コマンドの使用方法\r\n");
                         sbHelp.AppendFormat("/users : オンラインのユーザーを一覧表示します。\r\n");
                         sbHelp.AppendFormat("/name [名前] : ユーザー名を指定の名前に変更します。\r\n");
+                        sbHelp.AppendFormat("/aichat [on|off] : AIチャット機能の切り替え。\r\n");
+                        sbHelp.AppendFormat("/sysmsg [メッセージ] : AIチャットへのシステムメッセージを指定します。\r\n");
                         sbHelp.AppendFormat("/help : このヘルプを表示します。");
                         Log.Info(sbHelp.ToString());
                         break;
@@ -173,6 +233,13 @@ namespace WzComparerR2.Network
             }
             else
             {
+                if (AIChatEnabled)
+                {
+                    Log.Warn(e.Command);
+                    Log.Info("AIの応答を待っています...");
+                    await Task.Run(() => ChatToAI(e.Command));
+                    return;
+                }
                 if (Client.IsConnected)
                 {
                     var pack = new PackSendChat()
@@ -186,6 +253,57 @@ namespace WzComparerR2.Network
                 {
                     Log.Warn("コマンドが失敗しました: サーバーに接続されていません。");
                 }
+            }
+        }
+
+        private async void ChatToAI(string message)
+        {
+            var request = (HttpWebRequest)WebRequest.Create(AIBaseURL + "/chat/completions");
+            request.Method = "POST";
+            request.ContentType = "application/json";
+            if (!string.IsNullOrEmpty(APIKeyJSON))
+            {
+                JObject reqHeaders = JObject.Parse(APIKeyJSON);
+                foreach (var property in reqHeaders.Properties()) request.Headers.Add(property.Name, property.Value.ToString());
+            }
+            var postData = new JObject(
+                new JProperty("model", selectedLM),
+                new JProperty("messages", new JArray(
+                    new JObject(
+                        new JProperty("role", "user"),
+                        new JProperty("content", message)
+                    )
+                )),
+                new JProperty("stream", false)
+            );
+            if (!string.IsNullOrEmpty(systemMessage))
+            {
+                ((JArray)postData["messages"]).Add(new JObject(
+                        new JProperty("role", "system"),
+                        new JProperty("content", systemMessage)
+                    ));
+            }
+            if (ExtraParamEnabled)
+            {
+                postData.Add(new JProperty("temperature", LMTemperature));
+                postData.Add(new JProperty("max_tokens", MaximumToken));
+            }
+            var byteArray = System.Text.Encoding.UTF8.GetBytes(postData.ToString());
+            request.ContentLength = byteArray.Length;
+            Stream newStream = request.GetRequestStream();
+            newStream.Write(byteArray, 0, byteArray.Length);
+            newStream.Close();
+            try
+            {
+                var response = (HttpWebResponse)request.GetResponse();
+                var responseString = new StreamReader(response.GetResponseStream()).ReadToEnd();
+                JObject jrResponse = JObject.Parse(responseString);
+                string responseResult = jrResponse.SelectToken("choices[0].message.content").ToString();
+                Log.Info(responseResult);
+            }
+            catch
+            {
+                Log.Warn("AIとのチャットに失敗しました。");
             }
         }
 
@@ -351,6 +469,7 @@ namespace WzComparerR2.Network
         /// <param name="pack"></param>
         private void OnPackReceived(PackOnUserUpdate pack)
         {
+            if (AIChatEnabled) return;
             lock (this.session.Users)
             {
                 var idx = this.session.Users.FindIndex(u => u.UID == pack.UserInfo.UID && u.SID == pack.UserInfo.SID);
