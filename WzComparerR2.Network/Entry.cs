@@ -77,12 +77,7 @@ namespace WzComparerR2.Network
             this.Client.Disconnected += Client_Disconnected;
             this.Client.OnPackReceived += Client_OnPackReceived;
             var task = this.Client.Connect();
-
-            if (!string.IsNullOrEmpty(Translator.OAITranslateBaseURL)) AIBaseURL = Translator.OAITranslateBaseURL;
-            if (!string.IsNullOrEmpty(Translator.DefaultLanguageModel)) selectedLM = Translator.DefaultLanguageModel;
-            if (!string.IsNullOrEmpty(Translator.DefaultTranslateAPIKey)) APIKeyJSON = Translator.DefaultTranslateAPIKey;
-
-            AIChatJson = InitiateChatCompletion(selectedLM, false);
+            RefreshAISettings();
         }
 
         private void CheckConfig()
@@ -189,6 +184,7 @@ namespace WzComparerR2.Network
                         string aiExtraParam = e.Command.Substring(7).Trim();
                         if (aiExtraParam == "on")
                         {
+                            RefreshAISettings();
                             AIChatEnabled = true;
                             sbAi.Append("AIチャット機能が有効になっています。無効にするまで他のユーザーとチャットすることはできません。");
                         }
@@ -277,6 +273,14 @@ namespace WzComparerR2.Network
             }
         }
 
+        private void RefreshAISettings()
+        {
+            if (!string.IsNullOrEmpty(Translator.OAITranslateBaseURL)) AIBaseURL = Translator.OAITranslateBaseURL;
+            if (!string.IsNullOrEmpty(Translator.DefaultLanguageModel)) selectedLM = Translator.DefaultLanguageModel;
+            if (!string.IsNullOrEmpty(Translator.DefaultTranslateAPIKey)) APIKeyJSON = Translator.DefaultTranslateAPIKey;
+            AIChatJson = InitiateChatCompletion(selectedLM, false);
+        }
+
         private async void ChatToAI(string message)
         {
             var request = (HttpWebRequest)WebRequest.Create(AIBaseURL + "/chat/completions");
@@ -314,7 +318,15 @@ namespace WzComparerR2.Network
                     new JProperty("role", "assistant"),
                     new JProperty("content", responseResult)
                 ));
-                Log.Info(responseResult);
+                if (responseResult.Contains("<think>"))
+                {
+                    Log.Think(responseResult.Split(new String[] { "</think>\n\n" }, StringSplitOptions.None)[0].Replace("<think>", ""));
+                    Log.Info(responseResult.Split(new String[] { "</think>\n\n" }, StringSplitOptions.None)[1]);
+                }
+                else
+                {
+                    Log.Info(responseResult);
+                }
             }
             catch
             {
