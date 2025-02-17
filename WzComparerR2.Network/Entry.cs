@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using System.Reflection;
@@ -12,10 +14,8 @@ using WzComparerR2.Network.Contracts;
 using System.Security.Cryptography;
 using DevComponents.DotNetBar;
 using WzComparerR2.CharaSim;
-using System.Net;
 using Newtonsoft.Json.Linq;
 using static System.Net.Mime.MediaTypeNames;
-using System.IO;
 
 
 namespace WzComparerR2.Network
@@ -77,7 +77,6 @@ namespace WzComparerR2.Network
             this.Client.Disconnected += Client_Disconnected;
             this.Client.OnPackReceived += Client_OnPackReceived;
             var task = this.Client.Connect();
-            RefreshAISettings();
         }
 
         private void CheckConfig()
