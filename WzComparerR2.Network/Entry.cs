@@ -51,7 +51,7 @@ namespace WzComparerR2.Network
         private bool ExtraParamEnabled = false;
         private bool AIChatEnabled = false;
 
-        private JObject AIChatJson = new JObject();
+        private JObject AIChatJson = null;
 
         protected override void OnLoad()
         {
@@ -278,7 +278,7 @@ namespace WzComparerR2.Network
             if (!string.IsNullOrEmpty(Translator.OAITranslateBaseURL)) AIBaseURL = Translator.OAITranslateBaseURL;
             if (!string.IsNullOrEmpty(Translator.DefaultLanguageModel)) selectedLM = Translator.DefaultLanguageModel;
             if (!string.IsNullOrEmpty(Translator.DefaultTranslateAPIKey)) APIKeyJSON = Translator.DefaultTranslateAPIKey;
-            AIChatJson = InitiateChatCompletion(selectedLM, false);
+            if (AIChatJson == null) AIChatJson = InitiateChatCompletion(selectedLM, false);
         }
 
         private async void ChatToAI(string message)
