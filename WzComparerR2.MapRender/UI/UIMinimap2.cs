@@ -38,6 +38,7 @@ namespace WzComparerR2.MapRender.UI
         }
 
         public MapRenderUIRoot uiRoot { get; set; }
+        public FrmMapRender2 mapRender2Root { get; set; }
         public event EventHandler<MapSpotEventArgs> ReturnToTownClick;
 
         public string StreetName
@@ -239,7 +240,7 @@ namespace WzComparerR2.MapRender.UI
 
         private void BtnReturnToTown_Click(object sender, RoutedEventArgs e)
         {
-            uiRoot.ChatBox.TextBoxChat.Text = "/home";
+            mapRender2Root.ChatCommand("/home");
             
         }
 

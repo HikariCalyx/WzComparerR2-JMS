@@ -167,6 +167,7 @@ namespace WzComparerR2.MapRender
             this.resLoader.PatchVisibility = this.patchVisibility;
             this.ui = new MapRenderUIRoot();
             this.ui.Minimap.uiRoot = this.ui;
+            this.ui.Minimap.mapRender2Root = this;
             this.BindingUIInput();
             this.tooltip = new Tooltip2(this.Content);
             this.tooltip.StringLinker = this.StringLinker;
@@ -548,7 +549,7 @@ namespace WzComparerR2.MapRender
             }
         }
 
-        private async void ChatCommand(string command)
+        public async void ChatCommand(string command)
         {
             string[] arguments = command.Split((char[])null, StringSplitOptions.RemoveEmptyEntries);
             if (arguments.Length <= 0)
