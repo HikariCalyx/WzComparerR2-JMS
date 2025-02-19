@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using WzComparerR2.WzLib;
-using WzComparerR2.PluginBase;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using WzComparerR2.Animation;
-using WzComparerR2.Rendering;
 using WzComparerR2.Common;
+using WzComparerR2.PluginBase;
+using WzComparerR2.Rendering;
+using WzComparerR2.WzLib;
 using WzComparerR2.AvatarCommon;
 
 namespace WzComparerR2.MapRender
@@ -42,12 +41,12 @@ namespace WzComparerR2.MapRender
             return Load<T>(null, assetName);
         }
 
-        public virtual T Load<T>(Wz_Node node, int x = 0, int y = 0)
+        public virtual T Load<T>(Wz_Node node)
         {
-            return Load<T>(node, null, x, y);
+            return Load<T>(node, null);
         }
 
-        private T Load<T>(Wz_Node node = null, string assetName = null, int x = 0, int y = 0)
+        private T Load<T>(Wz_Node node = null, string assetName = null)
         {
             if (node == null && assetName == null)
                 throw new ArgumentNullException();
@@ -55,10 +54,9 @@ namespace WzComparerR2.MapRender
             assetName = assetName ?? node.FullPathToFile;
 
             ResourceHolder holder;
-            var loadedAssetName = x <= 0 && y <= 0 ? assetName : assetName + "_" + x + "_" + y;
-            if (!loadedItems.TryGetValue(loadedAssetName, out holder))
+            if (!loadedItems.TryGetValue(assetName, out holder))
             {
-                var res = InnerLoad(node ?? PluginManager.FindWz(assetName), typeof(T), x, y);
+                var res = InnerLoad(node ?? PluginManager.FindWz(assetName), typeof(T));
                 if (res == null)
                 {
                     return default(T);
@@ -66,7 +64,7 @@ namespace WzComparerR2.MapRender
 
                 holder = new ResourceHolder();
                 holder.Resource = res;
-                loadedItems[loadedAssetName] = holder;
+                loadedItems[assetName] = holder;
             }
 
             //结算计数器
@@ -77,6 +75,22 @@ namespace WzComparerR2.MapRender
 
             //特殊处理
             return (T)holder.Resource;
+        }
+
+        public object LoadAnimationData(Wz_Node node)
+        {
+            object aniData;
+            string assetName = node.FullPathToFile;
+            if (!loadedAnimationData.TryGetValue(assetName, out aniData))
+            {
+                aniData = InnerLoadAnimationData(node);
+                if (aniData == null)
+                {
+                    return null;
+                }
+                loadedAnimationData[assetName] = aniData;
+            }
+            return aniData;
         }
 
         public object LoadAvatarAnimationData(Wz_Node node, string action)
@@ -95,57 +109,10 @@ namespace WzComparerR2.MapRender
             return aniData;
         }
 
-        private object InnerLoadAvatarAnimationData(Wz_Node node, string action)
-        {
-            if (node != null && (node = node.ResolveUol()) != null)
-            {
-                var frames = new List<Frame>();
-
-                var avatar = new AvatarCanvasManager();
-
-                var skin = node.Nodes["skin"].GetValueEx<int>(0);
-                avatar.AddBodyFromSkin3(skin);
-
-                foreach (var component in node.Nodes)
-                {
-                    var gearID = component.GetValueEx<int>(0);
-                    avatar.AddGear(gearID);
-                }
-
-                for (int i = 0; i < avatar.GetActionFrameCount(action + "1"); i++)
-                {
-                    var frame = avatar.GetTexture2DFrame(action + "1", "default", i, 0, 0, this.GraphicsDevice);
-                    frames.Add(frame);
-                }
-
-                avatar.ClearCanvas();
-
-                return new RepeatableFrameAnimationData(frames) { Repeat = true };
-            }
-            return null;
-        }
-
-        public object LoadAnimationData(Wz_Node node, int x = 0, int y = 0)
-        {
-            object aniData;
-            string assetName = node.FullPathToFile;
-            var loadedAssetName = x <= 0 && y <= 0 ? assetName : assetName + "_" + x + "_" + y;
-            if (!loadedAnimationData.TryGetValue(loadedAssetName, out aniData))
-            {
-                aniData = InnerLoadAnimationData(node, x, y);
-                if (aniData == null)
-                {
-                    return null;
-                }
-                loadedAnimationData[loadedAssetName] = aniData;
-            }
-            return aniData;
-        }
-
-        public object LoadAnimationData(string assetName, int x = 0, int y = 0)
+        public object LoadAnimationData(string assetName)
         {
             var node = PluginManager.FindWz(assetName);
-            return node != null ? LoadAnimationData(node, x, y) : null;
+            return node != null ? LoadAnimationData(node) : null;
         }
 
         public object LoadParticleDesc(Wz_Node node)
@@ -324,14 +291,14 @@ namespace WzComparerR2.MapRender
             }
         }
 
-        private object InnerLoad(Wz_Node node, Type assetType, int x = 0, int y = 0)
+        private object InnerLoad(Wz_Node node, Type assetType)
         {
             if (assetType == typeof(TextureAtlas)) //回头再说
             {
                 var png = node.GetValue<Wz_Png>();
                 if (png != null)
                 {
-                    return new TextureAtlas(png.ToTexture(this.GraphicsDevice, x, y));
+                    return new TextureAtlas(png.ToTexture(this.GraphicsDevice));
                 }
             }
             else if (assetType == typeof(Texture2D))
@@ -353,7 +320,7 @@ namespace WzComparerR2.MapRender
             return null;
         }
 
-        private object InnerLoadAnimationData(Wz_Node node, int x = 0, int y = 0)
+        private object InnerLoadAnimationData(Wz_Node node)
         {
             if (node != null && (node = node.ResolveUol()) != null)
             {
@@ -362,7 +329,7 @@ namespace WzComparerR2.MapRender
                 if (node.Value is Wz_Png) //单帧动画
                 {
                     var aniData = new FrameAnimationData();
-                    var frame = LoadFrame(node, x, y);
+                    var frame = LoadFrame(node);
                     aniData.Frames.Add(frame);
                     return aniData;
                 }
@@ -391,6 +358,11 @@ namespace WzComparerR2.MapRender
                         Wz_Node frameNode;
                         for (int i = 0; (frameNode = node.Nodes[i.ToString()]) != null; i++)
                         {
+                            if (i == 0 && frameNode?.Value == null)
+                            {
+                                return InnerLoadAnimationData(frameNode);
+                            }
+
                             var frame = LoadFrame(frameNode);
                             frames.Add(frame);
                         }
@@ -402,7 +374,49 @@ namespace WzComparerR2.MapRender
             return null;
         }
 
-        private Frame LoadFrame(Wz_Node node, int x = 0, int y = 0)
+        private object InnerLoadAvatarAnimationData(Wz_Node node, string action)
+        {
+            if (node != null && (node = node.ResolveUol()) != null)
+            {
+                var frames = new List<Frame>();
+
+                var avatar = new AvatarCanvasManager();
+
+                foreach (var component in node.Nodes)
+                {
+                    switch (component.Text)
+                    {
+                        case "skin":
+                            var skin = component.GetValueEx<int>(0);
+                            avatar.AddBodyFromSkin3(skin);
+                            break;
+
+                        case "ear":
+                            var type = component.GetValueEx<int>(0);
+                            avatar.SetEarType(type);
+                            break;
+
+                        default:
+                            var gearID = component.GetValueEx<int>(0);
+                            avatar.AddGear(gearID);
+                            break;
+                    }
+                }
+
+                for (int i = 0; i < avatar.GetActionFrameCount(action + "1"); i++)
+                {
+                    var frame = avatar.GetTexture2DFrame(action + "1", "default", i, 0, 0, this.GraphicsDevice);
+                    frames.Add(frame);
+                }
+
+                avatar.ClearCanvas();
+
+                return new RepeatableFrameAnimationData(frames) { Repeat = true };
+            }
+            return null;
+        }
+
+        private Frame LoadFrame(Wz_Node node)
         {
             //处理uol
             while (node?.Value is Wz_Uol uol)
@@ -416,7 +430,7 @@ namespace WzComparerR2.MapRender
             //寻找link
             var linkNode = node.GetLinkedSourceNode(PluginManager.FindWz);
             //加载资源
-            var atlas = Load<TextureAtlas>(linkNode, x, y);
+            var atlas = Load<TextureAtlas>(linkNode);
             //读取其他信息
             var frame = new Frame()
             {
@@ -459,11 +473,13 @@ namespace WzComparerR2.MapRender
                 holder.Resource = new Texture2D(this.GraphicsDevice, width, height, false, SurfaceFormat.Alpha8);
                 loadedItems[path] = holder;
             }
+
             //结算计数器
             if (isCounting)
             {
                 holder.Count++;
             }
+
             //特殊处理
             return (Texture2D)holder.Resource;
         }
@@ -543,10 +559,9 @@ namespace WzComparerR2.MapRender
                     var linkNode = frameNode.GetLinkedSourceNode(PluginManager.FindWz);
                     // workaround for KMST 1172, skeleton atlas and other obj may link to the same png node.
                     // TODO: add options to always load into a standalone texture, disable dynamic atlas on this resource, 
-                    texture = BaseLoader.Load<TextureAtlas>(linkNode, 0, 0).Texture;
+                    texture = BaseLoader.Load<TextureAtlas>(linkNode).Texture;
                     return true;
                 }
-
                 return false;
             }
 

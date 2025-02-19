@@ -5,12 +5,13 @@ using System.Text;
 using WzComparerR2.WzLib;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System.Buffers;
 
 namespace WzComparerR2.Rendering
 {
     public static class WzLibExtension
     {
-        public static Texture2D ToTexture(this Wz_Png png, GraphicsDevice graphicsDevice, int x = 0, int y = 0)
+        public static Texture2D ToTexture(this Wz_Png png, GraphicsDevice graphicsDevice)
         {
             var format = GetTextureFormatOfPng(png.Form);
             if (format == SurfaceFormat.Bgra4444)
@@ -39,26 +40,13 @@ namespace WzComparerR2.Rendering
             }
 
             var t2d = new Texture2D(graphicsDevice, png.Width, png.Height, false, format);
-            if (x > 0 || y > 0)
-            {
-                var block_size = 4096;
-                var w = Math.Min(block_size, png.Width - block_size * (x - 1));
-                var h = Math.Min(block_size, png.Height - block_size * (y - 1));
-                t2d = new Texture2D(graphicsDevice, w, h, false, format);
-            }
-
-            png.ToTexture(t2d, Point.Zero, x, y);
+            png.ToTexture(t2d, Point.Zero);
             return t2d;
         }
 
-        public static void ToTexture(this Wz_Png png, Texture2D texture, Point origin, int x = 0, int y = 0)
+        public static void ToTexture(this Wz_Png png, Texture2D texture, Point origin)
         {
-            var block_size = 4096;
             Rectangle rect = new Rectangle(origin, new Point(png.Width, png.Height));
-            if (x > 0 || y > 0)
-            {
-                rect = new Rectangle(origin, new Point(Math.Min(block_size, png.Width - block_size * (x - 1)), Math.Min(block_size, png.Height - block_size * (y - 1))));
-            }
 
             //检查大小
             if (rect.X < 0 || rect.Y < 0 || rect.Right > texture.Width || rect.Bottom > texture.Height)
@@ -82,34 +70,9 @@ namespace WzComparerR2.Rendering
             }
             else
             {
-                byte[] plainData = png.GetRawData();
-                if (plainData == null)
-                {
-                    throw new Exception("png decoding failed.");
-                }
-
-                if (x > 0 || y > 0)
-                {
-                    int regionWidth = rect.Width;
-                    int regionHeight = rect.Height;
-                    int scaler = plainData.Length / (png.Width * png.Height);
-                    byte[] extractedData = new byte[regionWidth * regionHeight * scaler];
-
-                    int bytesPerRow = png.Width * scaler;
-                    int targetRowBytes = regionWidth * scaler;
-                    var rowStart = (y - 1) * regionHeight;
-                    var rowEnd = y * regionHeight;
-
-                    for (int row = rowStart; row < rowEnd; row++)
-                    {
-                        int sourceStart = ((rect.Y + row) * bytesPerRow) + ((rect.X + block_size * (x - 1)) * scaler);
-                        int targetStart = row * targetRowBytes;
-
-                        Array.Copy(plainData, sourceStart, extractedData, targetStart, targetRowBytes);
-                    }
-
-                    plainData = extractedData;
-                }
+                int bufferSize = png.GetRawDataSize();
+                byte[] plainData = ArrayPool<byte>.Shared.Rent(bufferSize);
+                png.GetRawData(plainData.AsSpan(0, bufferSize));
 
                 switch (png.Form)
                 {
@@ -119,7 +82,7 @@ namespace WzComparerR2.Rendering
                     case 513:
                     case 1026:
                     case 2050:
-                        texture.SetData(0, 0, rect, plainData, 0, plainData.Length);
+                        texture.SetData(0, 0, rect, plainData, 0, bufferSize);
                         break;
 
                     case 3:
@@ -135,6 +98,8 @@ namespace WzComparerR2.Rendering
                     default:
                         throw new Exception($"unknown png form ({png.Form}).");
                 }
+
+                ArrayPool<byte>.Shared.Return(plainData);
             }
         }
 
