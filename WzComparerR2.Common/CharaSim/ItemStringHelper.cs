@@ -351,7 +351,7 @@ namespace WzComparerR2.CharaSim
                 case GearType.emblem: return "エンブレム";
                 case GearType.soulShield: return "ソウルシールド";
                 case GearType.demonShield: return "フォースシールド";
-                //case GearType.totem: return "トーテム";
+                case GearType.totem: return "トーテム";
                 case GearType.petEquip: return "ペット装備";
                 case GearType.taming:
                 case GearType.taming2:
@@ -428,7 +428,7 @@ namespace WzComparerR2.CharaSim
                 case GearType.boxingCannon: return "拳封 (両手武器)";
                 case GearType.boxingSky: return "拳天";
 
-                //case GearType.jewel: return "宝玉";
+                case GearType.jewel: return "宝玉";
                 default: return null;
             }
         }
