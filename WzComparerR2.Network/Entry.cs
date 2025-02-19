@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Reflection;
 using System.Runtime.InteropServices;
@@ -50,6 +51,8 @@ namespace WzComparerR2.Network
         private int MaximumToken = -1;
         private bool ExtraParamEnabled = false;
         private bool AIChatEnabled = false;
+
+        private static Mutex AIMutex = new Mutex(false, "AIMutex");
 
         private JObject AIChatJson = null;
 
@@ -251,8 +254,6 @@ namespace WzComparerR2.Network
             {
                 if (AIChatEnabled)
                 {
-                    Log.Warn(e.Command);
-                    Log.Info("AIの応答を待っています...");
                     await Task.Run(() => ChatToAI(e.Command));
                     return;
                 }
@@ -282,6 +283,9 @@ namespace WzComparerR2.Network
 
         private async void ChatToAI(string message)
         {
+            AIMutex.WaitOne();
+            Log.Warn(message);
+            Log.Info("AIの応答を待っています...");
             var request = (HttpWebRequest)WebRequest.Create(AIBaseURL + "/chat/completions");
             request.Method = "POST";
             request.ContentType = "application/json";
@@ -330,6 +334,10 @@ namespace WzComparerR2.Network
             catch
             {
                 Log.Warn("AIとのチャットに失敗しました。");
+            }
+            finally
+            {
+                AIMutex.ReleaseMutex();
             }
         }
 
