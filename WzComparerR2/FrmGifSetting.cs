@@ -10,6 +10,8 @@ using System.Reflection;
 using DevComponents.DotNetBar;
 using WzComparerR2.Config;
 using MathHelper = Microsoft.Xna.Framework.MathHelper;
+using System.Drawing.Imaging;
+using System.Globalization;
 
 namespace WzComparerR2
 {
@@ -207,6 +209,11 @@ namespace WzComparerR2
             {
                 this.FFmpegBinPath = dlg.FileName;
             }
+        }
+        private void btnDiscordPreset_Click(object sender, System.EventArgs e)
+        {
+            BackgroundColor = Color.FromArgb(Int32.Parse("FF2E2E34", NumberStyles.HexNumber));
+            BackgroundType = ImageBackgroundType.Color;
         }
 
         private void slider1_ValueChanged(object sender, EventArgs e)

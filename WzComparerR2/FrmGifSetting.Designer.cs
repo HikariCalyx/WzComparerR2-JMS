@@ -79,6 +79,7 @@
             this.labelX12 = new DevComponents.DotNetBar.LabelX();
             this.textBoxX3 = new DevComponents.DotNetBar.Controls.TextBoxX();
             this.labelX13 = new DevComponents.DotNetBar.LabelX();
+            this.btnDiscordPreset = new DevComponents.DotNetBar.ButtonX();
             this.panelExMosaic.SuspendLayout();
             this.panelExColor.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.integerInput1)).BeginInit();
@@ -96,7 +97,7 @@
             this.colorPickerButton1.AutoExpandOnClick = true;
             this.colorPickerButton1.ColorTable = DevComponents.DotNetBar.eButtonColor.OrangeWithBackground;
             this.colorPickerButton1.Image = ((System.Drawing.Image)(resources.GetObject("colorPickerButton1.Image")));
-            this.colorPickerButton1.Location = new System.Drawing.Point(116, 6);
+            this.colorPickerButton1.Location = new System.Drawing.Point(61, 7);
             this.colorPickerButton1.Name = "colorPickerButton1";
             this.colorPickerButton1.SelectedColorImageRectangle = new System.Drawing.Rectangle(2, 2, 12, 12);
             this.colorPickerButton1.Size = new System.Drawing.Size(37, 23);
@@ -115,6 +116,16 @@
             this.labelX1.Size = new System.Drawing.Size(99, 16);
             this.labelX1.TabIndex = 0;
             this.labelX1.Text = "背景色";
+            //
+            // btnDiscordPreset
+            //
+            this.btnDiscordPreset.Location = new System.Drawing.Point(104, 7);
+            this.btnDiscordPreset.ColorTable = DevComponents.DotNetBar.eButtonColor.OrangeWithBackground;
+            this.btnDiscordPreset.Size = new System.Drawing.Size(104, 23);
+            this.btnDiscordPreset.Name = "btnDiscordPreset";
+            this.btnDiscordPreset.TabIndex = 4;
+            this.btnDiscordPreset.Text = "Discordプリセット";
+            this.btnDiscordPreset.Click += btnDiscordPreset_Click;
             // 
             // checkBoxX1
             // 
@@ -358,6 +369,7 @@
             this.panelExColor.Controls.Add(this.checkBoxX1);
             this.panelExColor.Controls.Add(this.labelX3);
             this.panelExColor.Controls.Add(this.slider1);
+            this.panelExColor.Controls.Add(this.btnDiscordPreset);
             this.panelExColor.DisabledBackColor = System.Drawing.Color.Empty;
             this.panelExColor.Enabled = false;
             this.panelExColor.Location = new System.Drawing.Point(80, 14);
@@ -852,5 +864,6 @@
         private DevComponents.DotNetBar.LabelX labelX12;
         private DevComponents.DotNetBar.Controls.TextBoxX textBoxX3;
         private DevComponents.DotNetBar.LabelX labelX13;
+        private DevComponents.DotNetBar.ButtonX btnDiscordPreset;
     }
 }
