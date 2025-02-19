@@ -10,8 +10,6 @@ using System.Reflection;
 using DevComponents.DotNetBar;
 using WzComparerR2.Config;
 using MathHelper = Microsoft.Xna.Framework.MathHelper;
-using System.Drawing.Imaging;
-using System.Globalization;
 
 namespace WzComparerR2
 {
@@ -212,7 +210,7 @@ namespace WzComparerR2
         }
         private void btnDiscordPreset_Click(object sender, System.EventArgs e)
         {
-            BackgroundColor = Color.FromArgb(Int32.Parse("FF2E2E34", NumberStyles.HexNumber));
+            BackgroundColor = Color.FromArgb(-13750732);
             BackgroundType = ImageBackgroundType.Color;
         }
 
