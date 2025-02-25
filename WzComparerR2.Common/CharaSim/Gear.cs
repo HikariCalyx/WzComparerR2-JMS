@@ -75,6 +75,11 @@ namespace WzComparerR2.CharaSim
             get { return GetBooleanValue(GearPropType.cash); }
         }
 
+        public bool Pachinko
+        {
+            get { return GetBooleanValue(GearPropType.pachinko); }
+        }
+
         public bool GetBooleanValue(GearPropType type)
         {
             int value;
