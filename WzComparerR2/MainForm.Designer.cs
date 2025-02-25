@@ -2473,7 +2473,7 @@ namespace WzComparerR2
             // 
             // superTabControlPanel2
             // 
-            this.superTabControlPanel2.Controls.Add(this.chkHashPngFileName);
+            //this.superTabControlPanel2.Controls.Add(this.chkHashPngFileName);
             this.superTabControlPanel2.Controls.Add(this.chkEnableDarkMode);
             this.superTabControlPanel2.Controls.Add(this.chkOutputSkillTooltip);
             this.superTabControlPanel2.Controls.Add(this.chkResolvePngLink);
