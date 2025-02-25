@@ -311,7 +311,6 @@ namespace WzComparerR2.Avatar.UI
                 {
                     this.avatar.LoadChairActions();
                     FillTamingAction();
-                    SetChairDefaultBodyAction();
                     SetChairDefault();
                 }
             }
@@ -486,6 +485,10 @@ namespace WzComparerR2.Avatar.UI
 
         private void SelectBodyAction(string actionName)
         {
+            if (!this.chkBodyPlay.Checked && this.chkTamingPlay.Checked && this.avatar.Taming != null)
+            {
+                this.chkBodyPlay.Checked = true;
+            }
             for (int i = 0; i < cmbActionBody.Items.Count; i++)
             {
                 ComboItem item = cmbActionBody.Items[i] as ComboItem;
@@ -494,6 +497,21 @@ namespace WzComparerR2.Avatar.UI
                     cmbActionBody.SelectedIndex = i;
                     return;
                 }
+            }
+        }
+
+        private void FixBodyAction(string actionName, int Idx)
+        {
+            this.SelectBodyAction(actionName);
+
+            if (this.chkBodyPlay.Checked)
+            {
+                this.chkBodyPlay.Checked = false;
+            }
+
+            if (Idx >= 0)
+            {
+                this.cmbBodyFrame.SelectedIndex = Idx;
             }
         }
 
@@ -627,12 +645,6 @@ namespace WzComparerR2.Avatar.UI
             SelectBodyAction(actionName);
         }
 
-        private void SetChairDefaultBodyAction() // 의자 아이템의 기본 캐릭터 동작 = sit 또는 sitAction으로 설정된 값
-        {
-            string actionName = this.avatar.Taming.Node.FindNodeByPath("info\\sitAction").GetValueEx<string>("sit");
-            SelectBodyAction(actionName);
-        }
-
         private void SetTamingDefault()
         {
             if (this.avatar.Taming != null)
@@ -660,7 +672,12 @@ namespace WzComparerR2.Avatar.UI
             if (this.avatar.Taming != null)
             {
                 string forceAction = this.avatar.Taming.Node.FindNodeByPath("info\\sitAction").GetValueEx<string>("sit");
-                if (forceAction != null)
+                int fixFrameIdx = this.avatar.Taming.Node.FindNodeByPath("info\\fixFrameIdx").GetValueEx<int>(-1);
+                if (fixFrameIdx >= 0)
+                {
+                    this.FixBodyAction(forceAction, fixFrameIdx);
+                }
+                else
                 {
                     this.SelectBodyAction(forceAction);
                 }
