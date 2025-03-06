@@ -601,6 +601,21 @@ namespace WzComparerR2.CharaSimControl
                     iconX + 6 + 68 - cashOrigin.X * 2 - 2,
                     picH + 6 + 68 - cashOrigin.Y * 2 - 2);
             }
+
+            if (item.Pachinko)
+            {
+                Bitmap pachinkoImg = null;
+                Point pachinkoOrigin = new Point(12, 12);
+                if (pachinkoImg == null) //default pachinkoImg
+                {
+                    pachinkoImg = Resource.PachinkoItem_0;
+                }
+
+                g.DrawImage(GearGraphics.EnlargeBitmap(pachinkoImg),
+                    iconX + 6 + 68 - pachinkoOrigin.X * 2 + 4,
+                    picH + 6 + 68 - pachinkoOrigin.Y * 2 - 4);
+            }
+
             g.DrawImage(Resource.UIToolTip_img_Item_ItemIcon_new, iconX + 7, picH + 7);
             g.DrawImage(Resource.UIToolTip_img_Item_ItemIcon_cover, iconX + 4, picH + 4); //绘制左上角cover
 

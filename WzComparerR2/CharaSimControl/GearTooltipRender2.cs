@@ -609,6 +609,21 @@ namespace WzComparerR2.CharaSimControl
                     18 + 68 - cashOrigin.X * 2 - 2,
                     picH + 15 + 68 - cashOrigin.Y * 2 - 2);
             }
+
+            if (Gear.Pachinko)
+            {
+                Bitmap pachinkoImg = null;
+                Point pachinkoOrigin = new Point(12, 12);
+                if (pachinkoImg == null) //default pachinkoImg
+                {
+                    pachinkoImg = Resource.PachinkoItem_0;
+                }
+
+                g.DrawImage(GearGraphics.EnlargeBitmap(pachinkoImg),
+                    18 + 68 - pachinkoOrigin.X * 2 + 4,
+                    picH + 15 + 68 - pachinkoOrigin.Y * 2 - 4);
+            }
+
             //检查星岩
             bool hasSocket = Gear.GetBooleanValue(GearPropType.nActivatedSocket);
             if (hasSocket)
