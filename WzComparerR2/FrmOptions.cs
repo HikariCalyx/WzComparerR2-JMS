@@ -511,8 +511,10 @@ namespace WzComparerR2
         }
         private void chkOpenAIExtraOption_CheckedChanged(object sender, EventArgs e)
         {
-            txtLMTemperature.Enabled = chkOpenAIExtraOption.Checked;
-            txtMaximumToken.Enabled = chkOpenAIExtraOption.Checked;
+            txtLMTemperature.Enabled = chkOpenAIExtraOption.Checked && chkOpenAIExtraOption.Enabled;
+            txtMaximumToken.Enabled = chkOpenAIExtraOption.Checked && chkOpenAIExtraOption.Enabled;
+            labelX13.Enabled = chkOpenAIExtraOption.Checked && chkOpenAIExtraOption.Enabled;
+            labelX14.Enabled = chkOpenAIExtraOption.Checked && chkOpenAIExtraOption.Enabled;
         }
 
         public WzLib.WzVersionVerifyMode WzVersionVerifyMode
