@@ -381,7 +381,7 @@ namespace WzComparerR2
             this.expandablePanel2.ExpandOnTitleClick = true;
             this.expandablePanel2.Location = new System.Drawing.Point(0, 87);
             this.expandablePanel2.Name = "expandablePanel2";
-            this.expandablePanel2.Size = new System.Drawing.Size(384, 157);
+            this.expandablePanel2.Size = new System.Drawing.Size(384, 340);
             this.expandablePanel2.Style.Alignment = System.Drawing.StringAlignment.Center;
             this.expandablePanel2.Style.BackColor1.ColorSchemePart = DevComponents.DotNetBar.eColorSchemePart.PanelBackground;
             this.expandablePanel2.Style.BackColor2.ColorSchemePart = DevComponents.DotNetBar.eColorSchemePart.PanelBackground2;
@@ -555,7 +555,7 @@ namespace WzComparerR2
             this.panelEx2.ColorSchemeStyle = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
             this.panelEx2.Controls.Add(this.superTabControl1);
             this.panelEx2.DisabledBackColor = System.Drawing.Color.Empty;
-            this.panelEx2.Location = new System.Drawing.Point(3, 157);
+            this.panelEx2.Location = new System.Drawing.Point(3, 111);
             this.panelEx2.Name = "panelEx2";
             this.panelEx2.Size = new System.Drawing.Size(360, 180);
             this.panelEx2.Style.Alignment = System.Drawing.StringAlignment.Center;
@@ -567,7 +567,7 @@ namespace WzComparerR2
             this.panelEx2.Style.GradientAngle = 90;
             this.panelEx2.TabIndex = 9;
             this.panelEx2.Text = "panelEx2";
-            this.panelEx2.Visible = false;
+            this.panelEx2.Enabled = false;
             // 
             // superTabControl1
             // 
@@ -594,7 +594,7 @@ namespace WzComparerR2
             this.superTabControl1.Name = "superTabControl1";
             this.superTabControl1.ReorderTabsEnabled = true;
             this.superTabControl1.SelectedTabFont = new System.Drawing.Font("MS PGothic", 9F, System.Drawing.FontStyle.Bold);
-            this.superTabControl1.SelectedTabIndex = 1;
+            this.superTabControl1.SelectedTabIndex = 2;
             this.superTabControl1.Size = new System.Drawing.Size(360, 180);
             this.superTabControl1.TabAlignment = DevComponents.DotNetBar.eTabStripAlignment.Left;
             this.superTabControl1.TabFont = new System.Drawing.Font("MS PGothic", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
@@ -613,7 +613,7 @@ namespace WzComparerR2
             this.superTabControlPanel2.Name = "superTabControlPanel2";
             this.superTabControlPanel2.Size = new System.Drawing.Size(124, 180);
             this.superTabControlPanel2.TabIndex = 0;
-            this.superTabControlPanel2.TabItem = this.superTabItem2;
+            this.superTabControlPanel2.TabItem = this.superTabItem3;
             // 
             // advTreePatchFiles
             // 
@@ -767,6 +767,7 @@ namespace WzComparerR2
             this.txtPatchState.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.txtPatchState.Size = new System.Drawing.Size(257, 162);
             this.txtPatchState.TabIndex = 1;
+            this.txtPatchState.Text = "このパッチャーは次のタイプのパッチファイルをサポートします:\r\n\r\n1. 手動パッチャー (MaplePatchXXXtoYYY.exe)\r\n2. 自動パッチファイル (XXXXXtoYYYYY.patch、MaplePatchXXXtoYYY.patch)\r\n\r\nMapleStory.exe または MapleStoryT.exe が配置されている有効なメイプルストーリーインストールフォルダを選択する必要があります。\r\n\r\nディスク容量が不足している場合は、「即時パッチ」を有効にすることをお勧めします。";
             // 
             // progressBarX1
             // 
@@ -799,7 +800,7 @@ namespace WzComparerR2
             this.panelEx1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panelEx1.Location = new System.Drawing.Point(0, 0);
             this.panelEx1.Name = "panelEx1";
-            this.panelEx1.Size = new System.Drawing.Size(384, 361);
+            this.panelEx1.Size = new System.Drawing.Size(384, 374);
             this.panelEx1.Style.Alignment = System.Drawing.StringAlignment.Center;
             this.panelEx1.Style.BackColor1.ColorSchemePart = DevComponents.DotNetBar.eColorSchemePart.PanelBackground;
             this.panelEx1.Style.BackColor2.ColorSchemePart = DevComponents.DotNetBar.eColorSchemePart.PanelBackground2;
@@ -959,7 +960,7 @@ namespace WzComparerR2
             // 
             // FrmPatcher
             // 
-            this.ClientSize = new System.Drawing.Size(384, 361);
+            this.ClientSize = new System.Drawing.Size(384, 444);
             this.Controls.Add(this.panelEx1);
             this.DoubleBuffered = true;
             this.Font = new System.Drawing.Font("MS PGothic", 9F);

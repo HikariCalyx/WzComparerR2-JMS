@@ -322,8 +322,7 @@ namespace WzComparerR2
                 this.advTreePatchFiles.Nodes.Clear();
                 this.txtNotice.Clear();
                 this.txtPatchState.Clear();
-                this.panelEx2.Visible = true;
-                this.expandablePanel2.Height = 340;
+                this.panelEx2.Enabled = true;
             });
 
             WzPatcher patcher = null;
@@ -515,8 +514,7 @@ namespace WzComparerR2
                     patcher = null;
                 }
                 GC.Collect();
-                panelEx2.Visible = false;
-                expandablePanel2.Height = 157;
+                panelEx2.Enabled = false;
             }
         }
 
