@@ -792,7 +792,7 @@ namespace WzComparerR2
             // 
             this.panelEx1.CanvasColor = System.Drawing.SystemColors.Control;
             this.panelEx1.ColorSchemeStyle = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
-            this.panelEx1.Controls.Add(this.expandablePanel3);
+            //this.panelEx1.Controls.Add(this.expandablePanel3);
             this.panelEx1.Controls.Add(this.expandablePanel2);
             this.panelEx1.Controls.Add(this.expandablePanel1);
             this.panelEx1.DisabledBackColor = System.Drawing.Color.Empty;
