@@ -3265,14 +3265,14 @@ namespace WzComparerR2
         {
             int count = CharaSimLoader.LoadedSetItems.Count;
             CharaSimLoader.LoadedSetItems.Clear();
-            labelItemStatus.Text = count + "Set アイテムが統合されました。";
+            labelItemStatus.Text = count + "セットアイテムが統合されました。";
         }
 
         private void buttonItemClearExclusiveEquips_Click(object sender, EventArgs e)
         {
             int count = CharaSimLoader.LoadedExclusiveEquips.Count;
             CharaSimLoader.LoadedExclusiveEquips.Clear();
-            labelItemStatus.Text = count + "Non-Duplicate アイテムが統合されました。";
+            labelItemStatus.Text = count + "重複しないアイテムが統合されました。";
         }
 
         private void buttonItemClearCommodities_Click(object sender, EventArgs e)
@@ -3280,7 +3280,7 @@ namespace WzComparerR2
             int count = CharaSimLoader.LoadedCommoditiesBySN.Count;
             CharaSimLoader.LoadedCommoditiesBySN.Clear();
             CharaSimLoader.LoadedCommoditiesByItemId.Clear();
-            labelItemStatus.Text = count + "Cash アイテムが統合されました。";
+            labelItemStatus.Text = count + "ポイントアイテムが統合されました。";
         }
 
         private void buttonItemCharItem_CheckedChanged(object sender, EventArgs e)
