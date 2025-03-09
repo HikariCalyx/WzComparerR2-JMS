@@ -69,7 +69,7 @@ namespace WzComparerR2.CharaSim
                 case GearPropType.incINTr: return "INT : " + sign + value + "%";
                 case GearPropType.incLUK: return "LUK : " + sign + value;
                 case GearPropType.incLUKr: return "LUK : " + sign + value + "%";
-                case GearPropType.incAllStat: return "Allｽﾃｰﾀｽ: " + sign + value;
+                case GearPropType.incAllStat: return "Allｽﾃｰﾀｽ：" + sign + value;
                 case GearPropType.statR: return "Allｽﾃｰﾀｽ: " + sign + value + "%";
                 case GearPropType.incMHP: return "最大HP : " + sign + value;
                 case GearPropType.incMHPr: return "最大HP : " + sign + value + "%";
@@ -141,13 +141,13 @@ namespace WzComparerR2.CharaSim
                 case GearPropType.cantRepair: return value == 0 ? null : "修理不可";
                 case GearPropType.noLookChange: return value == 0 ? null : "神秘のカナトコ使用不可";
 
-                case GearPropType.incAllStat_incMHP25: return "Allｽﾃｰﾀｽ: " + sign + value + ", 最大HP : " + sign + (value * 25);// check once Lv 250 set comes out in GMS
-                case GearPropType.incAllStat_incMHP50_incMMP50: return "Allｽﾃｰﾀｽ: " + sign + value + ", 最大HP / 最大MP : " + sign + (value * 50);
-                case GearPropType.incMHP_incMMP: return "最大HP / 最大MP: " + sign + value;
-                case GearPropType.incMHPr_incMMPr: return "最大HP / 最大MP: " + sign + value + "%";
+                case GearPropType.incAllStat_incMHP25: return "Allｽﾃｰﾀｽ：" + sign + value + ", 最大HP : " + sign + (value * 25);// check once Lv 250 set comes out in GMS
+                case GearPropType.incAllStat_incMHP50_incMMP50: return "Allｽﾃｰﾀｽ：" + sign + value + ", 最大HP / 最大MP : " + sign + (value * 50);
+                case GearPropType.incMHP_incMMP: return "最大HP / 最大MP : " + sign + value;
+                case GearPropType.incMHPr_incMMPr: return "最大HP / 最大MP : " + sign + value + "%";
                 case GearPropType.incPAD_incMAD:
-                case GearPropType.incAD: return "攻撃力 / 魔力: " + sign + value;
-                case GearPropType.incPDD_incMDD: return "防御力: " + sign + value;
+                case GearPropType.incAD: return "攻撃力 / 魔力 : " + sign + value;
+                case GearPropType.incPDD_incMDD: return "防御力 : " + sign + value;
                 //case GearPropType.incACC_incEVA: return "ACC/AVO :" + sign + value;
 
                 case GearPropType.incARC: return "ARC : " + sign + value;
