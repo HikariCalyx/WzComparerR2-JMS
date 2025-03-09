@@ -18,6 +18,7 @@ namespace WzComparerR2.CharaSimControl
             this.menu.Items.Add(new ToolStripMenuItem("クリップボードにコピー", null, tsmiCopy_Click));
             this.menu.Items.Add(new ToolStripMenuItem("PNGに保存", null, tsmiSave_Click));
             this.menu.Items.Add(new ToolStripMenuItem("文字列をコピー", null, tsmiCopyText_Click));
+            this.menu.Items.Add(new ToolStripMenuItem("翻訳してコピーしてみる", null, tsmiCopyTranslate_Click));
             this.menu.Items.Add(new ToolStripMenuItem("閉じる (Esc)", null, tsmiClose_Click));
             this.ContextMenuStrip = this.menu;
 
@@ -297,6 +298,27 @@ namespace WzComparerR2.CharaSimControl
                     break;
             }
             Clipboard.SetText(sb.ToString());
+            sb.Clear();
+        }
+
+        void tsmiCopyTranslate_Click(object sender, EventArgs e)
+        {
+            StringBuilder sb = new StringBuilder();
+            if (this.PreferredStringCopyMethod == 2) sb.AppendLine(this.NodeID.ToString());
+            if (!String.IsNullOrEmpty(this.NodeName)) sb.AppendLine(this.NodeName);
+            if (String.IsNullOrEmpty(this.Desc)) this.Desc = "";
+            if (String.IsNullOrEmpty(this.Pdesc)) this.Pdesc = "";
+            if (String.IsNullOrEmpty(this.AutoDesc)) this.AutoDesc = "";
+            if (String.IsNullOrEmpty(this.Hdesc)) this.Hdesc = "";
+            if (String.IsNullOrEmpty(this.DescLeftAlign)) this.DescLeftAlign = "";
+            if (this.CopyParsedSkillString && item is Skill) this.Hdesc = this.SkillRender.ParsedHdesc;
+            if (!String.IsNullOrEmpty(this.NodeName)) sb.AppendLine("<name>" + this.NodeName + "</name>");
+            if (!String.IsNullOrEmpty(this.Desc)) sb.AppendLine("<desc>" + this.Desc + "</desc>");
+            if (!String.IsNullOrEmpty(this.Pdesc)) sb.AppendLine("<pdesc>" + this.Pdesc + "</pdesc>");
+            if (!String.IsNullOrEmpty(this.AutoDesc)) sb.AppendLine("<autodesc>" + this.AutoDesc + "</autodesc>");
+            if (!String.IsNullOrEmpty(this.Hdesc)) sb.AppendLine("<hdesc>" + this.Hdesc + "</hdesc>");
+            if (!String.IsNullOrEmpty(this.DescLeftAlign)) sb.AppendLine("<descleftalign>" + this.DescLeftAlign + "</descleftalign>");
+            Clipboard.SetText(Translator.TranslateString(sb.ToString()));
             sb.Clear();
         }
 
