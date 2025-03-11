@@ -17,7 +17,6 @@ namespace WzComparerR2.CharaSimControl
     public class CashPackageTooltipRender : TooltipRender
     {
         private bool isTranslateRequired = Translator.IsTranslateEnabled;
-        private bool isCurrencyConversionEnabled = Translator.CurrencyConversionEnabled;
         private string titleLanguage = "";
         public CashPackageTooltipRender()
         {
@@ -161,7 +160,7 @@ namespace WzComparerR2.CharaSimControl
 
             picH = 10;
             string translatedCashPackageName = "";
-            if (isCurrencyConversionEnabled)
+            if (Translator.DefaultDesiredCurrency != "none")
             {
                 if (Translator.DefaultDetectCurrency == "auto")
                 {
@@ -665,7 +664,7 @@ namespace WzComparerR2.CharaSimControl
             if (totalOriginalPrice == totalPrice)
             {
                 TextRenderer.DrawText(g, totalPrice + "ポイント", GearGraphics.ItemDetailFont, new Point(55, picH), Color.White, TextFormatFlags.NoPadding | TextFormatFlags.NoPrefix);
-                if (isCurrencyConversionEnabled)
+                if (Translator.DefaultDesiredCurrency != "none")
                 {
                     string exchangedPrice = Translator.GetConvertedCurrency(totalPrice, titleLanguage);
                     if (!String.IsNullOrEmpty(exchangedPrice))
@@ -684,7 +683,7 @@ namespace WzComparerR2.CharaSimControl
                 {
                     DrawDiscountNum(g, "-" + (int)((100 - 100.0 * totalPrice / totalOriginalPrice)) + "%", cashBitmap.Width - 40, picH - 1, StringAlignment.Near);
                 }
-                if (isCurrencyConversionEnabled)
+                if (Translator.DefaultDesiredCurrency != "none")
                 {
                     string exchangedPrice = Translator.GetConvertedCurrency(totalPrice, titleLanguage);
                     if (!String.IsNullOrEmpty(exchangedPrice))

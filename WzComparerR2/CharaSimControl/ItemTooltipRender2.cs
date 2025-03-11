@@ -55,7 +55,6 @@ namespace WzComparerR2.CharaSimControl
         public TooltipRender SetItemRender { get; set; }
         public TooltipRender CashPackageRender { get; set; }
         private AvatarCanvasManager avatar { get; set; }
-        private bool isCurrencyConversionEnabled = Translator.CurrencyConversionEnabled;
         private string titleLanguage = "";
 
         public override Bitmap Render()
@@ -356,7 +355,7 @@ namespace WzComparerR2.CharaSimControl
             {
                 itemName += " (" + nameAdd + ")";
             }
-            if (isCurrencyConversionEnabled)
+            if (Translator.DefaultDesiredCurrency != "none")
             {
                 if (Translator.DefaultDetectCurrency == "auto")
                 {
@@ -1167,7 +1166,7 @@ namespace WzComparerR2.CharaSimControl
                     {
                         picH += 16;
                         GearGraphics.DrawString(g, "\r\n · 購入価額：" + commodityPackage.Price + "ポイント", GearGraphics.EquipDetailFont, 100, right, ref picH, 16);
-                        if (isCurrencyConversionEnabled)
+                        if (Translator.DefaultDesiredCurrency != "none")
                         {
                             string exchangedPrice = Translator.GetConvertedCurrency(commodityPackage.Price, titleLanguage);
                             GearGraphics.DrawString(g, "    " + exchangedPrice, GearGraphics.EquipDetailFont, 100, right, ref picH, 16);

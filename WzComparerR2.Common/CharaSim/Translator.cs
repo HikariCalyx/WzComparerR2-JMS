@@ -547,7 +547,6 @@ namespace WzComparerR2.CharaSim
         public static string DefaultLanguageModel { get; set; }
         public static string DefaultTranslateAPIKey { get; set; }
         public static string DefaultOpenAISystemMessage { get; set; }
-        public static bool CurrencyConversionEnabled { get; set; }
         public static int DefaultPreferredLayout { get; set; }
         public static int DefaultPreferredTranslateEngine { get; set; }
         public static bool IsTranslateEnabled { get; set; }
