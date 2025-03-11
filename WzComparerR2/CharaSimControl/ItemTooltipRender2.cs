@@ -55,7 +55,7 @@ namespace WzComparerR2.CharaSimControl
         public TooltipRender SetItemRender { get; set; }
         public TooltipRender CashPackageRender { get; set; }
         private AvatarCanvasManager avatar { get; set; }
-        private bool isCurrencyConversionEnabled = (Translator.DefaultDesiredCurrency != "none");
+        private bool isCurrencyConversionEnabled = Translator.CurrencyConversionEnabled;
         private string titleLanguage = "";
 
         public override Bitmap Render()

@@ -59,7 +59,7 @@ namespace WzComparerR2.CharaSimControl
         public bool ShowCashPurchasePrice { get; set; }
         public bool ShowCombatPower { get; set; }
         public bool AutoTitleWrap { get; set; }
-        private bool isCurrencyConversionEnabled = (Translator.DefaultDesiredCurrency != "none");
+        private bool isCurrencyConversionEnabled = Translator.CurrencyConversionEnabled;
         private string titleLanguage = "";
 
         public TooltipRender SetItemRender { get; set; }
