@@ -262,7 +262,14 @@ namespace WzComparerR2.CharaSim
                 }
                 if (String.IsNullOrEmpty(h))
                 {
-                    h = sr.SkillH[0];
+                    try
+                    {
+                        h = sr.SkillH[0];
+                    }
+                    catch
+                    {
+                        ;
+                    }
                 }
                 var levelCommon = level <= skill.levelCommon.Count ? skill.levelCommon[level - 1] : skill.common;
 
