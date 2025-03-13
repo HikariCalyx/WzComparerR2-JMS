@@ -106,6 +106,9 @@ namespace WzComparerR2.Avatar.UI
             this.btnReset = new DevComponents.DotNetBar.ButtonItem();
             this.btnLock = new DevComponents.DotNetBar.ButtonItem();
             this.btnSaveAsGif = new DevComponents.DotNetBar.ButtonItem();
+            this.btnSaveOptions = new DevComponents.DotNetBar.ButtonItem();
+            this.btnEnableAutosave = new DevComponents.DotNetBar.ButtonItem();
+            this.btnSpecifySavePath = new DevComponents.DotNetBar.ButtonItem();
             this.dockSite3 = new DevComponents.DotNetBar.DockSite();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.avatarContainer1 = new WzComparerR2.Avatar.UI.AvatarContainer();
@@ -646,6 +649,7 @@ namespace WzComparerR2.Avatar.UI
             this.btnReset,
             this.btnLock,
             this.btnSaveAsGif,
+            this.btnSaveOptions,
             this.btnExport});
             this.bar3.Location = new System.Drawing.Point(0, 0);
             this.bar3.Name = "bar3";
@@ -870,6 +874,30 @@ namespace WzComparerR2.Avatar.UI
             this.btnSaveAsGif.Tooltip = "保存";
             this.btnSaveAsGif.Click += new System.EventHandler(this.btnSaveAsGif_Click);
             // 
+            // btnSaveOptions
+            // 
+            this.btnSaveOptions.AutoExpandOnClick = true;
+            this.btnSaveOptions.Image = global::WzComparerR2.Avatar.Properties.Resources.autosave;
+            this.btnSaveOptions.Name = "btnSaveOptions";
+            this.btnSaveOptions.SubItems.AddRange(new DevComponents.DotNetBar.BaseItem[] {
+            this.btnEnableAutosave,
+            this.btnSpecifySavePath});
+            this.btnSaveOptions.Tooltip = "自動保存オプション";
+            // 
+            // btnEnableAutosave
+            // 
+            this.btnEnableAutosave.AutoCheckOnClick = true;
+            this.btnEnableAutosave.Name = "btnEnableAutosave";
+            this.btnEnableAutosave.Text = "自動保存の有効化";
+            this.btnEnableAutosave.Click += new System.EventHandler(this.btnEnableAutosave_Click);
+            // 
+            // btnSpecifySavePath
+            // 
+            this.btnSpecifySavePath.Name = "btnSpecifySavePath";
+            this.btnSpecifySavePath.Text = "保存パスを指定...";
+            this.btnSpecifySavePath.Enabled = this.btnEnableAutosave.Checked;
+            this.btnSpecifySavePath.Click += new System.EventHandler(this.btnSpecifySavePath_Click);
+            // 
             // dockSite3
             // 
             this.dockSite3.AccessibleRole = System.Windows.Forms.AccessibleRole.Window;
@@ -1028,6 +1056,9 @@ namespace WzComparerR2.Avatar.UI
         private DevComponents.DotNetBar.ButtonItem btnLaraTheSheep;
         private DevComponents.DotNetBar.ButtonItem btnDskytian;
         private DevComponents.DotNetBar.ButtonItem btnSaveAsGif;
+        private DevComponents.DotNetBar.ButtonItem btnSaveOptions;
+        private DevComponents.DotNetBar.ButtonItem btnEnableAutosave;
+        private DevComponents.DotNetBar.ButtonItem btnSpecifySavePath;
         private DevComponents.DotNetBar.Controls.ComboBoxEx cmbEar;
         private DevComponents.DotNetBar.Separator Separator1;
         private DevComponents.DotNetBar.Separator Separator2;

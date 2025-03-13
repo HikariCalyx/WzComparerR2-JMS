@@ -18,6 +18,7 @@ using WzComparerR2.PluginBase;
 using WzComparerR2.Config;
 using WzComparerR2.Controls;
 using WzComparerR2.Encoders;
+using System.IO;
 
 namespace WzComparerR2.Avatar.UI
 {
@@ -54,6 +55,7 @@ namespace WzComparerR2.Avatar.UI
         bool suspendUpdate;
         bool needUpdate;
         Animator animator;
+        string specifiedSavePath = "";
 
         /// <summary>
         /// wz1节点选中事件。
@@ -1745,6 +1747,9 @@ namespace WzComparerR2.Avatar.UI
             bool emoPlaying = chkEmotionPlay.Checked && cmbEmotionFrame.Items.Count > 1;
             bool tamingPlaying = chkTamingPlay.Checked && cmbTamingFrame.Items.Count > 1;
 
+            string defaultFileName;
+            string outputFileName;
+
             int aniCount = new[] { bodyPlaying, emoPlaying, tamingPlaying }.Count(b => b);
             int effectCount = bodyPlaying ? (GetSelectedEffectFrames(out int[] frameIndex, out ActionFrame[] actionFrame) ? 1 : 0) : 0;
             aniCount += effectCount; // add effect parts
@@ -1756,25 +1761,34 @@ namespace WzComparerR2.Avatar.UI
                 this.GetSelectedTamingFrame(out int tamingFrame, out _);
                 this.GetSelectedEffectFrames(out int[] effectFrames, out _);
 
-                // no animation is playing, save as png
-                var dlg = new SaveFileDialog()
-                {
-                    Title = "アバターフレームを保存",
-                    Filter = "PNG (*.png)|*.png|*.*|*.*",
-                    FileName = string.Format("avatar{0}{1}{2}.png",
+                defaultFileName = string.Format("avatar{0}{1}{2}.png",
                         string.IsNullOrEmpty(avatar.ActionName) ? "" : ("_" + avatar.ActionName + "(" + bodyFrame + ")"),
                         string.IsNullOrEmpty(avatar.EmotionName) ? "" : ("_" + avatar.EmotionName + "(" + emoFrame + ")"),
-                        string.IsNullOrEmpty(avatar.TamingActionName) ? "" : ("_" + avatar.TamingActionName + "(" + tamingFrame + ")"))
-                };
+                        string.IsNullOrEmpty(avatar.TamingActionName) ? "" : ("_" + avatar.TamingActionName + "(" + tamingFrame + ")"));
 
-                if (dlg.ShowDialog() != DialogResult.OK)
+                // no animation is playing, save as png
+                if (!btnEnableAutosave.Checked)
                 {
-                    return;
+                    var dlg = new SaveFileDialog()
+                    {
+                        Title = "アバターフレームを保存",
+                        Filter = "PNG (*.png)|*.png|*.*|*.*",
+                        FileName = defaultFileName
+                    };
+                    if (dlg.ShowDialog() != DialogResult.OK)
+                    {
+                        return;
+                    }
+                    outputFileName = dlg.FileName;
+                }
+                else
+                {
+                    outputFileName = System.IO.Path.Combine(specifiedSavePath, defaultFileName.Replace('\\', '.'));
                 }
 
                 var bone = this.avatar.CreateFrame(bodyFrame, emoFrame, tamingFrame, effectFrames);
                 var frame = this.avatar.DrawFrame(bone);
-                frame.Bitmap.Save(dlg.FileName, System.Drawing.Imaging.ImageFormat.Png);
+                frame.Bitmap.Save(outputFileName, System.Drawing.Imaging.ImageFormat.Png);
             }
             else
             {
@@ -1783,23 +1797,31 @@ namespace WzComparerR2.Avatar.UI
                 var cap = encoder.Compatibility;
                 string extensionFilter = string.Join(";", cap.SupportedExtensions.Select(ext => $"*{ext}"));
 
-                var dlg = new SaveFileDialog()
-                {
-                    Title = "アバターを保存",
-                    Filter = string.Format("{0} (*{1})|*{1}|すべてのファイル(*.*)|*.*", encoder.Name, extensionFilter),
-                    FileName = string.Format("avatar{0}{1}{2}{3}",
+                defaultFileName = string.Format("avatar{0}{1}{2}{3}",
                         string.IsNullOrEmpty(avatar.ActionName) ? "" : ("_" + avatar.ActionName),
                         string.IsNullOrEmpty(avatar.EmotionName) ? "" : ("_" + avatar.EmotionName),
                         string.IsNullOrEmpty(avatar.TamingActionName) ? "" : ("_" + avatar.TamingActionName),
-                        cap.DefaultExtension)
-                };
+                        cap.DefaultExtension);
 
-                if (dlg.ShowDialog() != DialogResult.OK)
+                if (!btnEnableAutosave.Checked)
                 {
-                    return;
+                    var dlg = new SaveFileDialog()
+                    {
+                        Title = "アバターを保存",
+                        Filter = string.Format("{0} (*{1})|*{1}|すべてのファイル(*.*)|*.*", encoder.Name, extensionFilter),
+                        FileName = defaultFileName
+                    };
+                    if (dlg.ShowDialog() != DialogResult.OK)
+                    {
+                        return;
+                    }
+                    outputFileName = dlg.FileName;
+                }
+                else
+                {
+                    outputFileName = System.IO.Path.Combine(specifiedSavePath, defaultFileName.Replace('\\', '.'));
                 }
 
-                string outputFileName = dlg.FileName;
                 var actPlaying = new[] { bodyPlaying, emoPlaying, tamingPlaying };
                 var actFrames = new[] { cmbBodyFrame, cmbEmotionFrame, cmbTamingFrame }
                     .Select((cmb, i) =>
@@ -2396,6 +2418,31 @@ namespace WzComparerR2.Avatar.UI
         private void btnExport_Click(object sender, EventArgs e)
         {
             ExportAvatar(sender, e);
+        }
+
+        private void btnEnableAutosave_Click(object sender, EventArgs e)
+        {
+            if (String.IsNullOrEmpty(specifiedSavePath)) btnSpecifySavePath_Click(sender, e);
+            if (!String.IsNullOrEmpty(specifiedSavePath))
+            {
+                btnSpecifySavePath.Enabled = btnEnableAutosave.Checked;
+            }
+            else
+            {
+                btnEnableAutosave.Checked = false;
+            }
+        }
+
+        private void btnSpecifySavePath_Click(object sender, EventArgs e)
+        {
+            using (FolderBrowserDialog dlg = new FolderBrowserDialog())
+            {
+                dlg.Description = "アバターを自動的に保存する場所を選択してください。";
+                if (DialogResult.OK == dlg.ShowDialog())
+                {
+                    specifiedSavePath = dlg.SelectedPath;
+                }
+            }
         }
 
         private void ExportAvatar(object sender, EventArgs e)
