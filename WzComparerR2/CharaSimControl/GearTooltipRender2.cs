@@ -61,6 +61,8 @@ namespace WzComparerR2.CharaSimControl
         public bool AutoTitleWrap { get; set; }
         private string titleLanguage = "";
 
+        private bool isPostNEXTClient = (PluginBase.PluginManager.FindWz("Character/Eqp/Weapon/01212142.img") != null);
+
         public TooltipRender SetItemRender { get; set; }
 
         public override Bitmap Render()
@@ -1005,7 +1007,7 @@ namespace WzComparerR2.CharaSimControl
 
                 if (!Gear.GetBooleanValue(GearPropType.exceptUpgrade))
                 {
-                    int maxStar = Gear.GetMaxStar();
+                    int maxStar = Gear.GetMaxStar(isPostNEXTClient);
 
                     if (Gear.Star > 0) //星星
                     {
