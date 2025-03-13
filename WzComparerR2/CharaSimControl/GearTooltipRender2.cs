@@ -13,7 +13,6 @@ using WzComparerR2.WzLib;
 using WzComparerR2.AvatarCommon;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.Tab;
 using System.Collections;
-using Newtonsoft.Json.Linq;
 
 namespace WzComparerR2.CharaSimControl
 {
