@@ -13,6 +13,7 @@ using WzComparerR2.WzLib;
 using WzComparerR2.AvatarCommon;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.Tab;
 using System.Collections;
+using Newtonsoft.Json.Linq;
 
 namespace WzComparerR2.CharaSimControl
 {
@@ -75,7 +76,9 @@ namespace WzComparerR2.CharaSimControl
             int[] picH = new int[4];
             Bitmap left = RenderBase(out picH[0]);
             Bitmap add = RenderAddition(out picH[1]);
-            Bitmap genesis = RenderGenesisSkills(out int genesisHeight);
+            int equipLevel = 0;
+            this.Gear.Props.TryGetValue(GearPropType.reqLevel, out equipLevel);
+            Bitmap genesis = RenderGenesisSkills(out int genesisHeight, equipLevel == 250);
             Bitmap set = RenderSetItem(out int setHeight);
             picH[2] = genesisHeight + setHeight;
             Bitmap levelOrSealed = null;
@@ -1750,7 +1753,7 @@ namespace WzComparerR2.CharaSimControl
             return levelOrSealed;
         }
 
-        private Bitmap RenderGenesisSkills(out int picHeight)
+        private Bitmap RenderGenesisSkills(out int picHeight, bool isDestinyWeapon=false)
         {
             Bitmap genesisBitmap = null;
             picHeight = 0;
@@ -1759,7 +1762,9 @@ namespace WzComparerR2.CharaSimControl
                 genesisBitmap = new Bitmap(261, DefaultPicHeight);
                 Graphics g = Graphics.FromImage(genesisBitmap);
                 picHeight = 13;
-                foreach (var skillID in new[] { 80002632, 80002633 })
+                int[] skillList = new[] { 80002632, 80002633 };
+                if (isDestinyWeapon) skillList = new[] { 80003873, 80003874 };
+                foreach (var skillID in skillList)
                 {
                     string skillName;
                     if (this.StringLinker?.StringSkill.TryGetValue(skillID, out var sr) ?? false && sr.Name != null)
