@@ -2076,7 +2076,7 @@ namespace WzComparerR2
             // 
             this.buttonItemAutoSave.AutoCheckOnClick = true;
             this.buttonItemAutoSave.Name = "buttonItemAutoSave";
-            this.buttonItemAutoSave.Text = "自動保存";
+            this.buttonItemAutoSave.Text = "自動保存の有効化";
             this.buttonItemAutoSave.Click += new System.EventHandler(this.buttonItemAutoSave_Click);
             // 
             // buttonItemAutoSaveFolder
@@ -2084,7 +2084,7 @@ namespace WzComparerR2
             this.buttonItemAutoSaveFolder.Name = "buttonItemAutoSaveFolder";
             this.buttonItemAutoSaveFolder.SubItems.AddRange(new DevComponents.DotNetBar.BaseItem[] {
             this.labelItemAutoSaveFolder});
-            this.buttonItemAutoSaveFolder.Text = "宛先フォルダーの選択";
+            this.buttonItemAutoSaveFolder.Text = "保存フォルダーを指定...";
             this.buttonItemAutoSaveFolder.Click += new System.EventHandler(this.buttonItemAutoSaveFolder_Click);
             // 
             // labelItemAutoSaveFolder

@@ -894,7 +894,7 @@ namespace WzComparerR2.Avatar.UI
             // btnSpecifySavePath
             // 
             this.btnSpecifySavePath.Name = "btnSpecifySavePath";
-            this.btnSpecifySavePath.Text = "保存パスを指定...";
+            this.btnSpecifySavePath.Text = "保存フォルダーを指定...";
             this.btnSpecifySavePath.Enabled = this.btnEnableAutosave.Checked;
             this.btnSpecifySavePath.Click += new System.EventHandler(this.btnSpecifySavePath_Click);
             // 
