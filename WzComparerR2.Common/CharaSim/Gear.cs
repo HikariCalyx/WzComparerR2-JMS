@@ -94,7 +94,7 @@ namespace WzComparerR2.CharaSim
             }
         }
 
-        public int GetMaxStar(bool isPostNextClient=false)
+        public int GetMaxStar(bool isPostNEXTClient=false)
         {
             if (!this.HasTuc)
             {
@@ -116,7 +116,7 @@ namespace WzComparerR2.CharaSim
             int reqLevel;
             this.Props.TryGetValue(GearPropType.reqLevel, out reqLevel);
             int[] data = null;
-            if (isPostNextClient)
+            if (isPostNEXTClient)
             {
                 foreach (int[] item in starDataPostNEXT)
                 {

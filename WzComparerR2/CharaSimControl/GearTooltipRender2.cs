@@ -61,7 +61,7 @@ namespace WzComparerR2.CharaSimControl
         public bool AutoTitleWrap { get; set; }
         private string titleLanguage = "";
 
-        private bool isPostNEXTClient = (PluginBase.PluginManager.FindWz("Character/Eqp/Weapon/01212142.img") != null);
+        private bool isPostNEXTClient;
 
         public TooltipRender SetItemRender { get; set; }
 
@@ -183,6 +183,9 @@ namespace WzComparerR2.CharaSimControl
 
         private Bitmap RenderBase(out int picH)
         {
+            StringResult destinyWeapon;
+            // 1212142 = Destiny Shining Rod
+            isPostNEXTClient = StringLinker.StringEqp.TryGetValue(1212142, out destinyWeapon);
             Bitmap bitmap = new Bitmap(261, DefaultPicHeight);
             Graphics g = Graphics.FromImage(bitmap);
             g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAliasGridFit;
@@ -988,7 +991,7 @@ namespace WzComparerR2.CharaSimControl
             }
 
             //星星锤子
-            if (hasTuc && Gear.Hammer > -1 || Gear.GetMaxStar() > 0)
+            if (hasTuc && Gear.Hammer > -1 || Gear.GetMaxStar(isPostNEXTClient) > 0)
             {
                 if (Gear.Hammer == 2)
                 {
@@ -2107,7 +2110,7 @@ namespace WzComparerR2.CharaSimControl
         private void DrawStar2(Graphics g, ref int picH)
         {
             //int maxStar = Gear.GetMaxStar();
-            int maxStar = Math.Max(Gear.GetMaxStar(), Gear.Star);
+            int maxStar = Math.Max(Gear.GetMaxStar(isPostNEXTClient), Gear.Star);
             if (maxStar > 0)
             {
                 for (int i = 0; i < maxStar; i += 15)
