@@ -17,7 +17,7 @@ namespace WzComparerR2.CharaSimControl
             this.menu = new ContextMenuStrip();
             this.menu.Items.Add(new ToolStripMenuItem("クリップボードにコピー", null, tsmiCopy_Click));
             this.menu.Items.Add(new ToolStripMenuItem("PNGに保存", null, tsmiSave_Click));
-            this.menu.Items.Add(new ToolStripMenuItem("アンドロイドアバターに保存", null, tsmiAndroidSave_Click));
+            this.menu.Items.Add(new ToolStripMenuItem("アンドロイドアバターの保存", null, tsmiAndroidSave_Click));
             this.menu.Items.Add(new ToolStripSeparator());
             this.menu.Items.Add(new ToolStripMenuItem("文字列をコピー", null, tsmiCopyText_Click));
             this.menu.Items.Add(new ToolStripMenuItem("翻訳してコピーしてみる", null, tsmiCopyTranslate_Click));
