@@ -739,6 +739,7 @@ namespace WzComparerR2.CharaSimControl
                         Math.Min(appearance.Origin.Y, 100));
 
                     g.DrawImage(appearance.Bitmap, 88 - Math.Min(appearance.Origin.X, 50), picH + Math.Max(80 - appearance.Origin.Y, 0), imgrect, GraphicsUnit.Pixel);
+                    Gear.AndroidBitmap = appearance.Bitmap;
 
                     picH += 100;
                 }
