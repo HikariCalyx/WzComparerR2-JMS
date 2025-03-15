@@ -70,6 +70,10 @@
             this.checkBoxX9 = new DevComponents.DotNetBar.Controls.CheckBoxX();
             this.checkBoxX8 = new DevComponents.DotNetBar.Controls.CheckBoxX();
             this.checkBoxX5 = new DevComponents.DotNetBar.Controls.CheckBoxX();
+            this.labelX14 = new DevComponents.DotNetBar.LabelX();
+            this.labelX15 = new DevComponents.DotNetBar.LabelX();
+            this.comboBoxEx3 = new DevComponents.DotNetBar.Controls.ComboBoxEx();
+            this.comboBoxEx4 = new DevComponents.DotNetBar.Controls.ComboBoxEx();
             this.superTabItem3 = new DevComponents.DotNetBar.SuperTabItem();
             this.superTabControlPanel4 = new DevComponents.DotNetBar.SuperTabControlPanel();
             this.checkBoxX7 = new DevComponents.DotNetBar.Controls.CheckBoxX();
@@ -572,6 +576,10 @@
             this.superTabControlPanel3.Controls.Add(this.checkBoxX9);
             this.superTabControlPanel3.Controls.Add(this.checkBoxX8);
             this.superTabControlPanel3.Controls.Add(this.checkBoxX5);
+            this.superTabControlPanel3.Controls.Add(this.labelX14);
+            this.superTabControlPanel3.Controls.Add(this.labelX15);
+            this.superTabControlPanel3.Controls.Add(this.comboBoxEx3);
+            this.superTabControlPanel3.Controls.Add(this.comboBoxEx4);
             this.superTabControlPanel3.Dock = System.Windows.Forms.DockStyle.Fill;
             this.superTabControlPanel3.Location = new System.Drawing.Point(62, 0);
             this.superTabControlPanel3.Name = "superTabControlPanel3";
@@ -594,6 +602,66 @@
             this.checkBoxX12.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
             this.checkBoxX12.TabIndex = 5;
             this.checkBoxX12.Text = "タイトルプレビューを表示";
+            // 
+            // labelX14
+            // 
+            this.labelX14.AutoSize = true;
+            this.labelX14.BackColor = System.Drawing.Color.Transparent;
+            // 
+            // 
+            // 
+            this.labelX14.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
+            this.labelX14.Location = new System.Drawing.Point(13, 156);
+            this.labelX14.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.labelX14.Name = "labelX14";
+            this.labelX14.Size = new System.Drawing.Size(89, 18);
+            this.labelX14.TabIndex = 6;
+            this.labelX14.Text = "プレビュー髪カラー";
+            // 
+            // labelX15
+            // 
+            this.labelX15.AutoSize = true;
+            this.labelX15.BackColor = System.Drawing.Color.Transparent;
+            // 
+            // 
+            // 
+            this.labelX15.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
+            this.labelX15.Location = new System.Drawing.Point(13, 180);
+            this.labelX15.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.labelX15.Name = "labelX15";
+            this.labelX15.Size = new System.Drawing.Size(89, 18);
+            this.labelX15.TabIndex = 8;
+            this.labelX15.Text = "プレビュー顔カラー";
+            // 
+            // comboBoxEx3
+            // 
+            this.comboBoxEx3.DisplayMember = "Text";
+            this.comboBoxEx3.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
+            this.comboBoxEx3.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBoxEx3.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.comboBoxEx3.FormattingEnabled = true;
+            this.comboBoxEx3.ItemHeight = 15;
+            this.comboBoxEx3.Location = new System.Drawing.Point(140, 154);
+            this.comboBoxEx3.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.comboBoxEx3.Name = "comboBoxEx3";
+            this.comboBoxEx3.Size = new System.Drawing.Size(104, 21);
+            this.comboBoxEx3.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
+            this.comboBoxEx3.TabIndex = 7;
+            // 
+            // comboBoxEx4
+            // 
+            this.comboBoxEx4.DisplayMember = "Text";
+            this.comboBoxEx4.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
+            this.comboBoxEx4.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBoxEx4.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.comboBoxEx4.FormattingEnabled = true;
+            this.comboBoxEx4.ItemHeight = 15;
+            this.comboBoxEx4.Location = new System.Drawing.Point(140, 178);
+            this.comboBoxEx4.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.comboBoxEx4.Name = "comboBoxEx4";
+            this.comboBoxEx4.Size = new System.Drawing.Size(104, 21);
+            this.comboBoxEx4.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
+            this.comboBoxEx4.TabIndex = 9;
             // 
             // checkBoxX9
             // 
@@ -871,7 +939,12 @@
         private DevComponents.DotNetBar.Controls.CheckBoxX checkBoxX20;
         private DevComponents.DotNetBar.Controls.CheckBoxX checkBoxX21;
         private DevComponents.DotNetBar.Controls.CheckBoxX checkBoxX22;
+        private DevComponents.DotNetBar.LabelX labelX14;
+        private DevComponents.DotNetBar.LabelX labelX15;
+        private DevComponents.DotNetBar.Controls.ComboBoxEx comboBoxEx3;
+        private DevComponents.DotNetBar.Controls.ComboBoxEx comboBoxEx4;
         private DevComponents.DotNetBar.LabelX labelX4;
+
         private DevComponents.DotNetBar.Controls.ComboBoxEx cmbPreferredStringCopyMethod;
         private DevComponents.DotNetBar.Controls.CheckBoxX chkCopyParsedSkillString;
     }

@@ -32,6 +32,23 @@ namespace WzComparerR2
                 new ComboItem("プレーン文字列") { Value = 1 },
                 new ComboItem("ﾒｲﾌﾟﾙWiki最適化文字列") { Value = 2 },
             });
+
+            this.comboBoxEx3.Items.AddRange((new[] { "黒", "赤", "橙", "黄", "緑", "青", "紫", "茶" }).Select(color =>
+            {
+                var comboBoxItem = new DevComponents.DotNetBar.ComboBoxItem();
+                comboBoxItem.Text = color;
+                return comboBoxItem;
+            }).ToArray());
+
+            this.comboBoxEx4.Items.AddRange((new[] { "黒", "青", "赤", "緑", "茶", "エメラルド", "紫", "アメジスト" }).Select(color =>
+            {
+                var comboBoxItem = new DevComponents.DotNetBar.ComboBoxItem();
+                comboBoxItem.Text = color;
+                return comboBoxItem;
+            }).ToArray());
+
+            this.comboBoxEx3.SelectedIndex = 0;
+            this.comboBoxEx4.SelectedIndex = 0;
         }
 
         [Link]
@@ -212,6 +229,21 @@ namespace WzComparerR2
             get { return checkBoxX20.Checked; }
             set { checkBoxX20.Checked = value; }
         }
+
+        [Link]
+        public int Item_CosmeticHairColor
+        {
+            get { return comboBoxEx3.SelectedIndex; }
+            set { comboBoxEx3.SelectedIndex = value; }
+        }
+
+        [Link]
+        public int Item_CosmeticFaceColor
+        {
+            get { return comboBoxEx4.SelectedIndex; }
+            set { comboBoxEx4.SelectedIndex = value; }
+        }
+
 
         public int PreferredStringCopyMethod
         {
