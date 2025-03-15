@@ -3,19 +3,20 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Security.Cryptography;
+using System.Text;
+using System.Threading.Tasks;
+using System.Threading;
+using DevComponents.DotNetBar;
+using DiscordRPC;
+using Newtonsoft.Json.Linq;
+using WzComparerR2.CharaSim;
 using WzComparerR2.Common;
 using WzComparerR2.Config;
-using WzComparerR2.PluginBase;
 using WzComparerR2.Network.Contracts;
-using System.Security.Cryptography;
-using DevComponents.DotNetBar;
-using WzComparerR2.CharaSim;
-using Newtonsoft.Json.Linq;
+using WzComparerR2.PluginBase;
 using static System.Net.Mime.MediaTypeNames;
 
 
@@ -38,6 +39,7 @@ namespace WzComparerR2.Network
         }
 
         public WcClient Client { get; private set; }
+        public DiscordRpcClient DiscordClient = new DiscordRpcClient("1350422354798579844");
 
         private Dictionary<Type, Action<object>> handlers;
         private Session session;
@@ -51,6 +53,7 @@ namespace WzComparerR2.Network
         private int MaximumToken = -1;
         private bool ExtraParamEnabled = false;
         private bool AIChatEnabled = false;
+        private bool showActivityOnDiscord;
 
         private static Mutex AIMutex = new Mutex(false, "AIMutex");
 
@@ -80,6 +83,8 @@ namespace WzComparerR2.Network
             this.Client.Disconnected += Client_Disconnected;
             this.Client.OnPackReceived += Client_OnPackReceived;
             var task = this.Client.Connect();
+
+            if (config.ShowActivityOnDiscord) EnableDiscordActivity("遊ぶ", "現在秘密を発見中");
         }
 
         private void CheckConfig()
@@ -94,6 +99,7 @@ namespace WzComparerR2.Network
                 needSave = true;
             }
 
+            showActivityOnDiscord = config.ShowActivityOnDiscord;
             string nickName = config.NickName;
             if (string.IsNullOrWhiteSpace(nickName))
             {
@@ -113,6 +119,7 @@ namespace WzComparerR2.Network
                 ConfigManager.Reload();
                 config = NetworkConfig.Default;
                 config.WcID = guid.ToString();
+                config.ShowActivityOnDiscord = showActivityOnDiscord;
                 config.NickName = nickName;
                 config.Servers = servers;
                 ConfigManager.Save();
@@ -237,6 +244,38 @@ namespace WzComparerR2.Network
                         }
                         break;
 
+                    case "/discord":
+                        var sbDiscord = new StringBuilder();
+                        string discordParam = e.Command.Substring(8).Trim();
+                        if (discordParam == "on")
+                        {
+                            EnableDiscordActivity("遊ぶ", "現在秘密を発見中");
+                            ConfigManager.Reload();
+                            NetworkConfig.Default.ShowActivityOnDiscord = true;
+                            showActivityOnDiscord = true;
+                            ConfigManager.Save();
+                            sbDiscord.Append("WzComparerR2がDiscordアクティビティで有効化されました。");
+                        }
+                        else if (discordParam == "off")
+                        {
+                            if (showActivityOnDiscord) DiscordClient.Dispose();
+                            ConfigManager.Reload();
+                            NetworkConfig.Default.ShowActivityOnDiscord = false;
+                            showActivityOnDiscord = false;
+                            ConfigManager.Save();
+                            sbDiscord.Append("WzComparerR2がDiscordアクティビティで無効化されました。");
+                        }
+                        else if (showActivityOnDiscord)
+                        {
+                            sbDiscord.Append("Discordアクティビティが有効になっています。");
+                        }
+                        else
+                        {
+                            sbDiscord.Append("Discordアクティビティが無効になっています。");
+                        }
+                        Log.Info(sbDiscord.ToString());
+                        break;
+
                     case "/help":
                         var sbHelp = new StringBuilder();
                         sbHelp.AppendFormat("ネットワークロガー コマンドの使用方法\r\n");
@@ -245,6 +284,7 @@ namespace WzComparerR2.Network
                         sbHelp.AppendFormat("/aichat [on|off] : AIチャット機能の切り替え。\r\n");
                         sbHelp.AppendFormat("/new : AIチャットを再初期化します。\r\n");
                         sbHelp.AppendFormat("/sysmsg [メッセージ] : AIチャットへのシステムメッセージを指定します。\r\n");
+                        sbHelp.AppendFormat("/discord [on|off] : DiscordでのWzComparerR2のアクティビティを表示します。\r\n");
                         sbHelp.AppendFormat("/help : このヘルプを表示します。");
                         Log.Info(sbHelp.ToString());
                         break;
@@ -365,6 +405,16 @@ namespace WzComparerR2.Network
                     RegisterHandler(type, o => handler.DynamicInvoke(o));
                 }
             }
+        }
+
+        private void EnableDiscordActivity(string detail="", string state="")
+        {
+            DiscordClient.Initialize();
+            DiscordClient.SetPresence(new RichPresence()
+            {
+                Details = detail,
+                State = state
+            });
         }
 
         private void RegisterHandler<T>(Action<T> handler)
