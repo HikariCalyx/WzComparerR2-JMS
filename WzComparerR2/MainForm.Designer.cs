@@ -1842,7 +1842,7 @@ namespace WzComparerR2
             // labelItemStatus
             // 
             this.labelItemStatus.Name = "labelItemStatus";
-            this.labelItemStatus.Text = "状態";
+            this.labelItemStatus.Text = "バージョン: " + Program.WcR2MajorVersion + BuildInfo.BuildTime;
             this.labelItemStatus.TextChanged += new System.EventHandler(this.labelItemStatus_TextChanged);
             // 
             // progressBarItem1

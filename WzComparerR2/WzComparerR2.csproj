@@ -13,6 +13,7 @@
     <ApplicationIcon>wcr2_256.ico</ApplicationIcon>
     <GenerateResourceUsePreserializedResources>true</GenerateResourceUsePreserializedResources>
     <Platforms>AnyCPU;ARM64</Platforms>
+	<FormattedBuildTime>$([System.DateTime]::Now.ToString("yyMMdd-HHmm"))</FormattedBuildTime>
   </PropertyGroup>
   <PropertyGroup Condition="$(Platform) == 'AnyCPU'">
     <ApplicationManifest>app.manifest</ApplicationManifest>
@@ -64,6 +65,10 @@
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
   </ItemGroup>
+  <Target Name="UpdateBuildTime" BeforeTargets="BeforeCompile">
+	<WriteLinesToFile File="BuildInfo.cs" Lines="namespace WzComparerR2 { internal class BuildInfo { public static string BuildTime => &quot;$(FormattedBuildTime)&quot;%3b } }" Overwrite="true" />
+	<WriteLinesToFile File="BuildDate.txt" Lines="$(FormattedBuildTime)" Overwrite="true" />
+  </Target>
   <Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition="$([MSBuild]::IsOSPlatform('Windows'))">
     <Exec Command="xcopy &quot;$(ProjectDir)..\References\x86\*&quot; &quot;$(TargetDir)Lib\x86&quot; /Y /I" />
     <Exec Command="xcopy &quot;$(ProjectDir)..\References\x64\*&quot; &quot;$(TargetDir)Lib\x64&quot; /Y /I" />

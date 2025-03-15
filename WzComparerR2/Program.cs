@@ -35,6 +35,7 @@ namespace WzComparerR2
         public static string LibPath { get; private set; }
         private static List<Assembly> loadedPluginAssemblies = new List<Assembly>();
         public static string NxAPIBaseURL = "https://open.api.nexon.com";
+        public static string WcR2MajorVersion = "v5.7.0.";
         private
 
         /// <summary>

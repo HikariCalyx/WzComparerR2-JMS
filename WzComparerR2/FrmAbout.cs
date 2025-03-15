@@ -50,7 +50,7 @@ namespace WzComparerR2
         {
             this.advTree1.Nodes.Clear();
 
-            this.advTree1.Nodes.Add(new Node("JMS <font color=\"#808080\">v5.7.0</font>"));
+            this.advTree1.Nodes.Add(new Node("JMS <font color=\"#808080\">" + Program.WcR2MajorVersion + BuildInfo.BuildTime + "</font>"));
             this.advTree1.Nodes.Add(new Node(LocalizedString_JP.FRMABOUT_VERSION));
 
             if (PluginBase.PluginManager.LoadedPlugins.Count > 0)
