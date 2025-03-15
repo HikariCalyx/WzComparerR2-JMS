@@ -14,7 +14,7 @@ namespace WzComparerR2.Network
         public NetworkConfig()
         {
             this.LogLevel = WzComparerR2.Network.LogLevel.Info;
-            this.ShowActivityOnDiscord = false;
+            this.ShowActivityOnDiscord = true;
         }
 
         [ConfigurationProperty("nickName")]
