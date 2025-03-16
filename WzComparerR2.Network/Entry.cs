@@ -39,7 +39,7 @@ namespace WzComparerR2.Network
         }
 
         public WcClient Client { get; private set; }
-        public DiscordRpcClient DiscordClient = new DiscordRpcClient("1350422354798579844");
+        public DiscordRpcClient DiscordClient;
 
         private Dictionary<Type, Action<object>> handlers;
         private Session session;
@@ -409,6 +409,7 @@ namespace WzComparerR2.Network
 
         private void EnableDiscordActivity(string detail="", string state="")
         {
+            DiscordClient = new DiscordRpcClient("1350422354798579844");
             DiscordClient.Initialize();
             DiscordClient.SetPresence(new RichPresence()
             {
