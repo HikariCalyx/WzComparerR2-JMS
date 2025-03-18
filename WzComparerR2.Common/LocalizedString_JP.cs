@@ -27,6 +27,9 @@ namespace WzComparerR2
         public static string FRMUPDATER_UPDATE_AVAILABLE = "更新可能";
         public static string FRMUPDATER_UPDATE_ALREADYLATEST = "すでに最新バージョン";
         public static string FRMUPDATER_UPDATE_CHECKFAIL = "更新チェックに失敗しました";
+        public static string FRMUPDATER_UPDATE_DOWNLOADING = "ダウンロード中";
+        public static string FRMUPDATER_UPDATE_DOWNLOADED = "ダウンロード完了";
+        public static string FRMUPDATER_UPDATE_DOWNLOAD_FAIL = "ダウンロードに失敗しました";
 
         public static string MAINFORM_OPENWZDLG_TITLE = "WZファイルを選択";
         public static string MAINFORM_OPENWZDLG_FILTER = "メイプルストーリーリソースファイル (Base.wz; *.wz; *.ms)|*.wz;*.ms";

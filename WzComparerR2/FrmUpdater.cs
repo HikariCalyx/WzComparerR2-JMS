@@ -16,6 +16,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using System.Net;
 using System.IO;
+using System.Security.Policy;
 
 namespace WzComparerR2
 {
@@ -43,6 +44,8 @@ namespace WzComparerR2
         private string net60url;
         private string net80url;
 
+        private string updaterURL = "https://github.com/HikariCalyx/WzComparerR2Updater/releases/download/v1.0.0.250318-1934/Updater.exe";
+
         private void GetPluginInfo()
         {
             this.advTree1.Nodes.Clear();
@@ -53,6 +56,28 @@ namespace WzComparerR2
             string nodeTxt = "<font color=\"#808080\">" + LocalizedString_JP.FRMABOUT_NO_AVAILABLE_PLUGINS + "</font>";
             Node node = new Node(nodeTxt);
             this.advTree1.Nodes.Add(node);
+        }
+
+        public static async Task<bool> QueryUpdate()
+        {
+            var request = (HttpWebRequest)WebRequest.Create(Program.CheckUpdateURL);
+            request.Accept = "application/json";
+            try
+            {
+                using (WebResponse response = await request.GetResponseAsync())
+                using (Stream stream = response.GetResponseStream())
+                using (StreamReader reader = new StreamReader(stream))
+                {
+                    string responseString = reader.ReadToEnd();
+                    JObject UpdateContent = JObject.Parse(responseString);
+                    string BuildNumber = UpdateContent.SelectToken("BuildNumber").ToString();
+                    return Int64.Parse(BuildNumber.Replace("-", "")) > Int64.Parse(BuildInfo.BuildTime.Replace("-", ""));
+                }
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
         }
 
         private async Task ExecuteUpdateAsync(UpdaterSession session, CancellationToken cancellationToken)
@@ -96,32 +121,92 @@ namespace WzComparerR2
             }
         }
 
-        private void buttonX1_Click(object sender, EventArgs e)
+        private async Task DownloadUpdateAsync(string url, UpdaterSession session, CancellationToken cancellationToken)
         {
-            switch (Environment.Version.Major)
+            string currentDirectory = AppDomain.CurrentDomain.BaseDirectory;
+            string savePath = Path.Combine(currentDirectory, "update.zip");
+            try
             {
-                case 4:
-                    DownloadURL(net48url);
-                    break;
-                case 6:
-                    DownloadURL(net60url);
-                    break;
-                case 8:
-                    DownloadURL(net80url);
-                    break;
+                buttonX1.Enabled = false;
+                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
+                request.Method = "GET";
+                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+                {
+                    if (response.StatusCode == HttpStatusCode.OK)
+                    {
+                        using (Stream responseStream = response.GetResponseStream())
+                        {
+                            using (FileStream fileStream = new FileStream(savePath, FileMode.Create, FileAccess.Write))
+                            {
+                                responseStream.CopyTo(fileStream);
+                            }
+                        }
+                    }
+                }
+                if (!File.Exists(Path.Combine(currentDirectory, "Updater.exe")))
+                {
+                    request = (HttpWebRequest)WebRequest.Create(updaterURL);
+                    request.Method = "GET";
+                    using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+                    {
+                        if (response.StatusCode == HttpStatusCode.OK)
+                        {
+                            using (Stream responseStream = response.GetResponseStream())
+                            {
+                                using (FileStream fileStream = new FileStream(Path.Combine(currentDirectory, "Updater.exe"), FileMode.Create, FileAccess.Write))
+                                {
+                                    responseStream.CopyTo(fileStream);
+                                }
+                            }
+                        }
+                    }
+                }
+                RunProgram("Updater.exe", savePath);
+            }
+            catch (Exception ex)
+            {
+                this.lblUpdateContent.Text = LocalizedString_JP.FRMUPDATER_UPDATE_DOWNLOAD_FAIL;
+            }
+            finally
+            {
+                buttonX1.Text = LocalizedString_JP.FRMUPDATER_DESIGNER_BTN_UPDATE;
+                buttonX1.Enabled = true;
             }
         }
 
-        private void DownloadURL(string url)
+        private void buttonX1_Click(object sender, EventArgs e)
+        {
+            this.lblUpdateContent.Text = LocalizedString_JP.FRMUPDATER_UPDATE_DOWNLOADING;
+            buttonX1.Enabled = false;
+            string selectedURL = "";
+            updateSession = new UpdaterSession();
+            switch (Environment.Version.Major)
+            {
+                default:
+                case 4:
+                    selectedURL = net48url;
+                    break;
+                case 6:
+                    selectedURL = net60url;
+                    break;
+                case 8:
+                    selectedURL = net80url;
+                    break;
+            }
+            Task.Run(() => this.DownloadUpdateAsync(selectedURL, updateSession, updateSession.CancellationToken));
+        }
+
+        private void RunProgram(string url, string argument="")
         {
 #if NET6_0_OR_GREATER
             Process.Start(new ProcessStartInfo
             {
                 UseShellExecute = true,
                 FileName = url,
+                Arguments = argument,
             });
 #else
-            Process.Start(url);
+            Process.Start(url, argument);
 #endif
         }
 
@@ -131,15 +216,6 @@ namespace WzComparerR2
             {
                 this.cancellationTokenSource = new CancellationTokenSource();
             }
-
-            public string LatestMajorVersion;
-            public string LatestBuildNumber;
-            public string ChangeTitle;
-            public string Changelog;
-            public string Net48URL;
-            public string Net60URL;
-            public string Net80URL;
-
             public Task UpdateExecTask;
 
             public CancellationToken CancellationToken => this.cancellationTokenSource.Token;

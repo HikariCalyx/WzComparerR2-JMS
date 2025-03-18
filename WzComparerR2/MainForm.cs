@@ -212,6 +212,7 @@ namespace WzComparerR2
             UpdateWzLoadingSettings();
             //Translator Configuration Load
             UpdateTranslateSettings();
+            //Automatic Update Check
 
             //杂项配置
             labelItemAutoSaveFolder.Text = ImageHandlerConfig.Default.AutoSavePictureFolder;
@@ -296,6 +297,16 @@ namespace WzComparerR2
             Translator.DefaultMaximumToken = config.MaximumToken;
             Translator.IsExtraParamEnabled = config.OpenAIExtraOption;
             Translator.ExchangeTable = null;
+        }
+
+        async void AutomaticCheckUpdate()
+        {
+            var config = WcR2Config.Default;
+            if (config.EnableAutoUpdate)
+            {
+                bool updateAvailable = await FrmUpdater.QueryUpdate();
+                if (updateAvailable) new FrmUpdater().ShowDialog();
+            }
         }
 
         void CharaSimLoader_WzFileFinding(object sender, FindWzEventArgs e)

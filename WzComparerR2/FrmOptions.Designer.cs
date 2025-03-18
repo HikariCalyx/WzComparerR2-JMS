@@ -48,6 +48,7 @@
             this.chkWzSortByImgID = new DevComponents.DotNetBar.Controls.CheckBoxX();
             this.chkAutoCheckExtFiles = new DevComponents.DotNetBar.Controls.CheckBoxX();
             this.chkOpenAIExtraOption = new DevComponents.DotNetBar.Controls.CheckBoxX();
+            this.chkEnableAutoUpdate = new DevComponents.DotNetBar.Controls.CheckBoxX();
             this.cmbDesiredLanguage = new DevComponents.DotNetBar.Controls.ComboBoxEx();
             this.cmbMozhiBackend = new DevComponents.DotNetBar.Controls.ComboBoxEx();
             this.cmbLanguageModel = new DevComponents.DotNetBar.Controls.ComboBoxEx();
@@ -310,6 +311,7 @@
             this.superTabControlPanel1.Controls.Add(this.cmbWzEncoding);
             this.superTabControlPanel1.Controls.Add(this.labelX1);
             this.superTabControlPanel1.Controls.Add(this.chkWzAutoSort);
+            this.superTabControlPanel1.Controls.Add(this.chkEnableAutoUpdate);
             this.superTabControlPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.superTabControlPanel1.Location = new System.Drawing.Point(86, 0);
             this.superTabControlPanel1.Name = "superTabControlPanel1";
@@ -430,6 +432,21 @@
             this.chkWzAutoSort.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
             this.chkWzAutoSort.TabIndex = 0;
             this.chkWzAutoSort.Text = "WZファイルの自動並べ替え";
+            // 
+            // chkEnableAutoUpdate
+            // 
+            this.chkEnableAutoUpdate.AutoSize = true;
+            this.chkEnableAutoUpdate.BackColor = System.Drawing.Color.Transparent;
+            // 
+            // 
+            // 
+            this.chkEnableAutoUpdate.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
+            this.chkEnableAutoUpdate.Location = new System.Drawing.Point(200, 15);
+            this.chkEnableAutoUpdate.Name = "chkEnableAutoUpdate";
+            this.chkEnableAutoUpdate.Size = new System.Drawing.Size(170, 16);
+            this.chkEnableAutoUpdate.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
+            this.chkEnableAutoUpdate.TabIndex = 9;
+            this.chkEnableAutoUpdate.Text = "自動更新チェック";
             // 
             // superTabItem1
             // 
@@ -858,6 +875,7 @@
         private DevComponents.DotNetBar.Controls.CheckBoxX chkWzSortByImgID;
         private DevComponents.DotNetBar.Controls.CheckBoxX chkImgCheckDisabled;
         private DevComponents.DotNetBar.Controls.CheckBoxX chkOpenAIExtraOption;
+        private DevComponents.DotNetBar.Controls.CheckBoxX chkEnableAutoUpdate;
         private DevComponents.DotNetBar.Controls.ComboBoxEx cmbWzVersionVerifyMode;
         private DevComponents.DotNetBar.Controls.ComboBoxEx cmbDesiredLanguage;
         private DevComponents.DotNetBar.Controls.ComboBoxEx cmbMozhiBackend;
