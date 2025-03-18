@@ -23,6 +23,7 @@ namespace WzComparerR2
 
         public static string FRMUPDATER_DESIGNER_TITLE = "アップデート";
         public static string FRMUPDATER_DESIGNER_BTN_UPDATE = "アップデート";
+        public static string FRMUPDATER_UPDATE_CHECKING = "アップデートを確認中";
         public static string FRMUPDATER_UPDATE_AVAILABLE = "更新可能";
         public static string FRMUPDATER_UPDATE_ALREADYLATEST = "すでに最新バージョン";
         public static string FRMUPDATER_UPDATE_CHECKFAIL = "更新チェックに失敗しました";

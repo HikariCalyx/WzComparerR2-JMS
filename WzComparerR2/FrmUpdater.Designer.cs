@@ -117,7 +117,7 @@
             this.lblUpdateContent.Name = "lblUpdateContent";
             this.lblUpdateContent.Size = new System.Drawing.Size(13, 16);
             this.lblUpdateContent.TabIndex = 6;
-            this.lblUpdateContent.Text = "-";
+            this.lblUpdateContent.Text = LocalizedString_JP.FRMUPDATER_UPDATE_CHECKING;
             // 
             // buttonX1
             // 
