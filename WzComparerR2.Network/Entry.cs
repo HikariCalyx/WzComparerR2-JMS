@@ -195,11 +195,13 @@ namespace WzComparerR2.Network
                         {
                             RefreshAISettings();
                             AIChatEnabled = true;
+                            this.Client.AutoReconnect = false;
                             sbAi.Append("AIチャット機能が有効になっています。無効にするまで他のユーザーとチャットすることはできません。");
                         }
                         else if (aiExtraParam == "off")
                         {
                             AIChatEnabled = false;
+                            this.Client.AutoReconnect = true;
                             sbAi.Append("AIチャット機能は無効になっています。他のユーザーとチャットできるようになりました。");
                         }
                         else if (AIChatEnabled)
