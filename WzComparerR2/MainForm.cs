@@ -3725,15 +3725,7 @@ namespace WzComparerR2
 
         private void buttonItemUpdate_Click(object sender, EventArgs e)
         {
-#if NET6_0_OR_GREATER
-            Process.Start(new ProcessStartInfo
-            {
-                UseShellExecute = true,
-                FileName = "https://github.com/HikariCalyx/WzComparerR2-JMS/releases",
-            });
-#else
-            Process.Start("https://github.com/HikariCalyx/WzComparerR2-JMS/releases");
-#endif
+            new FrmUpdater().ShowDialog();
         }
 
         private void btnItemOptions_Click(object sender, System.EventArgs e)
