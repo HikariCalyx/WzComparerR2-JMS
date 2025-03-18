@@ -42,6 +42,7 @@ namespace WzComparerR2
         {
             InitializeComponent();
             this.FormClosing += new FormClosingEventHandler(MainForm_FormClosing);
+            this.Shown += new EventHandler(MainForm_Shown);
 #if NET6_0_OR_GREATER
             // https://learn.microsoft.com/en-us/dotnet/core/compatibility/fx-core#controldefaultfont-changed-to-segoe-ui-9pt
             this.Font = new Font(new FontFamily("MS Gothic"), 9f);
@@ -200,7 +201,7 @@ namespace WzComparerR2
         /// <summary>
         /// 插件加载时执行的方法，用于初始化配置文件。
         /// </summary>
-        internal void PluginOnLoad()
+        internal async void PluginOnLoad()
         {
             ConfigManager.RegisterAllSection(this.GetType().Assembly);
             var conf = ImageHandlerConfig.Default;
@@ -212,8 +213,6 @@ namespace WzComparerR2
             UpdateWzLoadingSettings();
             //Translator Configuration Load
             UpdateTranslateSettings();
-            //Automatic Update Check
-            AutomaticCheckUpdate();
 
             //杂项配置
             labelItemAutoSaveFolder.Text = ImageHandlerConfig.Default.AutoSavePictureFolder;
@@ -300,13 +299,16 @@ namespace WzComparerR2
             Translator.ExchangeTable = null;
         }
 
-        async void AutomaticCheckUpdate()
+        async Task<bool> AutomaticCheckUpdate()
         {
             var config = WcR2Config.Default;
             if (config.EnableAutoUpdate)
             {
-                bool updateAvailable = await FrmUpdater.QueryUpdate();
-                if (updateAvailable) new FrmUpdater().ShowDialog();
+                return await FrmUpdater.QueryUpdate();
+            }
+            else
+            {
+                return false;
             }
         }
 
@@ -3791,6 +3793,14 @@ namespace WzComparerR2
             {
                 e.Cancel = true;
             }
+        }
+
+        private async void MainForm_Shown(object sender, EventArgs e)
+        {
+
+            //Automatic Update Check
+            bool isUpdateRequired = await AutomaticCheckUpdate();
+            if (isUpdateRequired) new FrmUpdater().ShowDialog();
         }
 
         private void buttomItem13_FormClosing(object sender, EventArgs e)
