@@ -46,18 +46,6 @@ namespace WzComparerR2
 
         private string updaterURL = "https://github.com/HikariCalyx/WzComparerR2Updater/releases/download/v1.0.0.250318-1934/Updater.exe";
 
-        private void GetPluginInfo()
-        {
-            this.advTree1.Nodes.Clear();
-
-            // this.advTree1.Nodes.Add(new Node("JMS <font color=\"#808080\">" + Program.WcR2MajorVersion + BuildInfo.BuildTime + "</font>"));
-            // this.advTree1.Nodes.Add(new Node(LocalizedString_JP.FRMABOUT_VERSION));
-
-            string nodeTxt = "<font color=\"#808080\">" + LocalizedString_JP.FRMABOUT_NO_AVAILABLE_PLUGINS + "</font>";
-            Node node = new Node(nodeTxt);
-            this.advTree1.Nodes.Add(node);
-        }
-
         public static async Task<bool> QueryUpdate()
         {
             var request = (HttpWebRequest)WebRequest.Create(Program.CheckUpdateURL);
