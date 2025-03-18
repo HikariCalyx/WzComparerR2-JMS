@@ -213,6 +213,7 @@ namespace WzComparerR2
             //Translator Configuration Load
             UpdateTranslateSettings();
             //Automatic Update Check
+            AutomaticCheckUpdate();
 
             //杂项配置
             labelItemAutoSaveFolder.Text = ImageHandlerConfig.Default.AutoSavePictureFolder;
