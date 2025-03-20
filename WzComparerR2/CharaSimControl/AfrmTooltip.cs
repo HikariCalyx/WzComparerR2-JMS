@@ -7,6 +7,8 @@ using WzComparerR2.Common;
 using WzComparerR2.CharaSim;
 using WzComparerR2.Controls;
 using SharpDX.XAudio2;
+using System.Threading.Tasks;
+using System.Threading;
 
 namespace WzComparerR2.CharaSimControl
 {
@@ -310,7 +312,7 @@ namespace WzComparerR2.CharaSimControl
             sb.Clear();
         }
 
-        void tsmiCopyTranslate_Click(object sender, EventArgs e)
+        async void tsmiCopyTranslate_Click(object sender, EventArgs e)
         {
             StringBuilder sb = new StringBuilder();
             if (this.PreferredStringCopyMethod == 2) sb.AppendLine(this.NodeID.ToString());
@@ -327,7 +329,9 @@ namespace WzComparerR2.CharaSimControl
             if (!String.IsNullOrEmpty(this.AutoDesc)) sb.AppendLine("<autodesc>" + this.AutoDesc + "</autodesc>");
             if (!String.IsNullOrEmpty(this.Hdesc)) sb.AppendLine("<hdesc>" + this.Hdesc + "</hdesc>");
             if (!String.IsNullOrEmpty(this.DescLeftAlign)) sb.AppendLine("<descleftalign>" + this.DescLeftAlign + "</descleftalign>");
-            Clipboard.SetText(Translator.TranslateString(sb.ToString()));
+            string translatedResult = "";
+            await Task.Run(() => { translatedResult = Translator.TranslateString(sb.ToString()); });
+            Clipboard.SetText(translatedResult);
             sb.Clear();
         }
 
