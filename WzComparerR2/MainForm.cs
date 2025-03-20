@@ -3720,6 +3720,15 @@ namespace WzComparerR2
 
         private void buttonItem1_Click(object sender, EventArgs e)
         {
+#if NET6_0_OR_GREATER
+            Process.Start(new ProcessStartInfo
+            {
+                UseShellExecute = true,
+                FileName = "https://github.com/HikariCalyx/WzComparerR2-JMS/issues",
+            });
+#else
+            Process.Start("https://github.com/HikariCalyx/WzComparerR2-JMS/issues");
+#endif
         }
 
         private void labelItemStatus_TextChanged(object sender, EventArgs e)

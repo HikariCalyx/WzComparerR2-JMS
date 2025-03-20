@@ -1508,7 +1508,7 @@ namespace WzComparerR2
             this.ribbonBar11.Size = new System.Drawing.Size(140, 91);
             this.ribbonBar11.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
             this.ribbonBar11.TabIndex = 2;
-            this.ribbonBar11.Text = "試験的な機能";
+            this.ribbonBar11.Text = " ";
             // 
             // 
             // 
@@ -1522,7 +1522,7 @@ namespace WzComparerR2
             // 
             this.buttonItem1.Name = "buttonItem1";
             this.buttonItem1.SubItemsExpandWidth = 28;
-            this.buttonItem1.Text = "未実装";
+            this.buttonItem1.Text = "不具合報告";
             this.buttonItem1.Click += new System.EventHandler(this.buttonItem1_Click);
             // 
             // ribbonBar7

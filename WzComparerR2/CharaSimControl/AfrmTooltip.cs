@@ -7,6 +7,9 @@ using WzComparerR2.Common;
 using WzComparerR2.CharaSim;
 using WzComparerR2.Controls;
 using SharpDX.XAudio2;
+using System.Threading.Tasks;
+using System.Threading;
+using WzComparerR2.Properties;
 
 namespace WzComparerR2.CharaSimControl
 {
@@ -47,6 +50,8 @@ namespace WzComparerR2.CharaSimControl
         private bool showID;
 
         private Bitmap AvatarBitmap;
+        private FrmWaiting WaitingForm = new FrmWaiting();
+        private Mutex TranslateMutex = new Mutex(false, "TranslateMutex");
 
         public Object TargetItem
         {
@@ -96,9 +101,15 @@ namespace WzComparerR2.CharaSimControl
             set { showMenu = value; }
         }
 
-        public override void Refresh()
+        public async override void Refresh()
         {
             this.PreRender();
+            if (Translator.IsTranslateEnabled)
+            {
+                Thread.Sleep(10);
+                TranslateMutex.WaitOne();
+                TranslateMutex.ReleaseMutex();
+            }
             if (this.Bitmap != null)
             {
                 this.SetBitmap(Bitmap);
@@ -107,7 +118,7 @@ namespace WzComparerR2.CharaSimControl
             }
         }
 
-        public void PreRender()
+        public async void PreRender()
         {
             AvatarBitmap = null;
             if (this.item == null)
@@ -200,7 +211,22 @@ namespace WzComparerR2.CharaSimControl
                 return;
             }
             renderer.StringLinker = StringLinker;
-            this.Bitmap = renderer.Render();
+            if (Translator.IsTranslateEnabled)
+            {
+                WaitingForm.UpdateMessage("翻訳中...");
+                WaitingForm.Show();
+                await Task.Run(() =>
+                {
+                    TranslateMutex.WaitOne();
+                    this.Bitmap = renderer.Render();
+                    TranslateMutex.ReleaseMutex();
+                });
+                WaitingForm.Hide();
+            }
+            else
+            {
+                this.Bitmap = renderer.Render();
+            }
             if (item is Item) AvatarBitmap = (this.TargetItem as Item).AvatarBitmap;
             if (item is Gear) AvatarBitmap = (this.TargetItem as Gear).AndroidBitmap;
             if (item is Npc) AvatarBitmap = (this.TargetItem as Npc).AvatarBitmap;
@@ -310,7 +336,7 @@ namespace WzComparerR2.CharaSimControl
             sb.Clear();
         }
 
-        void tsmiCopyTranslate_Click(object sender, EventArgs e)
+        async void tsmiCopyTranslate_Click(object sender, EventArgs e)
         {
             StringBuilder sb = new StringBuilder();
             if (this.PreferredStringCopyMethod == 2) sb.AppendLine(this.NodeID.ToString());
@@ -327,8 +353,28 @@ namespace WzComparerR2.CharaSimControl
             if (!String.IsNullOrEmpty(this.AutoDesc)) sb.AppendLine("<autodesc>" + this.AutoDesc + "</autodesc>");
             if (!String.IsNullOrEmpty(this.Hdesc)) sb.AppendLine("<hdesc>" + this.Hdesc + "</hdesc>");
             if (!String.IsNullOrEmpty(this.DescLeftAlign)) sb.AppendLine("<descleftalign>" + this.DescLeftAlign + "</descleftalign>");
-            Clipboard.SetText(Translator.TranslateString(sb.ToString()));
-            sb.Clear();
+            string translatedResult = "";
+            WaitingForm.UpdateMessage("翻訳中...");
+            try
+            {
+                WaitingForm.Show();
+                await Task.Run(() => { translatedResult = Translator.TranslateString(sb.ToString()); });
+                Clipboard.SetText(translatedResult);
+                WaitingForm.Hide();
+                sb.Clear();
+            }
+            finally
+            {
+                if (WaitingForm.InvokeRequired)
+                {
+                    WaitingForm.Invoke(new Action(() => WaitingForm.Close()));
+                }
+                else
+                {
+                    WaitingForm.Close();
+                }
+            }
+
         }
 
         void tsmiClose_Click(object sender, EventArgs e)
