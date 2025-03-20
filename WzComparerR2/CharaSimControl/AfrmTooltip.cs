@@ -17,7 +17,7 @@ namespace WzComparerR2.CharaSimControl
             this.menu = new ContextMenuStrip();
             this.menu.Items.Add(new ToolStripMenuItem("クリップボードにコピー", null, tsmiCopy_Click));
             this.menu.Items.Add(new ToolStripMenuItem("PNGに保存", null, tsmiSave_Click));
-            this.menu.Items.Add(new ToolStripMenuItem("アンドロイドアバターの保存", null, tsmiAndroidSave_Click));
+            this.menu.Items.Add(new ToolStripMenuItem("アバターの保存", null, tsmiAvatarSave_Click));
             this.menu.Items.Add(new ToolStripSeparator());
             this.menu.Items.Add(new ToolStripMenuItem("文字列をコピー", null, tsmiCopyText_Click));
             this.menu.Items.Add(new ToolStripMenuItem("翻訳してコピーしてみる", null, tsmiCopyTranslate_Click));
@@ -46,7 +46,7 @@ namespace WzComparerR2.CharaSimControl
         private bool showMenu;
         private bool showID;
 
-        private Bitmap AndroidBitmap;
+        private Bitmap AvatarBitmap;
 
         public Object TargetItem
         {
@@ -109,7 +109,7 @@ namespace WzComparerR2.CharaSimControl
 
         public void PreRender()
         {
-            AndroidBitmap = null;
+            AvatarBitmap = null;
             if (this.item == null)
                 return;
 
@@ -201,7 +201,9 @@ namespace WzComparerR2.CharaSimControl
             }
             renderer.StringLinker = StringLinker;
             this.Bitmap = renderer.Render();
-            if (item is Gear) AndroidBitmap = (this.TargetItem as Gear).AndroidBitmap;
+            if (item is Item) AvatarBitmap = (this.TargetItem as Item).AvatarBitmap;
+            if (item is Gear) AvatarBitmap = (this.TargetItem as Gear).AndroidBitmap;
+            if (item is Npc) AvatarBitmap = (this.TargetItem as Npc).AvatarBitmap;
         }
 
         void AfrmTooltip_MouseClick(object sender, System.Windows.Forms.MouseEventArgs e)
@@ -422,9 +424,9 @@ namespace WzComparerR2.CharaSimControl
             }
         }
 
-        void tsmiAndroidSave_Click(object sender, EventArgs e)
+        void tsmiAvatarSave_Click(object sender, EventArgs e)
         {
-            if (this.AndroidBitmap != null && this.item != null)
+            if (this.AvatarBitmap != null && this.item != null)
             {
                 using (SaveFileDialog dlg = new SaveFileDialog())
                 {
@@ -433,7 +435,7 @@ namespace WzComparerR2.CharaSimControl
 
                     if (dlg.ShowDialog() == DialogResult.OK)
                     {
-                        this.AndroidBitmap.Save(dlg.FileName, System.Drawing.Imaging.ImageFormat.Png);
+                        this.AvatarBitmap.Save(dlg.FileName, System.Drawing.Imaging.ImageFormat.Png);
                     }
                 }
             }

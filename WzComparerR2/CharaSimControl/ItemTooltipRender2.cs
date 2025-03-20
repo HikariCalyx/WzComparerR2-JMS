@@ -1017,6 +1017,7 @@ namespace WzComparerR2.CharaSimControl
                     if (frame.Bitmap != null)
                     {
                         g.DrawImage(frame.Bitmap, (tooltip.Width - frame.Bitmap.Width) / 2, picH);
+                        item.AvatarBitmap = frame.Bitmap;
                         picH += frame.Bitmap.Height;
                         picH += 2;
                     }
