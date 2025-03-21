@@ -9,6 +9,7 @@ using WzComparerR2.Controls;
 using SharpDX.XAudio2;
 using System.Threading.Tasks;
 using System.Threading;
+using WzComparerR2.Properties;
 
 namespace WzComparerR2.CharaSimControl
 {
@@ -49,6 +50,7 @@ namespace WzComparerR2.CharaSimControl
         private bool showID;
 
         private Bitmap AvatarBitmap;
+        private Form WaitingForm;
 
         public Object TargetItem
         {
@@ -314,6 +316,26 @@ namespace WzComparerR2.CharaSimControl
 
         async void tsmiCopyTranslate_Click(object sender, EventArgs e)
         {
+            WaitingForm = new Form
+            {
+                Text = "WzComparerR2-JMS",
+                Width = 300,
+                Height = 200,
+                MinimizeBox = false,
+                MaximizeBox = false,
+                FormBorderStyle = FormBorderStyle.FixedSingle,
+                TopMost = true
+            };
+            Label WaitingLabel = new Label
+            {
+                Text = "Translating...",
+                AutoSize = true,
+                Font = new Font(LocalizedString_JP.DEFAULT_INTERNAL_GUI_FONT, 11f),
+                TextAlign = ContentAlignment.MiddleCenter,
+            };
+            WaitingForm.Controls.Add(WaitingLabel);
+            WaitingLabel.Location = new Point((WaitingForm.ClientSize.Width - WaitingLabel.Width) / 2, (WaitingForm.ClientSize.Height - WaitingLabel.Height) / 2);
+            WaitingForm.FormClosed += WaitingForm_FormClosed;
             StringBuilder sb = new StringBuilder();
             if (this.PreferredStringCopyMethod == 2) sb.AppendLine(this.NodeID.ToString());
             if (!String.IsNullOrEmpty(this.NodeName)) sb.AppendLine(this.NodeName);
@@ -330,9 +352,23 @@ namespace WzComparerR2.CharaSimControl
             if (!String.IsNullOrEmpty(this.Hdesc)) sb.AppendLine("<hdesc>" + this.Hdesc + "</hdesc>");
             if (!String.IsNullOrEmpty(this.DescLeftAlign)) sb.AppendLine("<descleftalign>" + this.DescLeftAlign + "</descleftalign>");
             string translatedResult = "";
-            await Task.Run(() => { translatedResult = Translator.TranslateString(sb.ToString()); });
-            Clipboard.SetText(translatedResult);
-            sb.Clear();
+            try
+            {
+                this.WaitingForm.ShowDialog();
+                await Task.Run(() => { translatedResult = Translator.TranslateString(sb.ToString()); });
+                Clipboard.SetText(translatedResult);
+                this.WaitingForm.Hide();
+                sb.Clear();
+            }
+            catch (OperationCanceledException)
+            {
+                MessageBox.Show("Task was canceled by closing the prompt.", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (Exception ex)
+            {
+                ;
+            }
+            
         }
 
         void tsmiClose_Click(object sender, EventArgs e)
@@ -341,6 +377,11 @@ namespace WzComparerR2.CharaSimControl
             {
                 this.Close();
             }
+        }
+
+        private void WaitingForm_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            throw new OperationCanceledException("Operation was cancelled.");
         }
 
         private Byte[] ConvertToDib(Image image) // https://stackoverflow.com/a/46424800
