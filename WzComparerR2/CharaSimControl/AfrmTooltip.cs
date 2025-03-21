@@ -50,7 +50,7 @@ namespace WzComparerR2.CharaSimControl
         private bool showID;
 
         private Bitmap AvatarBitmap;
-        private FrmWaiting WaitingForm = new FrmWaiting();
+        private FrmWaiting WaitingForm;
         private Mutex TranslateMutex = new Mutex(false, "TranslateMutex");
 
         public Object TargetItem
@@ -213,6 +213,7 @@ namespace WzComparerR2.CharaSimControl
             renderer.StringLinker = StringLinker;
             if (Translator.IsTranslateEnabled)
             {
+                WaitingForm = new FrmWaiting();
                 WaitingForm.UpdateMessage("翻訳中...");
                 WaitingForm.Show();
                 await Task.Run(() =>
@@ -221,7 +222,7 @@ namespace WzComparerR2.CharaSimControl
                     this.Bitmap = renderer.Render();
                     TranslateMutex.ReleaseMutex();
                 });
-                WaitingForm.Hide();
+                WaitingForm.Close();
             }
             else
             {
@@ -354,6 +355,7 @@ namespace WzComparerR2.CharaSimControl
             if (!String.IsNullOrEmpty(this.Hdesc)) sb.AppendLine("<hdesc>" + this.Hdesc + "</hdesc>");
             if (!String.IsNullOrEmpty(this.DescLeftAlign)) sb.AppendLine("<descleftalign>" + this.DescLeftAlign + "</descleftalign>");
             string translatedResult = "";
+            WaitingForm = new FrmWaiting();
             WaitingForm.UpdateMessage("翻訳中...");
             try
             {
