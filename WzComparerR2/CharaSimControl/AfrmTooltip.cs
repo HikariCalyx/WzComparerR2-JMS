@@ -51,6 +51,7 @@ namespace WzComparerR2.CharaSimControl
 
         private Bitmap AvatarBitmap;
         private FrmWaiting WaitingForm = new FrmWaiting();
+        private Mutex TranslateMutex = new Mutex(false, "TranslateMutex");
 
         public Object TargetItem
         {
@@ -100,9 +101,15 @@ namespace WzComparerR2.CharaSimControl
             set { showMenu = value; }
         }
 
-        public override void Refresh()
+        public async override void Refresh()
         {
             this.PreRender();
+            if (Translator.IsTranslateEnabled)
+            {
+                Thread.Sleep(10);
+                TranslateMutex.WaitOne();
+                TranslateMutex.ReleaseMutex();
+            }
             if (this.Bitmap != null)
             {
                 this.SetBitmap(Bitmap);
@@ -111,7 +118,7 @@ namespace WzComparerR2.CharaSimControl
             }
         }
 
-        public void PreRender()
+        public async void PreRender()
         {
             AvatarBitmap = null;
             if (this.item == null)
@@ -204,7 +211,22 @@ namespace WzComparerR2.CharaSimControl
                 return;
             }
             renderer.StringLinker = StringLinker;
-            this.Bitmap = renderer.Render();
+            if (Translator.IsTranslateEnabled)
+            {
+                WaitingForm.UpdateMessage("翻訳中...");
+                WaitingForm.Show();
+                await Task.Run(() =>
+                {
+                    TranslateMutex.WaitOne();
+                    this.Bitmap = renderer.Render();
+                    TranslateMutex.ReleaseMutex();
+                });
+                WaitingForm.Hide();
+            }
+            else
+            {
+                this.Bitmap = renderer.Render();
+            }
             if (item is Item) AvatarBitmap = (this.TargetItem as Item).AvatarBitmap;
             if (item is Gear) AvatarBitmap = (this.TargetItem as Gear).AndroidBitmap;
             if (item is Npc) AvatarBitmap = (this.TargetItem as Npc).AvatarBitmap;
