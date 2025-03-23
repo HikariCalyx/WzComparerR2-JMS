@@ -15,11 +15,18 @@ namespace WzComparerR2
         public FrmWaiting()
         {
             InitializeComponent();
+            this.FormClosing += new FormClosingEventHandler(FrmWaiting_Closing);
         }
 
         public void UpdateMessage(string message)
         {
             LabelWaiting.Text = message;
+        }
+
+        private void FrmWaiting_Closing(Object sender, CancelEventArgs e)
+        {
+            this.Hide();
+            e.Cancel = true;
         }
     }
 }

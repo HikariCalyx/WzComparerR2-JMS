@@ -297,6 +297,7 @@ namespace WzComparerR2
             Translator.DefaultMaximumToken = config.MaximumToken;
             Translator.IsExtraParamEnabled = config.OpenAIExtraOption;
             Translator.ExchangeTable = null;
+            Translator.InitializeCache();
         }
 
         async Task<bool> AutomaticCheckUpdate()
@@ -2134,6 +2135,9 @@ namespace WzComparerR2
                 case 2:
                     searchAdvTree(advTree3, 1, textBoxItemSearchWz.Text, checkBoxItemExact1.Checked, checkBoxItemRegex1.Checked);
                     break;
+                case 3:
+                    searchAdvTreeEx(advTree3, 0, 1, textBoxItemSearchWz.Text);
+                    break;
             }
         }
 
@@ -2152,6 +2156,47 @@ namespace WzComparerR2
             catch (Exception ex)
             {
                 MessageBoxEx.Show(this, ex.Message, LocalizedString_JP.COMMON_ERROR, MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void searchAdvTreeEx(AdvTree advTree, int cellIndex1, int cellIndex2, string searchText)
+        {
+            if (string.IsNullOrEmpty(searchText))
+                return;
+
+            try
+            {
+                if (advTree.Nodes.Count == 0)
+                    return;
+
+                Node searchNode = null;
+
+                // split input by ','
+                var searchText1 = "^" + searchText.Split(',')[0] + "$";
+                var searchText2 = "^" + searchText.Split(',')[1] + "$";
+
+                if (string.IsNullOrEmpty(searchText2))
+                    return;
+
+                Regex r1 = new Regex(searchText1, RegexOptions.IgnoreCase);
+                Regex r2 = new Regex(searchText2, RegexOptions.IgnoreCase);
+
+                foreach (var node in findNextNode(advTree))
+                {
+                    if (node != null && node.Cells.Count > Math.Max(cellIndex1, cellIndex2) && r1.IsMatch(node.Cells[cellIndex1].Text) && r2.IsMatch(node.Cells[cellIndex2].Text))
+                    {
+                        searchNode = node;
+                        break;
+                    }
+                }
+
+                advTree.SelectedNode = searchNode;
+                if (searchNode == null)
+                    MessageBoxEx.Show("検索結果がありません。", "エラー");
+            }
+            catch (Exception ex)
+            {
+                MessageBoxEx.Show(this, ex.Message, "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 

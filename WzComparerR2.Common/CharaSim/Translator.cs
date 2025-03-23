@@ -190,7 +190,6 @@ namespace WzComparerR2.CharaSim
             {
                 return "";
             }
-            
         }
 
         private static JObject MTranslate(string text, string engine, string sourceLanguage, string desiredLanguage)
@@ -292,9 +291,19 @@ namespace WzComparerR2.CharaSim
             if (string.IsNullOrEmpty(orgText) || orgText == "(null)") return orgText;
             bool isMozhiUsed = false;
             string mozhiEngine = "";
-            string translatedText = "";
+            string translatedText = TryFetchCachedTranslationResult(orgText);
             string sourceLanguage = "auto";
             string targetLanguage = DefaultDesiredLanguage;
+            if (!String.IsNullOrEmpty(translatedText))
+            {
+                if (titleCase && targetLanguage == "en")
+                {
+                    CultureInfo cultureInfo = Thread.CurrentThread.CurrentCulture;
+                    TextInfo textInfo = cultureInfo.TextInfo;
+                    translatedText = textInfo.ToTitleCase(translatedText);
+                }
+                return translatedText;
+            }
             switch (DefaultPreferredTranslateEngine)
             {
                 //0: Google (Non-Mozhi)
@@ -363,6 +372,7 @@ namespace WzComparerR2.CharaSim
                 translatedText = textInfo.ToTitleCase(translatedText);
             }
             translatedText = ConvHTMLTagToHashTag(translatedText);
+            CacheTranslationResult(orgText, translatedText);
             return translatedText;
         }
 
@@ -451,7 +461,6 @@ namespace WzComparerR2.CharaSim
                     JObject responseObj = NTranslate(orgText, Translator.DefaultDesiredLanguage);
                     orgLanguage = responseObj.SelectToken("message.result.srcLangType").ToString();
                     break;
-                    //7: iFlyTek (Non-Mozhi)
             }
             if (isMozhiUsed)
             {
@@ -538,6 +547,116 @@ namespace WzComparerR2.CharaSim
                     }
                 }
             }
+        }
+
+        public static void InitializeCache()
+        {
+            string[] pathList = new string[]
+            {
+                "google",
+                "mozhi-google",
+                "mozhi-deepl",
+                "mozhi-duckduckgobing",
+                "mozhi-mymemory",
+                "mozhi-yandex",
+                "naver",
+                "openai"
+            };
+            foreach (string targetPath in pathList)
+            {
+                string createPath = Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory, "TranslationCache", targetPath);
+                if (!File.Exists(createPath))
+                {
+                    System.IO.Directory.CreateDirectory(createPath);
+                }
+            }
+        }
+
+        private static string TryFetchCachedTranslationResult(string orgText)
+        {
+            string cachePath = Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory, "TranslationCache");
+            switch (DefaultPreferredTranslateEngine)
+            {
+                default:
+                case 0:
+                    cachePath = Path.Combine(cachePath, "google", DefaultDesiredLanguage + ".json");
+                    break;
+                case 1:
+                    cachePath = Path.Combine(cachePath, "mozhi-google", DefaultDesiredLanguage + ".json");
+                    break;
+                case 2:
+                    cachePath = Path.Combine(cachePath, "mozhi-deepl", DefaultDesiredLanguage + ".json");
+                    break;
+                case 3:
+                    cachePath = Path.Combine(cachePath, "mozhi-duckduckgobing", DefaultDesiredLanguage + ".json");
+                    break;
+                case 4:
+                    cachePath = Path.Combine(cachePath, "mozhi-mymemory", DefaultDesiredLanguage + ".json");
+                    break;
+                case 5:
+                    cachePath = Path.Combine(cachePath, "mozhi-yandex", DefaultDesiredLanguage + ".json");
+                    break;
+                case 6:
+                    cachePath = Path.Combine(cachePath, "naver", DefaultDesiredLanguage + ".json");
+                    break;
+                case 9:
+                    cachePath = Path.Combine(cachePath, "openai", DefaultLanguageModel + "_" + DefaultDesiredLanguage + ".json");
+                    break;
+            }
+            if (File.Exists(cachePath))
+            {
+                try
+                {
+                    JObject currentTranslationCache = JObject.Parse(File.ReadAllText(cachePath));
+                    string translatedResult = currentTranslationCache.SelectToken(orgText).ToString();
+                    return translatedResult;
+                }
+                catch
+                {
+                    return "";
+                }
+            }
+            else
+            {
+                return "";
+            }
+        }
+
+        private static void CacheTranslationResult(string orgText, string translatedText)
+        {
+            JObject currentTranslationCache = new JObject();
+            string cachePath = Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory, "TranslationCache");
+            switch (DefaultPreferredTranslateEngine)
+            {
+                default:
+                case 0:
+                    cachePath = Path.Combine(cachePath, "google", DefaultDesiredLanguage + ".json");
+                    break;
+                case 1:
+                    cachePath = Path.Combine(cachePath, "mozhi-google", DefaultDesiredLanguage + ".json");
+                    break;
+                case 2:
+                    cachePath = Path.Combine(cachePath, "mozhi-deepl", DefaultDesiredLanguage + ".json");
+                    break;
+                case 3:
+                    cachePath = Path.Combine(cachePath, "mozhi-duckduckgobing", DefaultDesiredLanguage + ".json");
+                    break;
+                case 4:
+                    cachePath = Path.Combine(cachePath, "mozhi-mymemory", DefaultDesiredLanguage + ".json");
+                    break;
+                case 5:
+                    cachePath = Path.Combine(cachePath, "mozhi-yandex", DefaultDesiredLanguage + ".json");
+                    break;
+                case 6:
+                    cachePath = Path.Combine(cachePath, "naver", DefaultDesiredLanguage + ".json");
+                    break;
+                case 9:
+                    cachePath = Path.Combine(cachePath, "openai", DefaultLanguageModel + "_" + DefaultDesiredLanguage + ".json");
+                    break;
+            }
+            if (File.Exists(cachePath)) currentTranslationCache = JObject.Parse(File.ReadAllText(cachePath));
+            currentTranslationCache.Add(new JProperty(orgText, translatedText));
+            File.WriteAllText(cachePath, currentTranslationCache.ToString());
         }
 
         #region Global Settings

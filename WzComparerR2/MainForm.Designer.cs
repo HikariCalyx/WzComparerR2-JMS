@@ -113,6 +113,7 @@ namespace WzComparerR2
             this.comboItem8 = new DevComponents.Editors.ComboItem();
             this.comboItem9 = new DevComponents.Editors.ComboItem();
             this.comboItem19 = new DevComponents.Editors.ComboItem();
+            this.comboItem20 = new DevComponents.Editors.ComboItem();
             this.itemContainer12 = new DevComponents.DotNetBar.ItemContainer();
             this.checkBoxItemRegex2 = new DevComponents.DotNetBar.CheckBoxItem();
             this.buttonItemSearchString = new DevComponents.DotNetBar.ButtonItem();
@@ -1417,7 +1418,8 @@ namespace WzComparerR2
             this.comboBoxItem1.Items.AddRange(new object[] {
             this.comboItem10,
             this.comboItem11,
-            this.comboItem12});
+            this.comboItem12,
+            this.comboItem20});
             this.comboBoxItem1.Name = "comboBoxItem1";
             this.comboBoxItem1.SelectedIndex = 0;
             // 
@@ -1432,6 +1434,10 @@ namespace WzComparerR2
             // comboItem12
             // 
             this.comboItem12.Text = "IMG値";
+            // comboItem20
+            // 
+            this.comboItem20.Text = "ノード,値";
+            // 
             // 
             // itemContainer17
             // 
@@ -3417,6 +3423,7 @@ namespace WzComparerR2
         private DevComponents.DotNetBar.Controls.CheckBoxX chkOutputSkillTooltip;
         private DevComponents.DotNetBar.Controls.CheckBoxX chkHashPngFileName;
         private DevComponents.Editors.ComboItem comboItem19;
+        private DevComponents.Editors.ComboItem comboItem20;
         private DevComponents.DotNetBar.ItemContainer itemContainer100;
         private DevComponents.DotNetBar.ItemContainer itemContainer101;
         private DevComponents.DotNetBar.ItemContainer itemContainer102;

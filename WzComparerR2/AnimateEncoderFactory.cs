@@ -17,11 +17,11 @@ namespace WzComparerR2
 
         private static void RegisterEncoders()
         {
-            registeredEncoders.Add(0, new AnimateEncoderProvider<BuildInGifEncoder>
+            registeredEncoders.Add(0, new AnimateEncoderProvider<IndexGifEncoder>
             {
                 ID = 0,
-                Name = nameof(BuildInGifEncoder),
-                CreateEncoderCallback = () => new BuildInGifEncoder(),
+                Name = nameof(IndexGifEncoder),
+                CreateEncoderCallback = () => new IndexGifEncoder(),
             });
 
             registeredEncoders.Add(1, new AnimateEncoderProvider<IndexGifEncoder>
@@ -53,6 +53,13 @@ namespace WzComparerR2
                     encoder.FFmpegArgumentFormat = config.FFmpegArgument;
                     encoder.OutputFileExtension = config.FFmpegOutputFileExtension;
                 }
+            });
+
+            registeredEncoders.Add(4, new AnimateEncoderProvider<BuildInGifEncoder>
+            {
+                ID = 4,
+                Name = nameof(BuildInGifEncoder),
+                CreateEncoderCallback = () => new BuildInGifEncoder(),
             });
         }
 

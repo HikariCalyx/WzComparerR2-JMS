@@ -38,6 +38,7 @@
             this.comboItem2 = new DevComponents.Editors.ComboItem();
             this.comboItem6 = new DevComponents.Editors.ComboItem();
             this.comboItem7 = new DevComponents.Editors.ComboItem();
+            this.comboItem8 = new DevComponents.Editors.ComboItem();
             this.labelX3 = new DevComponents.DotNetBar.LabelX();
             this.slider1 = new DevComponents.DotNetBar.Controls.Slider();
             this.labelX4 = new DevComponents.DotNetBar.LabelX();
@@ -166,7 +167,8 @@
             this.comboItem1,
             this.comboItem2,
             this.comboItem6,
-            this.comboItem7});
+            this.comboItem7,
+            this.comboItem8});
             this.comboBoxEx1.Location = new System.Drawing.Point(80, 178);
             this.comboBoxEx1.Name = "comboBoxEx1";
             this.comboBoxEx1.Size = new System.Drawing.Size(160, 21);
@@ -188,6 +190,10 @@
             // comboItem7
             // 
             this.comboItem7.Text = "FFmpegエンコーダ";
+            // 
+            // comboItem8
+            // 
+            this.comboItem8.Text = "従来のGIFエンコーダ";
             // 
             // labelX3
             // 
@@ -861,6 +867,7 @@
         private DevComponents.DotNetBar.LabelX labelX11;
         private DevComponents.DotNetBar.Controls.TextBoxX textBoxX1;
         private DevComponents.Editors.ComboItem comboItem7;
+        private DevComponents.Editors.ComboItem comboItem8;
         private DevComponents.DotNetBar.LabelX labelX12;
         private DevComponents.DotNetBar.Controls.TextBoxX textBoxX3;
         private DevComponents.DotNetBar.LabelX labelX13;
