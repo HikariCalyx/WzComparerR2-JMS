@@ -1017,7 +1017,7 @@ namespace WzComparerR2.Avatar.UI
             }
             if (part.ID.ToString().StartsWith("3"))
             {
-                chairName = string.Format("{0}_{1}", part.ID.ToString(), text.Substring(0, text.IndexOf("\r\n")));
+                chairName = RemoveInvalidFileNameChars(string.Format("{0}_{1}", part.ID.ToString(), text.Substring(0, text.IndexOf("\r\n"))));
             }
             btn.Text = text;
             btn.NeedRecalcSize = true;
@@ -2807,6 +2807,13 @@ namespace WzComparerR2.Avatar.UI
             {
                 ProgressDialog.Show(this.FindForm(), "エクスポート中...", avatar.Actions.Count + " アクションのエクスポート中...", true, false, ExportJob);
             }
+        }
+        private static string RemoveInvalidFileNameChars(string fileName)
+        {
+            if (String.IsNullOrEmpty(fileName)) return "未知";
+            string invalidChars = new string(System.IO.Path.GetInvalidFileNameChars());
+            string regexPattern = $"[{Regex.Escape(invalidChars)}]";
+            return Regex.Replace(fileName, regexPattern, "_");
         }
     }
 }
