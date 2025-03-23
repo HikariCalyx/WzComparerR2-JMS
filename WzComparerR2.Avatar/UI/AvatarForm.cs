@@ -76,6 +76,8 @@ namespace WzComparerR2.Avatar.UI
         private DevComponents.DotNetBar.Controls.ComboBoxEx[] cmbEffectFrames;
         private bool updatingActionEffect = false;
 
+        private string chairName;
+
         /// <summary>
         /// wz1节点选中事件。
         /// </summary>
@@ -1012,6 +1014,10 @@ namespace WzComparerR2.Avatar.UI
             else
             {
                 text = string.Format("{0}\r\n{1}", "(null)", part.ID == null ? "-" : part.ID.ToString());
+            }
+            if (part.ID.ToString().StartsWith("3"))
+            {
+                chairName = string.Format("{0}_{1}", part.ID.ToString(), text.Substring(0, text.IndexOf("\r\n")));
             }
             btn.Text = text;
             btn.NeedRecalcSize = true;
@@ -1999,10 +2005,12 @@ namespace WzComparerR2.Avatar.UI
                 this.GetSelectedTamingFrame(out int tamingFrame, out _);
                 this.GetSelectedEffectFrames(out int[] effectFrames, out _);
 
-                defaultFileName = string.Format("avatar{0}{1}{2}.png",
+                defaultFileName = string.Format("avatar{0}{1}{2}{3}{4}.png",
                         string.IsNullOrEmpty(avatar.ActionName) ? "" : ("_" + avatar.ActionName + "(" + bodyFrame + ")"),
                         string.IsNullOrEmpty(avatar.EmotionName) ? "" : ("_" + avatar.EmotionName + "(" + emoFrame + ")"),
-                        string.IsNullOrEmpty(avatar.TamingActionName) ? "" : ("_" + avatar.TamingActionName + "(" + tamingFrame + ")"));
+                        string.IsNullOrEmpty(avatar.TamingActionName) ? "" : ("_" + avatar.TamingActionName + "(" + tamingFrame + ")"),
+                        (!string.IsNullOrEmpty(avatar.ActionName) && avatar.ActionName == "sit") ? ("_" + chairName) : "",
+                        btnEnableAutosave.Checked ? ("_" + DateTime.Now.ToString("yyyyMMdd_HHmmss")) : "");
 
                 // no animation is playing, save as png
                 if (!btnEnableAutosave.Checked)
@@ -2035,10 +2043,12 @@ namespace WzComparerR2.Avatar.UI
                 var cap = encoder.Compatibility;
                 string extensionFilter = string.Join(";", cap.SupportedExtensions.Select(ext => $"*{ext}"));
 
-                defaultFileName = string.Format("avatar{0}{1}{2}{3}",
+                defaultFileName = string.Format("avatar{0}{1}{2}{3}{4}{5}",
                         string.IsNullOrEmpty(avatar.ActionName) ? "" : ("_" + avatar.ActionName),
                         string.IsNullOrEmpty(avatar.EmotionName) ? "" : ("_" + avatar.EmotionName),
                         string.IsNullOrEmpty(avatar.TamingActionName) ? "" : ("_" + avatar.TamingActionName),
+                        (!string.IsNullOrEmpty(avatar.ActionName) && avatar.ActionName == "sit") ? ("_" + chairName) : "",
+                        btnEnableAutosave.Checked ? ("_" + DateTime.Now.ToString("yyyyMMdd_HHmmss")) : "",
                         cap.DefaultExtension);
 
                 if (!btnEnableAutosave.Checked)
@@ -2308,6 +2318,7 @@ namespace WzComparerR2.Avatar.UI
 
         private void LoadCode(string code, int loadType)
         {
+            chairName = "";
             //解析
             var matches = Regex.Matches(code, @"s?(\d+)(\+([0-7])\*(\d{1,2}))?([,\s]|$)");
             if (matches.Count <= 0)
