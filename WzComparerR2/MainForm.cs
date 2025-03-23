@@ -297,6 +297,7 @@ namespace WzComparerR2
             Translator.DefaultMaximumToken = config.MaximumToken;
             Translator.IsExtraParamEnabled = config.OpenAIExtraOption;
             Translator.ExchangeTable = null;
+            Translator.InitializeCache();
         }
 
         async Task<bool> AutomaticCheckUpdate()
