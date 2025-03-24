@@ -149,7 +149,7 @@ namespace WzComparerR2
                         }
                     }
                 }
-                RunProgram("Updater.exe", savePath);
+                RunProgram("Updater.exe", "\"" + savePath + "\"");
             }
             catch (Exception ex)
             {

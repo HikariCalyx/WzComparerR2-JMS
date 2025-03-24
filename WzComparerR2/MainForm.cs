@@ -3851,7 +3851,6 @@ namespace WzComparerR2
 
         private async void MainForm_Shown(object sender, EventArgs e)
         {
-
             //Automatic Update Check
             bool isUpdateRequired = await AutomaticCheckUpdate();
             if (isUpdateRequired) new FrmUpdater().ShowDialog();
