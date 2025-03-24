@@ -50,6 +50,7 @@ namespace WzComparerR2
         {
             var request = (HttpWebRequest)WebRequest.Create(Program.CheckUpdateURL);
             request.Accept = "application/json";
+            request.UserAgent = "WzComparerR2/1.0";
             try
             {
                 using (WebResponse response = await request.GetResponseAsync())
@@ -72,6 +73,7 @@ namespace WzComparerR2
         {
             var request = (HttpWebRequest)WebRequest.Create(Program.CheckUpdateURL);
             request.Accept = "application/json";
+            request.UserAgent = "WzComparerR2/1.0";
             try
             {
                 var response = (HttpWebResponse)request.GetResponse();
