@@ -130,12 +130,6 @@ namespace WzComparerR2
             });
         }
 
-        public bool EnableAutoUpdate
-        {
-            get { return chkEnableAutoUpdate.Checked; }
-            set { chkEnableAutoUpdate.Checked = value; }
-        }
-
         public bool SortWzOnOpened
         {
             get { return chkWzAutoSort.Checked; }
@@ -537,7 +531,6 @@ namespace WzComparerR2
 
         public void Load(WcR2Config config)
         {
-            this.EnableAutoUpdate = config.EnableAutoUpdate;
             this.SortWzOnOpened = config.SortWzOnOpened;
             this.SortWzByImgID = config.SortWzByImgID;
             this.DefaultWzCodePage = config.WzEncoding;
@@ -562,7 +555,6 @@ namespace WzComparerR2
 
         public void Save(WcR2Config config)
         {
-            config.EnableAutoUpdate = this.EnableAutoUpdate;
             config.SortWzOnOpened = this.SortWzOnOpened;
             config.SortWzByImgID = this.SortWzByImgID;
             config.WzEncoding = this.DefaultWzCodePage;

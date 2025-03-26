@@ -17,6 +17,7 @@ using Newtonsoft.Json.Linq;
 using System.Net;
 using System.IO;
 using System.Security.Policy;
+using WzComparerR2.Config;
 
 namespace WzComparerR2
 {
@@ -37,6 +38,12 @@ namespace WzComparerR2
             // this.lblUpdateContent.Text = GetAsmCopyright().ToString();
             Task.Run(() => this.ExecuteUpdateAsync(updateSession, updateSession.CancellationToken));
             // GetPluginInfo();
+        }
+
+        public bool EnableAutoUpdate
+        {
+            get { return chkEnableAutoUpdate.Checked; }
+            set { chkEnableAutoUpdate.Checked = value; }
         }
 
         private UpdaterSession updateSession;
@@ -200,6 +207,13 @@ namespace WzComparerR2
 #endif
         }
 
+        private void chkEnableAutoUpdate_CheckedChanged(object sender, EventArgs e)
+        {
+            var config = WcR2Config.Default;
+            config.EnableAutoUpdate = chkEnableAutoUpdate.Checked;
+            ConfigManager.Save();
+        }
+
         class UpdaterSession
         {
             public UpdaterSession()
@@ -232,6 +246,11 @@ namespace WzComparerR2
                     this.tcsWaiting.SetResult(true);
                 }
             }
+        }
+
+        public void Load(WcR2Config config)
+        {
+            this.EnableAutoUpdate = config.EnableAutoUpdate;
         }
     }
 }

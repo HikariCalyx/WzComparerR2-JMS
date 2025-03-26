@@ -3793,7 +3793,9 @@ namespace WzComparerR2
 
         private void buttonItemUpdate_Click(object sender, EventArgs e)
         {
-            new FrmUpdater().ShowDialog();
+            var frm = new FrmUpdater();
+            frm.Load(WcR2Config.Default);
+            frm.Show();
         }
 
         private void btnItemOptions_Click(object sender, System.EventArgs e)
@@ -3853,7 +3855,12 @@ namespace WzComparerR2
         {
             //Automatic Update Check
             bool isUpdateRequired = await AutomaticCheckUpdate();
-            if (isUpdateRequired) new FrmUpdater().ShowDialog();
+            if (isUpdateRequired)
+            {
+                var frm = new FrmUpdater();
+                frm.Load(WcR2Config.Default);
+                frm.Show();
+            }
         }
 
         private void buttomItem13_FormClosing(object sender, EventArgs e)

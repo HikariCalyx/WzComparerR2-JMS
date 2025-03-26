@@ -37,6 +37,7 @@
             this.lblUpdateContent = new DevComponents.DotNetBar.LabelX();
             this.buttonX1 = new DevComponents.DotNetBar.ButtonX();
             this.advTree1 = new DevComponents.AdvTree.AdvTree();
+            this.chkEnableAutoUpdate = new DevComponents.DotNetBar.Controls.CheckBoxX();
             this.elementStyle1 = new DevComponents.DotNetBar.ElementStyle();
             ((System.ComponentModel.ISupportInitialize)(this.advTree1)).BeginInit();
             this.SuspendLayout();
@@ -161,6 +162,22 @@
             this.advTree1.TabIndex = 9;
             this.advTree1.Text = "advTree1";
             // 
+            // chkEnableAutoUpdate
+            // 
+            this.chkEnableAutoUpdate.AutoSize = true;
+            this.chkEnableAutoUpdate.BackColor = System.Drawing.Color.Transparent;
+            // 
+            // 
+            // 
+            this.chkEnableAutoUpdate.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
+            this.chkEnableAutoUpdate.Location = new System.Drawing.Point(12, 189);
+            this.chkEnableAutoUpdate.Name = "chkEnableAutoUpdate";
+            this.chkEnableAutoUpdate.Size = new System.Drawing.Size(170, 23);
+            this.chkEnableAutoUpdate.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
+            this.chkEnableAutoUpdate.TabIndex = 10;
+            this.chkEnableAutoUpdate.Text = "自動更新ﾁｪｯｸ";
+            this.chkEnableAutoUpdate.CheckedChanged += new System.EventHandler(this.chkEnableAutoUpdate_CheckedChanged);
+            // 
             // elementStyle1
             // 
             this.elementStyle1.CornerType = DevComponents.DotNetBar.eCornerType.Square;
@@ -180,6 +197,7 @@
             this.Controls.Add(this.labelX3);
             this.Controls.Add(this.labelX2);
             this.Controls.Add(this.labelX1);
+            this.Controls.Add(this.chkEnableAutoUpdate);
             this.DoubleBuffered = true;
             this.Font = new System.Drawing.Font(LocalizedString_JP.DEFAULT_MONOSPACE_FONT, 9F);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
@@ -204,6 +222,7 @@
         private DevComponents.DotNetBar.LabelX lblLatestVer;
         private DevComponents.DotNetBar.LabelX lblUpdateContent;
         private DevComponents.DotNetBar.ButtonX buttonX1;
+        private DevComponents.DotNetBar.Controls.CheckBoxX chkEnableAutoUpdate;
         private DevComponents.AdvTree.AdvTree advTree1;
         private DevComponents.DotNetBar.ElementStyle elementStyle1;
     }
