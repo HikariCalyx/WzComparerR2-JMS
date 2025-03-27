@@ -503,7 +503,14 @@ namespace WzComparerR2.CharaSim
             double exchangeMultipler = 1;
             double.TryParse(exTable.SelectToken(DefaultDesiredCurrency + "." + sourceCurrency).ToString(), out exchangeMultipler);
             double convertedPrice = irlPrice / exchangeMultipler;
-            return "約" + convertedPrice.ToString("0.##") + dictCurrencyName[DefaultDesiredCurrency];
+            switch (DefaultDesiredCurrency)
+            {
+                case "jpy":
+                case "krw":
+                    return "約" + Math.Round(convertedPrice).ToString() + dictCurrencyName[DefaultDesiredCurrency];
+                default:
+                    return "約" + convertedPrice.ToString("0.##") + dictCurrencyName[DefaultDesiredCurrency];
+            }
         }
 
         public static string ConvertCurrencyToLang(string currency)
