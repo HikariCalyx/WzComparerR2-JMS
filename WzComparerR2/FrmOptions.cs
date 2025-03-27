@@ -450,13 +450,12 @@ namespace WzComparerR2
             string GlossaryTablePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "TranslationCache", "Glossary.csv");
             if (!File.Exists(GlossaryTablePath))
             {
-                using (FileStream fs = File.Create(GlossaryTablePath))
+                using (StreamWriter writer = new StreamWriter(GlossaryTablePath, false, new UTF8Encoding(true)))
                 {
-                    byte[] header = new UTF8Encoding(true).GetBytes(
+                    writer.Write(
                         "identifier,ko,ja,zh-CN,zh-TW,en\r\n" +
                         "<glos_0000000001>,메소,メル,金币,楓幣,mesos\r\n" +
                         "<glos_0000000002>,메소,メル,金币,楓幣,meso\r\n");
-                    fs.Write(header, 0, header.Length);
                 }
             }
 #if NET6_0_OR_GREATER
