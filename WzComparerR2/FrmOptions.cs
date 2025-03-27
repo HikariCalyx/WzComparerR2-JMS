@@ -83,8 +83,6 @@ namespace WzComparerR2
                 new ComboItem("MyMemory"){ Value = 4 },
                 new ComboItem("Yandex"){ Value = 5 },
                 new ComboItem("Naver Papago (非Mozhi)"){ Value = 6 },
-                //new ComboItem("ディープシークAPI"){ Value = 7 },
-                //new ComboItem("オラマLLM (ローカル)"){ Value = 8 },
                 new ComboItem("OpenAI互換"){ Value = 9 },
             });
 
@@ -420,7 +418,6 @@ namespace WzComparerR2
                     }
                     catch (WebException ex)
                     {
-                        string respJson = new StreamReader(ex.Response.GetResponseStream(), Encoding.UTF8).ReadToEnd();
                         respText = "このMozhiサーバーは無効です。";
                     }
                     catch (Exception ex)
@@ -446,6 +443,31 @@ namespace WzComparerR2
                 respText = "有効なJSONではないようです。";
             }
             MessageBoxEx.Show(respText);
+        }
+
+        private void buttonX3_Click(object sender, EventArgs e)
+        {
+            string GlossaryTablePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "TranslationCache", "Glossary.csv");
+            if (!File.Exists(GlossaryTablePath))
+            {
+                using (FileStream fs = File.Create(GlossaryTablePath))
+                {
+                    byte[] header = new UTF8Encoding(true).GetBytes(
+                        "identifier,ko,ja,zh-CN,zh-TW,en\r\n" +
+                        "<glos_0000000001>,메소,メル,金币,楓幣,mesos\r\n" +
+                        "<glos_0000000002>,메소,メル,金币,楓幣,meso\r\n");
+                    fs.Write(header, 0, header.Length);
+                }
+            }
+#if NET6_0_OR_GREATER
+            Process.Start(new ProcessStartInfo
+            {
+                UseShellExecute = true,
+                FileName = GlossaryTablePath
+            });
+#else
+            Process.Start(GlossaryTablePath);
+#endif
         }
 
         private void cmbPreferredTranslateEngine_SelectedIndexChanged(object sender, EventArgs e)

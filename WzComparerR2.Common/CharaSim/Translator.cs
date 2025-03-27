@@ -1,17 +1,21 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
 using System.Linq;
+using System.Net;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.RegularExpressions;
-using WzComparerR2.Config;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using System.Net;
-using System.IO;
-using System.Globalization;
 using System.Threading;
 using static System.Net.Mime.MediaTypeNames;
+using CsvHelper;
+using CsvHelper.Configuration;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using WzComparerR2.Config;
+using System.CodeDom;
+
 namespace WzComparerR2.CharaSim
 {
     public class Translator
@@ -65,6 +69,7 @@ namespace WzComparerR2.CharaSim
 
         private static string GTranslateBaseURL = "https://translate.googleapis.com/translate_a/t";
         private static string NTranslateBaseURL = "https://naveropenapi.apigw.ntruss.com";
+        private static string GlossaryTablePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "TranslationCache", "Glossary.csv");
         public static string OAITranslateBaseURL { get; set; }
 
         private static List<string> CurrencyBaseURL = new List<string>()
@@ -79,6 +84,7 @@ namespace WzComparerR2.CharaSim
             var request = (HttpWebRequest)WebRequest.Create(GTranslateBaseURL + "?client=gtx&format=text&sl=auto&tl=" + desiredLanguage);
             request.Method = "POST";
             request.ContentType = "application/x-www-form-urlencoded";
+            request.Timeout = 15000;
             var postData = "q=" + Uri.EscapeDataString(text);
             var byteArray = System.Text.Encoding.UTF8.GetBytes(postData);
             request.ContentLength = byteArray.Length;
@@ -196,6 +202,7 @@ namespace WzComparerR2.CharaSim
         {
             var request = (HttpWebRequest)WebRequest.Create(DefaultMozhiBackend + "/api/translate?engine=" + engine + "&from=" + sourceLanguage + "&to=" + desiredLanguage + "&text=" + Uri.EscapeDataString(text));
             request.Accept = "application/json";
+            request.Timeout = 15000;
             try
             {
                 var response = (HttpWebResponse)request.GetResponse();
@@ -216,6 +223,7 @@ namespace WzComparerR2.CharaSim
             request.ContentType = "application/x-www-form-urlencoded";
             request.Headers["X-NCP-APIGW-API-KEY-ID"] = GetKeyValue("X-NCP-APIGW-API-KEY-ID");
             request.Headers["X-NCP-APIGW-API-KEY"] = GetKeyValue("X-NCP-APIGW-API-KEY-ID");
+            request.Timeout = 15000;
             var postData = "source=auto&target=" + desiredLanguage + "text=" + Uri.EscapeDataString(text);
             var byteArray = System.Text.Encoding.UTF8.GetBytes(postData);
             request.ContentLength = byteArray.Length;
@@ -304,12 +312,13 @@ namespace WzComparerR2.CharaSim
                 }
                 return translatedText;
             }
+            string glossaryText = GlossaryPreProcess(orgText);
             switch (DefaultPreferredTranslateEngine)
             {
                 //0: Google (Non-Mozhi)
                 default:
                 case 0:
-                    JArray responseArr = GTranslate(ConvHashTagToHTMLTag(orgText), Translator.DefaultDesiredLanguage);
+                    JArray responseArr = GTranslate(ConvHashTagToHTMLTag(glossaryText), Translator.DefaultDesiredLanguage);
                     translatedText = responseArr[0][0].ToString().Replace("＃", "#");
                     break;
                 //1: Google (Mozhi)
@@ -346,25 +355,26 @@ namespace WzComparerR2.CharaSim
                 //6: Naver Papago (Non-Mozhi)
                 case 6:
                     if (targetLanguage == "yue") targetLanguage = "zh-TW";
-                    JObject responseObj = NTranslate(ConvHashTagToHTMLTag(orgText), Translator.DefaultDesiredLanguage);
+                    JObject responseObj = NTranslate(ConvHashTagToHTMLTag(glossaryText), Translator.DefaultDesiredLanguage);
                     translatedText = responseObj.SelectToken("message.result.translatedText").ToString();
                     break;
                 //9: OpenAI Compatible
                 case 9:
                     if (titleCase && targetLanguage == "en")
                     {
-                        translatedText = OAITranslate(ConvHashTagToHTMLTag(orgText), Translator.DefaultDesiredLanguage, true);
+                        translatedText = OAITranslate(ConvHashTagToHTMLTag(glossaryText), Translator.DefaultDesiredLanguage, true);
                     }
                     else
                     {
-                        translatedText = OAITranslate(ConvHashTagToHTMLTag(orgText), Translator.DefaultDesiredLanguage);
+                        translatedText = OAITranslate(ConvHashTagToHTMLTag(glossaryText), Translator.DefaultDesiredLanguage);
                     }
                     break;
             }
             if (isMozhiUsed)
             {
-                translatedText = MTranslate(ConvHashTagToHTMLTag(orgText), mozhiEngine, sourceLanguage, targetLanguage).SelectToken("translated-text").ToString().Replace("＃", "#");
+                translatedText = MTranslate(ConvHashTagToHTMLTag(glossaryText), mozhiEngine, sourceLanguage, targetLanguage).SelectToken("translated-text").ToString().Replace("＃", "#");
             }
+            translatedText = GlossaryPostProcess(translatedText, targetLanguage);
             if (titleCase && targetLanguage == "en")
             {
                 CultureInfo cultureInfo = Thread.CurrentThread.CurrentCulture;
@@ -661,9 +671,116 @@ namespace WzComparerR2.CharaSim
                     cachePath = Path.Combine(cachePath, "openai", DefaultLanguageModel + "_" + DefaultDesiredLanguage + ".json");
                     break;
             }
-            if (File.Exists(cachePath)) currentTranslationCache = JObject.Parse(File.ReadAllText(cachePath));
+            if (File.Exists(cachePath))
+            {
+                string content = File.ReadAllText(cachePath);
+                if (!String.IsNullOrEmpty(content)) currentTranslationCache = JObject.Parse(content);
+            }   
             currentTranslationCache.Add(new JProperty(orgText, translatedText));
             File.WriteAllText(cachePath, currentTranslationCache.ToString());
+        }
+
+        private static bool UseGlossaryTable()
+        {
+            return File.Exists(GlossaryTablePath);
+        }
+
+        private static Dictionary<string, string> GlossaryToIdentifier()
+        {
+            var glossary = new Dictionary<string, string>();
+            if (UseGlossaryTable())
+            {
+                using (var reader = new StreamReader(GlossaryTablePath))
+                using (var csv = new CsvReader(reader, new CsvConfiguration(System.Globalization.CultureInfo.InvariantCulture)))
+                {
+                    csv.Read();
+                    csv.ReadHeader();
+                    while (csv.Read())
+                    {
+                        string identifier = csv.GetField("identifier");
+                        foreach (var column in new[] { "ko", "ja", "zh-CN", "zh-TW", "en" })
+                        {
+                            string word = csv.GetField(column);
+                            if (!string.IsNullOrEmpty(word))
+                            {
+                                glossary[word] = identifier;
+                            }
+                        }
+                    }
+                }
+                return glossary;
+            }
+            else
+            {
+                return glossary;
+            }
+        }
+
+        private static Dictionary<string, string> IdentifierToGlossary(string langcode)
+        {
+            var glossary = new Dictionary<string, string>();
+            if (UseGlossaryTable())
+            {
+                using (var reader = new StreamReader(GlossaryTablePath))
+                using (var csv = new CsvReader(reader, new CsvConfiguration(System.Globalization.CultureInfo.InvariantCulture)))
+                {
+                    csv.Read();
+                    csv.ReadHeader();
+                    while (csv.Read())
+                    {
+                        string identifier = csv.GetField("identifier");
+                        string word = csv.GetField(langcode);
+                        if (!string.IsNullOrEmpty(word))
+                        {
+                            glossary[identifier] = word;
+                        }
+                    }
+                }
+                return glossary;
+            }
+            else
+            {
+                return glossary;
+            }
+        }
+
+        private static string GlossaryPreProcess(string orgText)
+        {
+            if (UseGlossaryTable())
+            {
+                string processedText = orgText;
+                foreach (var pair in GlossaryToIdentifier())
+                {
+                    processedText = Regex.Replace(processedText, pair.Key, pair.Value, RegexOptions.IgnoreCase);
+                }
+                return processedText;
+            }
+            else
+            {
+                return orgText;
+            }
+        }
+
+        private static string GlossaryPostProcess(string postText, string langcode)
+        {
+            if (UseGlossaryTable())
+            {
+                string processedText = postText;
+                foreach (var pair in IdentifierToGlossary(langcode))
+                {
+                    if (langcode == "en") processedText = Regex.Replace(processedText, pair.Key, pair.Value + " ", RegexOptions.IgnoreCase);
+                    else processedText = Regex.Replace(processedText, pair.Key, pair.Value, RegexOptions.IgnoreCase);
+                    // workaround for Google Translate Fault
+                    processedText = Regex.Replace(processedText, pair.Key.Replace("_0", "_"), pair.Value + " ", RegexOptions.IgnoreCase);
+
+                }
+                if (langcode == "en") processedText = processedText.Replace("  ", " ");
+                return processedText;
+            }
+            else
+            {
+                return postText;
+            }
         }
 
         #region Global Settings

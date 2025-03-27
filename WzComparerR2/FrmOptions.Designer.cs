@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             this.panelEx1 = new DevComponents.DotNetBar.PanelEx();
+            this.buttonX3 = new DevComponents.DotNetBar.ButtonX();
             this.buttonX2 = new DevComponents.DotNetBar.ButtonX();
             this.buttonX1 = new DevComponents.DotNetBar.ButtonX();
             this.txtAPIkey = new DevComponents.DotNetBar.Controls.TextBoxX();
@@ -261,6 +262,19 @@
             this.buttonXCheck3.Text = "検査する";
             this.buttonXCheck3.Click += new System.EventHandler(this.buttonXCheck3_Click);
             // 
+            // buttonX3
+            // 
+            this.buttonX3.AccessibleRole = System.Windows.Forms.AccessibleRole.PushButton;
+            this.buttonX3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonX3.ColorTable = DevComponents.DotNetBar.eButtonColor.OrangeWithBackground;
+            this.buttonX3.Location = new System.Drawing.Point(288, 67);
+            this.buttonX3.Name = "buttonX3";
+            this.buttonX3.Size = new System.Drawing.Size(55, 19);
+            this.buttonX3.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
+            this.buttonX3.TabIndex = 16;
+            this.buttonX3.Text = "用語集表";
+            this.buttonX3.Click += new System.EventHandler(this.buttonX3_Click);
+            // 
             // superTabControl1
             // 
             this.superTabControl1.AutoCloseTabs = false;
@@ -441,6 +455,7 @@
             // superTabControlPanel2
             // 
             this.superTabControlPanel2.Controls.Add(this.labelX5);
+            this.superTabControlPanel2.Controls.Add(this.buttonX3);
             this.superTabControlPanel2.Controls.Add(this.buttonXCheck2);
             this.superTabControlPanel2.Controls.Add(this.cmbMozhiBackend);
             this.superTabControlPanel2.Controls.Add(this.cmbLanguageModel);
