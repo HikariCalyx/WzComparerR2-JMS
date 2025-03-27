@@ -615,7 +615,7 @@ namespace WzComparerR2.CharaSim
                 try
                 {
                     JObject currentTranslationCache = JObject.Parse(File.ReadAllText(cachePath));
-                    string translatedResult = currentTranslationCache.SelectToken(orgText).ToString();
+                    string translatedResult = currentTranslationCache.SelectToken(String.Format("['{0}']", orgText)).ToString();
                     return translatedResult;
                 }
                 catch
