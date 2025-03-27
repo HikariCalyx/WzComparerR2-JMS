@@ -772,6 +772,8 @@ namespace WzComparerR2.CharaSim
                     else processedText = Regex.Replace(processedText, pair.Key, pair.Value, RegexOptions.IgnoreCase);
                     // workaround for Google Translate Fault
                     processedText = Regex.Replace(processedText, pair.Key.Replace("_0", "_"), pair.Value + " ", RegexOptions.IgnoreCase);
+                    // workaround for OpenAI Translate Fault
+                    processedText = Regex.Replace(processedText, pair.Key.Replace("<", "</"), "", RegexOptions.IgnoreCase);
 
                 }
                 if (langcode == "en" || langcode == "ko") processedText = processedText.Replace("  ", " ");
