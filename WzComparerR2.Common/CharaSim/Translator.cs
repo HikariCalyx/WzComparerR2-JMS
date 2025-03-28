@@ -616,7 +616,7 @@ namespace WzComparerR2.CharaSim
                 }
                 postTranslateContent.AppendLine(TranslateString(untranslatedContent.ToString()));
             }
-            else
+            else if (preTranslateDict.Count == 1)
             {
                 string tag = preTranslateDict.Keys.ToList()[0];
                 string startTag = "<" + tag + ">";
