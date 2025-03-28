@@ -11,10 +11,10 @@ using System.Threading;
 using static System.Net.Mime.MediaTypeNames;
 using CsvHelper;
 using CsvHelper.Configuration;
+using DevComponents.DotNetBar;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using WzComparerR2.Config;
-using System.CodeDom;
 using System.Security.Cryptography;
 
 namespace WzComparerR2.CharaSim
@@ -633,6 +633,29 @@ namespace WzComparerR2.CharaSim
                 postTranslateContent.AppendLine(startTag + postTranslateDict[tag] + endTag);
             }
             return postTranslateContent.ToString();
+        }
+
+        public static void WaitingForGlossaryTableRelease()
+        {
+            bool fileOccupied = true;
+            if (File.Exists(GlossaryTablePath))
+            {
+                FileStream fs = null;
+                while (fileOccupied)
+                {
+                    try
+                    {
+                        fs = new FileStream(GlossaryTablePath, FileMode.Open, FileAccess.ReadWrite, FileShare.None);
+                        fileOccupied = false;
+                    }
+                    catch
+                    {
+                        MessageBoxEx.Show("続行する前に、Glossary.csvを編集しているプログラムを閉じてください。\r\n閉じたことを確認したら、「OK」をクリックします。", "注意");
+                    }
+                }
+                fs.Close();
+            }
+            return;
         }
 
         private static Dictionary<string, string> ConvAfrmTooltipPreTextToDict(string orgText)

@@ -213,6 +213,7 @@ namespace WzComparerR2.CharaSimControl
             renderer.StringLinker = StringLinker;
             if (Translator.IsTranslateEnabled)
             {
+                Translator.WaitingForGlossaryTableRelease();
                 WaitingForm.UpdateMessage("翻訳中...");
                 WaitingForm.Show();
                 await Task.Run(() =>
@@ -354,6 +355,7 @@ namespace WzComparerR2.CharaSimControl
             if (!String.IsNullOrEmpty(this.Hdesc)) sb.AppendLine("<hdesc>" + this.Hdesc + "</hdesc>");
             if (!String.IsNullOrEmpty(this.DescLeftAlign)) sb.AppendLine("<descleftalign>" + this.DescLeftAlign + "</descleftalign>");
             string translatedResult = "";
+            Translator.WaitingForGlossaryTableRelease();
             WaitingForm.UpdateMessage("翻訳中...");
             try
             {
@@ -374,7 +376,6 @@ namespace WzComparerR2.CharaSimControl
                     WaitingForm.Hide();
                 }
             }
-
         }
 
         void tsmiClose_Click(object sender, EventArgs e)
