@@ -15,6 +15,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using WzComparerR2.Config;
 using System.CodeDom;
+using System.Security.Cryptography;
 
 namespace WzComparerR2.CharaSim
 {
@@ -625,7 +626,7 @@ namespace WzComparerR2.CharaSim
                 try
                 {
                     JObject currentTranslationCache = JObject.Parse(File.ReadAllText(cachePath));
-                    string translatedResult = currentTranslationCache.SelectToken(String.Format("['{0}']", orgText)).ToString();
+                    string translatedResult = currentTranslationCache.SelectToken(String.Format("['{0}']", GetSha256Checksum(orgText))).ToString();
                     return translatedResult;
                 }
                 catch
@@ -676,7 +677,7 @@ namespace WzComparerR2.CharaSim
                 string content = File.ReadAllText(cachePath);
                 if (!String.IsNullOrEmpty(content)) currentTranslationCache = JObject.Parse(content);
             }   
-            currentTranslationCache.Add(new JProperty(orgText, translatedText));
+            currentTranslationCache.Add(new JProperty(GetSha256Checksum(orgText), translatedText));
             File.WriteAllText(cachePath, currentTranslationCache.ToString());
         }
 
@@ -782,6 +783,23 @@ namespace WzComparerR2.CharaSim
             else
             {
                 return postText;
+            }
+        }
+
+        private static string GetSha256Checksum(string input)
+        {
+            using (SHA256 sha256 = SHA256.Create())
+            {
+                byte[] inputBytes = Encoding.UTF8.GetBytes(input);
+                byte[] hashBytes = sha256.ComputeHash(inputBytes);
+
+                StringBuilder sb = new StringBuilder();
+                foreach (byte b in hashBytes)
+                {
+                    sb.Append(b.ToString("x2"));
+                }
+
+                return sb.ToString();
             }
         }
 
