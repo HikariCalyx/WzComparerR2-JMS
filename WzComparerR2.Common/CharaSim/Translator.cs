@@ -590,6 +590,65 @@ namespace WzComparerR2.CharaSim
             }
         }
 
+        public static string AfrmTooltipTranslateBeforeCopy(string orgText)
+        {
+            Dictionary<string, string> preTranslateDict = ConvAfrmTooltipPreTextToDict(orgText);
+            StringBuilder postTranslateContent = new StringBuilder();
+            StringBuilder untranslatedContent = new StringBuilder();
+            foreach (string tag in preTranslateDict.Keys)
+            {
+                string startTag = "<" + tag + ">";
+                string endTag = "</" + tag + ">";
+                string translatedContent = TryFetchCachedTranslationResult(preTranslateDict[tag]);
+                if (!String.IsNullOrEmpty(translatedContent))
+                {
+                    preTranslateDict.Remove(tag);
+                    postTranslateContent.AppendLine(startTag + translatedContent + endTag);
+                }
+            }
+            if (preTranslateDict.Count > 1)
+            {
+                foreach (string tag in preTranslateDict.Keys)
+                {
+                    string startTag = "<" + tag + ">";
+                    string endTag = "</" + tag + ">";
+                    untranslatedContent.AppendLine(startTag + preTranslateDict[tag] + endTag);
+                }
+                postTranslateContent.AppendLine(TranslateString(untranslatedContent.ToString()));
+            }
+            else
+            {
+                string tag = preTranslateDict.Keys.ToList()[0];
+                string startTag = "<" + tag + ">";
+                string endTag = "</" + tag + ">";
+                postTranslateContent.AppendLine(startTag + TranslateString(preTranslateDict[tag]) + endTag);
+            }
+            Dictionary<string, string> postTranslateDict = ConvAfrmTooltipPreTextToDict(postTranslateContent.ToString());
+            postTranslateContent.Clear();
+            foreach (string tag in new String[] { "name", "desc", "pdesc", "autodesc", "hdesc", "descleftalign" })
+            {
+                string startTag = "<" + tag + ">";
+                string endTag = "</" + tag + ">";
+                if (!orgText.Contains(startTag)) continue;
+                postTranslateContent.AppendLine(startTag + postTranslateDict[tag] + endTag);
+            }
+            return postTranslateContent.ToString();
+        }
+
+        private static Dictionary<string, string> ConvAfrmTooltipPreTextToDict(string orgText)
+        {
+            Dictionary<string, string> dict = new Dictionary<string, string>();
+            foreach (string tag in new String[] { "name", "desc", "pdesc", "autodesc", "hdesc", "descleftalign" })
+            {
+                string startTag = "<" + tag + ">";
+                string endTag = "</" + tag + ">";
+                if (!orgText.Contains(startTag)) continue;
+                int tagIndex = orgText.IndexOf(startTag) + startTag.Length;
+                dict.Add(tag, orgText.Substring(tagIndex, orgText.IndexOf(endTag) - tagIndex));
+            }
+            return dict;
+        }
+
         private static string TryFetchCachedTranslationResult(string orgText)
         {
             string cachePath = Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory, "TranslationCache");

@@ -358,7 +358,7 @@ namespace WzComparerR2.CharaSimControl
             try
             {
                 WaitingForm.Show();
-                await Task.Run(() => { translatedResult = Translator.TranslateString(sb.ToString()); });
+                await Task.Run(() => { translatedResult = Translator.AfrmTooltipTranslateBeforeCopy(sb.ToString()); });
                 Clipboard.SetText(translatedResult);
                 WaitingForm.Hide();
                 sb.Clear();
