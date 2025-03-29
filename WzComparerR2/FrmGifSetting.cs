@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Text;
 using System.Linq;
 using System.Windows.Forms;
@@ -10,6 +11,7 @@ using System.Reflection;
 using DevComponents.DotNetBar;
 using WzComparerR2.Config;
 using MathHelper = Microsoft.Xna.Framework.MathHelper;
+using Newtonsoft.Json.Linq;
 
 namespace WzComparerR2
 {
@@ -210,7 +212,25 @@ namespace WzComparerR2
         }
         private void btnDiscordPreset_Click(object sender, System.EventArgs e)
         {
-            BackgroundColor = Color.FromArgb(-13750732);
+            string discordConfigPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "discord", "settings.json");
+            if (File.Exists(discordConfigPath))
+            {
+                // TO DO: Add support for Nitro exclusive background colors.
+                try
+                {
+                    JObject discordConfig = JObject.Parse(File.ReadAllText(discordConfigPath));
+                    string bgColor = discordConfig.SelectToken("BACKGROUND_COLOR").ToString().Replace("#", "FF");
+                    BackgroundColor = Color.FromArgb(Convert.ToInt32(bgColor, 16));
+                }
+                catch
+                {
+                    BackgroundColor = Color.FromArgb(-13750732);
+                }
+            }
+            else
+            {
+                BackgroundColor = Color.FromArgb(-13750732);
+            }
             BackgroundType = ImageBackgroundType.Color;
         }
 
