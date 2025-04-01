@@ -1132,6 +1132,7 @@ namespace WzComparerR2
 
             OnWzClosing(new WzStructureEventArgs(wz));
             wz.Clear();
+            CharaSimLoader.ClearAll();
             if (this.openedWz.Remove(wz))
                 labelItemStatus.Text = "閉まっている";
             else
