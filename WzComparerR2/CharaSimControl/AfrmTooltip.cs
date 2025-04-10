@@ -136,12 +136,12 @@ namespace WzComparerR2.CharaSimControl
             }
             else if (item is Gear)
             {
-                if (Enable22AniStyle)
+/*                if (Enable22AniStyle)
                 {
                     renderer = GearRender3;
                     GearRender3.Gear = this.TargetItem as Gear;
                 }
-                else
+                else*/
                 {
                     renderer = GearRender;
                     GearRender.Gear = this.TargetItem as Gear;
