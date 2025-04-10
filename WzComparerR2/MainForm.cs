@@ -239,6 +239,7 @@ namespace WzComparerR2
             tooltipQuickView.SkillRender.DisplayPermyriadAsPercent = Setting.Skill.DisplayPermyriadAsPercent;
             tooltipQuickView.SkillRender.IgnoreEvalError = Setting.Skill.IgnoreEvalError;
             tooltipQuickView.SkillRender.ShowRangeCoordinates = Setting.Skill.ShowRangeCoordinates;
+            tooltipQuickView.SkillRender.Enable22AniStyle = Setting.Enable22AniStyle;
             this.skillDefaultLevel = Setting.Skill.DefaultLevel;
             this.skillInterval = Setting.Skill.IntervalLevel;
             tooltipQuickView.GearRender.ShowObjectID = Setting.Gear.ShowID;
@@ -258,7 +259,9 @@ namespace WzComparerR2
             tooltipQuickView.ItemRender.ShowCashPurchasePrice = Setting.Item.ShowCashPurchasePrice;
             tooltipQuickView.ItemRender.CosmeticHairColor = Setting.Item.CosmeticHairColor;
             tooltipQuickView.ItemRender.CosmeticFaceColor = Setting.Item.CosmeticFaceColor;
+            tooltipQuickView.ItemRender.Enable22AniStyle = Setting.Enable22AniStyle;
             tooltipQuickView.RecipeRender.ShowObjectID = Setting.Recipe.ShowID;
+            GearGraphics.is22aniStyle = Setting.Enable22AniStyle;
         }
 
         void UpdateWzLoadingSettings()

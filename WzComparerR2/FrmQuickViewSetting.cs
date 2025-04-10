@@ -267,10 +267,17 @@ namespace WzComparerR2
             set { chkCopyParsedSkillString.Checked = value; }
         }
 
+        public bool Enable22AniStyle
+        {
+            get { return chkEnable22AniStyle.Checked; }
+            set { chkEnable22AniStyle.Checked = value; }
+        }
+
         public void Load(CharaSimConfig config)
         {
             this.PreferredStringCopyMethod = config.PreferredStringCopyMethod;
             this.CopyParsedSkillString = config.CopyParsedSkillString;
+            this.Enable22AniStyle = config.Enable22AniStyle;
             var linkProp = this.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance)
                 .Where(prop => prop.GetCustomAttributes(typeof(LinkAttribute), false).Length > 0);
 
@@ -292,6 +299,7 @@ namespace WzComparerR2
         {
             config.PreferredStringCopyMethod = this.PreferredStringCopyMethod;
             config.CopyParsedSkillString = this.CopyParsedSkillString;
+            config.Enable22AniStyle = this.Enable22AniStyle;
             var linkProp = this.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance)
                 .Where(prop => prop.GetCustomAttributes(typeof(LinkAttribute), false).Length > 0);
 

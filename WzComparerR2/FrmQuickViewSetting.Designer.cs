@@ -30,6 +30,7 @@
         {
             this.superTabControl1 = new DevComponents.DotNetBar.SuperTabControl();
             this.superTabControlPanel1 = new DevComponents.DotNetBar.SuperTabControlPanel();
+            this.chkEnable22AniStyle = new DevComponents.DotNetBar.Controls.CheckBoxX();
             this.checkBoxX22 = new DevComponents.DotNetBar.Controls.CheckBoxX();
             this.checkBoxX21 = new DevComponents.DotNetBar.Controls.CheckBoxX();
             this.checkBoxX20 = new DevComponents.DotNetBar.Controls.CheckBoxX();
@@ -770,6 +771,7 @@
             // 
             // superTabControlPanel5
             // 
+            this.superTabControlPanel5.Controls.Add(this.chkEnable22AniStyle);
             this.superTabControlPanel5.Controls.Add(this.chkCopyParsedSkillString);
             this.superTabControlPanel5.Controls.Add(this.labelX4);
             this.superTabControlPanel5.Controls.Add(this.cmbPreferredStringCopyMethod);
@@ -800,7 +802,7 @@
             this.chkCopyParsedSkillString.Name = "chkCopyParsedSkillString";
             this.chkCopyParsedSkillString.Size = new System.Drawing.Size(124, 16);
             this.chkCopyParsedSkillString.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
-            this.chkCopyParsedSkillString.TabIndex = 3;
+            this.chkCopyParsedSkillString.TabIndex = 2;
             this.chkCopyParsedSkillString.Text = "解析されたスキル文字列をコピー";
             // 
             // labelX4
@@ -829,7 +831,22 @@
             this.cmbPreferredStringCopyMethod.Name = "cmbPreferredStringCopyMethod";
             this.cmbPreferredStringCopyMethod.Size = new System.Drawing.Size(160, 19);
             this.cmbPreferredStringCopyMethod.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
-            this.cmbPreferredStringCopyMethod.TabIndex = 2;
+            this.cmbPreferredStringCopyMethod.TabIndex = 3;
+            // 
+            // chkEnable22AniStyle
+            // 
+            this.chkEnable22AniStyle.AutoSize = true;
+            this.chkEnable22AniStyle.BackColor = System.Drawing.Color.Transparent;
+            // 
+            // 
+            // 
+            this.chkEnable22AniStyle.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
+            this.chkEnable22AniStyle.Location = new System.Drawing.Point(13, 60);
+            this.chkEnable22AniStyle.Name = "chkEnable22AniStyle";
+            this.chkEnable22AniStyle.Size = new System.Drawing.Size(145, 16);
+            this.chkEnable22AniStyle.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
+            this.chkEnable22AniStyle.TabIndex = 4;
+            this.chkEnable22AniStyle.Text = "22周年記念テーマを有効にする";
             // 
             // buttonX2
             // 
@@ -939,6 +956,7 @@
         private DevComponents.DotNetBar.Controls.CheckBoxX checkBoxX20;
         private DevComponents.DotNetBar.Controls.CheckBoxX checkBoxX21;
         private DevComponents.DotNetBar.Controls.CheckBoxX checkBoxX22;
+        private DevComponents.DotNetBar.Controls.CheckBoxX chkEnable22AniStyle;
         private DevComponents.DotNetBar.LabelX labelX14;
         private DevComponents.DotNetBar.LabelX labelX15;
         private DevComponents.DotNetBar.Controls.ComboBoxEx comboBoxEx3;
