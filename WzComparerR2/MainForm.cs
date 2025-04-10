@@ -232,6 +232,7 @@ namespace WzComparerR2
             this.buttonItemAutoQuickView.Checked = Setting.AutoQuickView;
             tooltipQuickView.PreferredStringCopyMethod = Setting.PreferredStringCopyMethod;
             tooltipQuickView.CopyParsedSkillString = Setting.CopyParsedSkillString;
+            tooltipQuickView.Enable22AniStyle = Setting.Enable22AniStyle;
             tooltipQuickView.SkillRender.ShowProperties = Setting.Skill.ShowProperties;
             tooltipQuickView.SkillRender.ShowObjectID = Setting.Skill.ShowID;
             tooltipQuickView.SkillRender.ShowDelay = Setting.Skill.ShowDelay;
@@ -250,6 +251,14 @@ namespace WzComparerR2
             tooltipQuickView.GearRender.ShowCashPurchasePrice = Setting.Gear.ShowCashPurchasePrice;
             tooltipQuickView.GearRender.ShowCombatPower = Setting.Gear.ShowCombatPower;
             tooltipQuickView.GearRender.AutoTitleWrap = Setting.Gear.AutoTitleWrap;
+            tooltipQuickView.GearRender3.ShowObjectID = Setting.Gear.ShowID;
+            tooltipQuickView.GearRender3.ShowSpeed = Setting.Gear.ShowWeaponSpeed;
+            tooltipQuickView.GearRender3.ShowLevelOrSealed = Setting.Gear.ShowLevelOrSealed;
+            tooltipQuickView.GearRender3.ShowMedalTag = Setting.Gear.ShowMedalTag;
+            tooltipQuickView.GearRender3.ShowSoldPrice = Setting.Gear.ShowSoldPrice;
+            tooltipQuickView.GearRender3.ShowCashPurchasePrice = Setting.Gear.ShowCashPurchasePrice;
+            tooltipQuickView.GearRender3.ShowCombatPower = Setting.Gear.ShowCombatPower;
+            tooltipQuickView.GearRender3.AutoTitleWrap = Setting.Gear.AutoTitleWrap;
             tooltipQuickView.ItemRender.ShowObjectID = Setting.Item.ShowID;
             tooltipQuickView.ItemRender.LinkRecipeInfo = Setting.Item.LinkRecipeInfo;
             tooltipQuickView.ItemRender.LinkRecipeItem = Setting.Item.LinkRecipeItem;

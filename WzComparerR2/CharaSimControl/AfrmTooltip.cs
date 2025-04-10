@@ -31,6 +31,7 @@ namespace WzComparerR2.CharaSimControl
             this.Size = new Size(1, 1);
             this.HideOnHover = true;
             this.GearRender = new GearTooltipRender2();
+            this.GearRender3 = new GearTooltipRender3();
             this.ItemRender = new ItemTooltipRender2();
             this.SkillRender = new SkillTooltipRender2();
             this.RecipeRender = new RecipeTooltipRender();
@@ -49,6 +50,8 @@ namespace WzComparerR2.CharaSimControl
         private bool showMenu;
         private bool showID;
 
+        public bool Enable22AniStyle { get; set; }
+
         private Bitmap AvatarBitmap;
         private FrmWaiting WaitingForm = new FrmWaiting();
         private Mutex TranslateMutex = new Mutex(false, "TranslateMutex");
@@ -63,6 +66,7 @@ namespace WzComparerR2.CharaSimControl
         public Character Character { get; set; }
 
         public GearTooltipRender2 GearRender { get; private set; }
+        public GearTooltipRender3 GearRender3 { get; private set; }
         public ItemTooltipRender2 ItemRender { get; private set; }
         public SkillTooltipRender2 SkillRender { get; private set; }
         public RecipeTooltipRender RecipeRender { get; private set; }
@@ -132,8 +136,16 @@ namespace WzComparerR2.CharaSimControl
             }
             else if (item is Gear)
             {
-                renderer = GearRender;
-                GearRender.Gear = this.TargetItem as Gear;
+                if (Enable22AniStyle)
+                {
+                    renderer = GearRender3;
+                    GearRender3.Gear = this.TargetItem as Gear;
+                }
+                else
+                {
+                    renderer = GearRender;
+                    GearRender.Gear = this.TargetItem as Gear;
+                }
 
                 if (false)
                 {
