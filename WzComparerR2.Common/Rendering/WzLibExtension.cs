@@ -82,6 +82,11 @@ namespace WzComparerR2.Rendering
                     case 513:
                     case 1026:
                     case 2050:
+                    case 2304:
+                    case 2562:
+                    case 4097:
+                    case 4098:
+                    case 4100:
                         texture.SetData(0, 0, rect, plainData, 0, bufferSize);
                         break;
 
@@ -114,7 +119,12 @@ namespace WzComparerR2.Rendering
                 case 513:
                 case 517: return SurfaceFormat.Bgr565;
                 case 1026: return SurfaceFormat.Dxt3;
-                case 2050: return SurfaceFormat.Dxt5;
+                case 2050:
+                case 2304:
+                case 2562:
+                case 4097:
+                case 4098:
+                case 4100: return SurfaceFormat.Dxt5;
                 default: return SurfaceFormat.Bgra32;
             }
         }

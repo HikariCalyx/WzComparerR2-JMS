@@ -204,6 +204,11 @@ namespace WzComparerR2.WzLib
                     break;
 
                 case 2050: //dxt5
+                case 2304: //New type introduced in KMST 1.2.1186
+                case 2562:
+                case 4097:
+                case 4098:
+                case 4100:
                     argb = GetPixelDataDXT5(pixel, this.Width, this.Height);
                     pngDecoded = new Bitmap(this.Width, this.Height, PixelFormat.Format32bppArgb);
                     bmpdata = pngDecoded.LockBits(new Rectangle(new Point(), pngDecoded.Size), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
@@ -580,7 +585,12 @@ namespace WzComparerR2.WzLib
                 Wz_TextureFormat.RGB565 => width * height * 2,
                 Wz_TextureFormat.ARGB8888 => width * height * 4,
                 Wz_TextureFormat.DXT3 or
-                Wz_TextureFormat.DXT5 => width * height,
+                Wz_TextureFormat.DXT5 or
+                Wz_TextureFormat.Type2304 or
+                Wz_TextureFormat.Type2562 or
+                Wz_TextureFormat.Type4097 or
+                Wz_TextureFormat.Type4098 or
+                Wz_TextureFormat.Type4100 => width * height,
                 _ => throw new ArgumentException($"Unknown texture format {(int)format}.")
             };
         }
@@ -595,5 +605,10 @@ namespace WzComparerR2.WzLib
         RGB565 = 513,
         DXT3 = 1026,
         DXT5 = 2050,
+        Type2304 = 2304,
+        Type2562 = 2562,
+        Type4097 = 4097,
+        Type4098 = 4098,
+        Type4100 = 4100
     }
 }
