@@ -12,6 +12,7 @@ using WzComparerR2.PluginBase;
 using WzComparerR2.CharaSimControl;
 using WzComparerR2.CharaSim;
 using System.Text.RegularExpressions;
+using System.Drawing.Imaging;
 
 namespace WzComparerR2.Comparer
 {
@@ -896,6 +897,7 @@ namespace WzComparerR2.Comparer
 
                         Bitmap ImageNew = itemRenderNewOld[0].Render();
                         Bitmap ImageOld = itemRenderNewOld[1].Render();
+                        if (GetBitmapHash(ImageNew) == GetBitmapHash(ImageOld)) continue;
                         resultImage = new Bitmap(ImageNew.Width + ImageOld.Width, Math.Max(ImageNew.Height, ImageOld.Height));
                         g = Graphics.FromImage(resultImage);
 
@@ -1121,7 +1123,7 @@ namespace WzComparerR2.Comparer
 
                         Bitmap ImageNew = gearRenderNewOld[0].Render();
                         Bitmap ImageOld = gearRenderNewOld[1].Render();
-                        if (ImageNew == ImageOld) continue;
+                        if (GetBitmapHash(ImageNew) == GetBitmapHash(ImageOld)) continue;
                         resultImage = new Bitmap(ImageNew.Width + ImageOld.Width, Math.Max(ImageNew.Height, ImageOld.Height));
                         g = Graphics.FromImage(resultImage);
 
@@ -1133,6 +1135,7 @@ namespace WzComparerR2.Comparer
                         gearType = "削除";
 
                         resultImage = gearRenderNewOld[1].Render();
+                        if (resultImage == null) continue;
                         g = Graphics.FromImage(resultImage);
                         break;
 
@@ -1140,6 +1143,7 @@ namespace WzComparerR2.Comparer
                         gearType = "追加";
 
                         resultImage = gearRenderNewOld[0].Render();
+                        if (resultImage == null) continue;
                         g = Graphics.FromImage(resultImage);
                         break;
 
@@ -1244,6 +1248,7 @@ namespace WzComparerR2.Comparer
 
                         Bitmap ImageNew = mobRenderNewOld[0].Render();
                         Bitmap ImageOld = mobRenderNewOld[1].Render();
+                        if (GetBitmapHash(ImageNew) == GetBitmapHash(ImageOld)) continue;
                         resultImage = new Bitmap(ImageNew.Width + ImageOld.Width, Math.Max(ImageNew.Height, ImageOld.Height));
                         g = Graphics.FromImage(resultImage);
 
@@ -1255,6 +1260,7 @@ namespace WzComparerR2.Comparer
                         mobType = "削除";
 
                         resultImage = mobRenderNewOld[1].Render();
+                        if (resultImage == null) continue;
                         g = Graphics.FromImage(resultImage);
                         break;
 
@@ -1262,6 +1268,7 @@ namespace WzComparerR2.Comparer
                         mobType = "追加";
 
                         resultImage = mobRenderNewOld[0].Render();
+                        if (resultImage == null) continue;
                         g = Graphics.FromImage(resultImage);
                         break;
 
@@ -1366,6 +1373,7 @@ namespace WzComparerR2.Comparer
 
                         Bitmap ImageNew = npcRenderNewOld[0].Render();
                         Bitmap ImageOld = npcRenderNewOld[1].Render();
+                        if (GetBitmapHash(ImageNew) == GetBitmapHash(ImageOld)) continue;
                         resultImage = new Bitmap(ImageNew.Width + ImageOld.Width, Math.Max(ImageNew.Height, ImageOld.Height));
                         g = Graphics.FromImage(resultImage);
 
@@ -1377,6 +1385,7 @@ namespace WzComparerR2.Comparer
                         npcType = "削除";
 
                         resultImage = npcRenderNewOld[1].Render();
+                        if (resultImage == null) continue;
                         g = Graphics.FromImage(resultImage);
                         break;
 
@@ -1384,6 +1393,7 @@ namespace WzComparerR2.Comparer
                         npcType = "追加";
 
                         resultImage = npcRenderNewOld[0].Render();
+                        if (resultImage == null) continue;
                         g = Graphics.FromImage(resultImage);
                         break;
 
@@ -1416,7 +1426,7 @@ namespace WzComparerR2.Comparer
         {
             CashPackageTooltipRender[] cashRenderNewOld = new CashPackageTooltipRender[2];
             int count = 0;
-            int allCount = OutputItemTooltipIDs.Count;
+            int allCount = OutputCashTooltipIDs.Count;
             var itemTypeFont = new Font("MS Gothic", 11f, GraphicsUnit.Pixel);
 
             for (int i = 0; i < 2; i++) // 0: New, 1: Old
@@ -1431,7 +1441,7 @@ namespace WzComparerR2.Comparer
                 cashRenderNewOld[i].ShowObjectID = this.ShowObjectID;
             }
 
-            foreach (var itemID in OutputItemTooltipIDs)
+            foreach (var itemID in OutputCashTooltipIDs)
             {
                 StateInfo = string.Format("{0}/{1} パッケージ: {2}", ++count, allCount, itemID);
                 StateDetail = "Item 変更点をツールチップ画像に出力中...";
@@ -1493,6 +1503,7 @@ namespace WzComparerR2.Comparer
 
                         Bitmap ImageNew = cashRenderNewOld[0].Render();
                         Bitmap ImageOld = cashRenderNewOld[1].Render();
+                        if (GetBitmapHash(ImageNew) == GetBitmapHash(ImageOld)) continue;
                         resultImage = new Bitmap(ImageNew.Width + ImageOld.Width, Math.Max(ImageNew.Height, ImageOld.Height));
                         g = Graphics.FromImage(resultImage);
 
@@ -1504,6 +1515,7 @@ namespace WzComparerR2.Comparer
                         itemType = "削除";
 
                         resultImage = cashRenderNewOld[1].Render();
+                        if (resultImage == null) continue;
                         g = Graphics.FromImage(resultImage);
                         break;
 
@@ -1511,6 +1523,7 @@ namespace WzComparerR2.Comparer
                         itemType = "追加";
 
                         resultImage = cashRenderNewOld[0].Render();
+                        if (resultImage == null) continue;
                         g = Graphics.FromImage(resultImage);
                         break;
 
@@ -1555,10 +1568,15 @@ namespace WzComparerR2.Comparer
 
             if (match.Success)
             {
-                string itemID = match.Groups[1].ToString();
+                string itemID = match.Groups[2].ToString();
 
                 if (itemID != null)
                 {
+                    if (!itemID.StartsWith("500"))
+                    {
+                        itemID = itemID.PadLeft(8, '0');
+                    }
+
                     if (!OutputItemTooltipIDs.Contains(itemID))
                     {
                         OutputItemTooltipIDs.Add(itemID);
@@ -1588,19 +1606,19 @@ namespace WzComparerR2.Comparer
 
             if (match.Success)
             {
-                string gearID = match.Groups[1].ToString();
+                string cashID = match.Groups[1].ToString();
 
-                if (gearID != null)
+                if (cashID != null)
                 {
-                    if (!OutputCashTooltipIDs.Contains(gearID))
+                    if (!OutputCashTooltipIDs.Contains(cashID))
                     {
-                        OutputCashTooltipIDs.Add(gearID);
-                        DiffCashTags[gearID] = new List<string>();
+                        OutputCashTooltipIDs.Add(cashID);
+                        DiffCashTags[cashID] = new List<string>();
                     }
 
-                    if (tag != null && !DiffCashTags[gearID].Contains(tag))
+                    if (tag != null && !DiffCashTags[cashID].Contains(tag))
                     {
-                        DiffCashTags[gearID].Add(tag);
+                        DiffCashTags[cashID].Add(tag);
                     }
                 }
             }
@@ -1826,7 +1844,7 @@ namespace WzComparerR2.Comparer
                     {
                         GetSkillID(node, idx == 0 ? true : false);
                     }
-                    if (OutputItemTooltip && (outputDir.Contains("Item") || outputDir.Contains("String")))
+                    if (OutputItemTooltip && outputDir.Contains("Item"))
                     {
                         GetItemID(node);
                     }
@@ -1841,10 +1859,6 @@ namespace WzComparerR2.Comparer
                     if (OutputNpcTooltip && outputDir.Contains("Npc"))
                     {
                         GetNpcID(node);
-                    }
-                    if (OutputCashTooltip && (outputDir.Contains("Item") || outputDir.Contains("String")))
-                    {
-                        GetItemID(node);
                     }
 
 
@@ -2037,6 +2051,37 @@ namespace WzComparerR2.Comparer
             string invalidChars = new string(System.IO.Path.GetInvalidFileNameChars());
             string regexPattern = $"[{Regex.Escape(invalidChars)}]";
             return Regex.Replace(fileName, regexPattern, "_");
+        }
+
+        private static string GetBitmapHash(Bitmap bitmap)
+        {
+            using (SHA256 sha256 = SHA256.Create())
+            {
+                // Lock bits for direct memory access
+                BitmapData bmpData = bitmap.LockBits(
+                    new Rectangle(0, 0, bitmap.Width, bitmap.Height),
+                    ImageLockMode.ReadOnly,
+                    bitmap.PixelFormat);
+
+                try
+                {
+                    // Get the raw pixel data
+                    int byteCount = Math.Abs(bmpData.Stride) * bitmap.Height;
+                    byte[] pixelBuffer = new byte[byteCount];
+                    System.Runtime.InteropServices.Marshal.Copy(bmpData.Scan0, pixelBuffer, 0, byteCount);
+
+                    // Compute the hash from pixel data
+                    byte[] hashBytes = sha256.ComputeHash(pixelBuffer);
+
+                    // Convert hash to string
+                    return BitConverter.ToString(hashBytes).Replace("-", string.Empty);
+                }
+                finally
+                {
+                    // Unlock bits
+                    bitmap.UnlockBits(bmpData);
+                }
+            }
         }
     }
 }
