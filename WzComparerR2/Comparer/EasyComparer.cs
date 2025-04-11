@@ -1078,22 +1078,23 @@ namespace WzComparerR2.Comparer
                 if (gearRenderNewOld[1].StringLinker == null || !gearRenderNewOld[1].StringLinker.StringEqp.TryGetValue(int.Parse(gearID), out sr))
                 {
                     sr = new StringResult();
-                    sr.Name = "未知のアイテム";
+                    sr.Name = "未知の装備";
                 }
                 EqpName = sr.Name;
                 if (gearRenderNewOld[0].StringLinker == null || !gearRenderNewOld[0].StringLinker.StringEqp.TryGetValue(int.Parse(gearID), out sr))
                 {
                     sr = new StringResult();
-                    sr.Name = "未知のアイテム";
+                    sr.Name = "未知の装備";
                 }
-                if (EqpName != sr.Name && EqpName != "未知のアイテム" && sr.Name != "未知のアイテム")
+                if (EqpName != sr.Name && EqpName != "未知の装備" && sr.Name != "未知の装備")
                 {
                     EqpName += "_" + sr.Name;
                 }
-                else if (EqpName == "未知のアイテム")
+                else if (EqpName == "未知の装備")
                 {
                     EqpName = sr.Name;
                 }
+                if (!String.IsNullOrEmpty(EqpName)) EqpName = "未知の装備";
                 EqpName = RemoveInvalidFileNameChars(EqpName);
                 int nullEqpIdx = 0;
 
