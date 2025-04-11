@@ -90,7 +90,7 @@ namespace WzComparerR2.CharaSim
                 //case GearPropType.incEVAr: return "AVOIDABILITY : " + sign + value + "%";
                 case GearPropType.incSpeed: return "移動速度: " + sign + value;
                 case GearPropType.incJump: return "ジャンプ力: " + sign + value;
-                case GearPropType.incCraft: return "Diligence: " + sign + value;
+                case GearPropType.incCraft: return "器用さ: " + sign + value;
                 case GearPropType.damR:
                 case GearPropType.incDAMr: return "ダメージ " + sign + value + "%";
                 case GearPropType.incCr: return "クリティカル率: " + sign + value + "%";
