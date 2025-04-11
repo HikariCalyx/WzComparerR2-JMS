@@ -668,7 +668,7 @@ namespace WzComparerR2.Comparer
                 {
                     skillName = sr.Name;
                 }
-                if (!String.IsNullOrEmpty(skillName)) skillName = "未知のスキル";
+                if (String.IsNullOrEmpty(skillName)) skillName = "未知のスキル";
                 skillName = RemoveInvalidFileNameChars(skillName);
                 int nullSkillIdx = 0;
 
@@ -869,7 +869,7 @@ namespace WzComparerR2.Comparer
                 {
                     ItemName = sr.Name;
                 }
-                if (!String.IsNullOrEmpty(ItemName)) ItemName = "未知のアイテム";
+                if (String.IsNullOrEmpty(ItemName)) ItemName = "未知のアイテム";
                 ItemName = RemoveInvalidFileNameChars(ItemName);
                 int nullItemIdx = 0;
 
@@ -1096,7 +1096,7 @@ namespace WzComparerR2.Comparer
                 {
                     EqpName = sr.Name;
                 }
-                if (!String.IsNullOrEmpty(EqpName)) EqpName = "未知の装備";
+                if (String.IsNullOrEmpty(EqpName)) EqpName = "未知の装備";
                 EqpName = RemoveInvalidFileNameChars(EqpName);
                 int nullEqpIdx = 0;
 
@@ -1222,7 +1222,7 @@ namespace WzComparerR2.Comparer
                 {
                     MobName = sr.Name;
                 }
-                if (!String.IsNullOrEmpty(MobName)) MobName = "未知のモンスター";
+                if (String.IsNullOrEmpty(MobName)) MobName = "未知のモンスター";
                 MobName = RemoveInvalidFileNameChars(MobName);
                 int nullMobIdx = 0;
 
@@ -1348,7 +1348,7 @@ namespace WzComparerR2.Comparer
                 {
                     NpcName = sr.Name;
                 }
-                if (!String.IsNullOrEmpty(NpcName)) NpcName = "未知のNPC";
+                if (String.IsNullOrEmpty(NpcName)) NpcName = "未知のNPC";
                 NpcName = RemoveInvalidFileNameChars(NpcName);
                 int nullNpcIdx = 0;
 
@@ -1479,7 +1479,7 @@ namespace WzComparerR2.Comparer
                 {
                     ItemName = sr.Name;
                 }
-                if (!String.IsNullOrEmpty(ItemName)) ItemName = "未知のパッケージ";
+                if (String.IsNullOrEmpty(ItemName)) ItemName = "未知のパッケージ";
                 ItemName = RemoveInvalidFileNameChars(ItemName);
                 int nullItemIdx = 0;
 
