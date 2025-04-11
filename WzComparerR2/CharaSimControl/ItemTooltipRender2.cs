@@ -565,8 +565,8 @@ namespace WzComparerR2.CharaSimControl
 
             //绘制图标
             int iconY = picH;
-            int iconX = 10;
-            g.DrawImage(Resource.UIToolTip_img_Item_ItemIcon_base, iconX, picH);
+            int iconX = Enable22AniStyle ? 14 : 10;
+            g.DrawImage(Enable22AniStyle ? Resource.UIToolTipNew_img_Item_Common_ItemIcon_base : Resource.UIToolTip_img_Item_ItemIcon_base, iconX, picH);
             if (item.Icon.Bitmap != null)
             {
                 g.DrawImage(GearGraphics.EnlargeBitmap(item.Icon.Bitmap),
@@ -618,8 +618,11 @@ namespace WzComparerR2.CharaSimControl
                     picH + 6 + 68 - pachinkoOrigin.Y * 2 - 4);
             }
 
-            g.DrawImage(Resource.UIToolTip_img_Item_ItemIcon_new, iconX + 7, picH + 7);
-            g.DrawImage(Resource.UIToolTip_img_Item_ItemIcon_cover, iconX + 4, picH + 4); //绘制左上角cover
+            if (!Enable22AniStyle)
+            {
+                g.DrawImage(Resource.UIToolTip_img_Item_ItemIcon_new, iconX + 7, picH + 7);
+                g.DrawImage(Resource.UIToolTip_img_Item_ItemIcon_cover, iconX + 4, picH + 4); //绘制左上角cover
+            }
 
             value = 0;
             if (item.Props.TryGetValue(ItemPropType.reqLevel, out value) || item.ItemID / 10000 == 301 || item.ItemID / 1000 == 5204)
