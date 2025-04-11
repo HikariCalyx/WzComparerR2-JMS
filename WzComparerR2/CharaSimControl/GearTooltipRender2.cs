@@ -221,6 +221,7 @@ namespace WzComparerR2.CharaSimControl
                 sr.Name = "(null)";
             }
             string gearName = sr.Name;
+            if (String.IsNullOrEmpty(gearName)) gearName = "(null)";
             string translatedName = "";
             bool isTranslateRequired = Translator.IsTranslateEnabled;
             bool isTitleTranslateRequired = !Translator.IsTranslateEnabled;
