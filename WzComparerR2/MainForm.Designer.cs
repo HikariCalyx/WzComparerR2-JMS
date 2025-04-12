@@ -2549,7 +2549,7 @@ namespace WzComparerR2
             // 
             this.chkOutputSkillTooltip.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
             this.chkOutputSkillTooltip.Location = new System.Drawing.Point(550, 34);
-            this.chkOutputSkillTooltip.Name = "chkSaveSkillTooltip";
+            this.chkOutputSkillTooltip.Name = "chkOutputSkillTooltip";
             this.chkOutputSkillTooltip.Size = new System.Drawing.Size(135, 23);
             this.chkOutputSkillTooltip.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
             this.superTooltip1.SetSuperTooltip(this.chkOutputSkillTooltip, new DevComponents.DotNetBar.SuperTooltipInfo("スキル比較の出力", "", "変更したスキルを自動で出力する機能です。", null, null, DevComponents.DotNetBar.eTooltipColor.System, true, false, new System.Drawing.Size(180, 70)));
@@ -2563,7 +2563,7 @@ namespace WzComparerR2
             // 
             this.chkOutputCashTooltip.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
             this.chkOutputCashTooltip.Location = new System.Drawing.Point(550, 61);
-            this.chkOutputCashTooltip.Name = "chkSaveSkillTooltip";
+            this.chkOutputCashTooltip.Name = "chkOutputCashTooltip";
             this.chkOutputCashTooltip.Size = new System.Drawing.Size(200, 23);
             this.chkOutputCashTooltip.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
             this.superTooltip1.SetSuperTooltip(this.chkOutputCashTooltip, new DevComponents.DotNetBar.SuperTooltipInfo("ポイントパッケージ比較の出力 (非推奨)", "", "このオプションは不安定です。", null, null, DevComponents.DotNetBar.eTooltipColor.System, true, false, new System.Drawing.Size(180, 90)));
@@ -2578,7 +2578,7 @@ namespace WzComparerR2
             // 
             this.chkOutputEqpTooltip.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
             this.chkOutputEqpTooltip.Location = new System.Drawing.Point(550, 88);
-            this.chkOutputEqpTooltip.Name = "chkSaveSkillTooltip";
+            this.chkOutputEqpTooltip.Name = "chkOutputEqpTooltip";
             this.chkOutputEqpTooltip.Size = new System.Drawing.Size(135, 23);
             this.chkOutputEqpTooltip.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
             this.superTooltip1.SetSuperTooltip(this.chkOutputEqpTooltip, new DevComponents.DotNetBar.SuperTooltipInfo("装備比較の出力", "", "変更した装備を自動で出力する機能です。", null, null, DevComponents.DotNetBar.eTooltipColor.System, true, false, new System.Drawing.Size(180, 70)));
@@ -2592,7 +2592,7 @@ namespace WzComparerR2
             // 
             this.chkOutputItemTooltip.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
             this.chkOutputItemTooltip.Location = new System.Drawing.Point(550, 115);
-            this.chkOutputItemTooltip.Name = "chkSaveSkillTooltip";
+            this.chkOutputItemTooltip.Name = "chkOutputItemTooltip";
             this.chkOutputItemTooltip.Size = new System.Drawing.Size(165, 23);
             this.chkOutputItemTooltip.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
             this.superTooltip1.SetSuperTooltip(this.chkOutputItemTooltip, new DevComponents.DotNetBar.SuperTooltipInfo("アイテム比較の出力", "", "変更したアイテムを自動で出力する機能です。", null, null, DevComponents.DotNetBar.eTooltipColor.System, true, false, new System.Drawing.Size(180, 70)));
@@ -2606,7 +2606,7 @@ namespace WzComparerR2
             // 
             this.chkOutputMobTooltip.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
             this.chkOutputMobTooltip.Location = new System.Drawing.Point(550, 142);
-            this.chkOutputMobTooltip.Name = "chkSaveSkillTooltip";
+            this.chkOutputMobTooltip.Name = "chkOutputMobTooltip";
             this.chkOutputMobTooltip.Size = new System.Drawing.Size(155, 23);
             this.chkOutputMobTooltip.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
             this.superTooltip1.SetSuperTooltip(this.chkOutputMobTooltip, new DevComponents.DotNetBar.SuperTooltipInfo("モンスター比較の出力", "", "変更したモンスターを自動で出力する機能です。", null, null, DevComponents.DotNetBar.eTooltipColor.System, true, false, new System.Drawing.Size(180, 70)));
@@ -2620,7 +2620,7 @@ namespace WzComparerR2
             // 
             this.chkOutputNpcTooltip.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
             this.chkOutputNpcTooltip.Location = new System.Drawing.Point(550, 169);
-            this.chkOutputNpcTooltip.Name = "chkSaveSkillTooltip";
+            this.chkOutputNpcTooltip.Name = "chkOutputNpcTooltip";
             this.chkOutputNpcTooltip.Size = new System.Drawing.Size(135, 23);
             this.chkOutputNpcTooltip.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
             this.superTooltip1.SetSuperTooltip(this.chkOutputNpcTooltip, new DevComponents.DotNetBar.SuperTooltipInfo("NPC比較の出力", "", "変更したNPCを自動で出力する機能です。", null, null, DevComponents.DotNetBar.eTooltipColor.System, true, false, new System.Drawing.Size(180, 70)));
@@ -2634,7 +2634,7 @@ namespace WzComparerR2
             // 
             this.chkShowObjectID.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
             this.chkShowObjectID.Location = new System.Drawing.Point(550, 196);
-            this.chkShowObjectID.Name = "chkSaveSkillTooltip";
+            this.chkShowObjectID.Name = "chkShowObjectID";
             this.chkShowObjectID.Size = new System.Drawing.Size(135, 23);
             this.chkShowObjectID.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
             this.superTooltip1.SetSuperTooltip(this.chkShowObjectID, new DevComponents.DotNetBar.SuperTooltipInfo("IDを表示", "", "IDはツールチップ画像に表示されます。", null, null, DevComponents.DotNetBar.eTooltipColor.System, true, false, new System.Drawing.Size(180, 70)));
@@ -2649,7 +2649,7 @@ namespace WzComparerR2
             // 
             this.chkShowChangeType.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
             this.chkShowChangeType.Location = new System.Drawing.Point(550, 223);
-            this.chkShowChangeType.Name = "chkSaveSkillTooltip";
+            this.chkShowChangeType.Name = "chkShowChangeType";
             this.chkShowChangeType.Size = new System.Drawing.Size(135, 23);
             this.chkShowChangeType.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
             this.superTooltip1.SetSuperTooltip(this.chkShowChangeType, new DevComponents.DotNetBar.SuperTooltipInfo("変更タイプを表示", "", "変更タイプはツールチップ画像に表示されます。", null, null, DevComponents.DotNetBar.eTooltipColor.System, true, false, new System.Drawing.Size(180, 70)));
@@ -2664,7 +2664,7 @@ namespace WzComparerR2
             // 
             this.chkShowPrice.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
             this.chkShowPrice.Location = new System.Drawing.Point(550, 250);
-            this.chkShowPrice.Name = "chkSaveSkillTooltip";
+            this.chkShowPrice.Name = "chkShowPrice";
             this.chkShowPrice.Size = new System.Drawing.Size(135, 23);
             this.chkShowPrice.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
             this.superTooltip1.SetSuperTooltip(this.chkShowPrice, new DevComponents.DotNetBar.SuperTooltipInfo("価格を表示", "", "価格はツールチップ画像に表示されます。", null, null, DevComponents.DotNetBar.eTooltipColor.System, true, false, new System.Drawing.Size(180, 70)));
