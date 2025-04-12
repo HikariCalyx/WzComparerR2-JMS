@@ -313,12 +313,12 @@ namespace WzComparerR2.CharaSim
                 case GearType.ring: return "指輪";
                 case GearType.shield: return "盾";
                 case GearType.shoes: return "靴";
-                case GearType.shiningRod: return "シャイニングロッド (片手武器)";
-                case GearType.soulShooter: return "ソウルシューター (片手武器)";
-                case GearType.ohSword: return "片手剣 (片手武器)";
-                case GearType.ohAxe: return "片手斧 (片手武器)";
-                case GearType.ohBlunt: return "片手鈍器 (片手武器)";
-                case GearType.dagger: return "短剣 (片手武器)";
+                case GearType.shiningRod: return "シャイニングロッド";
+                case GearType.soulShooter: return "ソウルシューター";
+                case GearType.ohSword: return "片手剣";
+                case GearType.ohAxe: return "片手斧";
+                case GearType.ohBlunt: return "片手鈍器";
+                case GearType.dagger: return "短剣";
                 case GearType.katara: return "ブレイド";
                 case GearType.magicArrow: return "魔法矢";
                 case GearType.card: return "カード";
@@ -327,26 +327,26 @@ namespace WzComparerR2.CharaSim
                 case GearType.novaMarrow: return "ノヴァの精髄";
                 case GearType.soulBangle: return "ソウルリング";
                 case GearType.mailin: return "マグナム";
-                case GearType.cane: return "ケイン (片手武器)";
-                case GearType.wand: return "ワンド (片手武器)";
-                case GearType.staff: return "スタッフ (片手武器)";
-                case GearType.thSword: return "両手剣 (両手武器)";
-                case GearType.thAxe: return "両手斧 (両手武器)";
-                case GearType.thBlunt: return "両手鈍器 (両手武器)";
-                case GearType.spear: return "槍 (両手武器)";
-                case GearType.polearm: return "鉾 (両手武器)";
-                case GearType.bow: return "弓 (両手武器)";
-                case GearType.crossbow: return "弩 (両手武器)";
-                case GearType.throwingGlove: return "篭手 (両手武器)";
-                case GearType.knuckle: return "ナックル (両手武器)";
-                case GearType.gun: return "銃 (両手武器)";
+                case GearType.cane: return "ケイン";
+                case GearType.wand: return "ワンド";
+                case GearType.staff: return "スタッフ";
+                case GearType.thSword: return "両手剣";
+                case GearType.thAxe: return "両手斧";
+                case GearType.thBlunt: return "両手鈍器";
+                case GearType.spear: return "槍";
+                case GearType.polearm: return "鉾";
+                case GearType.bow: return "弓";
+                case GearType.crossbow: return "弩";
+                case GearType.throwingGlove: return "篭手";
+                case GearType.knuckle: return "ナックル";
+                case GearType.gun: return "銃";
                 case GearType.android: return "アンドロイド";
                 case GearType.machineHeart: return "機械心臓部";
                 case GearType.pickaxe: return "採鉱工具";
                 case GearType.shovel: return "薬草採集工具";
                 case GearType.pocket: return "ポケットアイテム";
-                case GearType.dualBow: return "デュアルボウガン (両手武器)";
-                case GearType.handCannon: return "ハンドキャノン (両手武器)";
+                case GearType.dualBow: return "デュアルボウガン";
+                case GearType.handCannon: return "ハンドキャノン";
                 case GearType.badge: return "バッジ";
                 case GearType.emblem: return "エンブレム";
                 case GearType.soulShield: return "ソウルシールド";
@@ -358,10 +358,10 @@ namespace WzComparerR2.CharaSim
                 case GearType.taming3: 
                 case GearType.tamingChair: return "テイムドモンスター";
                 case GearType.saddle: return "鞍";
-                case GearType.katana: return "刀 (両手武器)";
-                case GearType.fan: return "扇 (両手武器)";
-                case GearType.swordZB: return "大剣 (両手武器)";
-                case GearType.swordZL: return "太刀 (両手武器)";
+                case GearType.katana: return "刀";
+                case GearType.fan: return "扇";
+                case GearType.swordZB: return "大剣";
+                case GearType.swordZL: return "太刀";
                 case GearType.weapon: return "武器";
                 case GearType.subWeapon: return "補助武器";
                 case GearType.heroMedal: return "メダル";
@@ -388,44 +388,44 @@ namespace WzComparerR2.CharaSim
                 case GearType.chess: return "チェスピース";
                 case GearType.powerSource: return "パワーソース";
 
-                case GearType.energySword: return "エナジーソード (片手武器)";
-                case GearType.desperado: return "デスペラード (片手武器)";
-                case GearType.memorialStaff: return "メモリアルスタッフ (片手武器)";
-                case GearType.magicStick: return "テイマースティック (片手武器)";
+                case GearType.energySword: return "エナジーソード";
+                case GearType.desperado: return "デスペラード";
+                case GearType.memorialStaff: return "メモリアルスタッフ";
+                case GearType.magicStick: return "テイマースティック";
                 case GearType.leaf:
                 case GearType.leaf2: return "リーフ";
                 case GearType.boxingClaw: return "フィスト";
                 case GearType.kodachi:
                 case GearType.kodachi2: return "小太刀";
-                case GearType.espLimiter: return "ESPリミッター (片手武器)";
+                case GearType.espLimiter: return "ESPリミッター";
 
-                case GearType.GauntletBuster: return "ｶﾞﾝﾄﾚｯﾄﾘﾎﾞﾙﾊﾞｰ (両手武器)";
+                case GearType.GauntletBuster: return "ｶﾞﾝﾄﾚｯﾄﾘﾎﾞﾙﾊﾞｰ";
                 case GearType.ExplosivePill: return "装薬";
 
-                case GearType.chain2: return "チェーン (片手武器)";
-                case GearType.magicGauntlet: return "マジックガントレット (片手武器)";
+                case GearType.chain2: return "チェーン";
+                case GearType.magicGauntlet: return "マジックガントレット";
                 case GearType.transmitter: return "武器転送装置";
                 case GearType.magicWing: return "マジックウィング";
                 case GearType.pathOfAbyss: return "パス・オブ・アビス";
 
                 case GearType.relic: return "レリック";
-                case GearType.ancientBow: return "エーンシェントボウ (両手武器)";
+                case GearType.ancientBow: return "エーンシェントボウ";
 
-                case GearType.handFan: return "術扇 (片手武器)";
+                case GearType.handFan: return "術扇";
                 case GearType.fanTassel: return "飾り房";
 
-                case GearType.tuner: return "チューナー (片手武器)";
+                case GearType.tuner: return "チューナー";
                 case GearType.bracelet: return "ブレスレット";
 
-                case GearType.breathShooter: return "ブレスシューター (片手武器)";
+                case GearType.breathShooter: return "ブレスシューター";
                 case GearType.weaponBelt: return "ウェポンベルト";
 
                 case GearType.ornament: return "装身具";
 
-                case GearType.chakram: return "チャクラム (両手武器)";
+                case GearType.chakram: return "チャクラム";
                 case GearType.hexSeeker: return "ヘックスシーカー";
 
-                case GearType.boxingCannon: return "拳封 (両手武器)";
+                case GearType.boxingCannon: return "拳封";
                 case GearType.boxingSky: return "拳天";
 
                 case GearType.jewel: return "宝玉";
