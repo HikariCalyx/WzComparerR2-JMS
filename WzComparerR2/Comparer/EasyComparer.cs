@@ -736,7 +736,14 @@ namespace WzComparerR2.Comparer
                 int picH = 13;
                 if (ShowChangeType) GearGraphics.DrawPlainText(g, skillType, skillTypeFont, Color.FromArgb(255, 255, 255), 2, (int)Math.Ceiling(skillTypeTextInfo.Width) + 2, ref picH, 10);
 
-                string imageName = Path.Combine(skillTooltipPath, "スキル_" + skillID + '[' + (ItemStringHelper.GetJobName(int.Parse(skillID) / 10000) ?? "その他") + "]_" + skillName + "_" + skillType + ".png");
+                string categoryPath = (ItemStringHelper.GetJobName(int.Parse(skillID) / 10000) ?? "その他");
+
+                if (!Directory.Exists(Path.Combine(skillTooltipPath, categoryPath)))
+                {
+                    Directory.CreateDirectory(Path.Combine(skillTooltipPath, categoryPath));
+                }
+
+                string imageName = Path.Combine(skillTooltipPath, categoryPath, "スキル_" + skillID + "_" + skillName + "_" + skillType + ".png");
                 if (!File.Exists(imageName))
                 {
                     resultImage.Save(imageName, System.Drawing.Imaging.ImageFormat.Png);
@@ -816,36 +823,44 @@ namespace WzComparerR2.Comparer
                 StateDetail = "Item 変更点をツールチップ画像に出力中...";
                 string itemType = "";
                 string itemNodePath = null;
+                string categoryPath = "";
 
                 if (!int.TryParse(itemID, out _)) continue;
 
                 if (itemID.StartsWith("03015")) // 判断开头是否是03015
                 {
                     itemNodePath = String.Format(@"Item\Install\0{0:D}.img\{1:D}", int.Parse(itemID) / 100, itemID);
+                    categoryPath = "Chair_椅子";
                 }
                 else if (itemID.StartsWith("0301")) // 判断开头是否是0301
                 {
                     itemNodePath = String.Format(@"Item\Install\0{0:D}.img\{1:D}", int.Parse(itemID) / 1000, itemID);
+                    categoryPath = "Chair_椅子";
                 }
                 else if (itemID.StartsWith("500")) // 判断开头是否是0500
                 {
                     itemNodePath = String.Format(@"Item\Pet\{0:D}.img", itemID);
+                    categoryPath = "Pet_ペット";
                 }
                 else if (itemID.StartsWith("02")) // 判断第1位是否是02
                 {
                     itemNodePath = String.Format(@"Item\Consume\0{0:D}.img\{1:D}", int.Parse(itemID) / 10000, itemID);
+                    categoryPath = "Consumable_消耗品";
                 }
                 else if (itemID.StartsWith("03")) // 判断第1位是否是03
                 {
                     itemNodePath = String.Format(@"Item\Install\0{0:D}.img\{1:D}", int.Parse(itemID) / 10000, itemID);
+                    categoryPath = "OtherSetup";
                 }
                 else if (itemID.StartsWith("04")) // 判断第1位是否是04
                 {
                     itemNodePath = String.Format(@"Item\Etc\0{0:D}.img\{1:D}", int.Parse(itemID) / 10000, itemID);
+                    categoryPath = "Etc_その他";
                 }
                 else if (itemID.StartsWith("05")) // 判断第1位是否是02
                 {
                     itemNodePath = String.Format(@"Item\Cash\0{0:D}.img\{1:D}", int.Parse(itemID) / 10000, itemID);
+                    categoryPath = "Cash_ポイント";
                 }
 
                 StringResult sr;
@@ -930,11 +945,16 @@ namespace WzComparerR2.Comparer
                     continue;
                 }
 
+                if (!Directory.Exists(Path.Combine(itemTooltipPath, categoryPath)))
+                {
+                    Directory.CreateDirectory(Path.Combine(itemTooltipPath, categoryPath));
+                }
+
                 var itemTypeTextInfo = g.MeasureString(itemType, GearGraphics.ItemDetailFont);
                 int picH = 13;
                 if (ShowChangeType) GearGraphics.DrawPlainText(g, itemType, itemTypeFont, Color.FromArgb(255, 255, 255), 2, (int)Math.Ceiling(itemTypeTextInfo.Width) + 2, ref picH, 10);
 
-                string imageName = Path.Combine(itemTooltipPath, "Item_" + itemID + "_" + ItemName + "_" + itemType + ".png");
+                string imageName = Path.Combine(itemTooltipPath, categoryPath, "アイテム_" + itemID + "_" + ItemName + "_" + itemType + ".png");
                 if (!File.Exists(imageName))
                 {
                     resultImage.Save(imageName, System.Drawing.Imaging.ImageFormat.Png);
@@ -975,104 +995,129 @@ namespace WzComparerR2.Comparer
                 StateDetail = "Character 変更点をツールチップ画像に出力中...";
                 string gearType = "";
                 string gearNodePath = null;
+                string categoryPath = "";
 
                 if (!int.TryParse(gearID, out _)) continue;
 
                 if (Regex.IsMatch(gearID, "^0101|^0102|^0103|^0112|^0113|^0114|^0115|^0116|^0118|^0119")) // 判断开头是否是0101~0103或0112~0116-0118~0119
                 {
                     gearNodePath = String.Format(@"Character\Accessory\{0:D}.img", gearID);
+                    categoryPath = "Accessory_飾り";
                 }
                 else if (gearID.StartsWith("0100")) // 判断开头是否是0100
                 {
                     gearNodePath = String.Format(@"Character\Cap\{0:D}.img", gearID);
+                    categoryPath = "Hat_帽子";
                 }
                 else if (gearID.StartsWith("0104")) // 判断开头是否是0104
                 {
                     gearNodePath = String.Format(@"Character\Coat\{0:D}.img", gearID);
+                    categoryPath = "Top_服(上)";
                 }
                 else if (gearID.StartsWith("0105")) // 判断开头是否是0104
                 {
                     gearNodePath = String.Format(@"Character\Longcoat\{0:D}.img", gearID);
+                    categoryPath = "Overall_服(全身)";
                 }
                 else if (gearID.StartsWith("0106")) // 判断开头是否是0106
                 {
                     gearNodePath = String.Format(@"Character\Pants\{0:D}.img", gearID);
+                    categoryPath = "Bottom_服(下)";
                 }
                 else if (gearID.StartsWith("0107")) // 判断开头是否是0107
                 {
                     gearNodePath = String.Format(@"Character\Shoes\{0:D}.img", gearID);
+                    categoryPath = "Shoes_靴";
                 }
                 else if (gearID.StartsWith("0108")) // 判断开头是否是0108
                 {
                     gearNodePath = String.Format(@"Character\Glove\{0:D}.img", gearID);
+                    categoryPath = "Glove_手袋";
                 }
                 else if (gearID.StartsWith("0109")) // 判断开头是否是0109
                 {
                     gearNodePath = String.Format(@"Character\Shield\{0:D}.img", gearID);
+                    categoryPath = "Shield_盾";
                 }
                 else if (gearID.StartsWith("0110")) // 判断开头是否是0110
                 {
                     gearNodePath = String.Format(@"Character\Cape\{0:D}.img", gearID);
+                    categoryPath = "Cape_マント";
                 }
                 else if (gearID.StartsWith("0111")) // 判断开头是否是0111
                 {
                     gearNodePath = String.Format(@"Character\Ring\{0:D}.img", gearID);
+                    categoryPath = "Ring_指輪";
                 }
                 else if (gearID.StartsWith("0120") || gearID.StartsWith("120")) // 判断开头是否是0120
                 {
                     gearNodePath = String.Format(@"Character\Totem\{0:D}.img", gearID);
+                    categoryPath = "Totem_トーテム";
                 }
                 else if (Regex.IsMatch(gearID, "^012[1-9]|^013|^014|^015|^0160|^0169|^0170")) // 判断开头是否是012~015、0160或0169-0179
                 {
                     gearNodePath = String.Format(@"Character\Weapon\{0:D}.img", gearID);
+                    categoryPath = "Weapon_武器";
                 }
                 else if (Regex.IsMatch(gearID, "^0161|^0162|^0163|^0164|^0165"))// 判断开头是否是0161~0165
                 {
                     gearNodePath = String.Format(@"Character\Mechanic\{0:D}.img", gearID);
+                    categoryPath = "MechanicPart_メカニックパーツ";
                 }
                 else if (Regex.IsMatch(gearID, "^0166|^0167")) // 判断开头是否是0166或0167
                 {
                     gearNodePath = String.Format(@"Character\Android\{0:D}.img", gearID);
+                    categoryPath = "Android_アンドロイド";
                 }
                 else if (gearID.StartsWith("0168")) // 判断开头是否是0168
                 {
                     gearNodePath = String.Format(@"Character\Bits\{0:D}.img", gearID);
+                    categoryPath = "Bits_拼図";
                 }
                 else if (gearID.StartsWith("01712")) // 判断开头是否是01712
                 {
                     gearNodePath = String.Format(@"Character\ArcaneForce\{0:D}.img", gearID);
+                    categoryPath = "Arcane";
                 }
                 else if (Regex.IsMatch(gearID, "^01713|^01714")) // 判断开头是否是01713或01714
                 {
                     gearNodePath = String.Format(@"Character\AuthenticForce\{0:D}.img", gearID);
+                    categoryPath = "Authentic";
                 }
                 else if (Regex.IsMatch(gearID, "^0178"))  // 判断开头是否是0178
                 {
                     gearNodePath = String.Format(@"Character\Jewel\{0:D}.img", gearID);
+                    categoryPath = "Jewel_宝玉";
                 }
                 else if (Regex.IsMatch(gearID, "^0179"))  // 判断开头是否是0179
                 {
                     gearNodePath = String.Format(@"Character\NT_Beauty\{0:D}.img", gearID);
+                    categoryPath = "MSN_Cosmetic_化粧";
                 }
                 else if (gearID.StartsWith("018")) // 判断开头是否是018
                 {
                     gearNodePath = String.Format(@"Character\PetEquip\{0:D}.img", gearID);
+                    categoryPath = "PetEquipment_ペット装備";
                 }
                 else if (Regex.IsMatch(gearID, "^0194|^0195|^0196|^0197")) // 判断开头是否是0194~0197
                 {
                     gearNodePath = String.Format(@"Character\Dragon\{0:D}.img", gearID);
+                    categoryPath = "EvanDragonEquip_エヴァンドラゴン装備";
                 }
                 else if (Regex.IsMatch(gearID, "^0190|^0191|^0192|^0193|^0198")) // 判断开头是否是0190~0193或0198
                 {
                     gearNodePath = String.Format(@"Character\TamingMob\{0:D}.img", gearID);
+                    categoryPath = "TamedMonster_テイムドモンスター";
                 }
                 else if (Regex.IsMatch(gearID, "^0002|^0005")) // 判断开头是否是0002或0005
                 {
                     gearNodePath = String.Format(@"Character\Face\{0:D}.img", gearID);
+                    categoryPath = "Cosmetic_化粧";
                 }
                 else if (Regex.IsMatch(gearID, "^0003|^0004|^0006")) // 判断开头是否是0003、0004或0006
                 {
                     gearNodePath = String.Format(@"Character\Hair\{0:D}.img", gearID);
+                    categoryPath = "Cosmetic_化粧";
                 }
 
                 StringResult sr;
@@ -1159,11 +1204,16 @@ namespace WzComparerR2.Comparer
                     continue;
                 }
 
+                if (!Directory.Exists(Path.Combine(gearTooltipPath, categoryPath)))
+                {
+                    Directory.CreateDirectory(Path.Combine(gearTooltipPath, categoryPath));
+                }
+
                 var gearTypeTextInfo = g.MeasureString(gearType, GearGraphics.ItemDetailFont);
                 int picH = 13;
                 if (ShowChangeType) GearGraphics.DrawPlainText(g, gearType, gearTypeFont, Color.FromArgb(255, 255, 255), 2, (int)Math.Ceiling(gearTypeTextInfo.Width) + 2, ref picH, 10);
 
-                string imageName = Path.Combine(gearTooltipPath, "Eqp_" + gearID + "_" + EqpName + "_" + gearType + ".png");
+                string imageName = Path.Combine(gearTooltipPath, categoryPath, "装備_" + gearID + "_" + EqpName + "_" + gearType + ".png");
                 if (!File.Exists(imageName))
                 {
                     resultImage.Save(imageName, System.Drawing.Imaging.ImageFormat.Png);
@@ -1289,7 +1339,7 @@ namespace WzComparerR2.Comparer
                 int picH = 13;
                 if (ShowChangeType) GearGraphics.DrawPlainText(g, mobType, mobTypeFont, Color.FromArgb(255, 255, 255), 2, (int)Math.Ceiling(mobTypeTextInfo.Width) + 2, ref picH, 10);
 
-                string imageName = Path.Combine(mobTooltipPath, "Mob_" + mobID + "_" + MobName + "_" + mobType + ".png");
+                string imageName = Path.Combine(mobTooltipPath, "モンスター_" + mobID + "_" + MobName + "_" + mobType + ".png");
                 if (!File.Exists(imageName))
                 {
                     resultImage.Save(imageName, System.Drawing.Imaging.ImageFormat.Png);
