@@ -61,6 +61,9 @@ namespace WzComparerR2.CharaSimControl
         public static readonly Font KMSItemNameFont = new Font("Dotum", 14f, FontStyle.Bold, GraphicsUnit.Pixel);
         public static readonly Font KMSItemDetailFont = new Font("Dotum", 12f, GraphicsUnit.Pixel);
         public static readonly Font KMSItemDetailFont2 = new Font("Dotum", 11f, GraphicsUnit.Pixel);
+        public static readonly Font Gear3NameFont = new Font("Noto Sans JP", 15f, FontStyle.Bold, GraphicsUnit.Pixel);
+        public static readonly Font KMSGear3NameFont = new Font("Noto Sans KR", 15f, FontStyle.Bold, GraphicsUnit.Pixel);
+
 
         public static Font ItemNameFont2 { get; private set; }
         public static Font ItemDetailFont2 { get; private set; }
@@ -107,6 +110,7 @@ namespace WzComparerR2.CharaSimControl
         public static readonly Brush GrayBrush = new SolidBrush(Color.FromArgb(102, 102, 102));
         public static readonly Brush JMSGreenBrush = new SolidBrush(Color.FromArgb(119, 255, 0));
         public static readonly Color OrangeBrushColor = Color.FromArgb(255, 153, 0);
+        public static readonly Brush Gear3GreyBrush1 = new SolidBrush(Color.FromArgb(182, 190, 197));
         /// <summary>
         /// 表示物品说明中带有#c标识的橙色字体画刷。
         /// </summary>

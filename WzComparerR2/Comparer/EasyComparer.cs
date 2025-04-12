@@ -368,10 +368,10 @@ namespace WzComparerR2.Comparer
                 Directory.CreateDirectory(srcDirPath);
             }
             string skillTooltipPath = Path.Combine(outputDir, "SkillTooltips");
-            string itemTooltipPath = Path.Combine(outputDir, "ItemTooltip");
-            string gearTooltipPath = Path.Combine(outputDir, "GearTooltip");
-            string mobTooltipPath = Path.Combine(outputDir, "MobTooltip");
-            string npcTooltipPath = Path.Combine(outputDir, "NpcTooltip");
+            string itemTooltipPath = Path.Combine(outputDir, "ItemTooltips");
+            string gearTooltipPath = Path.Combine(outputDir, "GearTooltips");
+            string mobTooltipPath = Path.Combine(outputDir, "MobTooltips");
+            string npcTooltipPath = Path.Combine(outputDir, "NpcTooltips");
 
             FileStream htmlFile = null;
             StreamWriter sw = null;
