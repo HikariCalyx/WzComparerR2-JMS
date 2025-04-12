@@ -2568,7 +2568,7 @@ namespace WzComparerR2
             this.chkOutputCashTooltip.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
             this.superTooltip1.SetSuperTooltip(this.chkOutputCashTooltip, new DevComponents.DotNetBar.SuperTooltipInfo("ポイントパッケージ比較の出力 (非推奨)", "", "このオプションは不安定です。", null, null, DevComponents.DotNetBar.eTooltipColor.System, true, false, new System.Drawing.Size(180, 90)));
             this.chkOutputCashTooltip.TabIndex = 12;
-            this.chkOutputCashTooltip.Text = "ポイントパッケージ比較の出力 (非推奨)";
+            this.chkOutputCashTooltip.Text = "ポイントパッケージ比較の出力";
             this.chkOutputCashTooltip.Enabled = false;
             // 
             // chkOutputEqpTooltip

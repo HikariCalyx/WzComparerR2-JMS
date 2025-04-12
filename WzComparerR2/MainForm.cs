@@ -3679,7 +3679,7 @@ namespace WzComparerR2
                                     chkOutputEqpTooltip.Enabled = false;
                                     chkOutputMobTooltip.Enabled = false;
                                     chkOutputNpcTooltip.Enabled = false;
-                                    chkOutputCashTooltip.Enabled = false;
+                                    // chkOutputCashTooltip.Enabled = false;
                                     chkShowObjectID.Enabled = false;
                                     chkShowChangeType.Enabled = false;
                                     chkShowPrice.Enabled = false;
@@ -3726,7 +3726,7 @@ namespace WzComparerR2
                         chkOutputEqpTooltip.Enabled = true;
                         chkOutputMobTooltip.Enabled = true;
                         chkOutputNpcTooltip.Enabled = true;
-                        chkOutputCashTooltip.Enabled = true;
+                        // chkOutputCashTooltip.Enabled = true;
                         chkShowObjectID.Enabled = true;
                         chkShowChangeType.Enabled = true;
                         chkShowPrice.Enabled = true;
