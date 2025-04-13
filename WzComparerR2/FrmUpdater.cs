@@ -51,8 +51,6 @@ namespace WzComparerR2
         private string net60url;
         private string net80url;
 
-        private string updaterURL = "https://github.com/HikariCalyx/WzComparerR2Updater/releases/download/v1.0.0.250318-1934/Updater.exe";
-
         public static async Task<bool> QueryUpdate()
         {
             var request = (HttpWebRequest)WebRequest.Create(Program.CheckUpdateURL);
@@ -142,20 +140,10 @@ namespace WzComparerR2
                 }
                 if (!File.Exists(Path.Combine(currentDirectory, "Updater.exe")))
                 {
-                    request = (HttpWebRequest)WebRequest.Create(updaterURL);
-                    request.Method = "GET";
-                    using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+                    object UpdaterFile = Properties.Resources.ResourceManager.GetObject("Updater");
+                    if (UpdaterFile is byte[] fileData)
                     {
-                        if (response.StatusCode == HttpStatusCode.OK)
-                        {
-                            using (Stream responseStream = response.GetResponseStream())
-                            {
-                                using (FileStream fileStream = new FileStream(Path.Combine(currentDirectory, "Updater.exe"), FileMode.Create, FileAccess.Write))
-                                {
-                                    responseStream.CopyTo(fileStream);
-                                }
-                            }
-                        }
+                        File.WriteAllBytes(Path.Combine(currentDirectory, "Updater.exe"), fileData);
                     }
                 }
                 RunProgram("Updater.exe", "\"" + savePath + "\"");
