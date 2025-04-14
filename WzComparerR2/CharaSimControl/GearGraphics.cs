@@ -62,7 +62,7 @@ namespace WzComparerR2.CharaSimControl
         public static readonly Font KMSItemDetailFont = new Font("Dotum", 12f, GraphicsUnit.Pixel);
         public static readonly Font KMSItemDetailFont2 = new Font("Dotum", 11f, GraphicsUnit.Pixel);
         public static readonly Font Gear3NameFont = new Font("Noto Sans JP", 15f, FontStyle.Bold, GraphicsUnit.Pixel);
-        public static readonly Font KMSGear3NameFont = new Font("Noto Sans KR", 15f, FontStyle.Bold, GraphicsUnit.Pixel);
+        public static readonly Font KMSGear3NameFont = new Font("NanumGothicExtraBold", 15f, GraphicsUnit.Pixel);
 
 
         public static Font ItemNameFont2 { get; private set; }
