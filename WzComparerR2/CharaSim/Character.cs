@@ -18,13 +18,14 @@ namespace WzComparerR2.CharaSim
             this.status.MaxMP.BaseVal = 53441;
             this.status.MP = 53441;
             this.status.SpecialValue.BaseVal = 0;
-            this.status.combatPower.BaseVal = 99999999;
+            this.status.combatPower.BaseVal = 187371842;
+            this.status.attackRange.BaseVal = 48240839;
 
             this.status.Strength.BaseVal = 2278;
             this.status.Dexterity.BaseVal = 2206;
             this.status.Intelligence.BaseVal = 43515;
             this.status.Luck.BaseVal = 3367;
-            this.status.UnionLevel = 9361;
+            this.status.UnionLevel = 9376;
             this.status.DojoFloor = 65;
 
             this.status.CriticalRate.BaseVal = 89;
