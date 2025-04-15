@@ -932,7 +932,7 @@ namespace WzComparerR2.CharaSimControl
                         g.DrawString(charStat.MoveSpeed.GetSum() + "%", GearGraphics.ItemDetailFont, charStat.DropGainR.BuffAdd > 0 ? Brushes.Red : GearGraphics.WhiteBrush, 235f, (y += 22f), format);
                         g.DrawString(charStat.Jump.GetSum().ToString("N0") + "%", GearGraphics.ItemDetailFont, charStat.ArcaneForce.BuffAdd > 0 ? Brushes.Red : GearGraphics.WhiteBrush, 453f, y, format);
                         g.DrawString(charStat.Stance.GetSum().ToString("N0") + "%", GearGraphics.ItemDetailFont, GearGraphics.WhiteBrush, 235f, (y += 22f), format);
-                        g.DrawString("第" + charStat.attackSpeed.GetSum().ToString("N0") + "阶段", GearGraphics.ItemDetailFont, charStat.AuthenticForce.BuffAdd > 0 ? Brushes.Red : GearGraphics.WhiteBrush, 455f, y, format);
+                        g.DrawString("" + charStat.attackSpeed.GetSum().ToString("N0") + "段階", GearGraphics.ItemDetailFont, charStat.AuthenticForce.BuffAdd > 0 ? Brushes.Red : GearGraphics.WhiteBrush, 455f, y, format);
                         break;
                     default: break;
                 }
