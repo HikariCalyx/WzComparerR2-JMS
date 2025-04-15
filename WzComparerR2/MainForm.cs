@@ -2572,15 +2572,22 @@ namespace WzComparerR2
             }
             else
             {
-                #if NET6_0_OR_GREATER
-                Process.Start(new ProcessStartInfo
+                try
                 {
-                    UseShellExecute = true,
-                    FileName = "ngm://launch/ -mode:install -game:'16785939@bb01'",
-                });
-                #else
-                Process.Start("ngm://launch/ -mode:install -game:'16785939@bb01'");
-                #endif
+                    #if NET6_0_OR_GREATER
+                    Process.Start(new ProcessStartInfo
+                    {
+                        UseShellExecute = true,
+                        FileName = "ngm://launch/ -mode:install -game:'16785939@bb01'",
+                    });
+                    #else
+                    Process.Start("ngm://launch/ -mode:install -game:'16785939@bb01'");
+                    #endif
+                }
+                catch
+                {
+                    ngmInstallPrompt();
+                }
             }
         }
 
@@ -2593,15 +2600,22 @@ namespace WzComparerR2
             }
             else
             {
-                #if NET6_0_OR_GREATER
-                Process.Start(new ProcessStartInfo
+                try
                 {
-                    UseShellExecute = true,
-                    FileName = "ngm://launch/ -mode:launch -game:'16785939@bb01'",
-                });
-                #else
-                Process.Start("ngm://launch/ -mode:launch -game:'16785939@bb01'");
-                #endif
+                    #if NET6_0_OR_GREATER
+                    Process.Start(new ProcessStartInfo
+                    {
+                        UseShellExecute = true,
+                        FileName = "ngm://launch/ -mode:launch -game:'16785939@bb01'",
+                    });
+                    #else
+                    Process.Start("ngm://launch/ -mode:launch -game:'16785939@bb01'");
+                    #endif
+                }
+                catch
+                {
+                    ngmInstallPrompt();
+                }
             }
         }
 
