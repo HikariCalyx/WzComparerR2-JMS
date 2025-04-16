@@ -557,7 +557,7 @@ namespace WzComparerR2.CharaSimControl
                 //绘制图标
                 g.DrawImage(GearGraphics.EnlargeBitmap(Gear.IconRaw.Bitmap),
                     18 + (1 - Gear.IconRaw.Origin.X) * 2,
-                    picH + 15 + (33 - Gear.IconRaw.Origin.Y) * 2);
+                    picH + 16 + (33 - Gear.IconRaw.Origin.Y) * 2);
 
                 attr.Dispose();
             }
