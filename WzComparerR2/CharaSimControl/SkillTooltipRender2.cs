@@ -34,6 +34,7 @@ namespace WzComparerR2.CharaSimControl
         public bool IgnoreEvalError { get; set; } = false;
         public bool ShowRangeCoordinates { get; set; } = true;
         public bool IsWideMode { get; set; } = true;
+        public bool Enable22AniStyle { get; set; }
         public Dictionary<string, List<string>> DiffSkillTags { get; set; } = new Dictionary<string, List<string>>();
         public Wz_Node wzNode { get; set; } = null;
 
@@ -51,7 +52,7 @@ namespace WzComparerR2.CharaSimControl
                 return null;
             }
 
-            CanvasRegion region = this.IsWideMode ? CanvasRegion.Wide : CanvasRegion.Original;
+            CanvasRegion region = this.IsWideMode ? (this.Enable22AniStyle ? CanvasRegion._22AniWide : CanvasRegion.Wide) : (this.Enable22AniStyle ? CanvasRegion._22AniOriginal : CanvasRegion.Original);
 
             int picHeight;
             List<int> splitterH;
@@ -105,7 +106,7 @@ namespace WzComparerR2.CharaSimControl
             g.DrawImage(originBmp, 0, 0, new Rectangle(0, 0, originBmp.Width, picHeight), GraphicsUnit.Pixel);
 
             //左上角
-            g.DrawImage(Resource.UIToolTip_img_Skill_Frame_cover, 3, 3);
+            if (!Enable22AniStyle) g.DrawImage(Resource.UIToolTip_img_Skill_Frame_cover, 3, 3);
 
             if (this.ShowObjectID)
             {
@@ -286,7 +287,7 @@ namespace WzComparerR2.CharaSimControl
             }
             if (Skill.IsSequenceOn)
             {
-                if (doHighlight && DiffSkillTags.ContainsKey(skillIDstr) && DiffSkillTags[skillIDstr].Contains("IsSequenceOn"))
+                if (doHighlight && DiffSkillTags.ContainsKey(skillIDstr) && DiffSkillTags[skillIDstr].Contains("isSequenceOn"))
                 {
                     GearGraphics.DrawString(g, "#$gスキルシーケンス登録可能#", GearGraphics.ItemDetailFont2, v6SkillSummaryFontColorTable, Skill.Icon.Bitmap == null ? region.LevelDescLeft : region.SkillDescLeft, region.TextRight, ref picH, 16);
                 }
@@ -297,7 +298,7 @@ namespace WzComparerR2.CharaSimControl
             }
             if (Skill.IsPetAutoBuff)
             {
-                if (doHighlight && DiffSkillTags.ContainsKey(skillIDstr) && DiffSkillTags[skillIDstr].Contains("IsPetAutoBuff"))
+                if (doHighlight && DiffSkillTags.ContainsKey(skillIDstr) && DiffSkillTags[skillIDstr].Contains("isPetAutoBuff"))
                 {
                     GearGraphics.DrawString(g, "#$gペットバフ自動スキル登録可能#", GearGraphics.ItemDetailFont2, v6SkillSummaryFontColorTable, Skill.Icon.Bitmap == null ? region.LevelDescLeft : region.SkillDescLeft, region.TextRight, ref picH, 16);
                 }
@@ -595,7 +596,7 @@ namespace WzComparerR2.CharaSimControl
         private void DrawV6SkillDotline(Graphics g, int x1, int x2, int y)
         {
             // here's a trick that we won't draw left and right part because it looks the same as background border.
-            var picCenter = Resource.UIToolTip_img_Skill_Frame_dotline_c;
+            var picCenter = Enable22AniStyle ? Resource.UIToolTipNew_img_Skill_Frame_dotline_c : Resource.UIToolTip_img_Skill_Frame_dotline_c;
             using (var brush = new TextureBrush(picCenter))
             {
                 brush.TranslateTransform(x1, y);
@@ -647,6 +648,30 @@ namespace WzComparerR2.CharaSimControl
                 TitleCenterX = 215,
                 SplitterX1 = 4,
                 SplitterX2 = 424,
+                SkillDescLeft = 92,
+                LinkedSkillNameLeft = 49,
+                LevelDescLeft = 13,
+                TextRight = 411,
+            };
+
+            public static CanvasRegion _22AniOriginal { get; } = new CanvasRegion()
+            {
+                Width = 290,
+                TitleCenterX = 144,
+                SplitterX1 = 12,
+                SplitterX2 = 276,
+                SkillDescLeft = 90,
+                LinkedSkillNameLeft = 46,
+                LevelDescLeft = 8,
+                TextRight = 272,
+            };
+
+            public static CanvasRegion _22AniWide { get; } = new CanvasRegion()
+            {
+                Width = 430,
+                TitleCenterX = 215,
+                SplitterX1 = 12,
+                SplitterX2 = 416,
                 SkillDescLeft = 92,
                 LinkedSkillNameLeft = 49,
                 LevelDescLeft = 13,

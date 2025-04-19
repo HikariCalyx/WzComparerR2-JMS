@@ -8,6 +8,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using System.Linq;
+using System.Reflection;
 using System.IO;
 using System.Xml;
 using Timer = System.Timers.Timer;
@@ -16,6 +17,7 @@ using System.Threading.Tasks;
 using DevComponents.DotNetBar;
 using DevComponents.DotNetBar.Controls;
 using DevComponents.AdvTree;
+using DevComponents.AdvTree.Display;
 using WzComparerR2.WzLib;
 using WzComparerR2.Common;
 using WzComparerR2.CharaSimControl;
@@ -26,9 +28,11 @@ using WzComparerR2.Controls;
 using WzComparerR2.Rendering;
 using WzComparerR2.Config;
 using WzComparerR2.Animation;
+using WzComparerR2.Encoders;
 using static Microsoft.Xna.Framework.MathHelper;
 using Microsoft.Win32;
 using SharpDX;
+using System.Drawing.Imaging;
 
 namespace WzComparerR2
 {
@@ -38,6 +42,7 @@ namespace WzComparerR2
         {
             InitializeComponent();
             this.FormClosing += new FormClosingEventHandler(MainForm_FormClosing);
+            this.Shown += new EventHandler(MainForm_Shown);
 #if NET6_0_OR_GREATER
             // https://learn.microsoft.com/en-us/dotnet/core/compatibility/fx-core#controldefaultfont-changed-to-segoe-ui-9pt
             this.Font = new Font(new FontFamily("MS Gothic"), 9f);
@@ -196,9 +201,9 @@ namespace WzComparerR2
         /// <summary>
         /// 插件加载时执行的方法，用于初始化配置文件。
         /// </summary>
-        internal void PluginOnLoad()
+        internal async void PluginOnLoad()
         {
-            ConfigManager.RegisterAllSection();
+            ConfigManager.RegisterAllSection(this.GetType().Assembly);
             var conf = ImageHandlerConfig.Default;
             //刷新最近打开文件列表
             refreshRecentDocItems();
@@ -227,6 +232,7 @@ namespace WzComparerR2
             this.buttonItemAutoQuickView.Checked = Setting.AutoQuickView;
             tooltipQuickView.PreferredStringCopyMethod = Setting.PreferredStringCopyMethod;
             tooltipQuickView.CopyParsedSkillString = Setting.CopyParsedSkillString;
+            tooltipQuickView.Enable22AniStyle = Setting.Enable22AniStyle;
             tooltipQuickView.SkillRender.ShowProperties = Setting.Skill.ShowProperties;
             tooltipQuickView.SkillRender.ShowObjectID = Setting.Skill.ShowID;
             tooltipQuickView.SkillRender.ShowDelay = Setting.Skill.ShowDelay;
@@ -234,6 +240,7 @@ namespace WzComparerR2
             tooltipQuickView.SkillRender.DisplayPermyriadAsPercent = Setting.Skill.DisplayPermyriadAsPercent;
             tooltipQuickView.SkillRender.IgnoreEvalError = Setting.Skill.IgnoreEvalError;
             tooltipQuickView.SkillRender.ShowRangeCoordinates = Setting.Skill.ShowRangeCoordinates;
+            tooltipQuickView.SkillRender.Enable22AniStyle = Setting.Enable22AniStyle;
             this.skillDefaultLevel = Setting.Skill.DefaultLevel;
             this.skillInterval = Setting.Skill.IntervalLevel;
             tooltipQuickView.GearRender.ShowObjectID = Setting.Gear.ShowID;
@@ -244,6 +251,14 @@ namespace WzComparerR2
             tooltipQuickView.GearRender.ShowCashPurchasePrice = Setting.Gear.ShowCashPurchasePrice;
             tooltipQuickView.GearRender.ShowCombatPower = Setting.Gear.ShowCombatPower;
             tooltipQuickView.GearRender.AutoTitleWrap = Setting.Gear.AutoTitleWrap;
+            tooltipQuickView.GearRender3.ShowObjectID = Setting.Gear.ShowID;
+            tooltipQuickView.GearRender3.ShowSpeed = Setting.Gear.ShowWeaponSpeed;
+            tooltipQuickView.GearRender3.ShowLevelOrSealed = Setting.Gear.ShowLevelOrSealed;
+            tooltipQuickView.GearRender3.ShowMedalTag = Setting.Gear.ShowMedalTag;
+            tooltipQuickView.GearRender3.ShowSoldPrice = Setting.Gear.ShowSoldPrice;
+            tooltipQuickView.GearRender3.ShowCashPurchasePrice = Setting.Gear.ShowCashPurchasePrice;
+            tooltipQuickView.GearRender3.ShowCombatPower = Setting.Gear.ShowCombatPower;
+            tooltipQuickView.GearRender3.AutoTitleWrap = Setting.Gear.AutoTitleWrap;
             tooltipQuickView.ItemRender.ShowObjectID = Setting.Item.ShowID;
             tooltipQuickView.ItemRender.LinkRecipeInfo = Setting.Item.LinkRecipeInfo;
             tooltipQuickView.ItemRender.LinkRecipeItem = Setting.Item.LinkRecipeItem;
@@ -251,7 +266,11 @@ namespace WzComparerR2
             tooltipQuickView.ItemRender.ShowNickTag = Setting.Item.ShowNickTag;
             tooltipQuickView.ItemRender.ShowSoldPrice = Setting.Item.ShowSoldPrice;
             tooltipQuickView.ItemRender.ShowCashPurchasePrice = Setting.Item.ShowCashPurchasePrice;
+            tooltipQuickView.ItemRender.CosmeticHairColor = Setting.Item.CosmeticHairColor;
+            tooltipQuickView.ItemRender.CosmeticFaceColor = Setting.Item.CosmeticFaceColor;
+            tooltipQuickView.ItemRender.Enable22AniStyle = Setting.Enable22AniStyle;
             tooltipQuickView.RecipeRender.ShowObjectID = Setting.Recipe.ShowID;
+            GearGraphics.is22aniStyle = Setting.Enable22AniStyle;
         }
 
         void UpdateWzLoadingSettings()
@@ -277,13 +296,33 @@ namespace WzComparerR2
             var config = WcR2Config.Default;
             Translator.DefaultDesiredLanguage = config.DesiredLanguage;
             Translator.DefaultMozhiBackend = config.MozhiBackend;
+            Translator.DefaultLanguageModel = config.LanguageModel;
+            Translator.OAITranslateBaseURL = config.OpenAIBackend;
+            Translator.DefaultOpenAISystemMessage = config.OpenAISystemMessage;
             Translator.DefaultPreferredTranslateEngine = config.PreferredTranslateEngine;
             Translator.DefaultTranslateAPIKey = config.NxSecretKey;
             Translator.DefaultPreferredLayout = config.PreferredLayout;
             Translator.IsTranslateEnabled = (config.PreferredLayout > 0);
             Translator.DefaultDetectCurrency = config.DetectCurrency;
             Translator.DefaultDesiredCurrency = config.DesiredCurrency;
+            Translator.DefaultLMTemperature = config.LMTemperature;
+            Translator.DefaultMaximumToken = config.MaximumToken;
+            Translator.IsExtraParamEnabled = config.OpenAIExtraOption;
             Translator.ExchangeTable = null;
+            Translator.InitializeCache();
+        }
+
+        async Task<bool> AutomaticCheckUpdate()
+        {
+            var config = WcR2Config.Default;
+            if (config.EnableAutoUpdate)
+            {
+                return await FrmUpdater.QueryUpdate();
+            }
+            else
+            {
+                return false;
+            }
         }
 
         void CharaSimLoader_WzFileFinding(object sender, FindWzEventArgs e)
@@ -620,7 +659,7 @@ namespace WzComparerR2
                 return;
 
             Wz_Node node = advTree3.SelectedNode.AsWzNode();
-            string aniName = "중첩_" + GetSelectedNodeImageName();
+            string aniName = "ネスト_" + GetSelectedNodeImageName();
 
             if (node.Value is Wz_Png)
             {
@@ -656,7 +695,7 @@ namespace WzComparerR2
                     this.cmbItemSkins.SelectedIndex = aniItem.Skins.IndexOf(aniItem.SelectedSkin);
                 }
                 */
-                MessageBoxEx.Show("Spine 애니메이션은 중첩시킬 수 없습니다.", "미지원");
+                MessageBoxEx.Show("Spineアニメーションネストにすることはできません。", "未実装");
                 return;
             }
             else
@@ -683,7 +722,7 @@ namespace WzComparerR2
                         this.cmbItemAniNames.Items.AddRange(aniItem.Animations.ToArray());
                         this.cmbItemAniNames.SelectedIndex = 0;
                         */
-                        MessageBoxEx.Show("Multi 프레임 애니메이션은 중첩시킬 수 없습니다.", "미지원");
+                        MessageBoxEx.Show("マルチフレームアニメーションネストにすることはできません。", "未実装");
                         return;
                     }
                 }
@@ -720,6 +759,9 @@ namespace WzComparerR2
         {
             FrmGifSetting frm = new FrmGifSetting();
             frm.Load(ImageHandlerConfig.Default);
+            frm.FFmpegBinPathHint = FFmpegEncoder.DefaultExecutionFileName;
+            frm.FFmpegArgumentHint = FFmpegEncoder.DefaultArgumentFormat;
+            frm.FFmpegDefaultExtensionHint = FFmpegEncoder.DefaultOutputFileExtension;
             if (frm.ShowDialog() == DialogResult.OK)
             {
                 ConfigManager.Reload();
@@ -866,12 +908,13 @@ namespace WzComparerR2
         private void OnSaveGifFile(AnimationItem aniItem, bool options)
         {
             var config = ImageHandlerConfig.Default;
-            var encParams = AnimateEncoderFactory.GetEncoderParams(config.GifEncoder.Value);
+            using var encoder = AnimateEncoderFactory.CreateEncoder(config);
+            var cap = encoder.Compatibility;
 
             string aniName = this.cmbItemAniNames.SelectedItem as string;
             string aniFileName = pictureBoxEx1.PictureName
                     + (string.IsNullOrEmpty(aniName) ? "" : ("." + aniName))
-                    + encParams.FileExtension;
+                    + cap.DefaultExtension;
 
             if (config.AutoSaveEnabled)
             {
@@ -888,8 +931,8 @@ namespace WzComparerR2
             else
             {
                 var dlg = new SaveFileDialog();
-
-                dlg.Filter = string.Format("{0} (*{1})|*{1}|すべてのファイル (*.*)|*.*", encParams.FileDescription, encParams.FileExtension);
+                string extensionFilter = string.Join(";", cap.SupportedExtensions.Select(ext => $"*{ext}"));
+                dlg.Filter = string.Format("{0} (*{1})|*{1}|すべてのファイル (*.*)|*.*", encoder.Name, extensionFilter);
                 dlg.FileName = aniFileName;
 
                 if (dlg.ShowDialog() != DialogResult.OK)
@@ -900,7 +943,7 @@ namespace WzComparerR2
             }
 
             var clonedAniItem = (AnimationItem)aniItem.Clone();
-            if (this.pictureBoxEx1.SaveAsGif(clonedAniItem, aniFileName, config, options))
+            if (this.pictureBoxEx1.SaveAsGif(clonedAniItem, aniFileName, config, encoder, options))
             {
                 labelItemStatus.Text = "保存された画像: " + aniFileName;
             }
@@ -1101,6 +1144,7 @@ namespace WzComparerR2
 
             OnWzClosing(new WzStructureEventArgs(wz));
             wz.Clear();
+            CharaSimLoader.ClearAll();
             if (this.openedWz.Remove(wz))
                 labelItemStatus.Text = "閉まっている";
             else
@@ -1110,8 +1154,11 @@ namespace WzComparerR2
         private void buttonItemCloseAll_Click(object sender, EventArgs e)
         {
             advTree1.ClearAndDisposeAllNodes();
+            advTree1.ClearLayoutCellInfo();
             advTree2.ClearAndDisposeAllNodes();
+            advTree2.ClearLayoutCellInfo();
             advTree3.ClearAndDisposeAllNodes();
+            advTree3.ClearLayoutCellInfo();
             foreach (Wz_Structure wz in openedWz)
             {
                 OnWzClosing(new WzStructureEventArgs(wz));
@@ -1470,6 +1517,10 @@ namespace WzComparerR2
                 case Wz_Video video:
                     textBoxX1.Text = "データ長:  " + video.Length + " バイ\r\n" +
                         "オフセット:  " + video.Offset;
+                    var videoFrameData = this.pictureBoxEx1.LoadVideo(video);
+                    pictureBoxEx1.PictureName = GetSelectedNodeImageName();
+                    this.pictureBoxEx1.ShowAnimation(videoFrameData);
+                    this.cmbItemAniNames.Items.Clear();
                     break;
 
 
@@ -2097,6 +2148,9 @@ namespace WzComparerR2
                 case 2:
                     searchAdvTree(advTree3, 1, textBoxItemSearchWz.Text, checkBoxItemExact1.Checked, checkBoxItemRegex1.Checked);
                     break;
+                case 3:
+                    searchAdvTreeEx(advTree3, 0, 1, textBoxItemSearchWz.Text);
+                    break;
             }
         }
 
@@ -2115,6 +2169,47 @@ namespace WzComparerR2
             catch (Exception ex)
             {
                 MessageBoxEx.Show(this, ex.Message, LocalizedString_JP.COMMON_ERROR, MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void searchAdvTreeEx(AdvTree advTree, int cellIndex1, int cellIndex2, string searchText)
+        {
+            if (string.IsNullOrEmpty(searchText))
+                return;
+
+            try
+            {
+                if (advTree.Nodes.Count == 0)
+                    return;
+
+                Node searchNode = null;
+
+                // split input by ','
+                var searchText1 = "^" + searchText.Split(',')[0] + "$";
+                var searchText2 = "^" + searchText.Split(',')[1] + "$";
+
+                if (string.IsNullOrEmpty(searchText2))
+                    return;
+
+                Regex r1 = new Regex(searchText1, RegexOptions.IgnoreCase);
+                Regex r2 = new Regex(searchText2, RegexOptions.IgnoreCase);
+
+                foreach (var node in findNextNode(advTree))
+                {
+                    if (node != null && node.Cells.Count > Math.Max(cellIndex1, cellIndex2) && r1.IsMatch(node.Cells[cellIndex1].Text) && r2.IsMatch(node.Cells[cellIndex2].Text))
+                    {
+                        searchNode = node;
+                        break;
+                    }
+                }
+
+                advTree.SelectedNode = searchNode;
+                if (searchNode == null)
+                    MessageBoxEx.Show("検索結果がありません。", "エラー");
+            }
+            catch (Exception ex)
+            {
+                MessageBoxEx.Show(this, ex.Message, "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -2477,15 +2572,22 @@ namespace WzComparerR2
             }
             else
             {
-                #if NET6_0_OR_GREATER
-                Process.Start(new ProcessStartInfo
+                try
                 {
-                    UseShellExecute = true,
-                    FileName = "ngm://launch/ -mode:install -game:'16785939@bb01'",
-                });
-                #else
-                Process.Start("ngm://launch/ -mode:install -game:'16785939@bb01'");
-                #endif
+                    #if NET6_0_OR_GREATER
+                    Process.Start(new ProcessStartInfo
+                    {
+                        UseShellExecute = true,
+                        FileName = "ngm://launch/ -mode:install -game:'16785939@bb01'",
+                    });
+                    #else
+                    Process.Start("ngm://launch/ -mode:install -game:'16785939@bb01'");
+                    #endif
+                }
+                catch
+                {
+                    ngmInstallPrompt();
+                }
             }
         }
 
@@ -2498,15 +2600,22 @@ namespace WzComparerR2
             }
             else
             {
-                #if NET6_0_OR_GREATER
-                Process.Start(new ProcessStartInfo
+                try
                 {
-                    UseShellExecute = true,
-                    FileName = "ngm://launch/ -mode:launch -game:'16785939@bb01'",
-                });
-                #else
-                Process.Start("ngm://launch/ -mode:launch -game:'16785939@bb01'");
-                #endif
+                    #if NET6_0_OR_GREATER
+                    Process.Start(new ProcessStartInfo
+                    {
+                        UseShellExecute = true,
+                        FileName = "ngm://launch/ -mode:launch -game:'16785939@bb01'",
+                    });
+                    #else
+                    Process.Start("ngm://launch/ -mode:launch -game:'16785939@bb01'");
+                    #endif
+                }
+                catch
+                {
+                    ngmInstallPrompt();
+                }
             }
         }
 
@@ -3244,14 +3353,14 @@ namespace WzComparerR2
         {
             int count = CharaSimLoader.LoadedSetItems.Count;
             CharaSimLoader.LoadedSetItems.Clear();
-            labelItemStatus.Text = count + "Set アイテムが統合されました。";
+            labelItemStatus.Text = count + "セットアイテムが統合されました。";
         }
 
         private void buttonItemClearExclusiveEquips_Click(object sender, EventArgs e)
         {
             int count = CharaSimLoader.LoadedExclusiveEquips.Count;
             CharaSimLoader.LoadedExclusiveEquips.Clear();
-            labelItemStatus.Text = count + "Non-Duplicate アイテムが統合されました。";
+            labelItemStatus.Text = count + "重複しないアイテムが統合されました。";
         }
 
         private void buttonItemClearCommodities_Click(object sender, EventArgs e)
@@ -3259,7 +3368,7 @@ namespace WzComparerR2
             int count = CharaSimLoader.LoadedCommoditiesBySN.Count;
             CharaSimLoader.LoadedCommoditiesBySN.Clear();
             CharaSimLoader.LoadedCommoditiesByItemId.Clear();
-            labelItemStatus.Text = count + "Cash アイテムが統合されました。";
+            labelItemStatus.Text = count + "ポイントアイテムが統合されました。";
         }
 
         private void buttonItemCharItem_CheckedChanged(object sender, EventArgs e)
@@ -3290,19 +3399,19 @@ namespace WzComparerR2
             {
                 case Keys.Escape:
                     frm.Hide();
-                    break;
+                    return;
                 case Keys.Up:
                     frm.Top -= 1;
-                    break;
+                    return;
                 case Keys.Down:
                     frm.Top += 1;
-                    break;
+                    return;
                 case Keys.Left:
                     frm.Left -= 1;
-                    break;
+                    return;
                 case Keys.Right:
                     frm.Left += 1;
-                    break;
+                    return;
             }
 
             Skill skill = frm.TargetItem as Skill;
@@ -3326,6 +3435,8 @@ namespace WzComparerR2
                     case Keys.OemCloseBrackets:
                         skill.Level += this.skillInterval;
                         break;
+                    default:
+                        return;
                 }
                 frm.Refresh();
             }
@@ -3542,7 +3653,16 @@ namespace WzComparerR2
                     comparer.OutputRemovedImg = chkOutputRemovedImg.Checked;
                     comparer.EnableDarkMode = chkEnableDarkMode.Checked;
                     comparer.OutputSkillTooltip = chkOutputSkillTooltip.Checked;
+                    comparer.OutputItemTooltip = chkOutputItemTooltip.Checked;
+                    comparer.OutputGearTooltip = chkOutputEqpTooltip.Checked;
+                    comparer.OutputMobTooltip = chkOutputMobTooltip.Checked;
+                    comparer.OutputNpcTooltip = chkOutputNpcTooltip.Checked;
+                    comparer.OutputCashTooltip = chkOutputCashTooltip.Checked;
                     comparer.HashPngFileName = chkHashPngFileName.Checked;
+                    comparer.ShowObjectID = chkShowObjectID.Checked;
+                    comparer.ShowChangeType = chkShowChangeType.Checked;
+                    comparer.ShowPrice = chkShowPrice.Checked;
+                    comparer.Enable22AniStyle = GearGraphics.is22aniStyle;
                     comparer.StateInfoChanged += new EventHandler(comparer_StateInfoChanged);
                     comparer.StateDetailChanged += new EventHandler(comparer_StateDetailChanged);
                     try
@@ -3558,9 +3678,26 @@ namespace WzComparerR2
                                 fileOld.Header.FileName,
                                 fileOld.GetMergedVersion()
                                 );
-                            switch (MessageBoxEx.Show(txt, "WZ Compare", MessageBoxButtons.YesNoCancel))
+                            switch (MessageBoxEx.Show(txt, "WZ比較", MessageBoxButtons.YesNoCancel))
                             {
                                 case DialogResult.Yes:
+                                    btnEasyCompare.Enabled = false;
+                                    cmbComparePng.Enabled = false;
+                                    chkOutputPng.Enabled = false;
+                                    chkResolvePngLink.Enabled = false;
+                                    chkOutputAddedImg.Enabled = false;
+                                    chkOutputRemovedImg.Enabled = false;
+                                    chkEnableDarkMode.Enabled = false;
+                                    chkOutputSkillTooltip.Enabled = false;
+                                    chkOutputItemTooltip.Enabled = false;
+                                    chkOutputEqpTooltip.Enabled = false;
+                                    chkOutputMobTooltip.Enabled = false;
+                                    chkOutputNpcTooltip.Enabled = false;
+                                    // chkOutputCashTooltip.Enabled = false;
+                                    chkShowObjectID.Enabled = false;
+                                    chkShowChangeType.Enabled = false;
+                                    chkShowPrice.Enabled = false;
+                                    chkHashPngFileName.Enabled = false;
                                     comparer.EasyCompareWzFiles(fileNew, fileOld, dlg.SelectedPath);
                                     return;
 
@@ -3591,6 +3728,23 @@ namespace WzComparerR2
                         compareThread = null;
                         labelXComp1.Text = "比較が完了しました。 時間が経過した：" + sw.Elapsed.ToString();
                         labelXComp2.Text = "";
+                        btnEasyCompare.Enabled = true;
+                        cmbComparePng.Enabled = true;
+                        chkOutputPng.Enabled = true;
+                        chkResolvePngLink.Enabled = true;
+                        chkOutputAddedImg.Enabled = true;
+                        chkOutputRemovedImg.Enabled = true;
+                        chkEnableDarkMode.Enabled = true;
+                        chkOutputSkillTooltip.Enabled = true;
+                        chkOutputItemTooltip.Enabled = true;
+                        chkOutputEqpTooltip.Enabled = true;
+                        chkOutputMobTooltip.Enabled = true;
+                        chkOutputNpcTooltip.Enabled = true;
+                        // chkOutputCashTooltip.Enabled = true;
+                        chkShowObjectID.Enabled = true;
+                        chkShowChangeType.Enabled = true;
+                        chkShowPrice.Enabled = true;
+                        chkHashPngFileName.Enabled = true;
                     }
                 });
                 compareThread.Priority = ThreadPriority.Highest;
@@ -3681,6 +3835,15 @@ namespace WzComparerR2
 
         private void buttonItem1_Click(object sender, EventArgs e)
         {
+#if NET6_0_OR_GREATER
+            Process.Start(new ProcessStartInfo
+            {
+                UseShellExecute = true,
+                FileName = "https://github.com/HikariCalyx/WzComparerR2-JMS/issues",
+            });
+#else
+            Process.Start("https://github.com/HikariCalyx/WzComparerR2-JMS/issues");
+#endif
         }
 
         private void labelItemStatus_TextChanged(object sender, EventArgs e)
@@ -3700,15 +3863,9 @@ namespace WzComparerR2
 
         private void buttonItemUpdate_Click(object sender, EventArgs e)
         {
-#if NET6_0_OR_GREATER
-            Process.Start(new ProcessStartInfo
-            {
-                UseShellExecute = true,
-                FileName = "https://github.com/HikariCalyx/WzComparerR2-JMS/releases",
-            });
-#else
-            Process.Start("https://github.com/HikariCalyx/WzComparerR2-JMS/releases");
-#endif
+            var frm = new FrmUpdater();
+            frm.Load(WcR2Config.Default);
+            frm.Show();
         }
 
         private void btnItemOptions_Click(object sender, System.EventArgs e)
@@ -3732,14 +3889,14 @@ namespace WzComparerR2
                 {
                     form.Show();
                     form.BringToFront();
-                    MessageBoxEx.Show("終了する前にゲームパッチャーを閉じてください。", "注意", MessageBoxButtons.OK);
+                    MessageBoxEx.Show(this, "終了する前にゲームパッチャーを閉じてください。", "注意", MessageBoxButtons.OK);
                     e.Cancel = true;
                     return;
                 }
             }
             if (compareThread != null)
             {
-                if (DialogResult.Yes == MessageBoxEx.Show("比較が進行中です。 中絶しますか?", "注意", MessageBoxButtons.YesNo))
+                if (DialogResult.Yes == MessageBoxEx.Show(this, "比較が進行中です。 中絶しますか?", "注意", MessageBoxButtons.YesNo))
                 {
                     compareThread.Interrupt();
                     compareThread = null;
@@ -3753,7 +3910,7 @@ namespace WzComparerR2
                     return;
                 }
             }
-            DialogResult result = MessageBoxEx.Show("終了しますか?", "確認", MessageBoxButtons.YesNo);
+            DialogResult result = MessageBoxEx.Show(this, "終了しますか?", "確認", MessageBoxButtons.YesNo);
             if (result == DialogResult.Yes)
             {
                 e.Cancel = false;  //点击OK
@@ -3761,6 +3918,18 @@ namespace WzComparerR2
             else
             {
                 e.Cancel = true;
+            }
+        }
+
+        private async void MainForm_Shown(object sender, EventArgs e)
+        {
+            //Automatic Update Check
+            bool isUpdateRequired = await AutomaticCheckUpdate();
+            if (isUpdateRequired)
+            {
+                var frm = new FrmUpdater();
+                frm.Load(WcR2Config.Default);
+                frm.Show();
             }
         }
 
@@ -3778,6 +3947,7 @@ namespace WzComparerR2
 
         private static string RemoveInvalidFileNameChars(string fileName)
         {
+            if (String.IsNullOrEmpty(fileName)) return "未知";
             string invalidChars = new string(System.IO.Path.GetInvalidFileNameChars());
             string regexPattern = $"[{Regex.Escape(invalidChars)}]";
             return Regex.Replace(fileName, regexPattern, "_");
@@ -3790,6 +3960,42 @@ namespace WzComparerR2
         public static Wz_Node AsWzNode(this Node node)
         {
             return (node?.Tag as WeakReference)?.Target as Wz_Node;
+        }
+
+        public static void ClearLayoutCellInfo(this AdvTree advTree)
+        {
+            var bindingPrivateField = BindingFlags.NonPublic | BindingFlags.Instance;
+            {
+                var field1 = advTree.GetType().GetField("Ֆ", bindingPrivateField);
+                var obj1 = field1.GetValue(advTree);
+                if (obj1 != null)
+                {
+                    var field2 = obj1.GetType().BaseType.GetField("ӹ", bindingPrivateField);
+                    var obj2 = field2.GetValue(obj1);
+                    if (obj2 != null)
+                    {
+                        var field3 = obj2.GetType().GetField("ܦ", bindingPrivateField);
+                        var obj3 = field3.GetValue(obj2);
+                        if (obj3 != null)
+                        {
+                            field3.SetValue(obj2, null);
+                        }
+                    }
+                }
+            }
+            {
+                var display = advTree.NodeDisplay as NodeTreeDisplay;
+                if (display != null)
+                {
+                    var field4 = display.GetType().GetField("☼", bindingPrivateField);
+                    var obj4 = field4.GetValue(display) as NodeCellRendererEventArgs;
+                    if (obj4 != null)
+                    {
+                        obj4.Node = null;
+                        obj4.Cell = null;
+                    }
+                }
+            }
         }
     }
     #endregion

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
 using System.Drawing;
@@ -8,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using DevComponents.AdvTree;
 using DevComponents.DotNetBar;
@@ -59,14 +59,15 @@ namespace WzComparerR2
             }
             cmbComparePng.SelectedItem = WzPngComparison.SizeAndDataLength;
         }
-        
+
+        SortedDictionary<string, long> patchedFileSizes = new SortedDictionary<string, long>();
+        List<string> patchedFileIndex = new List<string>();
+        Dictionary<string, string> finishedFileIndex = new Dictionary<string, string>();
         public Encoding PatcherNoticeEncoding { get; set; }
 
-        Thread patchThread;
-        EventWaitHandle waitHandle;
-        bool waiting;
-        string loggingFileName;
-        bool isUpdating;
+        long availableDiskSpace;
+        private bool isUpdating;
+        private PatcherSession patcherSession;
 
         private PatcherSetting SelectedPatcherSetting => comboBoxEx1.SelectedItem as PatcherSetting;
 
@@ -184,15 +185,15 @@ namespace WzComparerR2
                     switch (MessageBoxEx.Show(string.Format("サイズ: {0:N0} バイト\r\n最終更新日: {1:yyyy年M月d日 HH:mm:ss}\r\nダウンロードしますか？\r\n\r\nYes - ダウンロード\r\nNo - パッチファイルのURLをクリップボードにコピー\r\nCancel - ダウンロードしないこと", item.FileLength, item.LastModified), "確認", MessageBoxButtons.YesNoCancel))
                     {
                         case DialogResult.Yes:
-                            #if NET6_0_OR_GREATER
+#if NET6_0_OR_GREATER
                             Process.Start(new ProcessStartInfo
                             {
                                 UseShellExecute = true,
                                 FileName = txtUrl.Text,
                             });
-                            #else
+#else
                             Process.Start(txtUrl.Text);
-                            #endif
+#endif
                             return;
 
                         case DialogResult.No:
@@ -216,9 +217,9 @@ namespace WzComparerR2
 
         private void FrmPatcher_FormClosed(object sender, FormClosedEventArgs e)
         {
-            if (patchThread != null && patchThread.IsAlive)
+            if (this.patcherSession != null && !this.patcherSession.IsCompleted)
             {
-                patchThread = null;
+                this.patcherSession.Cancel();
             }
             ConfigManager.Reload();
             WcR2Config.Default.PatcherSettings.Clear();
@@ -242,7 +243,7 @@ namespace WzComparerR2
             OpenFileDialog dlg = new OpenFileDialog();
             dlg.Title = "パッチファイルの選択";
             dlg.Filter = "パッチファイル (*.patch;*.exe)|*.patch;*.exe";
-            if (dlg.ShowDialog() == DialogResult.OK)
+            if (dlg.ShowDialog(this) == DialogResult.OK)
             {
                 txtPatchFile.Text = dlg.FileName;
             }
@@ -252,7 +253,7 @@ namespace WzComparerR2
         {
             FolderBrowserDialog dlg = new FolderBrowserDialog();
             dlg.Description = "メイプルストーリーのインストール ディレクトリを選択してください。";
-            if (dlg.ShowDialog() == DialogResult.OK)
+            if (dlg.ShowDialog(this) == DialogResult.OK)
             {
                 txtMSFolder.Text = dlg.SelectedPath;
             }
@@ -260,38 +261,7 @@ namespace WzComparerR2
 
         private void buttonXPatch_Click(object sender, EventArgs e)
         {
-            if (patchThread != null)
-            {
-                if (waiting)
-                {
-                    waitHandle.Set();
-                    waiting = false;
-                    return;
-                }
-                else
-                {
-                    MessageBoxEx.Show("パッチはすでに進行中です。");
-                    return;
-                }
-            }
-            compareFolder = null;
-            if (chkCompare.Checked)
-            {
-                FolderBrowserDialog dlg = new FolderBrowserDialog();
-                dlg.Description = "比較結果の保存先フォルダーを選択してください。";
-                if (dlg.ShowDialog() != DialogResult.OK)
-                {
-                    return;
-                }
-                compareFolder = dlg.SelectedPath;
-            }
-
-            patchFile = txtPatchFile.Text;
-            msFolder = txtMSFolder.Text;
-            prePatch = chkPrePatch.Checked;
-            deadPatch = chkDeadPatch.Checked;
-
-            if (!File.Exists(msFolder + "//MapleStory.exe") && !File.Exists(msFolder + "//MapleStoryT.exe"))
+            if (!File.Exists(txtMSFolder.Text + "//MapleStory.exe") && !File.Exists(txtMSFolder.Text + "//MapleStoryT.exe"))
             {
                 DialogResult PatcherPromptResult = MessageBoxEx.Show("選択したフォルダは有効なメイプルフォルダではないようです。\r\nそれでも続行しますか?", "警告", MessageBoxButtons.YesNo);
                 if (PatcherPromptResult == System.Windows.Forms.DialogResult.No)
@@ -299,46 +269,159 @@ namespace WzComparerR2
                     return;
                 }
             }
+            if (this.patcherSession != null)
+            {
+                if (this.patcherSession.State == PatcherTaskState.WaitForContinue)
+                {
+                    this.patcherSession.Continue();
+                    return;
+                }
+                else if (!this.patcherSession.PatchExecTask.IsCompleted)
+                {
+                    MessageBoxEx.Show("パッチはすでに進行中です。");
+                    return;
+                }
+            }
+            string compareFolder = null;
+            if (chkCompare.Checked)
+            {
+                FolderBrowserDialog dlg = new FolderBrowserDialog();
+                dlg.Description = "比較結果の保存先フォルダーを選択してください。";
+                if (dlg.ShowDialog(this) != DialogResult.OK)
+                {
+                    return;
+                }
+                compareFolder = dlg.SelectedPath;
+            }
 
-            patchThread = new Thread(() => ExecutePatch(patchFile, msFolder, prePatch));
-            patchThread.Priority = ThreadPriority.Highest;
-            waitHandle = new EventWaitHandle(false, EventResetMode.AutoReset);
-            waiting = false;
-            patchThread.Start();
-            panelEx2.Visible = true;
-            expandablePanel2.Height = 340;
+            var session = new PatcherSession()
+            {
+                PatchFile = txtPatchFile.Text,
+                MSFolder = txtMSFolder.Text,
+                PrePatch = chkPrePatch.Checked,
+                DeadPatch = chkDeadPatch.Checked,
+            };
+            session.LoggingFileName = Path.Combine(session.MSFolder, $"wcpatcher_{DateTime.Now:yyyyMMdd_HHmmssfff}.log");
+            session.PatchExecTask = Task.Run(() => this.ExecutePatchAsync(session, session.CancellationToken));
+            this.patcherSession = session;
         }
 
-        string patchFile;
-        string msFolder;
-        string compareFolder;
-        bool prePatch;
-        bool deadPatch;
-        string htmlFilePath;
-        FileStream htmlFile;
-        StreamWriter sw;
-        Dictionary<Wz_Type, List<PatchPartContext>> typedParts;
-
-        private void ExecutePatch(string patchFile, string msFolder, bool prePatch)
+        private async Task ExecutePatchAsync(PatcherSession session, CancellationToken cancellationToken)
         {
+            void AppendStateText(string text)
+            {
+                this.Invoke(new Action<string>(t => this.txtPatchState.AppendText(t)), text);
+                if (session.LoggingFileName != null)
+                {
+                    File.AppendAllText(session.LoggingFileName, text, Encoding.UTF8);
+                }
+            }
+
+            this.Invoke(() =>
+            {
+                this.advTreePatchFiles.Nodes.Clear();
+                this.txtNotice.Clear();
+                this.txtPatchState.Clear();
+                this.panelEx2.Enabled = true;
+            });
+
             WzPatcher patcher = null;
-            advTreePatchFiles.Nodes.Clear();
-            txtNotice.Clear();
-            txtPatchState.Clear();
-            this.loggingFileName = Path.Combine(msFolder, $"wcpatcher_{DateTime.Now:yyyyMMdd_HHmmssfff}.log");
+            session.State = PatcherTaskState.Prepatch;
+
             try
             {
-                patcher = new WzPatcher(patchFile);
+                patcher = new WzPatcher(session.PatchFile);
                 patcher.NoticeEncoding = this.PatcherNoticeEncoding ?? Encoding.Default;
-                patcher.PatchingStateChanged += new EventHandler<PatchingEventArgs>(patcher_PatchingStateChanged);
-                AppendStateText($"パッチファイル名: {patchFile}\r\n");
+                patcher.PatchingStateChanged += (o, e) => this.patcher_PatchingStateChanged(o, e, session, AppendStateText);
+                AppendStateText($"パッチファイル名: {session.PatchFile}\r\n");
                 AppendStateText("パッチを分析中...");
-                patcher.OpenDecompress();
-                AppendStateText("完了\r\n");
-                if (prePatch)
+                long patchedAllFileSize = 0;
+                long decompressedSize = patcher.PrePatch(cancellationToken);
+                availableDiskSpace = RemainingDiskSpace(session.MSFolder);
+                this.Invoke(() =>
                 {
-                    AppendStateText("パッチを準備中... \r\n");
-                    long decompressedSize = patcher.PrePatch();
+                    this.txtNotice.Text = patcher.NoticeText;
+                    foreach (PatchPartContext part in patcher.PatchParts)
+                    {
+                        this.advTreePatchFiles.Nodes.Add(CreateFileNode(part));
+                    }
+                });
+                patcher.OpenDecompress(cancellationToken);
+                StringBuilder diskSpaceMessage = new StringBuilder();
+                patchedFileSizes.Add("ZOther", 0);
+                foreach (PatchPartContext part in patcher.PatchParts)
+                {
+                    switch (part.Type)
+                    {
+                        case 0:
+                        case 1:
+                            patchedAllFileSize += part.NewFileLength;
+                            break;
+                        case 2:
+                            patchedAllFileSize -= part.NewFileLength;
+                            break;
+                    }
+                    if (patcher.IsKMST1125Format.Value)
+                    {
+                        string[] patchedFileDirectory = part.FileName.Split('\\');
+                        if (part.Type == 1 && (patchedFileDirectory[0] == "Data" || patchedFileDirectory[0] == "NxOverlay")) patchedFileIndex.Add(part.FileName);
+                        if (patchedFileDirectory[0] == "Data")
+                        {
+                            if (!patchedFileSizes.ContainsKey(patchedFileDirectory[1])) patchedFileSizes.Add(patchedFileDirectory[1], 0);
+                            switch (part.Type)
+                            {
+                                case 0:
+                                case 1:
+                                    patchedFileSizes[patchedFileDirectory[1]] += part.NewFileLength;
+                                    break;
+                                case 2:
+                                    patchedFileSizes[patchedFileDirectory[1]] -= part.NewFileLength;
+                                    break;
+                            }
+                        }
+                        else
+                        {
+                            switch (part.Type)
+                            {
+                                case 0:
+                                case 1:
+                                    patchedFileSizes["ZOther"] += part.NewFileLength;
+                                    break;
+                                case 2:
+                                    patchedFileSizes["ZOther"] -= part.NewFileLength;
+                                    break;
+                            }
+                        }
+                    }
+                }
+                foreach (string key in patchedFileSizes.Keys)
+                {
+                    switch (key)
+                    {
+                        case "ZOther":
+                            diskSpaceMessage.AppendLine(string.Format("他のファイルに必要なスペース: {0}", GetBothByteAndGBValue(patchedFileSizes[key])));
+                            break;
+                        default:
+                            diskSpaceMessage.AppendLine(string.Format("「{0}」に必要なスペース: {1}", key, GetBothByteAndGBValue(patchedFileSizes[key])));
+                            break;
+                    }
+                }
+                patchedFileIndex.Sort();
+                diskSpaceMessage.AppendLine(string.Format("必要な合計スペース: {0}", GetBothByteAndGBValue(patchedAllFileSize)));
+                diskSpaceMessage.AppendLine(string.Format("使用可能なディスク容量: {0}", GetBothByteAndGBValue(availableDiskSpace)));
+                AppendStateText(diskSpaceMessage.ToString());
+                AppendStateText("完了\r\n");
+                if (patchedAllFileSize > availableDiskSpace)
+                {
+                    DialogResult PatcherPromptResult = MessageBoxEx.Show(this, diskSpaceMessage.ToString() + "\r\nパッチを適用するにはディスク容量が足りない可能性があります。\r\nそれでも続行しますか?", "警告", MessageBoxButtons.YesNo);
+                    if (PatcherPromptResult == DialogResult.No)
+                    {
+                        throw new OperationCanceledException("パッチは中止されました。");
+                    }
+                }
+                if (session.PrePatch)
+                {
+                    AppendStateText("パッチを準備中...\r\n");
                     if (patcher.IsKMST1125Format.Value)
                     {
                         AppendStateText("パッチのタイプ: KMST1125\r\n");
@@ -347,65 +430,67 @@ namespace WzComparerR2
                             AppendStateText($"パッチ前のチェックサムをチェックするファイルの数: {patcher.OldFileHash.Count}\r\n");
                         }
                     }
-                    AppendStateText(string.Format("パッチサイズ: {0:N0} バイト...\r\n", decompressedSize));
-                    AppendStateText(string.Format("パッチを適用するファイルの数: {0}...\r\n",
-                        patcher.PatchParts == null ? -1 : patcher.PatchParts.Count));
-                    txtNotice.Text = patcher.NoticeText;
-                    foreach (PatchPartContext part in patcher.PatchParts)
+                    AppendStateText(string.Format("パッチサイズ: {0:N0} バイト\r\n", decompressedSize));
+                    AppendStateText(string.Format("パッチを適用するファイルの数: {0}\r\n", patcher.PatchParts.Count));
+
+                    this.Invoke(() =>
                     {
-                        advTreePatchFiles.Nodes.Add(CreateFileNode(part));
-                    }
-                    advTreePatchFiles.Enabled = true;
-                    AppendStateText("パッチファイルを選択した後、[パッチ] ボタンをクリックして開始します。\r\n");
-                    waiting = true;
-                    waitHandle.WaitOne();
-                    advTreePatchFiles.Enabled = false;
+                        this.advTreePatchFiles.BeginUpdate();
+                        this.advTreePatchFiles.Enabled = true;
+                        this.advTreePatchFiles.EndUpdate();
+                    });
+
+                    AppendStateText("パッチを適用するファイルの順序を調整したら、「パッチ」ボタンをクリックして開始します。\r\n");
+                    session.State = PatcherTaskState.WaitForContinue;
+                    await session.WaitForContinueAsync();
+                    this.Invoke(() =>
+                    {
+                        this.advTreePatchFiles.Enabled = false;
+                    });
+                    session.State = PatcherTaskState.Patching;
                     patcher.PatchParts.Clear();
-                    for (int i = 0, j = advTreePatchFiles.Nodes.Count; i < j; i++)
+                    foreach (Node node in this.advTreePatchFiles.Nodes)
                     {
-                        if (advTreePatchFiles.Nodes[i].Checked)
+                        if (node.Checked && node.Tag is PatchPartContext part)
                         {
-                            patcher.PatchParts.Add(advTreePatchFiles.Nodes[i].Tag as PatchPartContext);
+                            patcher.PatchParts.Add(part);
                         }
-                        advTreePatchFiles.Nodes[i].Enabled = false;
                     }
-                    patcher.PatchParts.Sort((part1, part2) => part1.Offset.CompareTo(part2.Offset));
                 }
-                AppendStateText("パッチ中...\r\n");
-                DateTime time = DateTime.Now;
-                patcher.Patch(msFolder);
-                if (sw != null)
+                if (patcher.IsKMST1125Format.Value && session.DeadPatch)
                 {
-                    sw.WriteLine("</table>");
-                    sw.WriteLine("</p>");
-
-                    //html结束
-                    sw.WriteLine("</body>");
-                    sw.WriteLine("</html>");
-
-                    try
+                    AppendStateText("即時パッチ実行プラン\r\n");
+                    session.deadPatchExecutionPlan = new();
+                    session.deadPatchExecutionPlan.Build(patcher.PatchParts);
+                    foreach (var part in patcher.PatchParts)
                     {
-                        if (sw != null)
+                        if (session.deadPatchExecutionPlan.Check(part.FileName, out var filesCanInstantUpdate))
                         {
-                            sw.Flush();
-                            sw.Close();
+                            AppendStateText($"+ ファイル[{part.FileName}]実行\r\n");
+                            foreach (var fileName in filesCanInstantUpdate)
+                            {
+                                AppendStateText($"  - ファイル[{fileName}]適用\r\n");
+                            }
+                        }
+                        else
+                        {
+                            AppendStateText($"- ファイル[{part.FileName}]を実行しますが、適用は延期されます\r\n");
                         }
                     }
-                    catch
-                    {
-                    }
+                    // disable force validation
+                    patcher.ThrowOnValidationFailed = false;
                 }
+                AppendStateText("パッチ適用中\r\n");
+                var sw = Stopwatch.StartNew();
+                patcher.Patch(session.MSFolder, cancellationToken);
+                sw.Stop();
                 AppendStateText("完了\r\n");
-                TimeSpan interval = DateTime.Now - time;
-                MessageBoxEx.Show(this, "パッチ完了 " + interval.ToString(), "Patcher");
+                session.State = PatcherTaskState.Complete;
+                MessageBoxEx.Show(this, "パッチ完了。経過時間: " + sw.Elapsed, "Patcher");
             }
-            catch (ThreadAbortException)
+            catch (OperationCanceledException)
             {
-                // MessageBoxEx.Show("パッチは中止されました。", "Patcher");
-            }
-            catch (ThreadInterruptedException)
-            {
-                // MessageBoxEx.Show("パッチは中止されました。", "Patcher");
+                MessageBoxEx.Show(this.Owner, "パッチは中止されました。", "Patcher");
             }
             catch (UnauthorizedAccessException ex)
             {
@@ -415,83 +500,59 @@ namespace WzComparerR2
             catch (Exception ex)
             {
                 AppendStateText(ex.ToString());
-                MessageBoxEx.Show(this, ex.ToString(), "Patcher"); 
+                MessageBoxEx.Show(this, ex.ToString(), "Patcher");
             }
             finally
             {
-                try
-                {
-                    if (sw != null)
-                    {
-                        sw.Flush();
-                        sw.Close();
-                    }
-                }
-                catch
-                {
-                }
-                try
-                {
-                    if (htmlFile != null)
-                    {
-                        htmlFile.Flush();
-                        htmlFile.Close();
-                    }
-                }
-                catch
-                {
-                }
-                htmlFilePath = null;
-
+                patchedFileSizes.Clear();
+                patchedFileIndex.Clear();
+                finishedFileIndex.Clear();
+                session.State = PatcherTaskState.Complete;
                 if (patcher != null)
                 {
                     patcher.Close();
                     patcher = null;
                 }
-                patchThread = null;
-                waitHandle = null;
                 GC.Collect();
-
-                panelEx2.Visible = false;
-                expandablePanel2.Height = 157;
+                panelEx2.Enabled = false;
             }
         }
 
-        private void patcher_PatchingStateChanged(object sender, PatchingEventArgs e)
+        private void patcher_PatchingStateChanged(object sender, PatchingEventArgs e, PatcherSession session, Action<string> logFunc)
         {
             switch (e.State)
             {
                 case PatchingState.PatchStart:
-                    AppendStateText("[" + e.Part.FileName + "] パッチ適用中\r\n");
+                    logFunc("[" + e.Part.FileName + "] パッチ適用中 \r\n");
                     break;
                 case PatchingState.VerifyOldChecksumBegin:
-                    AppendStateText("  パッチ前のチェックサムを確認中...");
-                    progressBarX1.Maximum = (int)e.Part.OldFileLength;
+                    logFunc("  パッチ前のチェックサムを確認中...");
                     break;
                 case PatchingState.VerifyOldChecksumEnd:
-                    AppendStateText("  完了\r\n");
+                    logFunc("  完了\r\n");
                     break;
                 case PatchingState.VerifyNewChecksumBegin:
-                    AppendStateText("  パッチ後のチェックサムを確認中...");
+                    logFunc("  パッチ後のチェックサムを確認中...");
                     break;
                 case PatchingState.VerifyNewChecksumEnd:
-                    AppendStateText("  完了\r\n");
+                    logFunc("  完了\r\n");
                     break;
                 case PatchingState.TempFileCreated:
-                    AppendStateText("  一時ファイルの作成中...\r\n");
+                    logFunc("  一時ファイルの作成中...\r\n");
                     progressBarX1.Maximum = e.Part.NewFileLength;
+                    session.TemporaryFileMapping.Add(e.Part.FileName, e.Part.TempFilePath);
                     break;
                 case PatchingState.TempFileBuildProcessChanged:
                     progressBarX1.Value = (int)e.CurrentFileLength;
                     progressBarX1.Text = string.Format("{0:N0}/{1:N0}", e.CurrentFileLength, e.Part.NewFileLength);
                     break;
                 case PatchingState.TempFileClosed:
-                    AppendStateText("  一時ファイルが作成されました。\r\n");
+                    logFunc("  一時ファイルが作成されました。\r\n");
                     progressBarX1.Value = 0;
                     progressBarX1.Maximum = 0;
                     progressBarX1.Text = string.Empty;
 
-                    if (!string.IsNullOrEmpty(this.compareFolder)
+                    if (!string.IsNullOrEmpty(session.CompareFolder)
                         && e.Part.Type == 1
                         && Path.GetExtension(e.Part.FileName).Equals(".wz", StringComparison.OrdinalIgnoreCase)
                         && !Path.GetFileName(e.Part.FileName).Equals("list.wz", StringComparison.OrdinalIgnoreCase))
@@ -500,7 +561,7 @@ namespace WzComparerR2
                         Wz_Structure wzold = new Wz_Structure();
                         try
                         {
-                            AppendStateText("  ファイルを比較中...\r\n");
+                            logFunc("  ファイルを比較中...\r\n");
                             EasyComparer comparer = new EasyComparer();
                             comparer.OutputPng = chkOutputPng.Checked;
                             comparer.OutputAddedImg = chkOutputAddedImg.Checked;
@@ -508,18 +569,9 @@ namespace WzComparerR2
                             comparer.EnableDarkMode = chkEnableDarkMode.Checked;
                             comparer.Comparer.PngComparison = (WzPngComparison)cmbComparePng.SelectedItem;
                             comparer.Comparer.ResolvePngLink = chkResolvePngLink.Checked;
-                            comparer.PatchingStateChanged += new EventHandler<PatchingEventArgs>(patcher_PatchingStateChanged);
-                            //wznew.Load(e.Part.TempFilePath, false);
-                            //wzold.Load(e.Part.OldFilePath, false);
-                            //comparer.EasyCompareWzFiles(wznew.wz_files[0], wzold.wz_files[0], this.compareFolder);
-                            string tempDir = e.Part.TempFilePath;
-                            while (Path.GetDirectoryName(tempDir) != msFolder)
-                            {
-                                tempDir = Path.GetDirectoryName(tempDir);
-                            }
                             wznew.Load(e.Part.TempFilePath, false);
                             wzold.Load(e.Part.OldFilePath, false);
-                            comparer.EasyCompareWzFiles(wznew.wz_files[0], wzold.wz_files[0], this.compareFolder);
+                            comparer.EasyCompareWzFiles(wznew.wz_files[0], wzold.wz_files[0], session.CompareFolder);
                         }
                         catch (Exception ex)
                         {
@@ -531,68 +583,56 @@ namespace WzComparerR2
                             wzold.Clear();
                             GC.Collect();
                         }
-
-                        if (this.deadPatch && typedParts[e.Part.WzType].Count == ((WzPatcher)sender).PatchParts.Where(part => part.WzType == e.Part.WzType).Count())
-                        {
-                            foreach (PatchPartContext part in typedParts[e.Part.WzType].Where(part => part.Type == 1))
-                            {
-                                ((WzPatcher)sender).SafeMove(part.TempFilePath, part.OldFilePath);
-                            }
-                            AppendStateText("  ファイルを適用しています...\r\n");
-                        }
                     }
 
-                    if (string.IsNullOrEmpty(this.compareFolder) && this.deadPatch && e.Part.Type == 1 && sender is WzPatcher patcher)
+                    if (session.DeadPatch && e.Part.Type == 1 && sender is WzPatcher patcher)
                     {
                         if (patcher.IsKMST1125Format.Value)
                         {
-                            // TODO: we should build the file dependency tree to make sure all old files could be overridden safely.
-                            AppendStateText("  (即時パッチ)ファイル適用の延期...\r\n");
+                            if (session.deadPatchExecutionPlan?.Check(e.Part.FileName, out var filesCanInstantUpdate) ?? false)
+                            {
+                                long currentUsedDiskSpace = availableDiskSpace - RemainingDiskSpace(session.MSFolder);
+                                logFunc(string.Format("  (即時パッチ)占有ハードディスク容量: {0}\r\n", GetBothByteAndGBValue(currentUsedDiskSpace)));
+                                foreach (string fileName in filesCanInstantUpdate)
+                                {
+                                    if (session.TemporaryFileMapping.TryGetValue(fileName, out var temporaryFileName))
+                                    {
+                                        logFunc($"  (即時パッチ)ファイル[{fileName}]を適用中...\r\n");
+                                        patcher.SafeMove(temporaryFileName, Path.Combine(session.MSFolder, fileName));
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                logFunc("  (即時パッチ)ファイル適用の延期...\r\n");
+                            }
                         }
                         else
                         {
+                            logFunc("  (即時パッチ)ファイルを適用しています...\r\n");
                             patcher.SafeMove(e.Part.TempFilePath, e.Part.OldFilePath);
-                            AppendStateText("  (即時パッチ)ファイルを適用しています...\r\n");
                         }
                     }
                     break;
-                case PatchingState.CompareStarted:
-                    progressBarX1.Maximum = e.Part.NewFileLength;
-                    break;
-                case PatchingState.CompareProcessChanged:
-                    progressBarX1.Value = (int)e.CurrentFileLength;
-                    progressBarX1.Text = string.Format("{0:N0}/{1:N0}", e.CurrentFileLength, e.Part.NewFileLength);
-                    break;
-                case PatchingState.CompareFinished:
-                    progressBarX1.Value = 0;
-                    progressBarX1.Maximum = 0;
-                    progressBarX1.Text = string.Empty;
-                    break;
                 case PatchingState.PrepareVerifyOldChecksumBegin:
-                    AppendStateText($"パッチ前のチェックサムを確認中: {e.Part.FileName}");
+                    logFunc($"パッチ前のチェックサムを確認中: {e.Part.FileName}");
                     break;
                 case PatchingState.PrepareVerifyOldChecksumEnd:
-                    AppendStateText(" 完了\r\n");
+                    if (e.Part.OldChecksum != e.Part.OldChecksumActual)
+                    {
+                        logFunc(" 不一致\r\n");
+                    }
+                    else
+                    {
+                        logFunc(" 完了\r\n");
+                    }
                     break;
                 case PatchingState.ApplyFile:
-                    AppendStateText($"ファイルの適用: {e.Part.FileName}\r\n");
+                    logFunc($"ファイルの適用: {e.Part.FileName}\r\n");
                     break;
-            }
-        }
-
-        private void AppendStateText(string text)
-        {
-            try
-            {
-                this.Invoke((Action<string>)(t => { this.txtPatchState.AppendText(t); }), text);
-            }
-            catch (Exception ex)
-            {
-                ;
-            }
-            if (this.loggingFileName != null)
-            {
-                File.AppendAllText(this.loggingFileName, text, Encoding.UTF8);
+                case PatchingState.FileSkipped:
+                    logFunc("  スキップされたファイル: " + e.Part.FileName + "\r\n");
+                    break;
             }
         }
 
@@ -608,6 +648,7 @@ namespace WzComparerR2
                 case 2: node.Cells.Add(new Cell("削除", style)); break;
                 default: node.Cells.Add(new Cell(part.Type.ToString(), style)); break;
             }
+            node.Cells.Add(new Cell(part.Type.ToString(), style));
             node.Cells.Add(new Cell(part.NewFileLength.ToString("n0"), style));
             node.Cells.Add(new Cell(part.NewChecksum.ToString("x8"), style));
             node.Cells.Add(new Cell(part.OldChecksum?.ToString("x8"), style));
@@ -625,7 +666,7 @@ namespace WzComparerR2
             OpenFileDialog dlg = new OpenFileDialog();
             dlg.Title = "パッチファイルの選択";
             dlg.Filter = "パッチファイル (*.patch;*.exe)|*.patch;*.exe";
-            if (dlg.ShowDialog() == DialogResult.OK)
+            if (dlg.ShowDialog(this) == DialogResult.OK)
             {
                 txtPatchFile2.Text = dlg.FileName;
             }
@@ -635,7 +676,7 @@ namespace WzComparerR2
         {
             FolderBrowserDialog dlg = new FolderBrowserDialog();
             dlg.Description = "メイプルストーリーフォルダーを選択してください。";
-            if (dlg.ShowDialog() == DialogResult.OK)
+            if (dlg.ShowDialog(this) == DialogResult.OK)
             {
                 txtMSFolder2.Text = dlg.SelectedPath;
             }
@@ -656,7 +697,7 @@ namespace WzComparerR2
             dlg.InitialDirectory = Path.GetDirectoryName(txtPatchFile2.Text);
             dlg.FileName = Path.GetFileNameWithoutExtension(txtPatchFile2.Text) + "_reverse.patch";
 
-            if (dlg.ShowDialog() == DialogResult.OK)
+            if (dlg.ShowDialog(this) == DialogResult.OK)
             {
                 try
                 {
@@ -666,7 +707,7 @@ namespace WzComparerR2
                     builder.outputFileName = dlg.FileName;
                     builder.Build();
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                 }
             }
@@ -674,20 +715,184 @@ namespace WzComparerR2
 
         private void FrmPatcher_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (patchThread != null && patchThread.IsAlive)
+            if (this.patcherSession != null && this.patcherSession.State != PatcherTaskState.NotStarted && this.patcherSession.State != PatcherTaskState.Complete)
             {
-                DialogResult result = MessageBoxEx.Show("ゲームはパッチ適用中なので、パッチャー終了するとゲームデータが破損する可能性があります。\r\n\r\nそれでも終了しますか?", "確認", MessageBoxButtons.YesNo);
+                DialogResult result = MessageBoxEx.Show(this, "ゲームはパッチ適用中なので、パッチャー終了するとゲームデータが破損する可能性があります。\r\n\r\nそれでも終了しますか?", "確認", MessageBoxButtons.YesNo);
                 if (result == DialogResult.Yes)
                 {
-                    patchThread.Interrupt();
-                    patchThread = null;
-                    GC.Collect();
                     e.Cancel = false;
                 }
                 else
                 {
                     e.Cancel = true;
                 }
+            }
+        }
+
+        private long RemainingDiskSpace(string path)
+        {
+            string diskDrive = path.Substring(0, 2);
+            try
+            {
+                DriveInfo dinfo = new DriveInfo(diskDrive);
+                return dinfo.AvailableFreeSpace;
+            }
+            catch
+            {
+                return 0;
+            }
+        }
+
+        private string GetBothByteAndGBValue(long size)
+        {
+            string[] sizes = { "B", "KB", "MB", "GB" };
+            double targetbytes = size;
+            int order = 0;
+
+            while (targetbytes >= 1024 && order < sizes.Length)
+            {
+                order++;
+                targetbytes /= 1024;
+            }
+
+            if (size <= 1024)
+            {
+                return $"{size:N0} バイト";
+            }
+            else
+            {
+                return $"{size:N0} バイト ({targetbytes:0.##} {sizes[order]})";
+            }
+        }
+
+        class PatcherSession
+        {
+            public PatcherSession()
+            {
+                this.cancellationTokenSource = new CancellationTokenSource();
+            }
+
+            public string PatchFile;
+            public string MSFolder;
+            public string CompareFolder;
+            public bool PrePatch;
+            public bool DeadPatch;
+
+            public Task PatchExecTask;
+            public string LoggingFileName;
+            public PatcherTaskState State;
+
+            public DeadPatchExecutionPlan deadPatchExecutionPlan;
+            public Dictionary<string, string> TemporaryFileMapping = new();
+
+            public CancellationToken CancellationToken => this.cancellationTokenSource.Token;
+            private CancellationTokenSource cancellationTokenSource;
+            private TaskCompletionSource<bool> tcsWaiting;
+
+            public bool IsCompleted => this.PatchExecTask?.IsCompleted ?? true;
+
+            public void Cancel()
+            {
+                this.cancellationTokenSource.Cancel();
+            }
+
+            public async Task WaitForContinueAsync()
+            {
+                var tcs = new TaskCompletionSource<bool>();
+                this.tcsWaiting = tcs;
+                this.cancellationTokenSource.Token.Register(() => tcs.TrySetCanceled());
+                await tcs.Task;
+            }
+
+            public void Continue()
+            {
+                if (this.tcsWaiting != null)
+                {
+                    this.tcsWaiting.SetResult(true);
+                }
+            }
+        }
+
+        enum PatcherTaskState
+        {
+            NotStarted = 0,
+            Prepatch = 1,
+            WaitForContinue = 2,
+            Patching = 3,
+            Complete = 4,
+        }
+
+        class DeadPatchExecutionPlan
+        {
+            public DeadPatchExecutionPlan()
+            {
+                this.FileUpdateDependencies = new Dictionary<string, List<string>>();
+            }
+
+            public Dictionary<string, List<string>> FileUpdateDependencies { get; private set; }
+
+            public void Build(IEnumerable<PatchPartContext> orderedParts)
+            {
+                /*
+                 *  for examle:
+                 *    fileName   | type | dependencies               
+                 *    -----------|------|---------------     
+                 *    Mob_000.wz | 1    | Mob_000.wz   (self update)
+                 *    Mob_001.wz | 1    | Mob_001.wz, Mob_002.wz  (merge data)
+                 *    Mob_002.wz | 1    | Mob_001.wz, Mob_002.wz  (merge data)
+                 *    Mob_003.wz | 1    | Mob_001.wz, Mob_002.wz  (balance size from other file)
+                 *                                                 
+                 *  fileLastDependecy:                             
+                 *    key        | value                           
+                 *    -----------|----------------                 
+                 *    Mob_000.wz | Mob_000.wz
+                 *    Mob_001.wz | Mob_003.wz
+                 *    Mob_002.wz | Mob_003.wz
+                 *    Mob_003.wz | Mob_003.wz
+                 *    
+                 *  FileUpdateDependencies:
+                 *    key        | value
+                 *    -----------|----------------
+                 *    Mob_000.wz | Mob000.wz
+                 *    Mob_003.wz | Mob001.wz, Mob002.wz, Mob003.wz
+                 */
+
+                // find the last dependency
+                Dictionary<string, string> fileLastDependecy = new();
+                foreach (var part in orderedParts)
+                {
+                    if (part.Type == 0)
+                    {
+                        fileLastDependecy[part.FileName] = part.FileName;
+                    }
+                    else if (part.Type == 1)
+                    {
+                        fileLastDependecy[part.FileName] = part.FileName;
+                        foreach (var dep in part.DependencyFiles)
+                        {
+                            fileLastDependecy[dep] = part.FileName;
+                        }
+                    }
+                }
+
+                // reverse key and value
+                this.FileUpdateDependencies.Clear();
+                foreach (var grp in fileLastDependecy.GroupBy(kv => kv.Value, kv => kv.Key))
+                {
+                    this.FileUpdateDependencies.Add(grp.Key, grp.ToList());
+                }
+            }
+
+            public bool Check(string fileName, out IReadOnlyList<string> filesCanInstantUpdate)
+            {
+                if (this.FileUpdateDependencies.TryGetValue(fileName, out var value) && value != null && value.Count > 0)
+                {
+                    filesCanInstantUpdate = value;
+                    return true;
+                }
+
+                filesCanInstantUpdate = null;
+                return false;
             }
         }
     }
