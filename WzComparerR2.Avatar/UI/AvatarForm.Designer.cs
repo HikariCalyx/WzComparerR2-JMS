@@ -93,6 +93,8 @@ namespace WzComparerR2.Avatar.UI
             this.btnHayato = new DevComponents.DotNetBar.ButtonItem();
             this.btnKanna = new DevComponents.DotNetBar.ButtonItem();
             this.btnAngelicBuster = new DevComponents.DotNetBar.ButtonItem();
+            this.btnOldBokugen = new DevComponents.DotNetBar.ButtonItem();
+            this.btnNewBokugen = new DevComponents.DotNetBar.ButtonItem();
             this.btnPopuko = new DevComponents.DotNetBar.ButtonItem();
             this.btnPipimi = new DevComponents.DotNetBar.ButtonItem();
             this.btnMegumin = new DevComponents.DotNetBar.ButtonItem();
@@ -735,6 +737,8 @@ namespace WzComparerR2.Avatar.UI
             this.btnDskytian,
             this.Separator2,
             this.btnAngelicBuster,
+            this.btnOldBokugen,
+            this.btnNewBokugen,
             this.btnKanna,
             this.btnZero,
             this.btnPathfinder,
@@ -794,6 +798,7 @@ namespace WzComparerR2.Avatar.UI
             this.btnKanna.Text = "カンナ";
             this.btnKanna.Click += new System.EventHandler(this.btnKanna_Click);
             // 
+            // 
             // btnZero
             // 
             this.btnZero.Name = "btnZero";
@@ -806,6 +811,7 @@ namespace WzComparerR2.Avatar.UI
             this.btnBeastTamer.Name = "btnBeastTamer";
             this.btnBeastTamer.Text = "ビーストテーマー";
             this.btnBeastTamer.Click += new System.EventHandler(this.btnBeastTamer_Click);
+            // 
             // 
             // btnPathfinder
             // 
@@ -833,6 +839,20 @@ namespace WzComparerR2.Avatar.UI
             this.btnAngelicBuster.Name = "btnAngelicBuster";
             this.btnAngelicBuster.Text = "エンジェリックバスター";
             this.btnAngelicBuster.Click += new System.EventHandler(this.btnAngelicBuster_Click);
+            // 
+            // 
+            // btnOldBokugen
+            // 
+            this.btnOldBokugen.Name = "btnOldBokugen";
+            this.btnOldBokugen.Text = "墨玄(古い)";
+            this.btnOldBokugen.Click += new System.EventHandler(this.btnOldBokugen_Click);
+            // 
+            // 
+            // btnNewBokugen
+            // 
+            this.btnNewBokugen.Name = "btnNewBokugen";
+            this.btnNewBokugen.Text = "墨玄(新しい)";
+            this.btnNewBokugen.Click += new System.EventHandler(this.btnNewBokugen_Click);
             // 
             // 
             // btnPopuko
@@ -1100,6 +1120,8 @@ namespace WzComparerR2.Avatar.UI
         private DevComponents.DotNetBar.ButtonItem btnLara;
         private DevComponents.DotNetBar.ButtonItem btnLynn;
         private DevComponents.DotNetBar.ButtonItem btnAngelicBuster;
+        private DevComponents.DotNetBar.ButtonItem btnOldBokugen;
+        private DevComponents.DotNetBar.ButtonItem btnNewBokugen;
         private DevComponents.DotNetBar.ButtonItem btnPopuko;
         private DevComponents.DotNetBar.ButtonItem btnPipimi;
         private DevComponents.DotNetBar.ButtonItem btnMegumin;

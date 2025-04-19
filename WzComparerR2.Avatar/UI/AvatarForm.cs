@@ -1969,6 +1969,42 @@ namespace WzComparerR2.Avatar.UI
             }
         }
 
+        private void btnOldBokugen_Click(object sender, EventArgs e)
+        {
+            switch (MessageBoxEx.Show("基本墨玄(古い)を呼びますか？\r\n\r\nYes - 男\r\nNo - 女", "確認", MessageBoxButtons.YesNoCancel))
+            {
+                case DialogResult.Yes:
+                    LoadCode("2000,12000,50646,60050,1050575,1073510,1403000", 0);
+                    return;
+
+                case DialogResult.No:
+                    LoadCode("2000,12000,51659,61040,1051647,1073897,1403000", 0);
+                    return;
+
+                case DialogResult.Cancel:
+                default:
+                    return;
+            }
+        }
+
+        private void btnNewBokugen_Click(object sender, EventArgs e)
+        {
+            switch (MessageBoxEx.Show("基本墨玄(新しい)を呼びますか？\r\n\r\nYes - 男\r\nNo - 女", "確認", MessageBoxButtons.YesNoCancel))
+            {
+                case DialogResult.Yes:
+                    LoadCode("2041,12041,55661,63740,1050758,1070188,1403000", 0);
+                    return;
+
+                case DialogResult.No:
+                    LoadCode("2041,12041,56683,67230,1051837,1071203,1403000", 0);
+                    return;
+
+                case DialogResult.Cancel:
+                default:
+                    return;
+            }
+        }
+
         private void btnSaveAsGif_Click(object sender, EventArgs e)
         {
             if (this.avatar.Body == null || this.avatar.Head == null)
