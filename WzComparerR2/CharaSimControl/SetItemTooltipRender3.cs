@@ -421,7 +421,7 @@ namespace WzComparerR2.CharaSimControl
                 }
                 else if (specialPetSetEffectName && this.SetItem.SetItemName.EndsWith("セット"))
                 {
-                    effTitle = $"{Regex.Replace(this.SetItem.SetItemName, "セット$", "")} {effect.Key}세트 효과";
+                    effTitle = $"{Regex.Replace(this.SetItem.SetItemName, "セット$", "")} {effect.Key}セット効果";
                 }
                 else
                 {
