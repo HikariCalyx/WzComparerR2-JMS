@@ -34,6 +34,11 @@ namespace WzComparerR2.CharaSim
             return GetGearPropString(propType, value, 0);
         }
 
+        public static string[] GetGearPropString3(GearPropType propType, long value)
+        {
+            return GetGearPropString3(propType, value, 0);
+        }
+
         /// <summary>
         /// 获取GearPropType所对应的文字说明。
         /// </summary>
@@ -159,6 +164,256 @@ namespace WzComparerR2.CharaSim
             }
         }
 
+        public static string[] GetGearPropString3(GearPropType propType, long value, int signFlag)
+        {
+            string[] res = new string[2];
+            string sign;
+            switch (signFlag)
+            {
+                default:
+                case 0: //默认处理符号
+                    sign = value > 0 ? "+" : null;
+                    break;
+
+                case 1: //固定加号
+                    sign = "+";
+                    break;
+
+                case 2: //无特别符号
+                    sign = "";
+                    break;
+            }
+            switch (propType)
+            {
+                case GearPropType.incSTR:
+                    res[0] = "STR";
+                    res[1] = sign + value;
+                    return res;
+                case GearPropType.incSTRr:
+                    res[0] = "STR";
+                    res[1] = sign + value + "%";
+                    return res;
+                case GearPropType.incDEX:
+                    res[0] = "DEX";
+                    res[1] = sign + value;
+                    return res;
+                case GearPropType.incDEXr:
+                    res[0] = "DEX";
+                    res[1] = sign + value + "%";
+                    return res;
+                case GearPropType.incINT:
+                    res[0] = "INT";
+                    res[1] = sign + value;
+                    return res;
+                case GearPropType.incINTr:
+                    res[0] = "INT";
+                    res[1] = sign + value + "%";
+                    return res;
+                case GearPropType.incLUK:
+                    res[0] = "LUK";
+                    res[1] = sign + value;
+                    return res;
+                case GearPropType.incLUKr:
+                    res[0] = "LUK";
+                    res[1] = sign + value + "%";
+                    return res;
+                case GearPropType.incAllStat:
+                    res[0] = "Allｽﾃｰﾀｽ";
+                    res[1] = sign + value;
+                    return res;
+                case GearPropType.statR:
+                    res[0] = "Allｽﾃｰﾀｽ";
+                    res[1] = sign + value + "%";
+                    return res;
+                case GearPropType.incMHP:
+                    res[0] = "最大HP";
+                    res[1] = sign + value;
+                    return res;
+                case GearPropType.incMHPr:
+                    res[0] = "最大HP";
+                    res[1] = sign + value + "%";
+                    return res;
+                case GearPropType.incMMP:
+                    res[0] = "最大MP";
+                    res[1] = sign + value;
+                    return res;
+                case GearPropType.incMMPr:
+                    res[0] = "最大MP";
+                    res[1] = sign + value + "%";
+                    return res;
+                case GearPropType.incMDF:
+                    res[0] = "最大DF";
+                    res[1] = sign + value;
+                    return res;
+                case GearPropType.incPAD:
+                    res[0] = "攻撃力";
+                    res[1] = sign + value;
+                    return res;
+                case GearPropType.incPADr:
+                    res[0] = "攻撃力";
+                    res[1] = sign + value + "%";
+                    return res;
+                case GearPropType.incMAD:
+                    res[0] = "魔力";
+                    res[1] = sign + value;
+                    return res;
+                case GearPropType.incMADr:
+                    res[0] = "魔力";
+                    res[1] = sign + value + "%";
+                    return res;
+                case GearPropType.incPDD:
+                    res[0] = "防御力";
+                    res[1] = sign + value;
+                    return res;
+                case GearPropType.incPDDr:
+                    res[0] = "防御力";
+                    res[1] = sign + value + "%";
+                    return res;
+                case GearPropType.incSpeed:
+                    res[0] = "移動速度";
+                    res[1] = sign + value;
+                    return res;
+                case GearPropType.incJump:
+                    res[0] = "ジャンプ力";
+                    res[1] = sign + value;
+                    return res;
+                case GearPropType.damR:
+                case GearPropType.incDAMr:
+                    res[0] = "ダメージ";
+                    res[1] = sign + value + "%";
+                    return res;
+                case GearPropType.incCr:
+                    res[0] = "クリティカル率 : " + sign + value + "%";
+                    return res;
+                case GearPropType.incCDr:
+                    res[0] = "クリティカルダメージ : " + sign + value + "%";
+                    return res;
+                case GearPropType.knockback:
+                    res[0] = "直接打撃の時" + value + "%の確率でノックバック";
+                    return res;
+                case GearPropType.incPQEXPr:
+                    res[0] = "Party Quest EXP: +" + value + "%";
+                    return res;
+                case GearPropType.incBDR:
+                case GearPropType.bdR:
+                    res[0] = "ﾎﾞｽﾓﾝｽﾀｰﾀﾞﾒｰｼﾞ";
+                    res[1] = "+" + value + "%";
+                    return res;
+                case GearPropType.incIMDR:
+                case GearPropType.imdR:
+                    res[0] = "ﾓﾝｽﾀｰ防御率無視";
+                    res[1] = "+" + value + "%";
+                    return res;
+                case GearPropType.limitBreak:
+                    res[0] = "ダメージ上限";
+                    res[1] = ToCJKNumberExpr(value);
+                    return res;
+                case GearPropType.nbdR:
+                    res[0] = "一般モンスター攻撃時のダメージ : +" + value + "%";
+                    return res;
+
+                case GearPropType.tradeBlock:
+                    res[0] = value == 0 ? null : "#$r交換不可#";
+                    return res;
+                case GearPropType.accountSharable:
+                    res[0] = value == 0 ? null : "#$rワールド内のキャラクター間移動のみ可能#";
+                    return res;
+                case GearPropType.sharableOnce:
+                    res[0] = value == 0 ? null : "#$rﾜｰﾙﾄﾞ内の自分のｷｬﾗｸﾀｰ間で1回移動可能 (移動後交換不可)#";
+                    return res;
+                case GearPropType.only:
+                    res[0] = value == 0 ? null : "#$r固有ｱｲﾃﾑ#";
+                    return res;
+                case GearPropType.onlyEquip:
+                    res[0] = value == 0 ? null : "#$r固有装備アイテム#";
+                    return res;
+                case GearPropType.equipTradeBlock:
+                    res[0] = value == 0 ? null : "#$r装着すると交換不可#";
+                    return res;
+                case GearPropType.notExtend:
+                    res[0] = value == 0 ? null : ", 有効期間延長不可";
+                    return res;
+                case GearPropType.accountSharableAfterExchange:
+                    res[0] = value == 0 ? null : "1回交換可能 (取引後、ワールド内のキャラクター間移動のみ可能)";
+                    return res;
+                case GearPropType.timeLimited:
+                    res[0] = value == 0 ? null : "#$r期間制アイテム#";
+                    return res;
+                case GearPropType.abilityTimeLimited:
+                    res[0] = value == 0 ? null : "#$r期間限定能力値#";
+                    return res;
+                case GearPropType.noLookChange:
+                    res[0] = value == 0 ? null : "#$r神秘のカナトコ使用不可#";
+                    return res;
+                case GearPropType.mintable:
+                    res[0] = value == 0 ? null : "#$rミンティング可能#";
+                    return res;
+                case GearPropType.tradeAvailable:
+                    switch (value)
+                    {
+                        case 1:
+                            res[0] = "#$gカルマのはさみを使用すると1回交換可能になります#";
+                            return res;
+                        case 2:
+                            res[0] = "#$gカルマのはさみを使用すると1回交換可能になります#";
+                            return res;
+                        default: return res;
+                    }
+                case GearPropType.accountShareTag:
+                    switch (value)
+                    {
+                        case 1:
+                            res[0] = "#cシェアネームタグを使用すると1回同じアカウント内のキャラクターに移動できます。#";
+                            return res;
+                        default: return res;
+                    }
+                //case GearPropType.noPotential: return value == 0 ? null : "잠재능력 설정 불가";
+                //case GearPropType.fixedPotential: return value == 0 ? null : "잠재능력 재설정 불가";
+                //case GearPropType.superiorEqp: return value == 0 ? null : "아이템 강화 성공시 더욱 높은 효과를 받을 수 있습니다.";
+                //case GearPropType.jokerToSetItem: return value == 0 ? null : "#c3개 이상 착용하고 있는 모든 세트 아이템에 포함되는 럭키 아이템! (단, 2개 이상의 럭키 아이템 착용 시 1개만 효과 적용.)#";
+                //case GearPropType.cantRepair: return value == 0 ? null : "수리 불가";
+
+                case GearPropType.incAllStat_incMHP25:
+                    res[0] = "Allｽﾃｰﾀｽ  " + sign + value + ", 最大HP  " + sign + (value * 25);
+                    return res;
+                case GearPropType.incAllStat_incMHP50_incMMP50:
+                    res[0] = "Allｽﾃｰﾀｽ  " + sign + value + ", 最大HP / 最大MP  " + sign + (value * 50);
+                    return res;
+                case GearPropType.incMHP_incMMP:
+                    res[0] = "最大HP / 最大MP  " + sign + value;
+                    return res;
+                case GearPropType.incMHPr_incMMPr:
+                    res[0] = "最大HP / 最大MP  " + sign + value + "%";
+                    return res;
+                case GearPropType.incPAD_incMAD:
+                case GearPropType.incAD:
+                    res[0] = "攻撃力 / 魔力  " + sign + " " + value;
+                    return res;
+                case GearPropType.incPDD_incMDD:
+                    res[0] = "防御力  " + sign + value;
+                    return res;
+
+                case GearPropType.incARC:
+                    res[0] = "ARC";
+                    res[1] = sign + value;
+                    return res;
+                case GearPropType.incAUT:
+                    res[0] = "AUT";
+                    res[1] = sign + value;
+                    return res;
+
+                case GearPropType.Etuc:
+                    res[0] = $"#$dエクセプショナル : なし# (最大{value}回)";
+                    return res;
+                case GearPropType.CuttableCount:
+                    res[0] = $" #$r(はさみ使用可能回数: {value} / {value})#";
+                    return res;
+
+                case GearPropType.incCraft:
+                case GearPropType.incEXPr:
+                default: return res;
+            }
+        }
 
         public static string GetGearPropDiffString(GearPropType propType, int value, int standardValue)
         {
@@ -248,6 +503,49 @@ namespace WzComparerR2.CharaSim
                 propStr = "#$y" + propStr + "# " + subfix + openAPISubfix;
             }
             return propStr;
+        }
+
+        public static string[] GetGearPropDiffString3(GearPropType propType, int value, int standardValue)
+        {
+            string[] res = new string[3];
+
+            var propStr = GetGearPropString3(propType, value, 0);
+            res[0] = propStr[0];
+            res[1] = propStr[1];
+
+            if (value > standardValue)
+            {
+                string suffix = null;
+                switch (propType)
+                {
+                    case GearPropType.incSTR:
+                    case GearPropType.incDEX:
+                    case GearPropType.incINT:
+                    case GearPropType.incLUK:
+                    case GearPropType.incMHP:
+                    case GearPropType.incMMP:
+                    case GearPropType.incMDF:
+                    case GearPropType.incARC:
+                    case GearPropType.incAUT:
+                    case GearPropType.incPAD:
+                    case GearPropType.incMAD:
+                    case GearPropType.incPDD:
+                    case GearPropType.incMDD:
+                    case GearPropType.incSpeed:
+                    case GearPropType.incJump:
+                        suffix = $"({standardValue} #$e+{value - standardValue}#)"; break;
+                    case GearPropType.bdR:
+                    case GearPropType.incBDR:
+                    case GearPropType.imdR:
+                    case GearPropType.incIMDR:
+                    case GearPropType.damR:
+                    case GearPropType.incDAMr:
+                    case GearPropType.statR:
+                        suffix = $"({standardValue}% #$e+{value - standardValue}%#)"; break;
+                }
+                res[2] = suffix;
+            }
+            return res;
         }
 
         /// <summary>
@@ -427,6 +725,10 @@ namespace WzComparerR2.CharaSim
 
                 case GearType.boxingCannon: return "拳封";
                 case GearType.boxingSky: return "拳天";
+
+                case GearType.arcaneSymbol: return "アーケインシンボル";
+                case GearType.authenticSymbol: return "アセンティックシンボル";
+                case GearType.grandAuthenticSymbol: return "グランドアセンティックシンボル";
 
                 case GearType.jewel: return "宝玉";
                 default: return null;
@@ -642,10 +944,10 @@ namespace WzComparerR2.CharaSim
                 switch (specJob)
                 {
                     case 1: extraJobNames.AddRange(new[] { "ﾋｰﾛｰ", "ﾊﾟﾗﾃﾞｨﾝ" }); break;
-                    case 2: extraJobNames.AddRange(new[] { "ｱｰｸﾒｲｼﾞ(氷･雷)", "ｱｰｸﾒｲｼﾞ(火･毒)", "ﾋﾞｼｮｯﾌﾟ" }); break;
+                    case 2: extraJobNames.AddRange(new[] { "ｱｰｸﾒｲｼﾞ", "ｱｰｸﾒｲｼﾞ(火･毒)", "ﾋﾞｼｮｯﾌﾟ" }); break;
                     case 4: extraJobNames.Add("シャドー"); break;
                     case 11: extraJobNames.Add("ｿｳﾙﾏｽﾀｰ"); break;
-                    case 12: extraJobNames.Add("ﾌﾚｲﾑｳｨｻﾞｰﾄﾞ"); break;
+                    case 12: extraJobNames.Add("\r\nﾌﾚｲﾑｳｨｻﾞｰﾄﾞ"); break;
                     case 22: extraJobNames.Add("ｴｳﾞｧﾝ"); break;
                     case 32: extraJobNames.Add("ﾊﾞﾄﾙﾒｲｼﾞ"); break;
                     case 172: extraJobNames.Add("ﾘﾝ"); break;
@@ -1104,7 +1406,7 @@ namespace WzComparerR2.CharaSim
             return null;
         }
 
-        private static string ToCJKNumberExpr(long value)
+        public static string ToCJKNumberExpr(long value)
         {
             var sb = new StringBuilder(16);
             bool firstPart = true;
