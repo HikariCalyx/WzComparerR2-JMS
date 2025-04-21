@@ -147,6 +147,31 @@ namespace WzComparerR2.CharaSimControl
             g.Dispose();
             return tooltip;
         }
+        private Bitmap GetAlienStoneIcon()
+        {
+            if (Gear.AlienStoneSlot == null)
+            {
+                return Resource.ToolTip_Equip_AlienStone_Empty;
+            }
+            else
+            {
+                switch (Gear.AlienStoneSlot.Grade)
+                {
+                    case AlienStoneGrade.Normal:
+                        return Resource.ToolTip_Equip_AlienStone_Normal;
+                    case AlienStoneGrade.Rare:
+                        return Resource.ToolTip_Equip_AlienStone_Rare;
+                    case AlienStoneGrade.Epic:
+                        return Resource.ToolTip_Equip_AlienStone_Epic;
+                    case AlienStoneGrade.Unique:
+                        return Resource.ToolTip_Equip_AlienStone_Unique;
+                    case AlienStoneGrade.Legendary:
+                        return Resource.ToolTip_Equip_AlienStone_Legendary;
+                    default:
+                        return null;
+                }
+            }
+        }
 
         private void DrawBG(Graphics g, string tag, int startX, int endY, int target)
         {
@@ -453,7 +478,20 @@ namespace WzComparerR2.CharaSimControl
                     picH + 16 + 68 - cashOrigin.Y * 2 - 2);
             }
 
-            /*
+            if (Gear.Pachinko)
+            {
+                Bitmap pachinkoImg = null;
+                Point pachinkoOrigin = new Point(12, 12);
+                if (pachinkoImg == null) //default pachinkoImg
+                {
+                    pachinkoImg = Resource.PachinkoItem_0;
+                }
+
+                g.DrawImage(GearGraphics.EnlargeBitmap(pachinkoImg),
+                    21 + 68 - pachinkoOrigin.X * 2 + 4,
+                    picH + 15 + 68 - pachinkoOrigin.Y * 2 - 4);
+            }
+
             //检查星岩
             bool hasSocket = Gear.GetBooleanValue(GearPropType.nActivatedSocket);
             if (hasSocket)
@@ -462,11 +500,10 @@ namespace WzComparerR2.CharaSimControl
                 if (socketBmp != null)
                 {
                     g.DrawImage(GearGraphics.EnlargeBitmap(socketBmp),
-                        18 + 2,
+                        21 + 2,
                         picH + 15 + 3);
                 }
             }
-            */
 
             // 전투력 증가량
             TextRenderer.DrawText(g, "戦闘力増加量", GearGraphics.EquipMDMoris9Font, new Point(309 - TextRenderer.MeasureText(g, "戦闘力増加量", GearGraphics.EquipMDMoris9Font, new Size(int.MaxValue, int.MaxValue), TextFormatFlags.NoPadding).Width, picH + 12), ((SolidBrush)GearGraphics.Equip22BrushDarkGray).Color, TextFormatFlags.NoPadding);
@@ -524,7 +561,10 @@ namespace WzComparerR2.CharaSimControl
             TextRenderer.DrawText(g, "着用職業", GearGraphics.EquipMDMoris9Font, new Point(15, picH), ((SolidBrush)GearGraphics.Equip22BrushGray).Color, TextFormatFlags.NoPadding);
             TextRenderer.DrawText(g, extraReq == null ? reqJobStr : extraReq.Replace("着用可能", ""), GearGraphics.EquipMDMoris9Font, new Point(79, picH), Color.White, TextFormatFlags.NoPadding);
             picH += 16;
-            if (extraReq.Contains("\r\n")) picH += 16;
+            if (!string.IsNullOrEmpty(extraReq))
+            {
+                if (extraReq.Contains("\r\n")) picH += 16;
+            } 
 
             // 요구 레벨
             this.Gear.Props.TryGetValue(GearPropType.reqLevel, out value2);
@@ -1406,6 +1446,14 @@ namespace WzComparerR2.CharaSimControl
                 g.DrawImage(Resource.UIToolTipNew_img_Item_Equip_textIcon_soulWeapon_normal, 15, picH - 2);
                 TextRenderer.DrawText(g, "魂 : 魂の武器に変換可能", GearGraphics.EquipMDMoris9Font, new Point(29, picH), Color.White, TextFormatFlags.NoPadding);
                 picH += 20;
+            }
+
+            if (hasSocket)
+            {
+                AddLines(0, 6, ref picH, condition: thirdLineNeeded);
+                thirdLineNeeded = false;
+                string nebuliteSocket = ItemStringHelper.GetGearPropString(GearPropType.nActivatedSocket, 1);
+                GearGraphics.DrawString(g, nebuliteSocket, GearGraphics.EquipMDMoris9Font, equip22ColorTable, 15, 305, ref picH, 16);
             }
 
             // 기타 속성
