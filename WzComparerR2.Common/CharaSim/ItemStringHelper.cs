@@ -943,10 +943,10 @@ namespace WzComparerR2.CharaSim
             {
                 switch (specJob)
                 {
-                    case 1: extraJobNames.AddRange(new[] { "ﾋｰﾛｰ", "ﾊﾟﾗﾃﾞｨﾝ" }); break;
-                    case 2: extraJobNames.AddRange(new[] { "ｱｰｸﾒｲｼﾞ", "ｱｰｸﾒｲｼﾞ(火･毒)", "ﾋﾞｼｮｯﾌﾟ" }); break;
+                    case 1: extraJobNames.AddRange(new[] { "ヒーロー", "パラデイン" }); break;
+                    case 2: extraJobNames.AddRange(new[] { "ｱｰｸﾒｲｼﾞ(氷･雷)", "ｱｰｸﾒｲｼﾞ(火･毒)", "ﾋﾞｼｮｯﾌﾟ" }); break;
                     case 4: extraJobNames.Add("シャドー"); break;
-                    case 11: extraJobNames.Add("ｿｳﾙﾏｽﾀｰ"); break;
+                    case 11: extraJobNames.Add("ソウルマスター"); break;
                     case 12: extraJobNames.Add("\r\nﾌﾚｲﾑｳｨｻﾞｰﾄﾞ"); break;
                     case 22: extraJobNames.Add("ｴｳﾞｧﾝ"); break;
                     case 32: extraJobNames.Add("ﾊﾞﾄﾙﾒｲｼﾞ"); break;
@@ -958,7 +958,7 @@ namespace WzComparerR2.CharaSim
             {
                 return null;
             }
-            return string.Join("､", extraJobNames) + "着用可能";
+            return string.Join("、", extraJobNames) + "着用可能";
         }
 
         public static string GetItemPropString(ItemPropType propType, long value)
