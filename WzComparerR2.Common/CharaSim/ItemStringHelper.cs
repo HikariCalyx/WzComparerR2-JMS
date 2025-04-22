@@ -102,8 +102,8 @@ namespace WzComparerR2.CharaSim
                 case GearPropType.incCDr: return "クリティカルダメージ: " + sign + value + "%";
                 case GearPropType.knockback: return "直接打撃の時" + value + "%の確率でノックバック";
                 //case GearPropType.incPVPDamage: return "Battle Mode ATT " + sign + " " + value;
-                case GearPropType.incPQEXPr: return "Party Quest EXP: +" + value + "%";
-                case GearPropType.incEXPr: return "Party EXP: +" + value + "%";
+                case GearPropType.incPQEXPr: return "グループクエスト経験値 " + value + "% 追加";
+                case GearPropType.incEXPr: return "グループ経験値 +" + value + "% 追加";
                 case GearPropType.incBDR:
                 case GearPropType.bdR: return "ボスモンスター攻撃時のダメージ +" + value + "%";
                 case GearPropType.incIMDR:
@@ -292,7 +292,7 @@ namespace WzComparerR2.CharaSim
                     res[0] = "直接打撃の時" + value + "%の確率でノックバック";
                     return res;
                 case GearPropType.incPQEXPr:
-                    res[0] = "Party Quest EXP: +" + value + "%";
+                    res[0] = "グループクエスト経験値 " + value + "% 追加";
                     return res;
                 case GearPropType.incBDR:
                 case GearPropType.bdR:
