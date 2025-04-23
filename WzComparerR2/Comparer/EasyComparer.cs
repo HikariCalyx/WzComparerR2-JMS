@@ -1601,7 +1601,7 @@ namespace WzComparerR2.Comparer
                 }
 
                 var mobTypeTextInfo = g.MeasureString(mobType, GearGraphics.ItemDetailFont);
-                int picH = 13;
+                int picH = 1;
                 if (ShowChangeType) GearGraphics.DrawPlainText(g, mobType, mobTypeFont, Color.FromArgb(255, 255, 255), 2, (int)Math.Ceiling(mobTypeTextInfo.Width) + 2, ref picH, 10);
 
                 string imageName = Path.Combine(mobTooltipPath, "モンスター_" + mobID + "_" + MobName + "_" + mobType + ".png");
@@ -1727,7 +1727,7 @@ namespace WzComparerR2.Comparer
                 }
 
                 var npcTypeTextInfo = g.MeasureString(npcType, GearGraphics.ItemDetailFont);
-                int picH = 13;
+                int picH = 1;
                 if (ShowChangeType) GearGraphics.DrawPlainText(g, npcType, npcTypeFont, Color.FromArgb(255, 255, 255), 2, (int)Math.Ceiling(npcTypeTextInfo.Width) + 2, ref picH, 10);
 
                 string imageName = Path.Combine(npcTooltipPath, "Npc_" + npcID + "_" + NpcName + "_" + npcType + ".png");
