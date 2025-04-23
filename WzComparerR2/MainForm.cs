@@ -3844,6 +3844,20 @@ namespace WzComparerR2
 #endif
         }
 
+        private void btnDiscordServer_Click(object sender, EventArgs e)
+        {
+#if NET6_0_OR_GREATER
+            Process.Start(new ProcessStartInfo
+            {
+                UseShellExecute = true,
+                FileName = "https://api.hikaricalyx.com/WcR2-JMS/v1/DiscordInvitation",
+            });
+#else
+            Process.Start("https://api.hikaricalyx.com/WcR2-JMS/v1/DiscordInvitation");
+#endif
+        }
+
+
         private void labelItemStatus_TextChanged(object sender, EventArgs e)
         {
             ribbonBar2.RecalcLayout();

@@ -136,6 +136,7 @@ namespace WzComparerR2
             this.ribbonPanel3 = new DevComponents.DotNetBar.RibbonPanel();
             this.ribbonBar11 = new DevComponents.DotNetBar.RibbonBar();
             this.buttonItem1 = new DevComponents.DotNetBar.ButtonItem();
+            this.btnDiscordServer = new DevComponents.DotNetBar.ButtonItem();
             this.ribbonBar7 = new DevComponents.DotNetBar.RibbonBar();
             this.buttonItemUpdate = new DevComponents.DotNetBar.ButtonItem();
             this.ribbonBar6 = new DevComponents.DotNetBar.RibbonBar();
@@ -1539,6 +1540,13 @@ namespace WzComparerR2
             this.buttonItem1.Text = "不具合報告";
             this.buttonItem1.Click += new System.EventHandler(this.buttonItem1_Click);
             // 
+            // btnDiscordServer
+            // 
+            this.btnDiscordServer.Name = "btnDiscordServer";
+            this.btnDiscordServer.SubItemsExpandWidth = 28;
+            this.btnDiscordServer.Text = "Discordサーバー";
+            this.btnDiscordServer.Click += new System.EventHandler(this.btnDiscordServer_Click);
+            // 
             // ribbonBar7
             // 
             this.ribbonBar7.AutoOverflowEnabled = true;
@@ -1592,7 +1600,8 @@ namespace WzComparerR2
             this.ribbonBar6.Dock = System.Windows.Forms.DockStyle.Left;
             this.ribbonBar6.DragDropSupport = true;
             this.ribbonBar6.Items.AddRange(new DevComponents.DotNetBar.BaseItem[] {
-            this.buttonItemAbout});
+            this.buttonItemAbout,
+            this.btnDiscordServer});
             this.ribbonBar6.Location = new System.Drawing.Point(3, 0);
             this.ribbonBar6.Name = "ribbonBar6";
             this.ribbonBar6.Size = new System.Drawing.Size(50, 91);
@@ -3534,6 +3543,7 @@ namespace WzComparerR2
         private DevComponents.DotNetBar.PanelDockContainer panelDockContainer2;
         private DevComponents.DotNetBar.RibbonBar ribbonBar11;
         private DevComponents.DotNetBar.ButtonItem buttonItem1;
+        private DevComponents.DotNetBar.ButtonItem btnDiscordServer;
         private DevComponents.DotNetBar.ButtonItem btnNodeBack;
         private DevComponents.DotNetBar.ButtonItem btnNodeForward;
         private System.Windows.Forms.ToolStripMenuItem tsmi2SaveAs;
