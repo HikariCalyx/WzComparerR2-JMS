@@ -514,6 +514,17 @@ namespace WzComparerR2
                     aniItem.SelectedAnimationName = aniName;
                     this.cmbItemAniNames.Tooltip = aniName;
                 }
+                else if (this.pictureBoxEx1.Items[0] is FrameAnimator frameAni && this.cmbItemAniNames.SelectedItem is int selectedpage)
+                {
+                    if (frameAni.Data.Frames.Count == 1)
+                    {
+                        var png = frameAni.Data.Frames[0].Png;
+                        if (png != null && png.ActualPages > 1 && 0 <= selectedpage && selectedpage < png.ActualPages)
+                        {
+                            this.pictureBoxEx1.ShowImage(png, selectedpage);
+                        }
+                    }
+                }
                 var aniItem2 = this.pictureBoxEx1.Items[0] as Animation.MultiFrameAnimator;
                 if (aniItem2 != null)
                 {
@@ -835,7 +846,8 @@ namespace WzComparerR2
             if (frame.Png != null)
             {
                 var config = ImageHandlerConfig.Default;
-                string pngFileName = pictureBoxEx1.PictureName + ".png";
+                int page = frame.Page;
+                string pngFileName = pictureBoxEx1.PictureName + (frame.Png.ActualPages > 1 ? $".{page}" : null) + ".png";
 
                 if (config.AutoSaveEnabled)
                 {
@@ -854,7 +866,7 @@ namespace WzComparerR2
                     pngFileName = dlg.FileName;
                 }
 
-                using (var bmp = frame.Png.ExtractPng())
+                using (var bmp = frame.Png.ExtractPng(page))
                 {
                     bmp.Save(pngFileName, System.Drawing.Imaging.ImageFormat.Png);
                 }
@@ -1368,7 +1380,7 @@ namespace WzComparerR2
             switch (value)
             {
                 case Wz_Png png:
-                    return $"png {png.Width}*{png.Height} ({png.Form})";
+                    return $"png {png.Width}*{png.Height} ({(int)png.Format}{(png.Scale > 0 ? $", {png.Scale}" : null)})";
 
                 case Wz_Vector vector:
                     return $"({vector.X}, {vector.Y})";
@@ -1443,11 +1455,19 @@ namespace WzComparerR2
                     pictureBoxEx1.PictureName = GetSelectedNodeImageName();
                     pictureBoxEx1.ShowImage(png);
                     this.cmbItemAniNames.Items.Clear();
+                    if (png.ActualPages > 1)
+                    {
+                        for (int i = 0; i < png.ActualPages; i++)
+                            this.cmbItemAniNames.Items.Add(i);
+                    }
+
                     advTree3.PathSeparator = ".";
                     textBoxX1.Text = "データ長:  " + png.DataLength + " バイト\r\n" +
                         "オフセット:  " + png.Offset + "\r\n" +
                         "サイズ:  " + png.Width + "*" + png.Height + "\r\n" +
-                        "PNG形式:  " + png.Form;
+                        "PNG形式:  " + png.Format + "(" + (int)png.Format + ")\r\n" +
+                        "スケール: " + png.Scale + "(x" + png.ActualScale + ")\r\n" +
+                        "ページ: " + png.Pages + "(" + png.ActualPages + ")";
 
                     var sourceNode = selectedNode.GetLinkedSourceNode(PluginManager.FindWz);
                     if (sourceNode != selectedNode)
@@ -1469,7 +1489,9 @@ namespace WzComparerR2
                             textBoxX1.AppendText("\r\n\r\nデータ長:  " + png.DataLength + " バイト\r\n" +
                                 "オフセット:  " + png.Offset + "\r\n" +
                                 "サイズ:  " + png.Width + "*" + png.Height + "\r\n" +
-                                "PNG形式:  " + png.Form);
+                                "PNG形式:  " + png.Format + "(" + (int)png.Format + ")\r\n" +
+                                "スケール: " + png.Scale + "(x" + png.ActualScale + ")\r\n" +
+                                "ページ: " + png.Pages + "(" + png.ActualPages + ")");
                         }
                     }
                     break;
@@ -1549,9 +1571,11 @@ namespace WzComparerR2
                                         this.cmbItemAniNames.Items.Clear();
                                         advTree3.PathSeparator = ".";
                                         textBoxX1.AppendText("\r\n\r\nデータ長:  " + png.DataLength + " バイト\r\n" +
-                                        "オフセット:  " + png.Offset + "\r\n" +
-                                        "サイズ:  " + png.Width + "*" + png.Height + "\r\n" +
-                                            "PNG形式:  " + png.Form);
+                                            "オフセット:  " + png.Offset + "\r\n" +
+                                            "サイズ:  " + png.Width + "*" + png.Height + "\r\n" +
+                                            "PNG形式:  " + png.Format + "(" + (int)png.Format + ")\r\n" +
+                                            "スケール: " + png.Scale + "(x" + png.ActualScale + ")\r\n" +
+                                            "ページ: " + png.Pages + "(" + png.ActualPages + ")");
                                     }
                                 }
                             }
@@ -2901,6 +2925,29 @@ namespace WzComparerR2
                     catch (Exception ex)
                     {
                         MessageBoxEx.Show("保存に失敗しました\r\n" + ex.ToString(), LocalizedString_JP.COMMON_ERROR);
+                    }
+                }
+            }
+            else if (item is Wz_Png png)
+            {
+                SaveFileDialog dlg = new SaveFileDialog();
+                dlg.Title = "Canvasの元データを保存";
+                dlg.FileName = advTree3.SelectedNode.Text + ".bin";
+                dlg.Filter = "*.*|*.*";
+                if (dlg.ShowDialog() == DialogResult.OK)
+                {
+                    try
+                    {
+                        using (var dataReader = png.UnsafeOpenRead())
+                        using (var outputFile = dlg.OpenFile())
+                        {
+                            dataReader.CopyTo(outputFile);
+                        }
+                        this.labelItemStatus.Text = "ファイルを保存しました";
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBoxEx.Show("保存に失敗しました\r\n" + ex.ToString(), "LocalizedString_JP.COMMON_ERROR");
                     }
                 }
             }
