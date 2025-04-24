@@ -1102,10 +1102,10 @@ namespace WzComparerR2.CharaSimControl
                 GearGraphics.DrawString(g, "\r\n · 販売価額：" + value + "メル", GearGraphics.EquipDetailFont, 100, right, ref picH, 16);
             }
 
-            if (item.GetBooleanValue(ItemPropType.autoPrice) && ShowSoldPrice)
+            if (item.GetBooleanValue(ItemPropType.autoPrice) && ShowSoldPrice && item.Level <= 250)
             {
                 picH += 16;
-                GearGraphics.DrawString(g, "\r\n · 販売価額：" + (item.Level > 250 ? 500 : (item.Level * 2)) + "メル", GearGraphics.EquipDetailFont, 100, right, ref picH, 16);
+                GearGraphics.DrawString(g, "\r\n · 販売価額：" + (item.Level * 2) + "メル", GearGraphics.EquipDetailFont, 100, right, ref picH, 16);
             }
 
             if (item.Cash && ShowCashPurchasePrice)
