@@ -219,7 +219,7 @@ namespace WzComparerR2.CharaSimControl
                         }
                         string mobLoc = string.Format(" - {0} ({1})", mapName ?? "null", mapID);
 
-                        propBlocks.Add(PrepareText(g, mobLoc, GearGraphics.ItemDetailFont, GearGraphics.LocationBrush, 0, picY += 16));
+                        propBlocks.Add(PrepareText(g, mobLoc, Translator.IsKoreanStringPresent(mobLoc) ? GearGraphics.KMSItemDetailFont : GearGraphics.ItemDetailFont, GearGraphics.LocationBrush, 0, picY += 16));
                     }
                 }
             }
@@ -254,7 +254,7 @@ namespace WzComparerR2.CharaSimControl
                     }
                 }
 
-                propBlocks.Add(PrepareText(g, sb.ToString(), GearGraphics.ItemDetailFont, Brushes.GreenYellow, 0, picY));
+                propBlocks.Add(PrepareText(g, sb.ToString(), Translator.IsKoreanStringPresent(sb.ToString()) ? GearGraphics.KMSItemDetailFont : GearGraphics.ItemDetailFont, Brushes.GreenYellow, 0, picY));
             }
             g.Dispose();
             bmp.Dispose();
