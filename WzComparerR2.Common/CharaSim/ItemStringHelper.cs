@@ -277,22 +277,29 @@ namespace WzComparerR2.CharaSim
                     res[0] = "ジャンプ力";
                     res[1] = sign + value;
                     return res;
+                case GearPropType.incCraft:
+                    res[0] = "器用さ";
+                    res[1] = sign + value;
+                    return res;
                 case GearPropType.damR:
                 case GearPropType.incDAMr:
                     res[0] = "ダメージ";
                     res[1] = sign + value + "%";
                     return res;
                 case GearPropType.incCr:
-                    res[0] = "クリティカル率 : " + sign + value + "%";
+                    res[0] = "クリティカル率";
+                    res[1] = sign + value + "%";
                     return res;
                 case GearPropType.incCDr:
-                    res[0] = "クリティカルダメージ : " + sign + value + "%";
+                    res[0] = "クリティカルダメージ";
+                    res[1] = sign + value + "%";
                     return res;
                 case GearPropType.knockback:
                     res[0] = "直接打撃の時" + value + "%の確率でノックバック";
                     return res;
                 case GearPropType.incPQEXPr:
-                    res[0] = "グループクエスト経験値 " + value + "% 追加";
+                    res[0] = "グループクエスト経験値 ";
+                    res[1] = value + "% 追加";
                     return res;
                 case GearPropType.incBDR:
                 case GearPropType.bdR:
@@ -308,8 +315,28 @@ namespace WzComparerR2.CharaSim
                     res[0] = "ダメージ上限";
                     res[1] = ToCJKNumberExpr(value);
                     return res;
+                case GearPropType.attackSpeed:
+                    if (2 <= value && value <= 9)
+                    {
+                        res[0] = "攻撃速度";
+                        res[1] = $"{10 - value}段階";
+                    }
+                    return res;
                 case GearPropType.nbdR:
-                    res[0] = "一般モンスター攻撃時のダメージ : +" + value + "%";
+                    res[0] = "一般モンスター攻撃時のダメージ";
+                    res[1] = "+" + value + "%";
+                    return res;
+                case GearPropType.incARC:
+                    res[0] = "ARC";
+                    res[1] = sign + value;
+                    return res;
+                case GearPropType.incAUT:
+                    res[0] = "AUT";
+                    res[1] = sign + value;
+                    return res;
+                case GearPropType.incCHUC:
+                    res[0] = "スターフォース";
+                    res[1] = sign + value;
                     return res;
 
                 case GearPropType.tradeBlock:
@@ -369,7 +396,9 @@ namespace WzComparerR2.CharaSim
                     }
                 //case GearPropType.noPotential: return value == 0 ? null : "잠재능력 설정 불가";
                 //case GearPropType.fixedPotential: return value == 0 ? null : "잠재능력 재설정 불가";
-                //case GearPropType.superiorEqp: return value == 0 ? null : "아이템 강화 성공시 더욱 높은 효과를 받을 수 있습니다.";
+                case GearPropType.superiorEqp:
+                    res[0] = value == 0 ? null : "アイテム強化の成功時にさらに高い効果を得ることができます。";
+                    return res;
                 //case GearPropType.jokerToSetItem: return value == 0 ? null : "#c3개 이상 착용하고 있는 모든 세트 아이템에 포함되는 럭키 아이템! (단, 2개 이상의 럭키 아이템 착용 시 1개만 효과 적용.)#";
                 //case GearPropType.cantRepair: return value == 0 ? null : "수리 불가";
 
@@ -393,15 +422,6 @@ namespace WzComparerR2.CharaSim
                     res[0] = "防御力  " + sign + value;
                     return res;
 
-                case GearPropType.incARC:
-                    res[0] = "ARC";
-                    res[1] = sign + value;
-                    return res;
-                case GearPropType.incAUT:
-                    res[0] = "AUT";
-                    res[1] = sign + value;
-                    return res;
-
                 case GearPropType.Etuc:
                     res[0] = $"#$dエクセプショナル : なし# (最大{value}回)";
                     return res;
@@ -409,7 +429,6 @@ namespace WzComparerR2.CharaSim
                     res[0] = $" #$r(はさみ使用可能回数: {value} / {value})#";
                     return res;
 
-                case GearPropType.incCraft:
                 case GearPropType.incEXPr:
                 default: return res;
             }
