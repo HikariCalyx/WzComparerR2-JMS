@@ -3815,11 +3815,18 @@ namespace WzComparerR2
             }
         }
 
-        void RunSetupWizard()
+        void RunSetupWizard(bool isFirstRun=false)
         {
             var frm = new FrmSetupWizard();
+            frm.Load(WcR2Config.Default, CharaSimConfig.Default);
+            frm.isFirstRun = isFirstRun;
             if (frm.ShowDialog() == DialogResult.OK)
             {
+                frm.Save(WcR2Config.Default, CharaSimConfig.Default);
+                ConfigManager.Save();
+                UpdateWzLoadingSettings();
+                UpdateTranslateSettings();
+                UpdateCharaSimSettings();
             }
         }
 
@@ -3998,7 +4005,7 @@ namespace WzComparerR2
             // Run Setup Wizard
             if (!WcR2Config.Default.IsSetupWizardCompleted)
             {
-                RunSetupWizard();
+                RunSetupWizard(true);
                 ConfigManager.Reload();
                 WcR2Config.Default.IsSetupWizardCompleted = true;
                 ConfigManager.Save();
