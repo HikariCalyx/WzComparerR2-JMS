@@ -94,7 +94,7 @@ namespace WzComparerR2
             charaSimCtrl = new CharaSimControlGroup();
             charaSimCtrl.StringLinker = this.stringLinker;
             charaSimCtrl.Character = new Character();
-            charaSimCtrl.Character.Name = "WzComparerR2";
+            charaSimCtrl.Character.Name = "光卡的拉羊羊";
             charaSimCtrl.UIItem.Visible = false;
             charaSimCtrl.UIItem.VisibleChanged += new EventHandler(afrm_VisibleChanged);
             charaSimCtrl.UIStat.Visible = false;
@@ -3815,6 +3815,14 @@ namespace WzComparerR2
             }
         }
 
+        void RunSetupWizard()
+        {
+            var frm = new FrmSetupWizard();
+            if (frm.ShowDialog() == DialogResult.OK)
+            {
+            }
+        }
+
         private void buttonItemAbout_Click(object sender, EventArgs e)
         {
             new FrmAbout().ShowDialog();
@@ -3891,6 +3899,11 @@ namespace WzComparerR2
 #endif
         }
 
+        private void btnSetupWizard_Click(object sender, EventArgs e)
+        {
+            RunSetupWizard();
+        }
+
         private void btnDiscordServer_Click(object sender, EventArgs e)
         {
 #if NET6_0_OR_GREATER
@@ -3924,7 +3937,7 @@ namespace WzComparerR2
         {
             var frm = new FrmUpdater();
             frm.Load(WcR2Config.Default);
-            frm.Show();
+            frm.ShowDialog();
         }
 
         private void btnItemOptions_Click(object sender, System.EventArgs e)
@@ -3982,13 +3995,22 @@ namespace WzComparerR2
 
         private async void MainForm_Shown(object sender, EventArgs e)
         {
+            // Run Setup Wizard
+            if (!WcR2Config.Default.IsSetupWizardCompleted)
+            {
+                RunSetupWizard();
+                ConfigManager.Reload();
+                WcR2Config.Default.IsSetupWizardCompleted = true;
+                ConfigManager.Save();
+            }
+
             //Automatic Update Check
             bool isUpdateRequired = await AutomaticCheckUpdate();
             if (isUpdateRequired)
             {
                 var frm = new FrmUpdater();
                 frm.Load(WcR2Config.Default);
-                frm.Show();
+                frm.ShowDialog();
             }
         }
 
