@@ -2,6 +2,7 @@
 using System;
 using System.ComponentModel;
 using System.Drawing;
+using System.Resources;
 using System.Windows.Forms;
 using WzComparerR2.Config;
 
@@ -17,7 +18,10 @@ namespace WzComparerR2
 #endif
             InitializeComponent();
             this.wizard.HeaderImage = null;
+            this.picPreview.Image = null;
         }
+
+        private ResourceManager resMan = Properties.Resources.ResourceManager;
 
         public bool isFirstRun { get; set; }
 
@@ -63,12 +67,43 @@ namespace WzComparerR2
             set { chkShowNickTag.Checked = value; }
         }
 
+        public bool ShowSkillDelay
+        {
+            get { return chkShowSkillDelay.Checked; }
+            set { chkShowSkillDelay.Checked = value; }
+        }
+
+        public bool ShowSkillRange
+        {
+            get { return chkShowSkillRange.Checked; }
+            set { chkShowSkillRange.Checked = value; }
+        }
+
         public bool EnableTranslate
         {
             get { return chkEnableTranslate.Checked; }
             set { chkEnableTranslate.Checked = value; }
         }
 
+        private string ItemIDPriceSuffix(bool isShowID, bool isShowPrice)
+        {
+            return (isShowID ? "ShowID" : "HideID") + "_" + (isShowPrice ? "ShowPrice" : "HidePrice");
+        }
+
+        private string SkillIDDelayRangeSuffix(bool isShowID, bool isShowDelay, bool isShowRange)
+        {
+            return (isShowID ? "ShowID" : "HideID") + "_" + (isShowDelay ? "ShowDelay" : "HideDelay") + "_" + (isShowRange ? "ShowRange" : "HideRange");
+        }
+
+        private string GearIDMedalSuffix(bool isShowID, bool isShowMedal)
+        {
+            return (isShowID ? "ShowID" : "HideID") + "_" + (isShowMedal ? "ShowMedal" : "HideMedal");
+        }
+
+        private string ItemIDTitleSuffix(bool isShowID, bool isShowTitle)
+        {
+            return (isShowID ? "ShowID" : "HideID") + "_" + (isShowTitle ? "ShowTitle" : "HideTitle");
+        }
 
         private void FrmSetupWizard_Load(object sender, EventArgs e)
         {
@@ -93,6 +128,72 @@ namespace WzComparerR2
         {
             this.DialogResult = DialogResult.OK;
             this.Close();
+        }
+
+        private void chkSet1_MouseHover(object sender, EventArgs e)
+        {
+            this.picPreview.Image = (Image)resMan.GetObject((Enable22AniStyle ? "NewGear_" : "OldGear_") + ItemIDPriceSuffix(ShowObjectID, ShowSoldPrice));
+
+        }
+
+        private void chkSet1_CheckedChanged(object sender, EventArgs e)
+        {
+            if (this.picPreview.Image != null)
+            {
+                chkSet1_MouseHover(sender, e);
+            }
+        }
+
+        private void chkSet2_MouseHover(object sender, EventArgs e)
+        {
+            this.picPreview.Image = (Image)resMan.GetObject((Enable22AniStyle ? "NewItem_" : "OldItem_") + ItemIDPriceSuffix(ShowObjectID, ShowPurchasePrice));
+        }
+
+        private void chkSet2_CheckedChanged(object sender, EventArgs e)
+        {
+            if (this.picPreview.Image != null)
+            {
+                chkSet2_MouseHover(sender, e);
+            }
+        }
+
+        private void chkSet3_MouseHover(object sender, EventArgs e)
+        {
+            this.picPreview.Image = (Image)resMan.GetObject((Enable22AniStyle ? "NewSkill_" : "OldSkill_") + SkillIDDelayRangeSuffix(ShowObjectID, ShowSkillDelay, ShowSkillRange));
+        }
+
+        private void chkSet3_CheckedChanged(object sender, EventArgs e)
+        {
+            if (this.picPreview.Image != null)
+            {
+                chkSet3_MouseHover(sender, e);
+            }
+        }
+
+        private void chkSet4_MouseHover(object sender, EventArgs e)
+        {
+            this.picPreview.Image = (Image)resMan.GetObject("OldGear_" + GearIDMedalSuffix(ShowObjectID, ShowMedalTag));
+        }
+
+        private void chkSet4_CheckedChanged(object sender, EventArgs e)
+        {
+            if (this.picPreview.Image != null)
+            {
+                chkSet4_MouseHover(sender, e);
+            }
+        }
+
+        private void chkSet5_MouseHover(object sender, EventArgs e)
+        {
+            this.picPreview.Image = (Image)resMan.GetObject((Enable22AniStyle ? "NewItem_" : "OldItem_") + ItemIDTitleSuffix(ShowObjectID, ShowNickTag));
+        }
+
+        private void chkSet5_CheckedChanged(object sender, EventArgs e)
+        {
+            if (this.picPreview.Image != null)
+            {
+                chkSet5_MouseHover(sender, e);
+            }
         }
 
         public void Load(WcR2Config mainconfig, CharaSimConfig characonfig)
@@ -122,6 +223,8 @@ namespace WzComparerR2
             this.ShowPurchasePrice = characonfig.Gear.ShowCashPurchasePrice || characonfig.Item.ShowCashPurchasePrice;
             this.ShowMedalTag = characonfig.Gear.ShowMedalTag;
             this.ShowNickTag = characonfig.Item.ShowNickTag;
+            this.ShowSkillDelay = characonfig.Skill.ShowDelay;
+            this.ShowSkillRange = characonfig.Skill.ShowRangeCoordinates;
         }
 
         public void Save(WcR2Config mainconfig, CharaSimConfig characonfig)
@@ -161,7 +264,8 @@ namespace WzComparerR2
             characonfig.Item.ShowCashPurchasePrice = this.ShowPurchasePrice;
             characonfig.Gear.ShowMedalTag = this.ShowMedalTag;
             characonfig.Item.ShowNickTag = this.ShowNickTag;
-
+            characonfig.Skill.ShowDelay = this.ShowSkillDelay;
+            characonfig.Skill.ShowRangeCoordinates = this.ShowSkillRange;
         }
     }
 }
