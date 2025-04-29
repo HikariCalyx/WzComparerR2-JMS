@@ -39,19 +39,23 @@ namespace WzComparerR2
             this.label5 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
             this.previewCommonWizardPage = new DevComponents.DotNetBar.WizardPage();
+            this.chkEnable22AniStyle = new DevComponents.DotNetBar.Controls.CheckBoxX();
+            this.chkEnableAutoPreview = new DevComponents.DotNetBar.Controls.CheckBoxX();
+            this.chkShowID = new DevComponents.DotNetBar.Controls.CheckBoxX();
+            this.chkShowSoldPrice = new DevComponents.DotNetBar.Controls.CheckBoxX();
+            this.chkShowPurchasePrice = new DevComponents.DotNetBar.Controls.CheckBoxX();
+            this.chkShowSkillDelay = new DevComponents.DotNetBar.Controls.CheckBoxX();
+            this.chkShowSkillRange = new DevComponents.DotNetBar.Controls.CheckBoxX();
+            this.chkShowMedalTag = new DevComponents.DotNetBar.Controls.CheckBoxX();
+            this.chkShowNickTag = new DevComponents.DotNetBar.Controls.CheckBoxX();
             this.translatorWizardPage = new DevComponents.DotNetBar.WizardPage();
-            this.behaviorGroupPanel = new DevComponents.DotNetBar.Controls.GroupPanel();
-            this.modelSizeNumericUpDown = new System.Windows.Forms.NumericUpDown();
-            this.modelSizeLabelX = new DevComponents.DotNetBar.LabelX();
+            this.chkEnableTranslate = new DevComponents.DotNetBar.Controls.CheckBoxX();
             this.animationOutputPage = new DevComponents.DotNetBar.WizardPage();
             this.finishedWizardPage = new DevComponents.DotNetBar.WizardPage();
-            this.chkEnable22AniStyle = new DevComponents.DotNetBar.Controls.CheckBoxX();
             this.wizard.SuspendLayout();
             this.wizardPage1.SuspendLayout();
             this.previewCommonWizardPage.SuspendLayout();
             this.translatorWizardPage.SuspendLayout();
-            this.behaviorGroupPanel.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.modelSizeNumericUpDown)).BeginInit();
             this.animationOutputPage.SuspendLayout();
             this.finishedWizardPage.SuspendLayout();
             this.SuspendLayout();
@@ -188,6 +192,14 @@ namespace WzComparerR2
             | System.Windows.Forms.AnchorStyles.Right)));
             this.previewCommonWizardPage.AntiAlias = false;
             this.previewCommonWizardPage.Controls.Add(this.chkEnable22AniStyle);
+            this.previewCommonWizardPage.Controls.Add(this.chkEnableAutoPreview);
+            this.previewCommonWizardPage.Controls.Add(this.chkShowID);
+            this.previewCommonWizardPage.Controls.Add(this.chkShowSoldPrice);
+            this.previewCommonWizardPage.Controls.Add(this.chkShowPurchasePrice);
+            this.previewCommonWizardPage.Controls.Add(this.chkShowSkillDelay);
+            this.previewCommonWizardPage.Controls.Add(this.chkShowSkillRange);
+            this.previewCommonWizardPage.Controls.Add(this.chkShowMedalTag);
+            this.previewCommonWizardPage.Controls.Add(this.chkShowNickTag);
             this.previewCommonWizardPage.Location = new System.Drawing.Point(7, 66);
             this.previewCommonWizardPage.Name = "previewCommonWizardPage";
             this.previewCommonWizardPage.PageTitle = "プレビューオプション";
@@ -222,13 +234,133 @@ namespace WzComparerR2
             this.chkEnable22AniStyle.TabIndex = 4;
             this.chkEnable22AniStyle.Text = "22周年記念テーマを有効にする";
             // 
+            // chkEnableAutoPreview
+            // 
+            this.chkEnableAutoPreview.AutoSize = true;
+            this.chkEnableAutoPreview.BackColor = System.Drawing.Color.Transparent;
+            // 
+            // 
+            // 
+            this.chkEnableAutoPreview.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
+            this.chkEnableAutoPreview.Location = new System.Drawing.Point(13, 30);
+            this.chkEnableAutoPreview.Name = "chkEnableAutoPreview";
+            this.chkEnableAutoPreview.Size = new System.Drawing.Size(145, 16);
+            this.chkEnableAutoPreview.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
+            this.chkEnableAutoPreview.TabIndex = 5;
+            this.chkEnableAutoPreview.Text = "IMGが選択されると自動的にプレビューを表示する（推奨）";
+            // 
+            // chkShowID
+            // 
+            this.chkShowID.AutoSize = true;
+            this.chkShowID.BackColor = System.Drawing.Color.Transparent;
+            // 
+            // 
+            // 
+            this.chkShowID.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
+            this.chkShowID.Location = new System.Drawing.Point(13, 48);
+            this.chkShowID.Name = "chkShowID";
+            this.chkShowID.Size = new System.Drawing.Size(145, 16);
+            this.chkShowID.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
+            this.chkShowID.TabIndex = 6;
+            this.chkShowID.Text = "左上隅にIDを表示 (全体)";
+            // 
+            // chkShowSoldPrice
+            // 
+            this.chkShowSoldPrice.AutoSize = true;
+            this.chkShowSoldPrice.BackColor = System.Drawing.Color.Transparent;
+            // 
+            // 
+            // 
+            this.chkShowSoldPrice.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
+            this.chkShowSoldPrice.Location = new System.Drawing.Point(13, 66);
+            this.chkShowSoldPrice.Name = "chkShowSoldPrice";
+            this.chkShowSoldPrice.Size = new System.Drawing.Size(145, 16);
+            this.chkShowSoldPrice.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
+            this.chkShowSoldPrice.TabIndex = 7;
+            this.chkShowSoldPrice.Text = "メル販売價額表示 (全体)";
+            // 
+            // chkShowPurchasePrice
+            // 
+            this.chkShowPurchasePrice.AutoSize = true;
+            this.chkShowPurchasePrice.BackColor = System.Drawing.Color.Transparent;
+            // 
+            // 
+            // 
+            this.chkShowPurchasePrice.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
+            this.chkShowPurchasePrice.Location = new System.Drawing.Point(13, 84);
+            this.chkShowPurchasePrice.Name = "chkShowPurchasePrice";
+            this.chkShowPurchasePrice.Size = new System.Drawing.Size(145, 16);
+            this.chkShowPurchasePrice.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
+            this.chkShowPurchasePrice.TabIndex = 8;
+            this.chkShowPurchasePrice.Text = "ポイント購入價額表示 (全体)";
+            // 
+            // chkShowSkillDelay
+            // 
+            this.chkShowSkillDelay.AutoSize = true;
+            this.chkShowSkillDelay.BackColor = System.Drawing.Color.Transparent;
+            // 
+            // 
+            // 
+            this.chkShowSkillDelay.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
+            this.chkShowSkillDelay.Location = new System.Drawing.Point(13, 120);
+            this.chkShowSkillDelay.Name = "chkShowSkillDelay";
+            this.chkShowSkillDelay.Size = new System.Drawing.Size(145, 16);
+            this.chkShowSkillDelay.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
+            this.chkShowSkillDelay.TabIndex = 9;
+            this.chkShowSkillDelay.Text = "スキルディレイを表示";
+            // 
+            // chkShowSkillRange
+            // 
+            this.chkShowSkillRange.AutoSize = true;
+            this.chkShowSkillRange.BackColor = System.Drawing.Color.Transparent;
+            // 
+            // 
+            // 
+            this.chkShowSkillRange.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
+            this.chkShowSkillRange.Location = new System.Drawing.Point(13, 138);
+            this.chkShowSkillRange.Name = "chkShowSkillRange";
+            this.chkShowSkillRange.Size = new System.Drawing.Size(145, 16);
+            this.chkShowSkillRange.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
+            this.chkShowSkillRange.TabIndex = 10;
+            this.chkShowSkillRange.Text = "スキル範囲座標を表示";
+            // 
+            // chkShowMedalTag
+            // 
+            this.chkShowMedalTag.AutoSize = true;
+            this.chkShowMedalTag.BackColor = System.Drawing.Color.Transparent;
+            // 
+            // 
+            // 
+            this.chkShowMedalTag.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
+            this.chkShowMedalTag.Location = new System.Drawing.Point(13, 174);
+            this.chkShowMedalTag.Name = "chkShowMedalTag";
+            this.chkShowMedalTag.Size = new System.Drawing.Size(145, 16);
+            this.chkShowMedalTag.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
+            this.chkShowMedalTag.TabIndex = 11;
+            this.chkShowMedalTag.Text = "勲章プレビューを表示 (以前のテーマのみ)";
+            // 
+            // chkShowNickTag
+            // 
+            this.chkShowNickTag.AutoSize = true;
+            this.chkShowNickTag.BackColor = System.Drawing.Color.Transparent;
+            // 
+            // 
+            // 
+            this.chkShowNickTag.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
+            this.chkShowNickTag.Location = new System.Drawing.Point(13, 192);
+            this.chkShowNickTag.Name = "chkShowNickTag";
+            this.chkShowNickTag.Size = new System.Drawing.Size(145, 16);
+            this.chkShowNickTag.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
+            this.chkShowNickTag.TabIndex = 12;
+            this.chkShowNickTag.Text = "タイトルプレビューを表示";
+            // 
             // translatorWizardPage
             // 
             this.translatorWizardPage.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.translatorWizardPage.AntiAlias = false;
-            this.translatorWizardPage.Controls.Add(this.behaviorGroupPanel);
+            this.translatorWizardPage.Controls.Add(this.chkEnableTranslate);
             this.translatorWizardPage.Location = new System.Drawing.Point(7, 66);
             this.translatorWizardPage.Name = "translatorWizardPage";
             this.translatorWizardPage.PageTitle = "翻訳機能";
@@ -248,83 +380,20 @@ namespace WzComparerR2
             this.translatorWizardPage.StyleMouseOver.CornerType = DevComponents.DotNetBar.eCornerType.Square;
             this.translatorWizardPage.TabIndex = 18;
             // 
-            // behaviorGroupPanel
+            // chkEnableTranslate
             // 
-            this.behaviorGroupPanel.CanvasColor = System.Drawing.SystemColors.Control;
-            this.behaviorGroupPanel.ColorSchemeStyle = DevComponents.DotNetBar.eDotNetBarStyle.Office2007;
-            this.behaviorGroupPanel.Controls.Add(this.modelSizeNumericUpDown);
-            this.behaviorGroupPanel.Controls.Add(this.modelSizeLabelX);
-            this.behaviorGroupPanel.DisabledBackColor = System.Drawing.Color.Empty;
-            this.behaviorGroupPanel.Location = new System.Drawing.Point(193, 112);
-            this.behaviorGroupPanel.Name = "behaviorGroupPanel";
-            this.behaviorGroupPanel.Size = new System.Drawing.Size(456, 164);
+            this.chkEnableTranslate.AutoSize = true;
+            this.chkEnableTranslate.BackColor = System.Drawing.Color.Transparent;
             // 
             // 
             // 
-            this.behaviorGroupPanel.Style.BackColor2SchemePart = DevComponents.DotNetBar.eColorSchemePart.PanelBackground2;
-            this.behaviorGroupPanel.Style.BackColorGradientAngle = 90;
-            this.behaviorGroupPanel.Style.BackColorSchemePart = DevComponents.DotNetBar.eColorSchemePart.PanelBackground;
-            this.behaviorGroupPanel.Style.BorderBottom = DevComponents.DotNetBar.eStyleBorderType.Solid;
-            this.behaviorGroupPanel.Style.BorderBottomWidth = 1;
-            this.behaviorGroupPanel.Style.BorderColorSchemePart = DevComponents.DotNetBar.eColorSchemePart.PanelBorder;
-            this.behaviorGroupPanel.Style.BorderLeft = DevComponents.DotNetBar.eStyleBorderType.Solid;
-            this.behaviorGroupPanel.Style.BorderLeftWidth = 1;
-            this.behaviorGroupPanel.Style.BorderRight = DevComponents.DotNetBar.eStyleBorderType.Solid;
-            this.behaviorGroupPanel.Style.BorderRightWidth = 1;
-            this.behaviorGroupPanel.Style.BorderTop = DevComponents.DotNetBar.eStyleBorderType.Solid;
-            this.behaviorGroupPanel.Style.BorderTopWidth = 1;
-            this.behaviorGroupPanel.Style.CornerDiameter = 4;
-            this.behaviorGroupPanel.Style.CornerType = DevComponents.DotNetBar.eCornerType.Rounded;
-            this.behaviorGroupPanel.Style.TextAlignment = DevComponents.DotNetBar.eStyleTextAlignment.Center;
-            this.behaviorGroupPanel.Style.TextColorSchemePart = DevComponents.DotNetBar.eColorSchemePart.PanelText;
-            this.behaviorGroupPanel.Style.TextLineAlignment = DevComponents.DotNetBar.eStyleTextAlignment.Near;
-            // 
-            // 
-            // 
-            this.behaviorGroupPanel.StyleMouseDown.CornerType = DevComponents.DotNetBar.eCornerType.Square;
-            // 
-            // 
-            // 
-            this.behaviorGroupPanel.StyleMouseOver.CornerType = DevComponents.DotNetBar.eCornerType.Square;
-            this.behaviorGroupPanel.TabIndex = 0;
-            this.behaviorGroupPanel.Text = "Behavior";
-            // 
-            // modelSizeNumericUpDown
-            // 
-            this.modelSizeNumericUpDown.DecimalPlaces = 1;
-            this.modelSizeNumericUpDown.Increment = new decimal(new int[] {
-            1,
-            0,
-            0,
-            65536});
-            this.modelSizeNumericUpDown.Location = new System.Drawing.Point(213, 63);
-            this.modelSizeNumericUpDown.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            this.modelSizeNumericUpDown.Name = "modelSizeNumericUpDown";
-            this.modelSizeNumericUpDown.Size = new System.Drawing.Size(66, 19);
-            this.modelSizeNumericUpDown.TabIndex = 8;
-            this.modelSizeNumericUpDown.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            // 
-            // modelSizeLabelX
-            // 
-            this.modelSizeLabelX.BackColor = System.Drawing.Color.Transparent;
-            // 
-            // 
-            // 
-            this.modelSizeLabelX.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
-            this.modelSizeLabelX.Font = new System.Drawing.Font("MS PGothic", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.modelSizeLabelX.Location = new System.Drawing.Point(137, 61);
-            this.modelSizeLabelX.Name = "modelSizeLabelX";
-            this.modelSizeLabelX.Size = new System.Drawing.Size(69, 21);
-            this.modelSizeLabelX.TabIndex = 7;
-            this.modelSizeLabelX.Text = "Model Size";
+            this.chkEnableTranslate.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
+            this.chkEnableTranslate.Location = new System.Drawing.Point(13, 12);
+            this.chkEnableTranslate.Name = "chkEnableTranslate";
+            this.chkEnableTranslate.Size = new System.Drawing.Size(145, 16);
+            this.chkEnableTranslate.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
+            this.chkEnableTranslate.TabIndex = 4;
+            this.chkEnableTranslate.Text = "翻訳を有効にする";
             // 
             // animationOutputPage
             // 
@@ -435,8 +504,6 @@ namespace WzComparerR2
             this.wizardPage1.ResumeLayout(false);
             this.previewCommonWizardPage.ResumeLayout(false);
             this.translatorWizardPage.ResumeLayout(false);
-            this.behaviorGroupPanel.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.modelSizeNumericUpDown)).EndInit();
             this.animationOutputPage.ResumeLayout(false);
             this.finishedWizardPage.ResumeLayout(false);
             this.ResumeLayout(false);
@@ -456,15 +523,17 @@ namespace WzComparerR2
         private DevComponents.DotNetBar.WizardPage finishedWizardPage;
         private DevComponents.DotNetBar.WizardPage previewCommonWizardPage;
         private DevComponents.DotNetBar.WizardPage translatorWizardPage;
-        private DevComponents.DotNetBar.Controls.GroupPanel behaviorGroupPanel;
-        private System.Windows.Forms.NumericUpDown modelSizeNumericUpDown;
-        private DevComponents.DotNetBar.LabelX modelSizeLabelX;
         private DevComponents.DotNetBar.WizardPage animationOutputPage;
 
         private DevComponents.DotNetBar.Controls.CheckBoxX chkEnable22AniStyle;
         private DevComponents.DotNetBar.Controls.CheckBoxX chkEnableAutoPreview;
         private DevComponents.DotNetBar.Controls.CheckBoxX chkShowID;
-        private DevComponents.DotNetBar.Controls.CheckBoxX chkShowPrice;
+        private DevComponents.DotNetBar.Controls.CheckBoxX chkShowSoldPrice;
+        private DevComponents.DotNetBar.Controls.CheckBoxX chkShowPurchasePrice;
+        private DevComponents.DotNetBar.Controls.CheckBoxX chkShowSkillDelay;
+        private DevComponents.DotNetBar.Controls.CheckBoxX chkShowSkillRange;
+        private DevComponents.DotNetBar.Controls.CheckBoxX chkShowMedalTag;
+        private DevComponents.DotNetBar.Controls.CheckBoxX chkShowNickTag;
 
         private DevComponents.DotNetBar.Controls.CheckBoxX chkEnableTranslate;
         private DevComponents.DotNetBar.LabelX lblPreferredLayout;
