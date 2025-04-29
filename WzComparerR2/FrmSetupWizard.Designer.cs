@@ -173,7 +173,7 @@ namespace WzComparerR2
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(654, 374);
             this.label2.TabIndex = 1;
-            this.label2.Text = "このウィザードは、WzComparerR2をより便利に使用できるように設定する方法を説明します。";
+            this.label2.Text = "このセットアップは、WzComparerR2をより便利に使用できるように設定する方法を説明します。";
             // 
             // label3
             // 
@@ -498,7 +498,7 @@ namespace WzComparerR2
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(654, 374);
             this.label5.TabIndex = 1;
-            this.label5.Text = "初回実行ウィザードが終了しました。";
+            this.label5.Text = "初回実行セットアップが終了しました。";
             // 
             // label6
             // 
@@ -524,7 +524,7 @@ namespace WzComparerR2
             this.MinimizeBox = false;
             this.Name = "FrmSetupWizard";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "初回実行ウィザード";
+            this.Text = "初回実行セットアップ";
             this.TopMost = true;
             this.wizard.ResumeLayout(false);
             this.wizardPage1.ResumeLayout(false);
