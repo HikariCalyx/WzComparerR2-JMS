@@ -2227,6 +2227,9 @@ namespace WzComparerR2.AvatarCommon
         };
 
         public static readonly ReadOnlyCollection<string> BaseActions = new ReadOnlyCollection<string>(baseActions);
+
+        public static readonly string[] HairColor = new[] { "黒", "赤", "橙", "黄", "緑", "青", "紫", "茶" };
+        public static readonly string[] FaceColor = new[] {  "黒", "青", "赤", "緑", "茶", "エメラルド", "紫", "アメジスト" };
         #endregion
 
         private class AvatarLayer
