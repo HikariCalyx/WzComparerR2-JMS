@@ -746,8 +746,8 @@ namespace WzComparerR2.CharaSim
                 case GearType.boxingSky: return "拳天";
 
                 case GearType.arcaneSymbol: return "アーケインシンボル";
-                case GearType.authenticSymbol: return "アセンティックシンボル";
-                case GearType.grandAuthenticSymbol: return "グランドアセンティックシンボル";
+                case GearType.authenticSymbol: return "オーセンティックシンボル";
+                case GearType.grandAuthenticSymbol: return "グランドオーセンティックシンボル";
 
                 case GearType.jewel: return "宝玉";
                 default: return null;
