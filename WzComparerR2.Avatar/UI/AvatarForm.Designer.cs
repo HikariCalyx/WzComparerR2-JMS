@@ -936,7 +936,7 @@ namespace WzComparerR2.Avatar.UI
             // btnAPI
             // 
             this.btnAPI.Name = "btnAPI";
-            this.btnAPI.Text = "実際のKMSキャラクター";
+            this.btnAPI.Text = "実際のキャラクター";
             this.btnAPI.Click += new System.EventHandler(this.btnAPI_Click);
             // 
             // btnReset
