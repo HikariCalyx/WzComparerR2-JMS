@@ -3782,6 +3782,7 @@ namespace WzComparerR2
                                     chkShowChangeType.Enabled = false;
                                     chkShowPrice.Enabled = false;
                                     chkHashPngFileName.Enabled = false;
+                                    chkShowLinkedTamingMob.Enabled = false;
                                     comparer.EasyCompareWzFiles(fileNew, fileOld, dlg.SelectedPath);
                                     return;
 
@@ -3829,6 +3830,7 @@ namespace WzComparerR2
                         chkShowChangeType.Enabled = true;
                         chkShowPrice.Enabled = true;
                         chkHashPngFileName.Enabled = true;
+                        chkShowLinkedTamingMob.Enabled = true;
                     }
                 });
                 compareThread.Priority = ThreadPriority.Highest;
