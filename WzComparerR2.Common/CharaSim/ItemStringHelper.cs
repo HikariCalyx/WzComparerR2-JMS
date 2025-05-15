@@ -315,6 +315,7 @@ namespace WzComparerR2.CharaSim
                     res[0] = "ダメージ上限";
                     res[1] = ToCJKNumberExpr(value);
                     return res;
+                    /*
                 case GearPropType.attackSpeed:
                     if (2 <= value && value <= 9)
                     {
@@ -322,6 +323,7 @@ namespace WzComparerR2.CharaSim
                         res[1] = $"{10 - value}段階";
                     }
                     return res;
+                    */
                 case GearPropType.nbdR:
                     res[0] = "一般モンスター攻撃時のダメージ";
                     res[1] = "+" + value + "%";
@@ -358,16 +360,16 @@ namespace WzComparerR2.CharaSim
                     res[0] = value == 0 ? null : "#$r装着すると交換不可#";
                     return res;
                 case GearPropType.notExtend:
-                    res[0] = value == 0 ? null : ", 有効期間延長不可";
+                    res[0] = value == 0 ? null : " (延長不可)";
                     return res;
                 case GearPropType.accountSharableAfterExchange:
-                    res[0] = value == 0 ? null : "1回交換可能 (取引後、ワールド内のキャラクター間移動のみ可能)";
+                    res[0] = value == 0 ? null : "#$r1回交換可能 (取引後、ワールド内のキャラクター間移動のみ可能)#";
                     return res;
                 case GearPropType.timeLimited:
-                    res[0] = value == 0 ? null : "#$r期間制アイテム#";
+                    res[0] = value == 0 ? null : "期間制アイテム";
                     return res;
                 case GearPropType.abilityTimeLimited:
-                    res[0] = value == 0 ? null : "#$r期間限定能力値#";
+                    res[0] = value == 0 ? null : "期間限定能力値";
                     return res;
                 case GearPropType.noLookChange:
                     res[0] = value == 0 ? null : "#$r神秘のカナトコ使用不可#";
