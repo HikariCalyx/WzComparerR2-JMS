@@ -124,8 +124,8 @@ namespace WzComparerR2.CharaSim
                 case GearPropType.tradeAvailable:
                     switch (value)
                     {
-                        case 1: return "#c カルマのはさみを使用すると1回交換可能\n\rになります。#";
-                        case 2: return "#c カルマのはさみを使用すると1回交換可能\n\rになります。#";
+                        case 1: return "#c カルマのはさみを使用すると1回交換可能になります。#";
+                        case 2: return "#c カルマのはさみを使用すると1回交換可能になります。#";
                         default: return null;
                     }
                 case GearPropType.accountShareTag:

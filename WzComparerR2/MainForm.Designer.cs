@@ -114,6 +114,7 @@ namespace WzComparerR2
             this.comboItem9 = new DevComponents.Editors.ComboItem();
             this.comboItem19 = new DevComponents.Editors.ComboItem();
             this.comboItem20 = new DevComponents.Editors.ComboItem();
+            this.comboItem21 = new DevComponents.Editors.ComboItem();
             this.itemContainer12 = new DevComponents.DotNetBar.ItemContainer();
             this.checkBoxItemRegex2 = new DevComponents.DotNetBar.CheckBoxItem();
             this.buttonItemSearchString = new DevComponents.DotNetBar.ButtonItem();
@@ -567,14 +568,19 @@ namespace WzComparerR2
             this.comboItem15,
             this.comboItem16,
             this.comboItem17,
-            this.comboItem18});
+            this.comboItem18,
+            this.comboItem21});
             this.comboBoxItemLanguage.Name = "comboBoxItemLanguage";
             this.comboBoxItemLanguage.Text = "comboBoxItem3";
             this.comboBoxItemLanguage.SelectedIndexChanged += new System.EventHandler(this.comboBoxItemLanguage_SelectedIndexChanged);
             // 
             // comboItem14
             // 
-            this.comboItem14.Text = "MS Gothic";
+            this.comboItem13.Text = "MS Gothic";
+            // 
+            // comboItem14
+            // 
+            this.comboItem14.Text = "MS PGothic";
             // 
             // comboItem15
             // 
@@ -591,6 +597,10 @@ namespace WzComparerR2
             // comboItem18
             // 
             this.comboItem18.Text = "Dotum";
+            // 
+            // comboItem19
+            // 
+            this.comboItem21.Text = "Noto Sans JP";
             // 
             // itemContainer25
             // 
@@ -3649,6 +3659,7 @@ namespace WzComparerR2
         private DevComponents.DotNetBar.Controls.CheckBoxX chkShowLinkedTamingMob;
         private DevComponents.Editors.ComboItem comboItem19;
         private DevComponents.Editors.ComboItem comboItem20;
+        private DevComponents.Editors.ComboItem comboItem21;
         private DevComponents.DotNetBar.ItemContainer itemContainer100;
         private DevComponents.DotNetBar.ItemContainer itemContainer101;
         private DevComponents.DotNetBar.ItemContainer itemContainer102;
