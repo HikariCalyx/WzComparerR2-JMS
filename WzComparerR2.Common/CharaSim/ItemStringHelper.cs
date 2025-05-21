@@ -1283,7 +1283,7 @@ namespace WzComparerR2.CharaSim
                 case 4210: return "カンナ(2次)";
                 case 4211: return "カンナ(3次)";
                 case 4212: return "カンナ(4次)";
-                case 4216: return "カンナ(6次)";
+                case 4214: return "カンナ(6次)";
 
 
                 case 5000: return "ミハエル";
