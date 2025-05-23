@@ -904,10 +904,10 @@ namespace WzComparerR2.CharaSim
 
                 //18xxx
                 case GearType.gram:
-                case GearType.keir: return "エリル着用可能";
+                case GearType.keir: return GetExtraJobReqString(181);
 
                 case GearType.celestialLight:
-                case GearType.compass: return "シア着用可能";
+                case GearType.compass: return GetExtraJobReqString(182);
                 default: return null;
             }
         }
@@ -949,6 +949,8 @@ namespace WzComparerR2.CharaSim
                 case 164: return "虎影着用可能";
                 case 172: return "リン着用可能";
                 case 175: return "墨玄着用可能";
+                case 181: return "エリル着用可能";
+                case 182: return "シア着用可能";
 
                 default: return null;
             }
