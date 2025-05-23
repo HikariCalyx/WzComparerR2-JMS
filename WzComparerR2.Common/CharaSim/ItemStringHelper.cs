@@ -752,6 +752,13 @@ namespace WzComparerR2.CharaSim
                 case GearType.grandAuthenticSymbol: return "グランドオーセンティックシンボル";
 
                 case GearType.jewel: return "宝玉";
+
+                case GearType.celestialLight: return "セレスティアルライト";
+                case GearType.compass: return "コンパス";
+
+                case GearType.gram: return "グラム";
+                case GearType.keir: return "ケイア";
+
                 default: return null;
             }
         }
