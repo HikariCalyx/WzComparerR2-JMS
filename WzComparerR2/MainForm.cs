@@ -3756,7 +3756,7 @@ namespace WzComparerR2
 
                         while (true)
                         {
-                            string txt = string.Format("WZファイル:\r\n\r\n  新しいバージョン: {0} (V{1})\r\n  古いバージョン: {2} (V{3})\r\n\r\n「Yes」をクリックして比較を開始します。 古いバージョンと新しいバージョンを交換するには、「No」をクリックします。",
+                            string txt = string.Format("WZファイル:\r\n\r\n  新しいバージョン: {0} (V{1})\r\n  旧バージョン: {2} (V{3})\r\n\r\n「Yes」をクリックして比較を開始します。 旧バージョンと新しいバージョンを交換するには、「No」をクリックします。",
                                 fileNew.Header.FileName,
                                 fileNew.GetMergedVersion(),
                                 fileOld.Header.FileName,
