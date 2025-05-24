@@ -29,8 +29,8 @@ namespace WzComparerR2.CharaSim
                     {
                         string v1;
                         if (this.Props.TryGetValue("prob", out v1))
-                            sb.Append("Has a " + v1 + "% chance ");
-                        sb.Append("to deal " + Props["damage"] + "% extra damage on boss monsters.");
+                            sb.Append(v1 + "%の確率");
+                        sb.Append("ボスモンスターに" + Props["damage"] + "%の追加ダメージを与える");
                     }
                     return sb.ToString();
                 case AdditionType.critical:
@@ -63,7 +63,7 @@ namespace WzComparerR2.CharaSim
                                 case 'L': elem = "雷"; break;
                                 default: elem = v1[0].ToString(); break;
                             }
-                            return elem + " Attribute: +" + v1.Substring(1) + "%";
+                            return elem + " 要素: +" + v1.Substring(1) + "%";
                         }
                     }
                     break;
@@ -74,49 +74,49 @@ namespace WzComparerR2.CharaSim
                         string v1;
                         if (this.Props.TryGetValue("hpChangePerTime", out v1))
                         {
-                            sb.Append("HP per 10 seconds " + v1);
+                            sb.Append("10秒あたり" + v1 + "HP");
                         }
                     }
                     return sb.ToString();
                 case AdditionType.mobcategory:
-                    return "When attacking " + ItemStringHelper.GetMobCategoryName(Convert.ToInt32(this.Props["category"])) + " enemies, deals " + this.Props["damage"] + "% extra damage.";
+                    return ItemStringHelper.GetMobCategoryName(Convert.ToInt32(this.Props["category"])) + "タイプの敵を攻撃すると、" + this.Props["damage"] + "%の追加ダメージを与える.";
                 case AdditionType.mobdie:
                     sb = new StringBuilder();
                     {
                         string v1;
                         if (this.Props.TryGetValue("hpIncOnMobDie", out v1))
                         {
-                            sb.AppendLine("When you kill a monster, to recover " + v1 + " HP");
+                            sb.AppendLine("モンスターを退治時、" + v1 + "をHPとして回復します");
                         }
                         if (this.Props.TryGetValue("hpIncRatioOnMobDie", out v1))
                         {
-                            sb.AppendLine("When you kill a monster, has a " + Props["hpRatioProp"] + "% chance to recover " + v1 + "% of damage to as HP (Cannot recover more than 10% of Max HP.)");
+                            sb.AppendLine("モンスターを退治時、" + Props["hpRatioProp"] + "%の確率でダメージの" + v1 + "%をHPとして回復します (最大HPの10%以上は回復できません。)");
                         }
                         if (this.Props.TryGetValue("mpIncOnMobDie", out v1))
                         {
-                            sb.AppendLine("When you kill a monster, to recover " + v1 + " MP");
+                            sb.AppendLine("モンスターを退治時、" + v1 + "をMPとして回復します");
                         }
                         if (this.Props.TryGetValue("mpIncRatioOnMobDie", out v1))
                         {
-                            sb.AppendLine("When you kill a monster, has a " + Props["hpRatioProp"] + "% chance to recover " + v1 + "% of damage to as MP (Cannot recover more than 10% of Max MP.)");
+                            sb.AppendLine("モンスターを退治時、" + Props["hpRatioProp"] + "%の確率でダメージの" + v1 + "%をMPとして回復します (最大MPの10%以上は回復できません。)");
                         }
                     }
                     if (sb.Length > 0)
                     {
-                        sb.Append("Function may be limited in some locations.");
+                        sb.Append("場所によっては機能が制限される場合があります。");
                         return sb.ToString();
                     }
                     break;
                 case AdditionType.skill:
                     switch (Convert.ToInt32(this.Props["id"]))
                     {
-                        case 90000000: return "Has a chance to add: Instant Death effect";
-                        case 90001001: return "Has a chance to add: Knock Down effect";
-                        case 90001002: return "Has a chance to add: Slow effect";
-                        case 90001003: return "Has a chance to add: Poison effect";
-                        case 90001004: return "Has a chance to add: Darkness effect";
-                        case 90001005: return "Has a chance to add: Seal effect";
-                        case 90001006: return "Has a chance to add: Freeze effect";
+                        case 90000000: return "一定確率で即死効果追加";
+                        case 90001001: return "一定確率で気絶効果追加";
+                        case 90001002: return "一定確率でスロウ効果追加";
+                        case 90001003: return "一定確率で毒効果追加";
+                        case 90001004: return "一定確率で暗黒効果追加";
+                        case 90001005: return "一定確率で封印効果追加";
+                        case 90001006: return "一定確率で氷結効果追加";
                     }
                     break;
                 case AdditionType.statinc:
