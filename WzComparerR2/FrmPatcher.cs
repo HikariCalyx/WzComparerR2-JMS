@@ -269,6 +269,11 @@ namespace WzComparerR2
                     return;
                 }
             }
+            if (!HasWritePermission(txtMSFolder.Text))
+            {
+                MessageBoxEx.Show("このフォルダにインストールされているゲームにパッチを適用する権限がありません。\r\n\r\nWzComparerR2を管理者権限で実行してください。", "エラー", MessageBoxButtons.OK);
+                return;
+            }
             if (this.patcherSession != null)
             {
                 if (this.patcherSession.State == PatcherTaskState.WaitForContinue)
@@ -425,6 +430,7 @@ namespace WzComparerR2
                     DialogResult PatcherPromptResult = MessageBoxEx.Show(this, diskSpaceMessage.ToString() + "\r\nパッチを適用するにはディスク容量が足りない可能性があります。\r\nそれでも続行しますか?", "警告", MessageBoxButtons.YesNo);
                     if (PatcherPromptResult == DialogResult.No)
                     {
+                        AppendStateText("パッチは中止されました\r\n");
                         throw new OperationCanceledException("パッチは中止されました。");
                     }
                 }
@@ -782,6 +788,20 @@ namespace WzComparerR2
             else
             {
                 return $"{size:N0} バイト ({targetbytes:0.##} {sizes[order]})";
+            }
+        }
+
+        static bool HasWritePermission(string directoryPath)
+        {
+            try
+            {
+                string testFilePath = Path.Combine(directoryPath, "test.tmp");
+                using (FileStream fs = File.Create(testFilePath, 1, FileOptions.DeleteOnClose)) { }
+                return true;
+            }
+            catch
+            {
+                return false;
             }
         }
 
