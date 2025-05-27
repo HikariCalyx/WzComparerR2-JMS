@@ -186,7 +186,9 @@ namespace WzComparerR2
             this.buttonItemExtractGifEx = new DevComponents.DotNetBar.ButtonItem();
             this.buttonItemGifSetting = new DevComponents.DotNetBar.ButtonItem();
             this.buttonDisableOverlayAni = new DevComponents.DotNetBar.ButtonItem();
-            this.buttonOverlayRect = new DevComponents.DotNetBar.ButtonItem();
+            this.buttonHitboxOverlay = new DevComponents.DotNetBar.ButtonItem();
+            this.buttonLoadMultiFrameAniList = new DevComponents.DotNetBar.ButtonItem();
+            this.buttonOverlayExtractGifEx = new DevComponents.DotNetBar.ButtonItem();
             this.textBoxX1 = new DevComponents.DotNetBar.Controls.TextBoxX();
             this.expandableSplitter1 = new DevComponents.DotNetBar.ExpandableSplitter();
             this.panelEx1 = new DevComponents.DotNetBar.PanelEx();
@@ -2241,7 +2243,9 @@ namespace WzComparerR2
             this.itemContainer44.Name = "itemContainer44";
             this.itemContainer44.SubItems.AddRange(new DevComponents.DotNetBar.BaseItem[] {
             this.buttonDisableOverlayAni,
-            this.buttonOverlayRect});
+            this.buttonHitboxOverlay,
+            this.buttonOverlayExtractGifEx,
+            this.buttonLoadMultiFrameAniList});
             // 
             // 
             // 
@@ -2253,11 +2257,26 @@ namespace WzComparerR2
             this.buttonDisableOverlayAni.Text = "ネストの無効化";
             this.buttonDisableOverlayAni.Click += new System.EventHandler(this.buttonDisableOverlayAni_Click);
             // 
+            // buttonHitboxOverlay
+            // 
+            this.buttonHitboxOverlay.Name = "buttonHitboxOverlay";
+            this.buttonHitboxOverlay.Text = "範囲の描画";
+            this.buttonHitboxOverlay.Tooltip = "入力した範囲の半透明の図形を描画します。";
+            this.buttonHitboxOverlay.Click += new System.EventHandler(this.buttonHitboxOverlay_Click);
+            // 
+            // buttonItemExtractGifEx
+            //
+            this.buttonOverlayExtractGifEx.Name = "buttonOverlayExtractGifEx";
+            this.buttonOverlayExtractGifEx.Text = "ネスト+";
+            this.buttonOverlayExtractGifEx.Tooltip = "0から順にではなく、すべての子ノードでアニメーションを呼び出して入れ子にします。";
+            this.buttonOverlayExtractGifEx.Click += new System.EventHandler(this.buttonItemGif2_Click);
+            // 
             // buttonOverlayRect
             // 
-            this.buttonOverlayRect.Name = "buttonOverlayRect";
-            this.buttonOverlayRect.Text = "範囲の四角形を追加";
-            this.buttonOverlayRect.Click += new System.EventHandler(this.buttonOverlayRect_Click);
+            this.buttonLoadMultiFrameAniList.Name = "buttonLoadMultiFrameAniList";
+            this.buttonLoadMultiFrameAniList.Text = "マルチフレームロード";
+            this.buttonLoadMultiFrameAniList.Tooltip = "見つかったフレームのリストを呼び出します。ロードしたリストのいずれかを選択して入れ子にすることができます。";
+            this.buttonLoadMultiFrameAniList.Click += new System.EventHandler(this.buttonLoadMultiFrameAniList_Click);
             // 
             // textBoxX1
             // 
@@ -3557,7 +3576,9 @@ namespace WzComparerR2
         private DevComponents.DotNetBar.ButtonItem buttonItemExtractGifEx;
         private DevComponents.DotNetBar.ButtonItem buttonItemGifSetting;
         private DevComponents.DotNetBar.ButtonItem buttonDisableOverlayAni;
-        private DevComponents.DotNetBar.ButtonItem buttonOverlayRect;
+        private DevComponents.DotNetBar.ButtonItem buttonHitboxOverlay; 
+        private DevComponents.DotNetBar.ButtonItem buttonLoadMultiFrameAniList;
+        private DevComponents.DotNetBar.ButtonItem buttonOverlayExtractGifEx;
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip2;
         private System.Windows.Forms.ToolStripMenuItem tsmi2ExpandAll;
         private System.Windows.Forms.ToolStripMenuItem tsmi2CollapseAll;
