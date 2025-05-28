@@ -135,7 +135,7 @@ namespace WzComparerR2.Animation
 
             if (radius <= 0)
             {
-                MessageBoxEx.Show("입력한 반지름이 올바르지 않습니다.", "범위 설정 오류");
+                MessageBoxEx.Show("入力した半径が正しくありません。", "範囲設定エラー");
                 return null;
             }
 

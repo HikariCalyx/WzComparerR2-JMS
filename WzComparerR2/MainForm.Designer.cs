@@ -2268,14 +2268,14 @@ namespace WzComparerR2
             //
             this.buttonOverlayExtractGifEx.Name = "buttonOverlayExtractGifEx";
             this.buttonOverlayExtractGifEx.Text = "ネスト+";
-            this.buttonOverlayExtractGifEx.Tooltip = "0から順にではなく、すべての子ノードでアニメーションを呼び出して入れ子にします。";
+            this.buttonOverlayExtractGifEx.Tooltip = "0から順にではなく、すべての子ノードでアニメーションを呼び出してネストにします。";
             this.buttonOverlayExtractGifEx.Click += new System.EventHandler(this.buttonItemGif2_Click);
             // 
             // buttonOverlayRect
             // 
             this.buttonLoadMultiFrameAniList.Name = "buttonLoadMultiFrameAniList";
             this.buttonLoadMultiFrameAniList.Text = "マルチフレームロード";
-            this.buttonLoadMultiFrameAniList.Tooltip = "見つかったフレームのリストを呼び出します。ロードしたリストのいずれかを選択して入れ子にすることができます。";
+            this.buttonLoadMultiFrameAniList.Tooltip = "見つかったフレームのリストを呼び出します。ロードしたリストのいずれかを選択してネストにすることができます。";
             this.buttonLoadMultiFrameAniList.Click += new System.EventHandler(this.buttonLoadMultiFrameAniList_Click);
             // 
             // textBoxX1
