@@ -131,6 +131,7 @@
             this.labelX1.Size = new System.Drawing.Size(56, 18);
             this.labelX1.TabIndex = 5;
             this.labelX1.Text = "基準 :";
+            this.labelX1.Font = new System.Drawing.Font("MS PGothic", 9f);
             this.labelX1.Visible = false;
             // 
             // cmbRegion

@@ -131,10 +131,25 @@ namespace WzComparerR2.Avatar.UI
             }
             switch ((int)selectedItem.Value)
             {
+                case 2:
+                    labelX1.Text = "結果のアバターは正確ではない可能性があります。";
+                    labelX1.Visible = true;
+                    break;
+                case 4:
+                case 5:
+                    labelX1.Text = "長年ログインしていないキャラクターは正しく読み\r\n取れない可能性があります。";
+                    labelX1.Visible = true;
+                    break;
+                case 6:
+                    labelX1.Text = "見つからない場合はキャラクターにログインして\r\nください。";
+                    labelX1.Visible = true;
+                    break;
+                case 7:
+                    labelX1.Text = "ユニオンランキングに掲載されているキャラクター\r\nのみ検索できます。";
+                    labelX1.Visible = true;
+                    break;
                 default:
-                    labelX1.Enabled = false;
-                    checkBoxX1.Enabled = false;
-                    checkBoxX2.Enabled = false;
+                    labelX1.Visible = false;
                     break;
             }
         }
