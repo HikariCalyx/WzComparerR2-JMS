@@ -1343,7 +1343,7 @@ namespace WzComparerR2.CharaSimControl
 
                 if (Gear.type != GearType.pickaxe && Gear.type != GearType.shovel && PluginBase.PluginManager.FindWz(string.Format("Effect/ItemEff.img/{0}/effect", Gear.ItemID)) != null)
                 {
-                    desc.Add("この項目は#cキャラクター情報ウィンドウ#など、状況によっては表示されません。");
+                    desc.Add("このアイテムは#cキャラクター情報ウィンドウ#など、状況によっては表示されません。");
                 }
 
                 if (Gear.Props.TryGetValue(GearPropType.noPetEquipStatMoveItem, out value) && value != 0)
