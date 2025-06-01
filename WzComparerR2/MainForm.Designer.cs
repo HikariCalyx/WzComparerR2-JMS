@@ -224,6 +224,7 @@ namespace WzComparerR2
             this.chkOutputCashTooltip = new DevComponents.DotNetBar.Controls.CheckBoxX();
             this.chkOutputEqpTooltip = new DevComponents.DotNetBar.Controls.CheckBoxX();
             this.chkOutputItemTooltip = new DevComponents.DotNetBar.Controls.CheckBoxX();
+            this.chkOutputMapTooltip = new DevComponents.DotNetBar.Controls.CheckBoxX();
             this.chkOutputMobTooltip = new DevComponents.DotNetBar.Controls.CheckBoxX();
             this.chkOutputNpcTooltip = new DevComponents.DotNetBar.Controls.CheckBoxX();
             this.chkOutputSkillTooltip = new DevComponents.DotNetBar.Controls.CheckBoxX();
@@ -2574,6 +2575,7 @@ namespace WzComparerR2
             this.superTabControlPanel2.Controls.Add(this.chkOutputCashTooltip);
             this.superTabControlPanel2.Controls.Add(this.chkOutputEqpTooltip);
             this.superTabControlPanel2.Controls.Add(this.chkOutputItemTooltip);
+            this.superTabControlPanel2.Controls.Add(this.chkOutputMapTooltip);
             this.superTabControlPanel2.Controls.Add(this.chkOutputMobTooltip);
             this.superTabControlPanel2.Controls.Add(this.chkOutputNpcTooltip);
             this.superTabControlPanel2.Controls.Add(this.chkOutputSkillTooltip);
@@ -2682,18 +2684,32 @@ namespace WzComparerR2
             this.chkOutputItemTooltip.TabIndex = 14;
             this.chkOutputItemTooltip.Text = "アイテム比較の出力";
             // 
+            // chkOutputMapTooltip
+            // 
+            // 
+            // 
+            // 
+            this.chkOutputMapTooltip.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
+            this.chkOutputMapTooltip.Location = new System.Drawing.Point(550, 142);
+            this.chkOutputMapTooltip.Name = "chkOutputMapTooltip";
+            this.chkOutputMapTooltip.Size = new System.Drawing.Size(155, 23);
+            this.chkOutputMapTooltip.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
+            this.superTooltip1.SetSuperTooltip(this.chkOutputMapTooltip, new DevComponents.DotNetBar.SuperTooltipInfo("マップ比較の出力", "", "変更したマップを自動で出力する機能です。", null, null, DevComponents.DotNetBar.eTooltipColor.System, true, false, new System.Drawing.Size(180, 70)));
+            this.chkOutputMapTooltip.TabIndex = 15;
+            this.chkOutputMapTooltip.Text = "マップ比較の出力";
+            // 
             // chkOutputMobTooltip
             // 
             // 
             // 
             // 
             this.chkOutputMobTooltip.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
-            this.chkOutputMobTooltip.Location = new System.Drawing.Point(550, 142);
+            this.chkOutputMobTooltip.Location = new System.Drawing.Point(550, 169);
             this.chkOutputMobTooltip.Name = "chkOutputMobTooltip";
             this.chkOutputMobTooltip.Size = new System.Drawing.Size(155, 23);
             this.chkOutputMobTooltip.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
             this.superTooltip1.SetSuperTooltip(this.chkOutputMobTooltip, new DevComponents.DotNetBar.SuperTooltipInfo("モンスター比較の出力", "", "変更したモンスターを自動で出力する機能です。", null, null, DevComponents.DotNetBar.eTooltipColor.System, true, false, new System.Drawing.Size(180, 70)));
-            this.chkOutputMobTooltip.TabIndex = 15;
+            this.chkOutputMobTooltip.TabIndex = 16;
             this.chkOutputMobTooltip.Text = "モンスター比較の出力";
             // 
             // chkOutputNpcTooltip
@@ -2702,12 +2718,12 @@ namespace WzComparerR2
             // 
             // 
             this.chkOutputNpcTooltip.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
-            this.chkOutputNpcTooltip.Location = new System.Drawing.Point(550, 169);
+            this.chkOutputNpcTooltip.Location = new System.Drawing.Point(550, 196);
             this.chkOutputNpcTooltip.Name = "chkOutputNpcTooltip";
             this.chkOutputNpcTooltip.Size = new System.Drawing.Size(135, 23);
             this.chkOutputNpcTooltip.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
             this.superTooltip1.SetSuperTooltip(this.chkOutputNpcTooltip, new DevComponents.DotNetBar.SuperTooltipInfo("NPC比較の出力", "", "変更したNPCを自動で出力する機能です。", null, null, DevComponents.DotNetBar.eTooltipColor.System, true, false, new System.Drawing.Size(180, 70)));
-            this.chkOutputNpcTooltip.TabIndex = 16;
+            this.chkOutputNpcTooltip.TabIndex = 17;
             this.chkOutputNpcTooltip.Text = "NPC比較の出力";
             // 
             // chkShowObjectID
@@ -2716,12 +2732,12 @@ namespace WzComparerR2
             // 
             // 
             this.chkShowObjectID.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
-            this.chkShowObjectID.Location = new System.Drawing.Point(550, 196);
+            this.chkShowObjectID.Location = new System.Drawing.Point(550, 223);
             this.chkShowObjectID.Name = "chkShowObjectID";
             this.chkShowObjectID.Size = new System.Drawing.Size(135, 23);
             this.chkShowObjectID.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
             this.superTooltip1.SetSuperTooltip(this.chkShowObjectID, new DevComponents.DotNetBar.SuperTooltipInfo("IDを表示", "", "IDはツールチップ画像に表示されます。", null, null, DevComponents.DotNetBar.eTooltipColor.System, true, false, new System.Drawing.Size(180, 70)));
-            this.chkShowObjectID.TabIndex = 17;
+            this.chkShowObjectID.TabIndex = 18;
             this.chkShowObjectID.Text = "IDを表示";
             this.chkShowObjectID.Checked = true;
             // 
@@ -2731,12 +2747,12 @@ namespace WzComparerR2
             // 
             // 
             this.chkShowChangeType.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
-            this.chkShowChangeType.Location = new System.Drawing.Point(550, 223);
+            this.chkShowChangeType.Location = new System.Drawing.Point(550, 250);
             this.chkShowChangeType.Name = "chkShowChangeType";
             this.chkShowChangeType.Size = new System.Drawing.Size(135, 23);
             this.chkShowChangeType.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
             this.superTooltip1.SetSuperTooltip(this.chkShowChangeType, new DevComponents.DotNetBar.SuperTooltipInfo("変更タイプを表示", "", "変更タイプはツールチップ画像に表示されます。", null, null, DevComponents.DotNetBar.eTooltipColor.System, true, false, new System.Drawing.Size(180, 70)));
-            this.chkShowChangeType.TabIndex = 18;
+            this.chkShowChangeType.TabIndex = 19;
             this.chkShowChangeType.Text = "変更タイプを表示";
             this.chkShowChangeType.Checked = true;
             // 
@@ -2746,12 +2762,12 @@ namespace WzComparerR2
             // 
             // 
             this.chkShowPrice.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
-            this.chkShowPrice.Location = new System.Drawing.Point(550, 250);
+            this.chkShowPrice.Location = new System.Drawing.Point(550, 277);
             this.chkShowPrice.Name = "chkShowPrice";
             this.chkShowPrice.Size = new System.Drawing.Size(135, 23);
             this.chkShowPrice.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
             this.superTooltip1.SetSuperTooltip(this.chkShowPrice, new DevComponents.DotNetBar.SuperTooltipInfo("価格を表示", "", "価格はツールチップ画像に表示されます。", null, null, DevComponents.DotNetBar.eTooltipColor.System, true, false, new System.Drawing.Size(180, 70)));
-            this.chkShowPrice.TabIndex = 19;
+            this.chkShowPrice.TabIndex = 20;
             this.chkShowPrice.Text = "価格を表示";
             this.chkShowPrice.Checked = true;
             // 
@@ -2761,12 +2777,12 @@ namespace WzComparerR2
             // 
             // 
             this.chkShowLinkedTamingMob.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
-            this.chkShowLinkedTamingMob.Location = new System.Drawing.Point(550, 277);
+            this.chkShowLinkedTamingMob.Location = new System.Drawing.Point(550, 304);
             this.chkShowLinkedTamingMob.Name = "chkShowLinkedTamingMob";
             this.chkShowLinkedTamingMob.Size = new System.Drawing.Size(135, 23);
             this.chkShowLinkedTamingMob.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
             this.superTooltip1.SetSuperTooltip(this.chkShowLinkedTamingMob, new DevComponents.DotNetBar.SuperTooltipInfo("関連マウントを表示", "", "アイテムに関連マウントを表示します。", null, null, DevComponents.DotNetBar.eTooltipColor.System, true, false, new System.Drawing.Size(180, 70)));
-            this.chkShowLinkedTamingMob.TabIndex = 20;
+            this.chkShowLinkedTamingMob.TabIndex = 21;
             this.chkShowLinkedTamingMob.Text = "関連マウントを表示";
             this.chkShowLinkedTamingMob.Checked = false;
             // 
@@ -3670,6 +3686,7 @@ namespace WzComparerR2
         private DevComponents.DotNetBar.Controls.CheckBoxX chkOutputCashTooltip;
         private DevComponents.DotNetBar.Controls.CheckBoxX chkOutputEqpTooltip;
         private DevComponents.DotNetBar.Controls.CheckBoxX chkOutputItemTooltip;
+        private DevComponents.DotNetBar.Controls.CheckBoxX chkOutputMapTooltip;
         private DevComponents.DotNetBar.Controls.CheckBoxX chkOutputMobTooltip;
         private DevComponents.DotNetBar.Controls.CheckBoxX chkOutputNpcTooltip;
         private DevComponents.DotNetBar.Controls.CheckBoxX chkOutputSkillTooltip;
