@@ -17,6 +17,7 @@ namespace WzComparerR2.CLI
         public int OldVersion { get; set; } = 0;
         public int NewVersion { get; set; } = 0;
         public int BaseVersion { get; set; } = 0;
+        public bool OverrideMode { get; set; }
         private long availableDiskSpace;
         private bool isUpdating;
         private PatcherSession patcherSession;
@@ -237,9 +238,18 @@ namespace WzComparerR2.CLI
                 diskSpaceMessage.AppendLine(string.Format("使用可能なディスク容量: {0}", GetBothByteAndGBValue(availableDiskSpace)));
                 AppendStateText(diskSpaceMessage.ToString());
                 AppendStateText("完了\r\n");
-                if (patchedAllFileSize > availableDiskSpace)
+                if ((patchedAllFileSize > availableDiskSpace) && !this.OverrideMode)
                 {
-                    // tbd
+                    Console.WriteLine("パッチを適用するにはディスク容量が足りない可能性があります。");
+                    Console.WriteLine("それでも続行しますか?");
+                    Console.WriteLine("それでも続行する場合は、Yを押してください。");
+                    Console.WriteLine("他のキーを押すと操作はキャンセルされます。");
+                    ConsoleKeyInfo cki = Console.ReadKey();
+                    if (cki.Key != ConsoleKey.Y)
+                    {
+                        AppendStateText("パッチは中止されました\r\n");
+                        throw new OperationCanceledException("パッチは中止されました。");
+                    }
                 }
                 AppendStateText("パッチを準備中...\r\n");
                 if (patcher.IsKMST1125Format.Value)
