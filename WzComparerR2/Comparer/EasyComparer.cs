@@ -2780,6 +2780,10 @@ namespace WzComparerR2.Comparer
                                 return true;
                         }
                     }
+                    else if (baseSkillID == "Dragon")
+                    {
+                        return true;
+                    }
                     else
                     {
                         return false;
