@@ -2796,11 +2796,11 @@ namespace WzComparerR2
             this.chkSkipKMSContent.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
             this.chkSkipKMSContent.Location = new System.Drawing.Point(550, 331);
             this.chkSkipKMSContent.Name = "chkSkipKMSContent";
-            this.chkSkipKMSContent.Size = new System.Drawing.Size(145, 23);
+            this.chkSkipKMSContent.Size = new System.Drawing.Size(185, 23);
             this.chkSkipKMSContent.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
-            this.superTooltip1.SetSuperTooltip(this.chkSkipKMSContent, new DevComponents.DotNetBar.SuperTooltipInfo("KMS職業を比較しない", "", "KMSに存在する職業を比較しないでください。", null, null, DevComponents.DotNetBar.eTooltipColor.System, true, false, new System.Drawing.Size(180, 70)));
+            this.superTooltip1.SetSuperTooltip(this.chkSkipKMSContent, new DevComponents.DotNetBar.SuperTooltipInfo("KMSコンテンツを比較しない", "", "KMSに存在するコンテンツを比較しないでください。", null, null, DevComponents.DotNetBar.eTooltipColor.System, true, false, new System.Drawing.Size(180, 100)));
             this.chkSkipKMSContent.TabIndex = 22;
-            this.chkSkipKMSContent.Text = "KMS職業を比較しない";
+            this.chkSkipKMSContent.Text = "KMSコンテンツを比較しない";
             this.chkSkipKMSContent.Checked = false;
             // 
             // chkOutputRemovedImg
