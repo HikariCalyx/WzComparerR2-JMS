@@ -759,6 +759,9 @@ namespace WzComparerR2.CharaSim
                 case GearType.gram: return "グラム";
                 case GearType.keir: return "ケイア";
 
+                case GearType.plumSword: return "梅の剣";
+                case GearType.yeouiGem: return "ヨイ宝珠";
+
                 default: return null;
             }
         }
@@ -908,6 +911,9 @@ namespace WzComparerR2.CharaSim
 
                 case GearType.celestialLight:
                 case GearType.compass: return GetExtraJobReqString(182);
+
+                case GearType.plumSword:
+                case GearType.yeouiGem: return GetExtraJobReqString(161);
                 default: return null;
             }
         }
@@ -945,6 +951,7 @@ namespace WzComparerR2.CharaSim
                 case 152: return "イリウム着用可能";
                 case 154: return "カーリー着用可能";
                 case 155: return "アーク着用可能";
+                case 161: return "レン着用可能";
                 case 162: return "ララ着用可能";
                 case 164: return "虎影着用可能";
                 case 172: return "リン着用可能";
