@@ -1404,6 +1404,12 @@ namespace WzComparerR2.CharaSim
 
                 case 16000: return "アニマ盗賊";
                 case 16001: return "ララ";
+                case 16002: return "レン";
+                case 16100: return "レン(1次)";
+                case 16110: return "レン(2次)";
+                case 16111: return "レン(3次)";
+                case 16112: return "レン(4次)";
+                case 16114: return "レン(6次)";
                 case 16200: return "ララ(1次)";
                 case 16210: return "ララ(2次)";
                 case 16211: return "ララ(3次)";
