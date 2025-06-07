@@ -759,7 +759,7 @@ namespace WzComparerR2.CharaSim
                 case GearType.gram: return "グラム";
                 case GearType.keir: return "ケイア";
 
-                case GearType.plumSword: return "梅の剣";
+                case GearType.longSword: return "ロングソード";
                 case GearType.yeouiGem: return "ヨイ宝珠";
 
                 default: return null;
@@ -912,7 +912,7 @@ namespace WzComparerR2.CharaSim
                 case GearType.celestialLight:
                 case GearType.compass: return GetExtraJobReqString(182);
 
-                case GearType.plumSword:
+                case GearType.longSword:
                 case GearType.yeouiGem: return GetExtraJobReqString(161);
                 default: return null;
             }
