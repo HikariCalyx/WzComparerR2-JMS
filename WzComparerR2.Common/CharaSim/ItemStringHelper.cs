@@ -1299,6 +1299,9 @@ namespace WzComparerR2.CharaSim
 
                 case 4001: return "ハヤト";
                 case 4002: return "カンナ";
+                case 4003:
+                case 4004:
+                case 4005: return "暁の陣";
                 case 4100: return "ハヤト(1次)";
                 case 4110: return "ハヤト(2次)";
                 case 4111: return "ハヤト(3次)";
@@ -1309,6 +1312,21 @@ namespace WzComparerR2.CharaSim
                 case 4211: return "カンナ(3次)";
                 case 4212: return "カンナ(4次)";
                 case 4214: return "カンナ(6次)";
+                case 4300: return "暁の陣弓使い(1次)";
+                case 4310: return "暁の陣弓使い(2次)";
+                case 4311: return "暁の陣弓使い(3次)";
+                case 4312: return "暁の陣弓使い(4次)";
+                case 4314: return "暁の陣弓使い(6次)";
+                case 4400: return "暁の陣盗賊(1次)";
+                case 4410: return "暁の陣盗賊(2次)";
+                case 4411: return "暁の陣盗賊(3次)";
+                case 4412: return "暁の陣盗賊(4次)";
+                case 4414: return "暁の陣盗賊(6次)";
+                case 4500: return "暁の陣海賊(1次)";
+                case 4510: return "暁の陣海賊(2次)";
+                case 4511: return "暁の陣海賊(3次)";
+                case 4512: return "暁の陣海賊(4次)";
+                case 4514: return "暁の陣海賊(6次)";
 
 
                 case 5000: return "ミハエル";
@@ -1323,6 +1341,7 @@ namespace WzComparerR2.CharaSim
                 case 6001: return "エンジェリックバスター";
                 case 6002: return "カデナ";
                 case 6003: return "カイン";
+                case 6004: return "ノヴァ";
                 case 6100: return "カイザー(1次)";
                 case 6110: return "カイザー(2次)";
                 case 6111: return "カイザー(3次)";
@@ -1333,6 +1352,11 @@ namespace WzComparerR2.CharaSim
                 case 6311: return "カイン(3次)";
                 case 6312: return "カイン(4次)";
                 case 6314: return "カイン(6次)";
+                case 6200: return "ノヴァ魔法使い(1次)";
+                case 6210: return "ノヴァ魔法使い(2次)"; 
+                case 6211: return "ノヴァ魔法使い(3次)";
+                case 6212: return "ノヴァ魔法使い(4次)";
+                case 6214: return "ノヴァ魔法使い(6次)";
                 case 6400: return "カデナ(1次)";
                 case 6410: return "カデナ(2次)";
                 case 6411: return "カデナ(3次)";
@@ -1390,6 +1414,7 @@ namespace WzComparerR2.CharaSim
                 case 15001: return "アーク";
                 case 15002: return "アデル";
                 case 15003: return "カーリー";
+                case 15004: return "レフ";
                 case 15100: return "アデル(1次)";
                 case 15110: return "アデル(2次)";
                 case 15111: return "アデル(3次)";
@@ -1400,6 +1425,11 @@ namespace WzComparerR2.CharaSim
                 case 15211: return "イリウム(3次)";
                 case 15212: return "イリウム(4次)";
                 case 15214: return "イリウム(6次)";
+                case 15300: return "レフ弓使い(1次)";
+                case 15310: return "レフ弓使い(2次)";
+                case 15311: return "レフ弓使い(3次)";
+                case 15312: return "レフ弓使い(4次)";
+                case 15314: return "レフ弓使い(6次)";
                 case 15400: return "カーリー(1次)";
                 case 15410: return "カーリー(2次)";
                 case 15411: return "カーリー(3次)";
@@ -1411,9 +1441,11 @@ namespace WzComparerR2.CharaSim
                 case 15512: return "アーク(4次)";
                 case 15514: return "アーク(6次)";
 
-                case 16000: return "アニマ盗賊";
+                case 16000: return "虎影";
                 case 16001: return "ララ";
                 case 16002: return "レン";
+                case 16003:
+                case 16004: return "アニマ";
                 case 16100: return "レン(1次)";
                 case 16110: return "レン(2次)";
                 case 16111: return "レン(3次)";
@@ -1424,14 +1456,32 @@ namespace WzComparerR2.CharaSim
                 case 16211: return "ララ(3次)";
                 case 16212: return "ララ(4次)";
                 case 16214: return "ララ(6次)";
+                case 16300: return "アニマ弓使い(1次)";
+                case 16310: return "アニマ弓使い(2次)";
+                case 16311: return "アニマ弓使い(3次)";
+                case 16312: return "アニマ弓使い(4次)";
+                case 16314: return "アニマ弓使い(6次)";
                 case 16400: return "虎影(1次)";
                 case 16410: return "虎影(2次)";
                 case 16411: return "虎影(3次)";
                 case 16412: return "虎影(4次)";
                 case 16414: return "虎影(6次)";
+                case 16500: return "アニマ海賊(1次)";
+                case 16510: return "アニマ海賊(2次)";
+                case 16511: return "アニマ海賊(3次)";
+                case 16512: return "アニマ海賊(4次)";
+                case 16514: return "アニマ海賊(6次)";
 
                 case 17000: return "墨玄";
                 case 17001: return "リン";
+                case 17002:
+                case 17003:
+                case 17004: return "江湖";
+                case 17100: return "江湖戦士(1次)";
+                case 17110: return "江湖戦士(2次)";
+                case 17111: return "江湖戦士(3次)";
+                case 17112: return "江湖戦士(4次)";
+                case 17114: return "江湖戦士(6次)";
                 case 17200: return "リン(1次)";
                 case 17210: return "リン(2次)";
                 case 17211: return "リン(3次)";
@@ -1442,9 +1492,22 @@ namespace WzComparerR2.CharaSim
                 case 17511: return "墨玄(3次)";
                 case 17512: return "墨玄(4次)";
                 case 17514: return "墨玄(6次)";
+                case 17300: return "江湖弓使い(1次)";
+                case 17310: return "江湖弓使い(2次)";
+                case 17311: return "江湖弓使い(3次)";
+                case 17312: return "江湖弓使い(4次)";
+                case 17314: return "江湖弓使い(6次)";
+                case 17400: return "江湖盗賊(1次)";
+                case 17410: return "江湖盗賊(2次)";
+                case 17411: return "江湖盗賊(3次)";
+                case 17412: return "江湖盗賊(4次)";
+                case 17414: return "江湖盗賊(6次)";
 
                 case 18000: return "シア・アステル";
                 case 18001: return "エリルライト";
+                case 18002:
+                case 18003:
+                case 18004: return "シャイン";
                 case 18100: return "エリルライト(1次)";
                 case 18110: return "エリルライト(2次)";
                 case 18111: return "エリルライト(3次)";
@@ -1455,6 +1518,21 @@ namespace WzComparerR2.CharaSim
                 case 18211: return "シア・アステル(3次)";
                 case 18212: return "シア・アステル(4次)";
                 case 18214: return "シア・アステル(6次)";
+                case 18300: return "シャイン弓使い(1次)";
+                case 18310: return "シャイン弓使い(2次)";
+                case 18311: return "シャイン弓使い(3次)";
+                case 18312: return "シャイン弓使い(4次)";
+                case 18314: return "シャイン弓使い(6次)";
+                case 18400: return "シャイン盗賊(1次)";
+                case 18410: return "シャイン盗賊(2次)";
+                case 18411: return "シャイン盗賊(3次)";
+                case 18412: return "シャイン盗賊(4次)";
+                case 18414: return "シャイン盗賊(6次)";
+                case 18500: return "シャイン海賊(1次)";
+                case 18510: return "シャイン海賊(2次)";
+                case 18511: return "シャイン海賊(3次)";
+                case 18512: return "シャイン海賊(4次)";
+                case 18514: return "シャイン海賊(6次)";
 
                 case 40000: return "5次";
                 case 40001: return "5次(戦士)";
@@ -1469,6 +1547,65 @@ namespace WzComparerR2.CharaSim
                 case 50007: return "6次(ヘキサスタット)";
             }
             return null;
+        }
+
+        public static string GetFifthJobName(int skillCode, List<int> jobId)
+        {
+            string jobName = "";
+            switch (jobId.Count)
+            {
+                case 0:
+                    jobName = GetJobName(skillCode / 10000);
+                    break;
+                case 1:
+                    if (jobId[0] == 0)
+                    {
+                        jobName = GetJobName(skillCode / 10000);
+                    }
+                    else
+                    {
+                        jobName = GetJobName(jobId[0]);
+                        jobName = jobName.Contains("(4") ? jobName.Replace("(4", "(5") : jobName + "(5次)";
+                    }
+                    break;
+                default:
+                    bool isSameFaction = true;
+                    int faction = jobId[0] / 1000;
+                    if (faction == 5) faction = 1;
+                    foreach (int id in jobId.Skip(1))
+                    {
+                        if (id == 0) continue;
+                        isSameFaction = isSameFaction && (id / 1000 == faction);
+                    }
+                    if (isSameFaction)
+                    {
+                        switch (faction)
+                        {
+                            case 0: jobName = "5次(冒険者)"; break;
+                            case 1:
+                            case 5: jobName = "5次(シグナス騎士団)"; break;
+                            case 2: jobName = "5次(英雄)"; break;
+                            case 3: jobName = "5次(レジスタンス)"; break;
+                            case 4: jobName = "5次(暁の陣)"; break;
+                            case 6: jobName = "5次(ノヴァ)"; break;
+                            case 10: jobName = "5次(超越者)"; break;
+                            case 11: jobName = "5次(ドーンベール)"; break;
+                            case 12: jobName = "5次(アニメコラボ)"; break;
+                            case 13: jobName = "5次(モンスター)"; break;
+                            case 14: jobName = "5次(フレンドワールド)"; break;
+                            case 15: jobName = "5次(レフ)"; break;
+                            case 16: jobName = "5次(アニマ)"; break;
+                            case 17: jobName = "5次(江湖)"; break;
+                            case 18: jobName = "5次(シャイン)"; break;
+                        }
+                    }
+                    else
+                    {
+                        jobName = GetJobName(skillCode / 10000);
+                    }
+                    break;
+            }
+            return jobName;
         }
 
         public static string ToCJKNumberExpr(long value)
