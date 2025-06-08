@@ -158,6 +158,8 @@ namespace WzComparerR2.CharaSim
                 case GearPropType.incARC: return "ARC : " + sign + value;
                 case GearPropType.incAUT: return "AUT : " + sign + value;
 
+                case GearPropType.incCHUC: return "スターフォース : " + sign + value;
+
                 case GearPropType.Etuc: return "エクセプショナル強化かできます。 (最大\n\r: " + value + "回)";
                 case GearPropType.CuttableCount: return "はさみ使用可能回数：" + value + "回";
                 default: return null;
