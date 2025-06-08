@@ -1011,7 +1011,7 @@ namespace WzComparerR2.Patcher
         {
             if (expected != actual)
             {
-                if (fileName == "MapleStory.exe" || fileName == "MapleStoryT.exe") reason = "このクライアントに最新の「Minor Patch」をインストールしましたか? ";
+                if (fileName == "MapleStory.exe" || fileName == "MapleStoryT.exe" || fileName == "MapleResource.ini") reason = "このクライアントに最新の「Minor Patch」をインストールしましたか? ";
                 throw new Exception(string.Format("ファイル「{0}」のチェックサムが一致しません({1})。 (予想: 0x{2:x8}, 実際: 0x{3:x8})", fileName, reason, expected, actual));
             }
         }
