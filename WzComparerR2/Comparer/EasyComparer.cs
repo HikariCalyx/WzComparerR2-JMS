@@ -863,7 +863,7 @@ namespace WzComparerR2.Comparer
                 switch (nullSkillIdx)
                 {
                     case 0: // change
-                        // skillType = "変更";
+                        skillType = "変更";
 
                         Bitmap ImageNew = skillRenderNewOld[0].Render(true);
                         Bitmap ImageOld = skillRenderNewOld[1].Render(true);
@@ -908,7 +908,7 @@ namespace WzComparerR2.Comparer
 
                 var skillTypeTextInfo = g.MeasureString(skillType, GearGraphics.ItemDetailFont);
                 int picH = ShowObjectID ? 13 : 1;
-                if (ShowChangeType) GearGraphics.DrawPlainText(g, skillType, skillTypeFont, Color.FromArgb(255, 255, 255), 2, (int)Math.Ceiling(skillTypeTextInfo.Width) + 2, ref picH, 10);
+                if (ShowChangeType && nullSkillIdx != 0) GearGraphics.DrawPlainText(g, skillType, skillTypeFont, Color.FromArgb(255, 255, 255), 2, (int)Math.Ceiling(skillTypeTextInfo.Width) + 2, ref picH, 10);
 
                 string categoryPath = (int.Parse(skillID) / 100000 == 4000 && FifthJobSkillToJobID.ContainsKey(int.Parse(skillID))) ? (ItemStringHelper.GetFifthJobName(int.Parse(skillID), FifthJobSkillToJobID[int.Parse(skillID)])) : (ItemStringHelper.GetJobName(int.Parse(skillID) / 10000) ?? "その他");
 
@@ -1086,7 +1086,7 @@ namespace WzComparerR2.Comparer
                 switch (nullItemIdx)
                 {
                     case 0: // change
-                        //itemType = "変更";
+                        itemType = "変更";
 
 
                         Bitmap ImageNew = itemRenderNewOld[0].Render();
@@ -1137,7 +1137,7 @@ namespace WzComparerR2.Comparer
 
                 var itemTypeTextInfo = g.MeasureString(itemType, GearGraphics.ItemDetailFont);
                 int picH = ShowObjectID ? 13 : 1;
-                if (ShowChangeType) GearGraphics.DrawPlainText(g, itemType, itemTypeFont, Color.FromArgb(255, 255, 255), 2, (int)Math.Ceiling(itemTypeTextInfo.Width) + 2, ref picH, 10);
+                if (ShowChangeType && nullItemIdx != 0) GearGraphics.DrawPlainText(g, itemType, itemTypeFont, Color.FromArgb(255, 255, 255), 2, (int)Math.Ceiling(itemTypeTextInfo.Width) + 2, ref picH, 10);
 
                 string imageName = Path.Combine(itemTooltipPath, categoryPath, "アイテム_" + itemID + "_" + ItemName + "_" + itemType + ".png");
                 if (!File.Exists(imageName))
@@ -1354,7 +1354,7 @@ namespace WzComparerR2.Comparer
                 switch (nullEqpIdx)
                 {
                     case 0: // change
-                        //gearType = "変更";
+                        gearType = "変更";
 
                         Bitmap ImageNew = gearRenderNewOld[0].Render();
                         Bitmap ImageOld = gearRenderNewOld[1].Render();
@@ -1406,7 +1406,7 @@ namespace WzComparerR2.Comparer
 
                 var gearTypeTextInfo = g.MeasureString(gearType, GearGraphics.ItemDetailFont);
                 int picH = ShowObjectID ? 13 : 1;
-                if (ShowChangeType) GearGraphics.DrawPlainText(g, gearType, gearTypeFont, Color.FromArgb(255, 255, 255), 2, (int)Math.Ceiling(gearTypeTextInfo.Width) + 2, ref picH, 10);
+                if (ShowChangeType && nullEqpIdx != 0) GearGraphics.DrawPlainText(g, gearType, gearTypeFont, Color.FromArgb(255, 255, 255), 2, (int)Math.Ceiling(gearTypeTextInfo.Width) + 2, ref picH, 10);
 
                 string imageName = Path.Combine(gearTooltipPath, categoryPath, "装備_" + gearID + "_" + EqpName + "_" + gearType + ".png");
                 if (!File.Exists(imageName))
@@ -1672,7 +1672,7 @@ namespace WzComparerR2.Comparer
 
                 var gearTypeTextInfo = g.MeasureString(gearType, GearGraphics.ItemDetailFont);
                 int picH = ShowObjectID ? 13 : 1;
-                if (ShowChangeType) GearGraphics.DrawPlainText(g, gearType, gearTypeFont, Color.FromArgb(255, 255, 255), 2, (int)Math.Ceiling(gearTypeTextInfo.Width) + 2, ref picH, 10);
+                if (ShowChangeType && nullEqpIdx != 0) GearGraphics.DrawPlainText(g, gearType, gearTypeFont, Color.FromArgb(255, 255, 255), 2, (int)Math.Ceiling(gearTypeTextInfo.Width) + 2, ref picH, 10);
 
                 string imageName = Path.Combine(gearTooltipPath, categoryPath, "装備_" + gearID + "_" + EqpName + "_" + gearType + ".png");
                 if (!File.Exists(imageName))
@@ -1765,7 +1765,7 @@ namespace WzComparerR2.Comparer
                 switch (nullMapIdx)
                 {
                     case 0: // change
-                        //mapType = "変更";
+                        mapType = "変更";
 
                         Bitmap ImageNew = mapRenderNewOld[0].Render();
                         Bitmap ImageOld = mapRenderNewOld[1].Render();
@@ -1812,7 +1812,7 @@ namespace WzComparerR2.Comparer
 
                 var mapTypeTextInfo = g.MeasureString(mapType, GearGraphics.ItemDetailFont);
                 int picH = ShowObjectID ? 13 : 1;
-                if (ShowChangeType) GearGraphics.DrawPlainText(g, mapType, mapTypeFont, Color.FromArgb(255, 255, 255), 2, (int)Math.Ceiling(mapTypeTextInfo.Width) + 2, ref picH, 10);
+                if (ShowChangeType && nullMapIdx != 0) GearGraphics.DrawPlainText(g, mapType, mapTypeFont, Color.FromArgb(255, 255, 255), 2, (int)Math.Ceiling(mapTypeTextInfo.Width) + 2, ref picH, 10);
 
                 string imageName = Path.Combine(mapTooltipPath, "マップ_" + mapID + "_" + MapName + "_" + mapType + ".png");
                 if (!File.Exists(imageName))
@@ -1901,7 +1901,7 @@ namespace WzComparerR2.Comparer
                 switch (nullMobIdx)
                 {
                     case 0: // change
-                        //mobType = "変更";
+                        mobType = "変更";
 
                         Bitmap ImageNew = mobRenderNewOld[0].Render();
                         Bitmap ImageOld = mobRenderNewOld[1].Render();
@@ -1948,7 +1948,7 @@ namespace WzComparerR2.Comparer
 
                 var mobTypeTextInfo = g.MeasureString(mobType, GearGraphics.ItemDetailFont);
                 int picH = 1;
-                if (ShowChangeType) GearGraphics.DrawPlainText(g, mobType, mobTypeFont, Color.FromArgb(255, 255, 255), 2, (int)Math.Ceiling(mobTypeTextInfo.Width) + 2, ref picH, 10);
+                if (ShowChangeType && nullMobIdx != 0) GearGraphics.DrawPlainText(g, mobType, mobTypeFont, Color.FromArgb(255, 255, 255), 2, (int)Math.Ceiling(mobTypeTextInfo.Width) + 2, ref picH, 10);
 
                 string imageName = Path.Combine(mobTooltipPath, "モンスター_" + mobID + "_" + MobName + "_" + mobType + ".png");
                 if (!File.Exists(imageName))
@@ -2037,7 +2037,7 @@ namespace WzComparerR2.Comparer
                 switch (nullNpcIdx)
                 {
                     case 0: // change
-                        //npcType = "変更";
+                        npcType = "変更";
 
                         Bitmap ImageNew = npcRenderNewOld[0].Render();
                         Bitmap ImageOld = npcRenderNewOld[1].Render();
@@ -2084,7 +2084,7 @@ namespace WzComparerR2.Comparer
 
                 var npcTypeTextInfo = g.MeasureString(npcType, GearGraphics.ItemDetailFont);
                 int picH = 1;
-                if (ShowChangeType) GearGraphics.DrawPlainText(g, npcType, npcTypeFont, Color.FromArgb(255, 255, 255), 2, (int)Math.Ceiling(npcTypeTextInfo.Width) + 2, ref picH, 10);
+                if (ShowChangeType && nullNpcIdx != 0) GearGraphics.DrawPlainText(g, npcType, npcTypeFont, Color.FromArgb(255, 255, 255), 2, (int)Math.Ceiling(npcTypeTextInfo.Width) + 2, ref picH, 10);
 
                 string imageName = Path.Combine(npcTooltipPath, "Npc_" + npcID + "_" + NpcName + "_" + npcType + ".png");
                 if (!File.Exists(imageName))
@@ -2178,7 +2178,7 @@ namespace WzComparerR2.Comparer
                 switch (nullItemIdx)
                 {
                     case 0: // change
-                        //itemType = "変更";
+                        itemType = "変更";
 
                         Bitmap ImageNew = cashRenderNewOld[0].Render();
                         Bitmap ImageOld = cashRenderNewOld[1].Render();
@@ -2225,7 +2225,7 @@ namespace WzComparerR2.Comparer
 
                 var itemTypeTextInfo = g.MeasureString(itemType, GearGraphics.ItemDetailFont);
                 int picH = ShowObjectID ? 13 : 1;
-                if (ShowChangeType) GearGraphics.DrawPlainText(g, itemType, itemTypeFont, Color.FromArgb(255, 255, 255), 2, (int)Math.Ceiling(itemTypeTextInfo.Width) + 2, ref picH, 10);
+                if (ShowChangeType && nullItemIdx != 0) GearGraphics.DrawPlainText(g, itemType, itemTypeFont, Color.FromArgb(255, 255, 255), 2, (int)Math.Ceiling(itemTypeTextInfo.Width) + 2, ref picH, 10);
 
                 string imageName = Path.Combine(itemTooltipPath, "Item_" + itemID + "_" + ItemName + "_" + itemType + ".png");
                 if (!File.Exists(imageName))
