@@ -990,6 +990,7 @@ namespace WzComparerR2.Comparer
                 itemRenderNewOld[i].ShowSoldPrice = this.ShowPrice;
                 itemRenderNewOld[i].ShowCashPurchasePrice = this.ShowPrice;
                 itemRenderNewOld[i].ShowLinkedTamingMob = this.ShowLinkedTamingMob;
+                itemRenderNewOld[i].CompareMode = true;
             }
 
             foreach (var itemID in OutputItemTooltipIDs)
@@ -1172,6 +1173,7 @@ namespace WzComparerR2.Comparer
                 gearRenderNewOld[i].ShowSoldPrice = this.ShowPrice;
                 gearRenderNewOld[i].ShowCashPurchasePrice = this.ShowPrice;
                 gearRenderNewOld[i].ShowCombatPower = true;
+                gearRenderNewOld[i].CompareMode = true;
             }
 
             foreach (var gearID in OutputGearTooltipIDs)
@@ -1439,6 +1441,7 @@ namespace WzComparerR2.Comparer
                 gearRenderNewOld[i].ShowObjectID = this.ShowObjectID;
                 gearRenderNewOld[i].ShowSoldPrice = this.ShowPrice;
                 gearRenderNewOld[i].ShowCashPurchasePrice = this.ShowPrice;
+                gearRenderNewOld[i].CompareMode = true;
             }
 
             foreach (var gearID in OutputGearTooltipIDs)
