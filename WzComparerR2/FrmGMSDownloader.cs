@@ -63,8 +63,6 @@ namespace WzComparerR2
 
                 this.lblUpdateDate.Text = releaseDate + " UTC";
                 this.lblLatestVer.Text = majorVersion + "." + minorVersion + "." + revision;
-                // AppendText(ChangeTitle + "\r\n", Color.Red);
-                // AppendText(Changelog, Color.Black);
                 this.richTextBoxEx1.SelectionStart = 0;
                 buttonX1.Enabled = true;
                 this.lblUpdateContent.Text = "ダウンロード可能";
@@ -100,20 +98,20 @@ namespace WzComparerR2
             manifestHashRequest.Method = "GET";
             try
             {
-                AppendStateText("Trying to receive manifest hash...", Color.Black);
+                AppendStateText("マニフェストハッシュを受信しようとしています...", Color.Black);
                 var manifestHashResponse = (HttpWebResponse)manifestHashRequest.GetResponse();
                 var manifestHashString = new StreamReader(manifestHashResponse.GetResponseStream()).ReadToEnd();
                 using (StreamWriter outputFile = new StreamWriter(manifestPath, false, Encoding.UTF8))
                 {
                     outputFile.Write(manifestHashString);
                 }
-                AppendStateText("Done\r\n", Color.Green);
+                AppendStateText("完了\r\n", Color.Green);
                 var manifestRequest = (HttpWebRequest)WebRequest.Create("http://download2.nexon.net/Game/nxl/games/10100/" + manifestHashString);
                 manifestRequest.UserAgent = "GmsDownloader/1.0";
                 manifestRequest.Method = "GET";
                 try
                 {
-                    AppendStateText("Downloading manifest...\r\n", Color.Black);
+                    AppendStateText("マニフェストをダウンロードしています...\r\n", Color.Black);
                     using (HttpWebResponse response = (HttpWebResponse)manifestRequest.GetResponse())
                     using (Stream responseStream = response.GetResponseStream())
                     using (MemoryStream memoryStream = new MemoryStream())
@@ -128,7 +126,7 @@ namespace WzComparerR2
                             string manifestContent = Encoding.UTF8.GetString(decompressedStream.ToArray());
 
                             manifest = JsonConvert.DeserializeObject<GMSManifest>(manifestContent);
-                            AppendStateText("Manifest loaded successfully.\r\n", Color.Green);
+                            AppendStateText("マニフェストが正常に読み込まれました。\r\n", Color.Green);
                         }
                     }
                 }
@@ -136,11 +134,11 @@ namespace WzComparerR2
                 {
                     throw ex;
                 }
-                AppendStateText(String.Format("Total files: {0}\r\n", manifest.files.Count), Color.Black);
-                AppendStateText(String.Format("Total size: {0}\r\n", GetBothByteAndGBValue(manifest.total_uncompressed_size)), Color.Black);
+                AppendStateText(String.Format("合計ファイル数: {0}\r\n", manifest.files.Count), Color.Black);
+                AppendStateText(String.Format("合計サイズ: {0}\r\n", GetBothByteAndGBValue(manifest.total_uncompressed_size)), Color.Black);
                 if (manifest.total_uncompressed_size > RemainingDiskSpace(applyPath))
                 {
-                    AppendStateText("Insufficient disk space for the client.\r\n", Color.Red);
+                    AppendStateText("ディスク容量が不足しています。中止します...\r\n", Color.Red);
                     this.lblUpdateContent.Text = LocalizedString_JP.FRMUPDATER_UPDATE_DOWNLOAD_FAIL;
                     return;
                 }
@@ -154,7 +152,7 @@ namespace WzComparerR2
                     {
                         if (!Directory.Exists(fullFileName))
                         {
-                            AppendStateText(String.Format("Create dir: {0}\r\n", fullFileName), Color.Black);
+                            AppendStateText(String.Format("作成ディレクトリ: {0}\r\n", fullFileName), Color.Black);
                             Directory.CreateDirectory(fullFileName);
                         }
                     }
@@ -162,7 +160,7 @@ namespace WzComparerR2
                     {
                         if (!File.Exists(fullFileName) || new FileInfo(fullFileName).Length != kv.Value.fsize)
                         {
-                            AppendStateText(String.Format("Downloading file: {0}...", fullFileName), Color.Black);
+                            AppendStateText(String.Format("ダウンロードファイル: {0}...", fullFileName), Color.Black);
                             using (var fs = File.Create(fullFileName))
                             {
                                 for (int p = 0; p < kv.Value.objects.Length; p++)
@@ -188,11 +186,11 @@ namespace WzComparerR2
                                     }
                                 }
                             }
-                            AppendStateText("Done\r\n", Color.Green);
+                            AppendStateText("完了\r\n", Color.Green);
                         }
                         else
                         {
-                            AppendStateText(String.Format("File {0} already exists, skipping\r\n", fullFileName), Color.Black);
+                            AppendStateText(String.Format("ファイル{0}は既に存在するためスキップします\r\n", fullFileName), Color.Black);
                         }
                     }
                 }
@@ -205,7 +203,7 @@ namespace WzComparerR2
             }
             finally
             {
-                AppendStateText("Completed\r\n", Color.Green);
+                AppendStateText("完了\r\n", Color.Green);
                 buttonX1.Enabled = true;
             }
         }
