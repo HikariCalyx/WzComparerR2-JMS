@@ -891,7 +891,7 @@
             // 
             // 
             this.chkShowMiniMapNpc.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
-            this.chkShowMiniMapNpc.Location = new System.Drawing.Point(30, 108);
+            this.chkShowMiniMapNpc.Location = new System.Drawing.Point(13, 108);
             this.chkShowMiniMapNpc.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.chkShowMiniMapNpc.Name = "chkShowMiniMapNpc";
             this.chkShowMiniMapNpc.Size = new System.Drawing.Size(190, 16);
@@ -907,7 +907,7 @@
             // 
             // 
             this.chkShowMiniMapPortal.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
-            this.chkShowMiniMapPortal.Location = new System.Drawing.Point(30, 132);
+            this.chkShowMiniMapPortal.Location = new System.Drawing.Point(13, 132);
             this.chkShowMiniMapPortal.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.chkShowMiniMapPortal.Name = "chkShowMiniMapPortal";
             this.chkShowMiniMapPortal.Size = new System.Drawing.Size(190, 16);
