@@ -215,7 +215,31 @@ namespace WzComparerR2.CharaSimControl
                 picH += 16 * term.Split('\n').Length;
                 //picH += 12; < --- commented because of line above, check!
             }
-            if (commodityPackage.Limit > 0)
+            if (commodityPackage.LimitMax > 0)
+            {
+                string limit = null;
+                switch (commodityPackage.LimitMax)
+                {
+                    case 1:
+                        limit = "メイプルID";
+                        break;
+                    case 2:
+                        limit = "ワールド";
+                        break;
+                    case 3:
+                        limit = "NEXON ID";
+                        break;
+                    default:
+                        limit = commodityPackage.LimitMax.ToString();
+                        break;
+                }
+                if (!string.IsNullOrEmpty(limit))
+                {
+                    TextRenderer.DrawText(g, "<" + limit + "購入制限 >", GearGraphics.ItemDetailFont, new Point(cashBitmap.Width, picH), ((SolidBrush)GearGraphics.OrangeBrush4).Color, TextFormatFlags.HorizontalCenter);
+                    picH += 12;
+                }
+            }
+            else if (commodityPackage.Limit > 0)
             {
                 if (!(commodityPackage.termStart > 0 || commodityPackage.termEnd != null))
                 {
@@ -237,7 +261,7 @@ namespace WzComparerR2.CharaSimControl
                         limit = commodityPackage.Limit.ToString();
                         break;
                 }
-                if (limit != null && limit.Length > 0)
+                if (!string.IsNullOrEmpty(limit))
                 {
                     TextRenderer.DrawText(g, "<" + limit + "購入制限 >", GearGraphics.ItemDetailFont, new Point(cashBitmap.Width, picH), ((SolidBrush)GearGraphics.OrangeBrush4).Color, TextFormatFlags.HorizontalCenter);
                     picH += 12;
