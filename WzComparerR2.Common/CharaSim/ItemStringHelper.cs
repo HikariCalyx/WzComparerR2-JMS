@@ -961,6 +961,7 @@ namespace WzComparerR2.CharaSim
                 case 175: return "墨玄着用可能";
                 case 181: return "エリル着用可能";
                 case 182: return "シア着用可能";
+                case 184: return "アイエル着用可能";
 
                 default: return null;
             }
@@ -1506,7 +1507,7 @@ namespace WzComparerR2.CharaSim
 
                 case 18000: return "シア・アステル";
                 case 18001: return "エリルライト";
-                case 18002:
+                case 18002: return "アイエル";
                 case 18003:
                 case 18004: return "シャイン";
                 case 18100: return "エリルライト(1次)";
@@ -1524,11 +1525,11 @@ namespace WzComparerR2.CharaSim
                 case 18311: return "シャイン弓使い(3次)";
                 case 18312: return "シャイン弓使い(4次)";
                 case 18314: return "シャイン弓使い(6次)";
-                case 18400: return "シャイン盗賊(1次)";
-                case 18410: return "シャイン盗賊(2次)";
-                case 18411: return "シャイン盗賊(3次)";
-                case 18412: return "シャイン盗賊(4次)";
-                case 18414: return "シャイン盗賊(6次)";
+                case 18400: return "アイエル(1次)";
+                case 18410: return "アイエル(2次)";
+                case 18411: return "アイエル(3次)";
+                case 18412: return "アイエル(4次)";
+                case 18414: return "アイエル(6次)";
                 case 18500: return "シャイン海賊(1次)";
                 case 18510: return "シャイン海賊(2次)";
                 case 18511: return "シャイン海賊(3次)";
