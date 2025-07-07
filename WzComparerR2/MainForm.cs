@@ -4272,6 +4272,15 @@ namespace WzComparerR2
 
             if (dlg.ShowDialog() == DialogResult.OK)
             {
+                if (chkOutputVideo.Checked)
+                {
+                    if (!File.Exists(ImageHandlerConfig.Default.FFmpegBinPath))
+                    {
+                        ToastNotification.Show(this, $"警告: FFmpegプログラムがまだ指定されていません。この機能は利用できません。", null, 3000, eToastGlowColor.Red, eToastPosition.TopCenter);
+                        chkOutputVideo.Checked = false;
+                    }
+                }
+
                 compareThread = new Thread(() =>
                 {
                     System.Diagnostics.Stopwatch sw = System.Diagnostics.Stopwatch.StartNew();
@@ -4289,7 +4298,7 @@ namespace WzComparerR2
                     comparer.OutputMobTooltip = chkOutputMobTooltip.Checked;
                     comparer.OutputNpcTooltip = chkOutputNpcTooltip.Checked;
                     comparer.OutputCashTooltip = chkOutputCashTooltip.Checked;
-                    comparer.HashPngFileName = chkHashPngFileName.Checked;
+                    comparer.OutputVideo = chkOutputVideo.Checked;
                     comparer.ShowObjectID = chkShowObjectID.Checked;
                     comparer.ShowChangeType = chkShowChangeType.Checked;
                     comparer.ShowPrice = chkShowPrice.Checked;
@@ -4331,7 +4340,7 @@ namespace WzComparerR2
                                     chkShowObjectID.Enabled = false;
                                     chkShowChangeType.Enabled = false;
                                     chkShowPrice.Enabled = false;
-                                    chkHashPngFileName.Enabled = false;
+                                    chkOutputVideo.Enabled = false;
                                     chkShowLinkedTamingMob.Enabled = false;
                                     chkSkipKMSContent.Enabled = false;
                                     if (chkSkipKMSContent.Checked)
@@ -4395,7 +4404,7 @@ namespace WzComparerR2
                         chkShowObjectID.Enabled = true;
                         chkShowChangeType.Enabled = true;
                         chkShowPrice.Enabled = true;
-                        chkHashPngFileName.Enabled = true;
+                        chkOutputVideo.Enabled = true;
                         chkShowLinkedTamingMob.Enabled = true;
                         chkSkipKMSContent.Enabled = true;
                     }

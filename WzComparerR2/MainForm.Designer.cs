@@ -292,7 +292,7 @@ namespace WzComparerR2
             this.dockSite3 = new DevComponents.DotNetBar.DockSite();
             this.dockContainerItem2 = new DevComponents.DotNetBar.DockContainerItem();
             this.panelDockContainer2 = new DevComponents.DotNetBar.PanelDockContainer();
-            this.chkHashPngFileName = new DevComponents.DotNetBar.Controls.CheckBoxX();
+            this.chkOutputVideo = new DevComponents.DotNetBar.Controls.CheckBoxX();
             this.btnItemOpenImg = new DevComponents.DotNetBar.ButtonItem();
             this.buttonItemSaveWithOptions = new DevComponents.DotNetBar.ButtonItem();
             this.itemContainer100 = new DevComponents.DotNetBar.ItemContainer();
@@ -2651,7 +2651,7 @@ namespace WzComparerR2
             // 
             // superTabControlPanel2
             // 
-            //this.superTabControlPanel2.Controls.Add(this.chkHashPngFileName);
+            this.superTabControlPanel2.Controls.Add(this.chkOutputVideo);
             this.superTabControlPanel2.Controls.Add(this.chkEnableDarkMode);
             this.superTabControlPanel2.Controls.Add(this.chkOutputCashTooltip);
             this.superTabControlPanel2.Controls.Add(this.chkOutputEqpTooltip);
@@ -3477,19 +3477,19 @@ namespace WzComparerR2
             this.panelDockContainer2.Style.GradientAngle = 90;
             this.panelDockContainer2.TabIndex = 2;
             // 
-            // chkHashPngFileName
+            // chkOutputVideo
             //
             //
             //
             //
-            this.chkHashPngFileName.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
-            this.chkHashPngFileName.Location = new System.Drawing.Point(328, 61);
-            this.chkHashPngFileName.Name = "chkHashPngFileName";
-            this.chkHashPngFileName.Size = new System.Drawing.Size(107, 23);
-            this.chkHashPngFileName.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
-            this.superTooltip1.SetSuperTooltip(this.chkHashPngFileName, new DevComponents.DotNetBar.SuperTooltipInfo("ハッシュPNG名", "", "PNGファイル名をMD5ハッシュとして出力します。\r\nパスが長すぎて 255 の制限を超えている場合は、\r\nこのオプションを有効にしてください。", null, null, DevComponents.DotNetBar.eTooltipColor.System, true, false, new System.Drawing.Size(180, 70)));
-            this.chkHashPngFileName.TabIndex = 9;
-            this.chkHashPngFileName.Text = "ハッシュPNG名";
+            this.chkOutputVideo.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
+            this.chkOutputVideo.Location = new System.Drawing.Point(328, 61);
+            this.chkOutputVideo.Name = "chkOutputVideo";
+            this.chkOutputVideo.Size = new System.Drawing.Size(107, 23);
+            this.chkOutputVideo.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
+            this.superTooltip1.SetSuperTooltip(this.chkOutputVideo, new DevComponents.DotNetBar.SuperTooltipInfo("動画を出力", "", "変更された動画オブジェクトをMP4形式で出力します。この機能にはFFmpegが必要です。", null, null, DevComponents.DotNetBar.eTooltipColor.System, true, false, new System.Drawing.Size(180, 130)));
+            this.chkOutputVideo.TabIndex = 9;
+            this.chkOutputVideo.Text = "動画を出力";
             //
             // 
             // toolStripMenuItem4
@@ -3804,7 +3804,7 @@ namespace WzComparerR2
         private DevComponents.DotNetBar.Controls.CheckBoxX chkOutputMobTooltip;
         private DevComponents.DotNetBar.Controls.CheckBoxX chkOutputNpcTooltip;
         private DevComponents.DotNetBar.Controls.CheckBoxX chkOutputSkillTooltip;
-        private DevComponents.DotNetBar.Controls.CheckBoxX chkHashPngFileName;
+        private DevComponents.DotNetBar.Controls.CheckBoxX chkOutputVideo;
         private DevComponents.DotNetBar.Controls.CheckBoxX chkShowObjectID;
         private DevComponents.DotNetBar.Controls.CheckBoxX chkShowChangeType;
         private DevComponents.DotNetBar.Controls.CheckBoxX chkShowPrice;

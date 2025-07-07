@@ -1,18 +1,29 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework.Graphics;
+using System;
 using System.Collections.Generic;
-using System.Text;
-using System.IO;
-using System.Net;
 using System.Drawing;
-using System.Linq;
-using System.Security.Cryptography;
-using WzComparerR2.WzLib;
-using WzComparerR2.Common;
-using WzComparerR2.PluginBase;
-using WzComparerR2.CharaSimControl;
-using WzComparerR2.CharaSim;
-using System.Text.RegularExpressions;
 using System.Drawing.Imaging;
+using System.IO;
+using System.Linq;
+using System.Net;
+using System.Runtime.InteropServices;
+using System.Security.Cryptography;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using System.Windows.Forms.VisualStyles;
+using WzComparerR2.Animation;
+using WzComparerR2.CharaSim;
+using WzComparerR2.CharaSimControl;
+using WzComparerR2.Common;
+using WzComparerR2.Config;
+using WzComparerR2.Controls;
+using WzComparerR2.Encoders;
+using WzComparerR2.PluginBase;
+using WzComparerR2.Rendering;
+using WzComparerR2.WzLib;
 
 namespace WzComparerR2.Comparer
 {
@@ -47,6 +58,7 @@ namespace WzComparerR2.Comparer
         public WzFileComparer Comparer { get; protected set; }
         private string stateInfo;
         private string stateDetail;
+        private GraphicsDevice virtualGraphicsDevice = new GraphicsDevice(GraphicsAdapter.DefaultAdapter, GraphicsProfile.HiDef, new PresentationParameters());
         public bool OutputPng { get; set; }
         public bool OutputAddedImg { get; set; }
         public bool OutputRemovedImg { get; set; }
@@ -66,7 +78,7 @@ namespace WzComparerR2.Comparer
         public bool ShowLinkedTamingMob { get; set; }
         public bool SkipKMSContent { get; set; }
         public bool DownloadKMSContentDB { get; set; }
-
+        public bool OutputVideo { get; set; }
         public string StateInfo
         {
             get { return stateInfo; }
@@ -555,6 +567,7 @@ namespace WzComparerR2.Comparer
                     "- Compare " + this.Comparer.PngComparison,
                     this.Comparer.ResolvePngLink ? "- PNGリンクを解決" : null,
                     this.SkipKMSContent ? "- KMS職業を比較しない" : null,
+                    this.OutputVideo ? "- 動画を出力" : null,
                 }.Where(p => p != null)));
                 sw.WriteLine("</table>");
                 sw.WriteLine("</p>");
@@ -2744,7 +2757,38 @@ namespace WzComparerR2.Comparer
                     return string.Format("rawdata {0} bytes", rawData.Length);
 
                 case Wz_Video video:
-                    return string.Format("video {0} bytes", video.Length);
+                    if (OutputVideo)
+                    {
+                        List<Controls.AnimationItem> items = new List<Controls.AnimationItem>();
+                        char[] invalidChars = Path.GetInvalidFileNameChars();
+                        string colName = col == 0 ? "new" : (col == 1 ? "old" : col.ToString());
+                        string filePath = fullPath.Replace('\\', '.') + "_" + colName + ".mp4";
+
+                        for (int i = 0; i < invalidChars.Length; i++)
+                        {
+                            filePath = filePath.Replace(invalidChars[i].ToString(), null);
+                        }
+
+                        var videoFrameDt = new MaplestoryCanvasVideoLoader().Load(video, virtualGraphicsDevice);
+                        var aniItem = new FrameAnimator(videoFrameDt);
+
+
+                        var config = ImageHandlerConfig.Default;
+                        config.BackgroundType = ImageBackgroundType.Color;
+                        config.GifEncoder = 3;
+
+                        using var encoder = AnimateEncoderFactory.CreateEncoder(config);
+
+                        var clonedAniItem = (Controls.AnimationItem)aniItem.Clone();
+
+                        SaveAsMp4(clonedAniItem, Path.Combine(outputDir, filePath), config, encoder);
+
+                        return string.Format("<video controls src=\"{0}\" type=\"video/mp4\">video {1} bytes\n</audio>", Path.Combine(new DirectoryInfo(outputDir).Name, filePath), video.Length);
+                    }
+                    else
+                    {
+                        return string.Format("video {0} bytes", video.Length);
+                    }
 
                 case Wz_Image _:
                     return "{ img }";
@@ -3150,6 +3194,254 @@ namespace WzComparerR2.Comparer
                     }
                 default:
                     return true;
+            }
+        }
+
+        private async Task SaveAsMp4(AnimationItem aniItem, string fileName, ImageHandlerConfig config, GifEncoder encoder)
+        {
+            var rec = new AnimationRecoder(this.virtualGraphicsDevice);
+            var cap = encoder.Compatibility;
+
+            rec.Items.Add(aniItem);
+            int length = rec.GetMaxLength();
+            int delay = Math.Max(cap.MinFrameDelay, config.MinDelay);
+            int[] timeline = null;
+            if (!cap.IsFixedFrameRate)
+            {
+                timeline = rec.GetGifTimeLine(delay, cap.MaxFrameDelay);
+            }
+
+            // calc available canvas area
+            rec.ResetAll();
+            rec.BackgroundColor = System.Drawing.Color.FromArgb(255, config.BackgroundColor.Value).ToXnaColor();
+            Microsoft.Xna.Framework.Rectangle bounds = aniItem.Measure();
+            if (length > 0)
+            {
+                IEnumerable<int> delays = timeline?.Take(timeline.Length - 1)
+                    ?? Enumerable.Range(0, (int)Math.Ceiling(1.0 * length / delay) - 1);
+
+                foreach (var frameDelay in delays)
+                {
+                    rec.Update(TimeSpan.FromMilliseconds(frameDelay));
+                    var rect = aniItem.Measure();
+                    bounds = Microsoft.Xna.Framework.Rectangle.Union(bounds, rect);
+                }
+            }
+            bounds.Offset(aniItem.Position);
+
+            // customize clip/scale options
+            Controls.AnimationClipOptions clipOptions = new Controls.AnimationClipOptions()
+            {
+                StartTime = 0,
+                StopTime = length,
+                Left = bounds.Left,
+                Top = bounds.Top,
+                Right = bounds.Right,
+                Bottom = bounds.Bottom,
+                OutputWidth = bounds.Width,
+                OutputHeight = bounds.Height,
+            };
+
+            // validate params
+            bounds = new Microsoft.Xna.Framework.Rectangle(
+                clipOptions.Left.Value,
+                clipOptions.Top.Value,
+                clipOptions.Right.Value - clipOptions.Left.Value,
+                clipOptions.Bottom.Value - clipOptions.Top.Value
+                );
+            var targetSize = new Microsoft.Xna.Framework.Point(clipOptions.OutputWidth.Value, clipOptions.OutputHeight.Value);
+            var startTime = clipOptions.StartTime.Value;
+            var stopTime = clipOptions.StopTime.Value;
+
+            if (bounds.Width <= 0 || bounds.Height <= 0
+                || targetSize.X <= 0 || targetSize.Y <= 0
+                || startTime < 0
+                || stopTime - startTime <= 0)
+            {
+                return;
+            }
+            length = stopTime - startTime;
+
+            // pre-render
+            rec.ResetAll();
+
+            // select encoder
+            encoder.Init(fileName, targetSize.X, targetSize.Y);
+
+            // pipeline functions
+            IEnumerable<Tuple<byte[], int>> MergeFrames(IEnumerable<Tuple<byte[], int>> frames)
+            {
+                byte[] prevFrame = null;
+                int prevDelay = 0;
+
+                foreach (var frame in frames)
+                {
+                    byte[] currentFrame = frame.Item1;
+                    int currentDelay = frame.Item2;
+
+                    if (prevFrame == null)
+                    {
+                        prevFrame = currentFrame;
+                        prevDelay = currentDelay;
+                    }
+                    else if (prevFrame.AsSpan().SequenceEqual(currentFrame.AsSpan()))
+                    {
+                        prevDelay += currentDelay;
+                    }
+                    else
+                    {
+                        yield return Tuple.Create(prevFrame, prevDelay);
+                        prevFrame = currentFrame;
+                        prevDelay = currentDelay;
+                    }
+                }
+
+                if (prevFrame != null)
+                {
+                    yield return Tuple.Create(prevFrame, prevDelay);
+                }
+            }
+
+            IEnumerable<int> RenderDelay()
+            {
+                int t = 0;
+                while (t < length)
+                {
+                    int frameDelay = Math.Min(length - t, delay);
+                    t += frameDelay;
+                    yield return frameDelay;
+                }
+            }
+
+            IEnumerable<int> ClipTimeline(int[] _timeline)
+            {
+                int t = 0;
+                for (int i = 0; ; i = (i + 1) % timeline.Length)
+                {
+                    var frameDelay = timeline[i];
+                    if (t < startTime)
+                    {
+                        if (t + frameDelay > startTime)
+                        {
+                            frameDelay = t + frameDelay - startTime;
+                            t = startTime;
+                        }
+                        else
+                        {
+                            t += frameDelay;
+                            continue;
+                        }
+                    }
+
+                    if (t + frameDelay < stopTime)
+                    {
+                        yield return frameDelay;
+                        t += frameDelay;
+                    }
+                    else
+                    {
+                        frameDelay = stopTime - t;
+                        yield return frameDelay;
+                        break;
+                    }
+                }
+            }
+
+            int prevTime = 0;
+            async Task<int> ApplyFrame(byte[] frameData, int frameDelay)
+            {
+                byte[] gifData = null;
+                if (cap.AlphaSupportMode != AlphaSupportMode.FullAlpha && config.BackgroundType.Value == ImageBackgroundType.Transparent)
+                {
+                    using (var rt2 = rec.GetGifTexture(config.BackgroundColor.Value.ToXnaColor(), config.MinMixedAlpha))
+                    {
+                        if (gifData == null)
+                        {
+                            gifData = new byte[frameData.Length];
+                        }
+                        rt2.GetData(gifData);
+                    }
+                }
+                else
+                {
+                    gifData = frameData;
+                }
+
+                var tasks = new List<Task>();
+
+
+                // append frame data to gif stream
+                tasks.Add(Task.Run(() =>
+                {
+                    // TODO: only for gif here?
+                    frameDelay = Math.Max(10, (int)(Math.Round(frameDelay / 10.0) * 10));
+
+                    GCHandle gcHandle = GCHandle.Alloc(frameData, GCHandleType.Pinned);
+                    try
+                    {
+                        encoder.AppendFrame(gcHandle.AddrOfPinnedObject(), frameDelay);
+                    }
+                    finally
+                    {
+                        gcHandle.Free();
+                    }
+                }));
+
+                await Task.WhenAll(tasks);
+                prevTime += frameDelay;
+                return prevTime;
+            }
+
+            bool isCompareAndMergeFrames = timeline == null && !cap.IsFixedFrameRate;
+
+            // build pipeline
+            IEnumerable<int> delayEnumerator = timeline == null ? RenderDelay() : ClipTimeline(timeline);
+            var step1 = delayEnumerator;
+            var frameRenderEnumerator = step1.Select(frameDelay =>
+            {
+                rec.Draw();
+                rec.Update(TimeSpan.FromMilliseconds(frameDelay));
+                return frameDelay;
+            });
+            var step2 = frameRenderEnumerator;
+            var getFrameData = step2.Select(frameDelay =>
+            {
+                using (var t2d = rec.GetPngTexture())
+                {
+                    byte[] frameData = new byte[t2d.Width * t2d.Height * 4];
+                    t2d.GetData(frameData);
+                    return Tuple.Create(frameData, frameDelay);
+                }
+            });
+            var step3 = getFrameData;
+            if (isCompareAndMergeFrames)
+            {
+                var mergedFrameData = MergeFrames(step3);
+                step3 = mergedFrameData;
+            }
+
+            var step4 = step3.Select(item => ApplyFrame(item.Item1, item.Item2));
+
+            // run pipeline
+            try
+            {
+                rec.Begin(bounds, targetSize);
+                if (startTime > 0)
+                {
+                    rec.Update(TimeSpan.FromMilliseconds(startTime));
+                }
+                foreach (var task in step4)
+                {
+                    int currentTime = await task;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+            finally
+            {
+                rec.End();
             }
         }
     }
