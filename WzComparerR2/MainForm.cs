@@ -2491,6 +2491,59 @@ namespace WzComparerR2
                 MessageBoxEx.Show("StringLinkerの更新に失敗しました。", "エラー");
             }
         }
+
+        private async void tsmi1SaveImgList_Click(object sender, EventArgs e)
+        {
+            Wz_Node node = advTree1.SelectedNode?.AsWzNode();
+            Wz_Image img = node.GetValue<Wz_Image>();
+            if (img != null)
+            {
+                MessageBoxEx.Show("エクスポートするディレクトリを選択します。");
+                return;
+            }
+            else if (node != null)
+            {
+                SaveFileDialog dlg = new SaveFileDialog();
+                dlg.DefaultExt = ".txt";
+                dlg.FileName = RemoveInvalidFileNameChars(node.FullPathToFile) + ".txt";
+                dlg.Filter = "TXT (*.txt)|*.txt";
+                if (dlg.ShowDialog() == DialogResult.OK)
+                {
+                    StreamWriter sw = new StreamWriter(dlg.FileName);
+                    try
+                    {
+                        foreach (Wz_Node wz_Node in node.Nodes)
+                        {
+                            Wz_Image wzImage = wz_Node.GetValue<Wz_Image>();
+                            if (wzImage != null)
+                            {
+                                try
+                                {
+                                    sw.WriteLine(wzImage.Name);
+                                }
+                                catch (Exception ex)
+                                {
+                                    ToastNotification.Show(this, $"エラー: {ex.Message}", null, 3000, eToastGlowColor.Red, eToastPosition.TopCenter);
+                                    break;
+                                }
+                            }
+                        }
+                        sw?.Close();
+                        labelItemStatus.Text = "エクスポートされた: " + dlg.FileName;
+                    }
+                    catch (Exception ex)
+                    {
+                        sw?.Close();
+                        ToastNotification.Show(this, $"エラー: {ex.Message}", null, 3000, eToastGlowColor.Red, eToastPosition.TopCenter);
+                    }
+                }
+            }
+            else
+            {
+                MessageBoxEx.Show("エクスポートするディレクトリを選択します。");
+                return;
+            }
+        }
         #endregion
 
         #region Tools菜单事件和方法
