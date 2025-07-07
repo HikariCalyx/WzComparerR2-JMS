@@ -1,38 +1,39 @@
-﻿using System;
+﻿using DevComponents.AdvTree;
+using DevComponents.AdvTree.Display;
+using DevComponents.DotNetBar;
+using DevComponents.DotNetBar.Controls;
+using Microsoft.Win32;
+using Microsoft.Xna.Framework.Media;
+using SharpDX;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
-using System.Drawing;
 using System.Diagnostics;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Windows.Forms;
+using System.Drawing;
+using System.Drawing.Imaging;
+using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.IO;
-using System.Xml;
-using Timer = System.Timers.Timer;
+using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
-using DevComponents.DotNetBar;
-using DevComponents.DotNetBar.Controls;
-using DevComponents.AdvTree;
-using DevComponents.AdvTree.Display;
-using WzComparerR2.WzLib;
-using WzComparerR2.Common;
-using WzComparerR2.CharaSimControl;
-using WzComparerR2.PluginBase;
-using WzComparerR2.CharaSim;
-using WzComparerR2.Comparer;
-using WzComparerR2.Controls;
-using WzComparerR2.Rendering;
-using WzComparerR2.Config;
+using System.Windows.Forms;
+using System.Xml;
 using WzComparerR2.Animation;
+using WzComparerR2.CharaSim;
+using WzComparerR2.CharaSimControl;
+using WzComparerR2.Common;
+using WzComparerR2.Comparer;
+using WzComparerR2.Config;
+using WzComparerR2.Controls;
 using WzComparerR2.Encoders;
+using WzComparerR2.PluginBase;
+using WzComparerR2.Rendering;
+using WzComparerR2.WzLib;
 using static Microsoft.Xna.Framework.MathHelper;
-using Microsoft.Win32;
-using SharpDX;
-using System.Drawing.Imaging;
+using Timer = System.Timers.Timer;
 
 namespace WzComparerR2
 {
@@ -1394,6 +1395,20 @@ namespace WzComparerR2
                 }
             }
 
+            if (selectedNode.FullPathToFile.Contains("Sound"))
+            {
+                this.advTree1.ContextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+                this.toolStripMenuItem5,
+                this.tsmi1ExportAudio});
+            }
+            else if (this.advTree1.ContextMenuStrip.Items.Contains(this.tsmi1ExportAudio))
+            {
+                for (int i = 0; i < 2; i++)
+                {
+                    this.advTree1.ContextMenuStrip.Items.RemoveAt(this.advTree1.ContextMenuStrip.Items.Count - 1);
+                }
+            }
+
             listViewExWzDetail.BeginUpdate();
             listViewExWzDetail.Items.Clear();
 
@@ -2489,6 +2504,74 @@ namespace WzComparerR2
             else
             {
                 MessageBoxEx.Show("StringLinkerの更新に失敗しました。", "エラー");
+            }
+        }
+
+        private async void tsmi1ExportAudio_Click(object sender, EventArgs e)
+        {
+            Wz_Node node = advTree1.SelectedNode?.AsWzNode();
+            FolderBrowserDialog dlg = new FolderBrowserDialog();
+            dlg.Description = "エクスポートするフォルダを選択してください。";
+            if (dlg.ShowDialog(this) != DialogResult.OK)
+            {
+                return;
+            }
+            string exportedFolder = dlg.SelectedPath;
+            FrmWaiting WaitingForm = new FrmWaiting();
+            WaitingForm.UpdateMessage("エクスポート中");
+            WaitingForm.Show(this);
+            await Task.Run(() =>
+            {
+                try
+                {
+                    recurseAudio(node, exportedFolder, WaitingForm);
+                }
+                catch (Exception ex)
+                {
+                    ToastNotification.Show(this, $"エラー: {ex.Message}", null, 3000, eToastGlowColor.Red, eToastPosition.TopCenter);
+                }
+            });
+            WaitingForm.Close();
+            labelItemStatus.Text = "エクスポートされた: " + exportedFolder;
+        }
+
+        private void extractAudio(Wz_Sound sound, string soundName, string directory, FrmWaiting frmWaiting)
+        {
+            byte[] data = sound.ExtractSound();
+            soundName = RemoveInvalidFileNameChars(soundName);
+            switch (sound.SoundType)
+            {
+                case Wz_SoundType.Mp3: soundName += ".mp3"; break;
+                case Wz_SoundType.Pcm: soundName += ".wav"; break;
+            }
+            frmWaiting.UpdateMessage("エクスポート中: " + soundName);
+            using (FileStream fs = new FileStream(Path.Combine(directory, soundName), FileMode.Create))
+            {
+                fs.Write(data, 0, data.Length);
+            }
+        }
+
+        private void recurseAudio(Wz_Node node, string directory, FrmWaiting frmWaiting)
+        {
+            if (!Directory.Exists(Path.Combine(directory, node.FullPathToFile)))
+            {
+                if (File.Exists(Path.Combine(directory, node.FullPathToFile))) File.Delete(Path.Combine(directory, node.FullPathToFile));
+                Directory.CreateDirectory(Path.Combine(directory, node.FullPathToFile));
+            }
+            foreach (Wz_Node subnode in node.Nodes)
+            {
+                switch (subnode.Value)
+                {
+                    case null:
+                        break;
+                    case Wz_Sound sound:
+                        string soundName = subnode.Text;
+                        extractAudio(sound, soundName, Path.Combine(directory, node.FullPathToFile), frmWaiting);
+                        break;
+                    default:
+                        recurseAudio(subnode, directory, frmWaiting);
+                        break;
+                }
             }
         }
         #endregion
