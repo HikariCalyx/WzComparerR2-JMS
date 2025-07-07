@@ -87,6 +87,15 @@ namespace WzComparerR2.CharaSimControl
                 ridingGearOrigin.X = originBmp.Width;
             }
 
+            Point hexaSkillDescOrigin = Point.Empty;
+            Bitmap hexaSkillDescBmp = RenderHexaDesc(region);
+            if (Skill.Origin || Skill.Ascent)
+            {
+                totalSize.Width += hexaSkillDescBmp.Width;
+                totalSize.Height = Math.Max(picHeight, hexaSkillDescBmp.Height);
+                hexaSkillDescOrigin.X = originBmp.Width;
+            }
+
             Bitmap tooltip = new Bitmap(totalSize.Width, totalSize.Height);
             Graphics g = Graphics.FromImage(tooltip);
 
@@ -119,10 +128,19 @@ namespace WzComparerR2.CharaSimControl
                     new Rectangle(Point.Empty, ridingGearBmp.Size), GraphicsUnit.Pixel);
             }
 
+            if (hexaSkillDescBmp != null)
+            {
+                g.DrawImage(hexaSkillDescBmp, hexaSkillDescOrigin.X, hexaSkillDescOrigin.Y,
+                    new Rectangle(Point.Empty, hexaSkillDescBmp.Size), GraphicsUnit.Pixel);
+
+            }
+
             if (originBmp != null)
                 originBmp.Dispose();
             if (ridingGearBmp != null)
                 ridingGearBmp.Dispose();
+            if (hexaSkillDescBmp != null)
+                hexaSkillDescBmp.Dispose();
 
             g.Dispose();
             return tooltip;
@@ -555,6 +573,47 @@ namespace WzComparerR2.CharaSimControl
 
             renderer.TargetItem = gear;
             return renderer.Render();
+        }
+
+
+
+        private Bitmap RenderHexaDesc(CanvasRegion region)
+        {
+            Bitmap bitmap = new Bitmap(1, 1);
+            if (Skill.Origin)
+            {
+                bitmap = new Bitmap(430, 120);
+            }
+            else if (Skill.Ascent)
+            {
+                bitmap = new Bitmap(430, 310);
+            }
+            Graphics g = Graphics.FromImage(bitmap);
+            int picH = 13;
+            if (Skill.Origin && !Skill.Invisible)
+            {
+                string originSkillDesc = "オリジンスキルは行動不能に耐性を持つすべての敵を絶対行動不能状態にします。\r\n絶対行動不能状態は他の行動不能状態と別途の耐性時間を持ちます。";
+                string originSkillH = "攻撃が的中した場合、敵に10秒間絶対行動不能狀態異常を適用";
+                GearGraphics.DrawNewTooltipBack(g, 0, 0, bitmap.Width, 120);
+                GearGraphics.DrawPlainText(g, originSkillDesc, GearGraphics.ItemDetailFont, Color.FromArgb(175, 173, 255), region.LevelDescLeft, region.TextRight, ref picH, 16);
+                picH += 19;
+                DrawV6SkillDotline(g, region.SplitterX1, region.SplitterX2, picH);
+                picH += 16;
+                GearGraphics.DrawPlainText(g, originSkillH, GearGraphics.ItemDetailFont, Color.FromArgb(175, 173, 255), region.LevelDescLeft, region.TextRight, ref picH, 16);
+            }
+            else if (Skill.Ascent && !Skill.Invisible)
+            {
+                string ascentSkillDesc = "アセントスキルはボス戦闘で再使用待機時間なしに決まった回数だけ使用可能で、最大HPが最も高いボスモンスターがいる場合にのみ使用可能です。\r\n直接攻撃時に発動される追加攻撃や効果が発動しません。\r\nアセントスキルは最大HPが高いボスモンスターを優先攻撃し、攻撃反射、攻撃無視状態の敵にもダメージを与えることができます。\r\n\r\n以下の効果により変動する能力値は、アセントスキルのダメージに影響を与えません。\r\n- 装備：帽子\r\n- 装備：指輪\r\n- 条件付きで発動するパッシブスキル効果\r\n- アクティブスキル使用効果\r\n- モンスターのパターン、デバフ\r\n- 持続時間が30分未満の消費、ポイントアイテム";
+                string ascentSkillH = "ボス戦で3回使用可能\r\nその他フィールドで使用時再使用待機時間240秒";
+                GearGraphics.DrawNewTooltipBack(g, 0, 0, bitmap.Width, 310);
+                GearGraphics.DrawPlainText(g, ascentSkillDesc, GearGraphics.ItemDetailFont, Color.FromArgb(175, 173, 255), region.LevelDescLeft, region.TextRight, ref picH, 16);
+                picH += 16;
+                DrawV6SkillDotline(g, region.SplitterX1, region.SplitterX2, picH);
+                picH += 16;
+                GearGraphics.DrawPlainText(g, ascentSkillH, GearGraphics.ItemDetailFont, Color.FromArgb(175, 173, 255), region.LevelDescLeft, region.TextRight, ref picH, 16);
+            }
+            g.Dispose();
+            return bitmap;
         }
 
         private class CanvasRegion
