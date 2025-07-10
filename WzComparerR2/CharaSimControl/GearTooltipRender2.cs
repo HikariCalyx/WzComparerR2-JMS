@@ -429,6 +429,17 @@ namespace WzComparerR2.CharaSimControl
                 TextRenderer.DrawText(g, "BLACKPINK Label", GearGraphics.EquipDetailFont, new Point(261, picH), Color.FromArgb(255, 136, 170), TextFormatFlags.HorizontalCenter);
                 picH += 15;
             }
+            else if (Gear.Props.TryGetValue(GearPropType.limitedLabel, out value) && value > 0)
+            {
+                TextRenderer.DrawText(g, "LIMITEDラベル", GearGraphics.EquipMDMoris9Font, new Point(261, picH), Color.FromArgb(248, 196, 129), TextFormatFlags.HorizontalCenter);
+                picH += 16;
+                if (!string.IsNullOrEmpty(Gear.LabelGradeTooltip))
+                {
+                    var limitedLabelText = Regex.Replace(Gear.LabelGradeTooltip, "%d", "0");
+                    TextRenderer.DrawText(g, limitedLabelText, GearGraphics.EquipMDMoris9Font, new Point(261, picH), Color.FromArgb(248, 196, 129), TextFormatFlags.HorizontalCenter);
+                    picH += 16;
+                }
+            }
 
             //额外属性
             var attrList = GetGearAttributeString();
@@ -564,6 +575,11 @@ namespace WzComparerR2.CharaSimControl
                             cashOrigin = new Point(cashImg.Width, cashImg.Height);
                             break;
                     }
+                }
+                else if (Gear.Props.TryGetValue(GearPropType.limitedLabel, out value) && value > 0)
+                {
+                    cashImg = Resource.CashShop_img_CashItem_label_15;
+                    cashOrigin = new Point(12, 12);
                 }
                 if (cashImg == null) //default cashImg
                 {
@@ -1378,7 +1394,7 @@ namespace WzComparerR2.CharaSimControl
                     desc.Add("#c 装着時1回に限り" + incline.Substring(2) + "の経験値を獲得できます。(1日獲得制限の最大値を超えると、獲得できません)");
                 }
 
-                if (Gear.Cash && (!Gear.Props.TryGetValue(GearPropType.noMoveToLocker, out value) || value == 0) && (!Gear.Props.TryGetValue(GearPropType.tradeBlock, out value) || value == 0) && (!Gear.Props.TryGetValue(GearPropType.accountSharable, out value) || value == 0))
+                if (Gear.Cash && (!Gear.Props.TryGetValue(GearPropType.noMoveToLocker, out value) || value == 0) && (!Gear.Props.TryGetValue(GearPropType.tradeBlock, out value) || value == 0) && (!Gear.Props.TryGetValue(GearPropType.accountSharable, out value) || value == 0) && (!Gear.Props.TryGetValue(GearPropType.limitedLabel, out value) || value <= 0))
                 {
                     desc.Add("#c アイテムを使用すると他のユーザーと交換できません。#");
                 }
