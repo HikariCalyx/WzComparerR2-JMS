@@ -120,6 +120,7 @@ namespace WzComparerR2.CharaSim
                 case GearPropType.onlyEquip: return value == 0 ? null : "固有装備アイテム";
                 case GearPropType.notExtend: return value == 0 ? null : "有効期間延長不可";
                 case GearPropType.accountSharableAfterExchange: return value == 0 ? null : "1回交換可能\n(取引後、ワールド内のキャラクター間移動のみ可能)";
+                case GearPropType.noPrism: return value == 0 ? null : "プリズム使用不可";
                 case GearPropType.mintable: return value == 0 ? null : "ミンティング可能";
                 case GearPropType.tradeAvailable:
                     switch (value)
@@ -375,6 +376,9 @@ namespace WzComparerR2.CharaSim
                     return res;
                 case GearPropType.noLookChange:
                     res[0] = value == 0 ? null : "#$r神秘のカナトコ使用不可#";
+                    return res;
+                case GearPropType.noPrism:
+                    res[0] = value == 0 ? null : "#$rプリズム使用不可#";
                     return res;
                 case GearPropType.mintable:
                     res[0] = value == 0 ? null : "#$rミンティング可能#";
