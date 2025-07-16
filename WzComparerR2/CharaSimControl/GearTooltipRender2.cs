@@ -1394,7 +1394,7 @@ namespace WzComparerR2.CharaSimControl
                     desc.Add("#c 装着時1回に限り" + incline.Substring(2) + "の経験値を獲得できます。(1日獲得制限の最大値を超えると、獲得できません)");
                 }
 
-                if (Gear.Cash && (!Gear.Props.TryGetValue(GearPropType.noMoveToLocker, out value) || value == 0) && (!Gear.Props.TryGetValue(GearPropType.tradeBlock, out value) || value == 0) && (!Gear.Props.TryGetValue(GearPropType.accountSharable, out value) || value == 0) && (!Gear.Props.TryGetValue(GearPropType.limitedLabel, out value) || value <= 0))
+                if (Gear.Cash && (!Gear.Props.TryGetValue(GearPropType.noMoveToLocker, out value) || value == 0) && (!Gear.Props.TryGetValue(GearPropType.tradeBlock, out value) || value == 0) && (!Gear.Props.TryGetValue(GearPropType.accountSharable, out value) || value == 0) && (!Gear.Props.TryGetValue(GearPropType.noTradeLimitCash, out value) || value <= 0))
                 {
                     desc.Add("#c アイテムを使用すると他のユーザーと交換できません。#");
                 }
