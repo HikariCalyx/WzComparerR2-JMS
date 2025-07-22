@@ -4466,6 +4466,21 @@ namespace WzComparerR2
                         chkHashPngFileName.Enabled = true;
                         chkShowLinkedTamingMob.Enabled = true;
                         chkSkipKMSContent.Enabled = true;
+                        if (comparer.FailToExportNodes.Count > 0)
+                        {
+                            string failData = Newtonsoft.Json.JsonConvert.SerializeObject(comparer.FailToExportNodes, Newtonsoft.Json.Formatting.Indented);
+                            File.WriteAllText(Path.Combine(dlg.SelectedPath, "fail_to_export_nodes.log"), failData, Encoding.UTF8);
+                            MessageBoxEx.Show(this, "比較は完了しましたが、一部のノードは解析できません。\r\nエクスポートできないノードを確認するには、「OK」をクリックしてください。", "WZ比較", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+#if NET6_0_OR_GREATER
+                            Process.Start(new ProcessStartInfo
+                            {
+                                UseShellExecute = true,
+                                FileName = Path.Combine(dlg.SelectedPath, "fail_to_export_nodes.log"),
+                            });
+#else
+            Process.Start(Path.Combine(dlg.SelectedPath, "fail_to_export_nodes.log"));
+#endif
+                        }
                     }
                 });
                 compareThread.Priority = ThreadPriority.Highest;
