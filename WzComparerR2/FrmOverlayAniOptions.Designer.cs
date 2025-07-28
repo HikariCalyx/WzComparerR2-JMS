@@ -191,7 +191,7 @@
             this.labelX3.Name = "labelX3";
             this.labelX3.Size = new System.Drawing.Size(132, 22);
             this.labelX3.TabIndex = 8;
-            this.labelX3.Text = "ｽﾀｰﾄﾃﾞｨﾚｲ (ms)";
+            this.labelX3.Text = "ｽﾀｰﾄﾃﾞｨﾚｲ(ms)";
             // 
             // labelX4
             // 
@@ -207,7 +207,7 @@
             this.labelX4.Name = "labelX4";
             this.labelX4.Size = new System.Drawing.Size(132, 22);
             this.labelX4.TabIndex = 9;
-            this.labelX4.Text = "X Y 場所 (px)";
+            this.labelX4.Text = "XY場所(px)";
             // 
             // labelX6
             // 
@@ -239,7 +239,7 @@
             this.labelX8.Name = "labelX8";
             this.labelX8.Size = new System.Drawing.Size(132, 22);
             this.labelX8.TabIndex = 12;
-            this.labelX8.Text = "X Y 移動速度 (px/秒)";
+            this.labelX8.Text = "XY移動速度(px/秒)";
             // 
             // labelX9
             // 
@@ -255,7 +255,7 @@
             this.labelX9.Name = "labelX9";
             this.labelX9.Size = new System.Drawing.Size(132, 22);
             this.labelX9.TabIndex = 12;
-            this.labelX9.Text = "X Y 移動距離 (px)";
+            this.labelX9.Text = "XY移動距離(px)";
             // 
             // labelX10
             // 
@@ -271,7 +271,7 @@
             this.labelX10.Name = "labelX10";
             this.labelX10.Size = new System.Drawing.Size(132, 22);
             this.labelX10.TabIndex = 12;
-            this.labelX10.Text = "移動距離を合わせる";
+            this.labelX10.Text = "移動距離を\r\n合わせる";
             // 
             // labelX7
             // 
@@ -287,7 +287,7 @@
             this.labelX7.Name = "labelX7";
             this.labelX7.Size = new System.Drawing.Size(132, 26);
             this.labelX7.TabIndex = 12;
-            this.labelX7.Text = "PNGﾃﾞｨﾚｲ (ms)";
+            this.labelX7.Text = "PNGﾃﾞｨﾚｲ(ms)";
             // 
             // txtDelayOffset
             // 

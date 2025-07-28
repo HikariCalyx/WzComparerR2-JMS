@@ -127,7 +127,7 @@
             this.labelX2.Location = new System.Drawing.Point(91, 3);
             this.labelX2.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.labelX2.Name = "labelX3";
-            this.labelX2.Size = new System.Drawing.Size(123, 23);
+            this.labelX2.Size = new System.Drawing.Size(180, 23);
             this.labelX2.TabIndex = 0;
             this.labelX2.Text = "アニメーション";
             // 
@@ -143,7 +143,7 @@
             this.labelX3.Location = new System.Drawing.Point(91, 32);
             this.labelX3.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.labelX3.Name = "labelX4";
-            this.labelX3.Size = new System.Drawing.Size(123, 23);
+            this.labelX3.Size = new System.Drawing.Size(180, 23);
             this.labelX3.TabIndex = 0;
             this.labelX3.Text = "スキン";
             // 
@@ -159,9 +159,9 @@
             this.labelX4.Location = new System.Drawing.Point(91, 61);
             this.labelX4.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.labelX4.Name = "labelX4";
-            this.labelX4.Size = new System.Drawing.Size(123, 24);
+            this.labelX4.Size = new System.Drawing.Size(180, 24);
             this.labelX4.TabIndex = 0;
-            this.labelX4.Text = "フレームあたりのディレイ";
+            this.labelX4.Text = "フレームあたりの\r\nディレイ";
             // 
             // comboBoxEx1
             // 
