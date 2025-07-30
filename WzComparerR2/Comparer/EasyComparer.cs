@@ -3109,6 +3109,7 @@ namespace WzComparerR2.Comparer
                                 return false;
                             case 40: // 5次スキル
                             case 50: // 6次強化コア
+                            case 800: // イベントスキル
                                 if (skillNodePath.Split('\\').Length < 4)
                                 {
                                     return false;
@@ -3123,15 +3124,6 @@ namespace WzComparerR2.Comparer
                                     {
                                         return false;
                                     }
-                                }
-                            case 800:
-                                if (Int32.TryParse(skillNodePath.Split('\\')[3], out int skillID2))
-                                {
-                                    return isKMSSkillID(skillID2);
-                                }
-                                else
-                                {
-                                    return false;
                                 }
                             default:
                                 return true;
