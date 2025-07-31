@@ -2308,8 +2308,7 @@ namespace WzComparerR2
             this.itemContainer44.SubItems.AddRange(new DevComponents.DotNetBar.BaseItem[] {
             this.buttonDisableOverlayAni,
             this.buttonHitboxOverlay,
-            this.buttonOverlayExtractGifEx,
-            this.buttonLoadMultiFrameAniList});
+            this.buttonOverlayExtractGifEx});
             // 
             // 
             // 
@@ -2335,7 +2334,7 @@ namespace WzComparerR2
             this.buttonOverlayExtractGifEx.Tooltip = "0から順にではなく、すべての子ノードでアニメーションを呼び出してネストにします。";
             this.buttonOverlayExtractGifEx.Click += new System.EventHandler(this.buttonItemGif2_Click);
             // 
-            // buttonOverlayRect
+            // buttonLoadMultiFrameAniList
             // 
             this.buttonLoadMultiFrameAniList.Name = "buttonLoadMultiFrameAniList";
             this.buttonLoadMultiFrameAniList.Text = "マルチフレームロード";
