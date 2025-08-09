@@ -988,22 +988,58 @@ namespace WzComparerR2.CharaSim
             }
         }
 
-        public static string GetExtraJobReqString(IEnumerable<int> specJobs)
+        public static string GetExtraJobReqString(IEnumerable<int> specJobs, bool isMsnMode)
         {
             List<string> extraJobNames = new List<string>();
-            foreach (int specJob in specJobs)
+            if (isMsnMode)
             {
-                switch (specJob)
+                if (string.Join(",", specJobs) == "11,12,13,14,15,51")
                 {
-                    case 1: extraJobNames.AddRange(new[] { "ヒーロー", "パラデイン" }); break;
-                    case 2: extraJobNames.AddRange(new[] { "ｱｰｸﾒｲｼﾞ(氷･雷)", "ｱｰｸﾒｲｼﾞ(火･毒)", "ﾋﾞｼｮｯﾌﾟ" }); break;
-                    case 4: extraJobNames.Add("シャドー"); break;
-                    case 11: extraJobNames.Add("ソウルマスター"); break;
-                    case 12: extraJobNames.Add("\r\nﾌﾚｲﾑｳｨｻﾞｰﾄﾞ"); break;
-                    case 22: extraJobNames.Add("ｴｳﾞｧﾝ"); break;
-                    case 32: extraJobNames.Add("ﾊﾞﾄﾙﾒｲｼﾞ"); break;
-                    case 172: extraJobNames.Add("ﾘﾝ"); break;
-                    default: extraJobNames.Add(specJob.ToString()); break;
+                    return "シグナス騎士団職業";
+                }
+                else
+                {
+                    int classBranch = 0;
+                    int count = 0;
+                    foreach (int job in specJobs)
+                    {
+                        classBranch += job / 10;
+                        count++;
+                    }
+                    classBranch = classBranch / count;
+                    switch (classBranch)
+                    {
+                        case 0: return "冒険者職業";
+                        case 1: return "シグナス騎士団職業";
+                        case 2: return "英雄職業";
+                        case 3: return "レジスタンス職業";
+                        case 4: return "暁の陣職業";
+                        case 6: return "ノヴァ職業";
+                        case 12: return "アニメコラボ職業";
+                        case 15: return "レフ職業";
+                        case 16: return "アニマ職業";
+                        case 17: return "江湖職業";
+                        case 18: return "シャイン職業";
+
+                    }
+                }
+            }
+            else
+            {
+                foreach (int specJob in specJobs)
+                {
+                    switch (specJob)
+                    {
+                        case 1: extraJobNames.AddRange(new[] { "ヒーロー", "パラデイン" }); break;
+                        case 2: extraJobNames.AddRange(new[] { "ｱｰｸﾒｲｼﾞ(氷･雷)", "ｱｰｸﾒｲｼﾞ(火･毒)", "ﾋﾞｼｮｯﾌﾟ" }); break;
+                        case 4: extraJobNames.Add("シャドー"); break;
+                        case 11: extraJobNames.Add("ソウルマスター"); break;
+                        case 12: extraJobNames.Add("\r\nﾌﾚｲﾑｳｨｻﾞｰﾄﾞ"); break;
+                        case 22: extraJobNames.Add("ｴｳﾞｧﾝ"); break;
+                        case 32: extraJobNames.Add("ﾊﾞﾄﾙﾒｲｼﾞ"); break;
+                        case 172: extraJobNames.Add("ﾘﾝ"); break;
+                        default: extraJobNames.Add(specJob.ToString()); break;
+                    }
                 }
             }
             if (extraJobNames.Count == 0)
