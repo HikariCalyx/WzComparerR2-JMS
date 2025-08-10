@@ -4561,6 +4561,7 @@ namespace WzComparerR2
                     comparer.ShowLinkedTamingMob = chkShowLinkedTamingMob.Checked;
                     comparer.SkipKMSContent = chkSkipKMSContent.Checked;
                     comparer.Enable22AniStyle = GearGraphics.is22aniStyle;
+                    comparer.QuestState = tooltipQuickView.QuestRender.DefaultState;
                     comparer.StateInfoChanged += new EventHandler(comparer_StateInfoChanged);
                     comparer.StateDetailChanged += new EventHandler(comparer_StateDetailChanged);
                     try
@@ -4592,7 +4593,7 @@ namespace WzComparerR2
                                     chkOutputMapTooltip.Enabled = false;
                                     chkOutputMobTooltip.Enabled = false;
                                     chkOutputNpcTooltip.Enabled = false;
-                                    // chkOutputQuestTooltip.Enabled = false;
+                                    chkOutputQuestTooltip.Enabled = false;
                                     // chkOutputCashTooltip.Enabled = false;
                                     chkShowObjectID.Enabled = false;
                                     chkShowChangeType.Enabled = false;
@@ -4657,7 +4658,7 @@ namespace WzComparerR2
                         chkOutputMapTooltip.Enabled = true;
                         chkOutputMobTooltip.Enabled = true;
                         chkOutputNpcTooltip.Enabled = true;
-                        // chkOutputQuestTooltip.Enabled = true;
+                        chkOutputQuestTooltip.Enabled = true;
                         // chkOutputCashTooltip.Enabled = true;
                         chkShowObjectID.Enabled = true;
                         chkShowChangeType.Enabled = true;

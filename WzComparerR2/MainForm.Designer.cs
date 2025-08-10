@@ -2830,7 +2830,6 @@ namespace WzComparerR2
             this.superTooltip1.SetSuperTooltip(this.chkOutputQuestTooltip, new DevComponents.DotNetBar.SuperTooltipInfo("クエスト比較の出力", "", "変更したクエストを自動で出力する機能です。", null, null, DevComponents.DotNetBar.eTooltipColor.System, true, false, new System.Drawing.Size(180, 70)));
             this.chkOutputQuestTooltip.TabIndex = 18;
             this.chkOutputQuestTooltip.Text = "クエスト比較の出力";
-            this.chkOutputQuestTooltip.Enabled = false;
             // 
             // chkShowObjectID
             // 
