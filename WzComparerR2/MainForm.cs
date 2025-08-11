@@ -4571,7 +4571,6 @@ namespace WzComparerR2
                     comparer.ShowLinkedTamingMob = chkShowLinkedTamingMob.Checked;
                     comparer.SkipKMSContent = chkSkipKMSContent.Checked;
                     comparer.Enable22AniStyle = GearGraphics.is22aniStyle;
-                    comparer.QuestState = tooltipQuickView.QuestRender.DefaultState;
                     comparer.StateInfoChanged += new EventHandler(comparer_StateInfoChanged);
                     comparer.StateDetailChanged += new EventHandler(comparer_StateDetailChanged);
                     try
