@@ -2359,8 +2359,7 @@ namespace WzComparerR2.Comparer
                 // 変更前後のツールチップ画像の作成
                 for (int i = 0; i < 2; i++) // 0: New, 1: Old
                 {
-                    Quest quest = Quest.CreateFromNode(PluginManager.FindWz(questNodePath, WzFileNewOld[i]), PluginManager.FindWz, PluginManager.FindWz) ?? Quest.CreateFromNode(PluginManager.FindWz(questNodePathLegacy, WzFileNewOld[i]), PluginManager.FindWz, PluginManager.FindWz);
-
+                    Quest quest = Quest.CreateFromNode(PluginManager.FindWz(questNodePath, WzFileNewOld[i]), PluginManager.FindWz, PluginManager.FindWz) ?? Quest.CreateFromNode(PluginManager.FindWz(questNodePathLegacy, WzFileNewOld[i]), PluginManager.FindWz, PluginManager.FindWz, fromInfoNode: int.Parse(questID));
                     if (quest == null)
                     {
                         isQuestNull[i] = true;
@@ -2739,7 +2738,7 @@ namespace WzComparerR2.Comparer
         {
             if (node == null) return; // 변경은 확인하지 않음 // 추가,삭제만 확인
 
-            Match match = Regex.Match(node.FullPathToFile, @"^Quest\\QuestInfo.img\\(\d+)\\.*"); 
+            Match match = Regex.Match(node.FullPathToFile, @"^Quest\\QuestInfo.img\\(\d+).*\\.*"); 
 
             if (!match.Success)
             {
