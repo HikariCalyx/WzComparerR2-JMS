@@ -146,6 +146,7 @@ namespace WzComparerR2.CharaSim
                 case GearPropType.colorvar: return value == 0 ? null : "#cこのアイテムは染料使用可能#";
                 case GearPropType.cantRepair: return value == 0 ? null : "修理不可";
                 case GearPropType.noLookChange: return value == 0 ? null : "神秘のカナトコ使用不可";
+                case GearPropType.reissueBan: return value == 0 ? null : "再発行不可";
 
                 case GearPropType.incAllStat_incMHP25: return "Allｽﾃｰﾀｽ：" + sign + value + ", 最大HP : " + sign + (value * 25);// check once Lv 250 set comes out in GMS
                 case GearPropType.incAllStat_incMHP50_incMMP50: return "Allｽﾃｰﾀｽ：" + sign + value + ", 最大HP / 最大MP : " + sign + (value * 50);
@@ -376,6 +377,9 @@ namespace WzComparerR2.CharaSim
                     return res;
                 case GearPropType.noLookChange:
                     res[0] = value == 0 ? null : "#$r神秘のカナトコ使用不可#";
+                    return res;
+                case GearPropType.reissueBan:
+                    res[0] = value == 0 ? null : "#$r再発行不可#";
                     return res;
                 case GearPropType.noPrism:
                     res[0] = value == 0 ? null : "#$rプリズム使用不可#";
