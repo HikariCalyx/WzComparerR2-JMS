@@ -814,7 +814,6 @@ namespace WzComparerR2.Comparer
         private void SaveSkillTooltip(string skillTooltipPath)
         {
             SkillTooltipRender2[] skillRenderNewOld = new SkillTooltipRender2[2];
-            bool[] isSkillNull = new bool[2] { false, false };
             int count = 0;
             int allCount = OutputSkillTooltipIDs.Count;
             var skillTypeFont = new Font("MS Gothic", 11f, GraphicsUnit.Pixel);
@@ -841,6 +840,8 @@ namespace WzComparerR2.Comparer
             {
                 StateInfo = string.Format("{0}/{1} スキル: {2}", ++count, allCount, skillID);
                 StateDetail = "Skill 変更点をツールチップ画像に出力中...";
+
+                bool[] isSkillNull = new bool[2] { false, false };
 
                 if (SkipKMSContent && isKMSSkillID(Int32.Parse(skillID))) continue;
 
@@ -1008,7 +1009,6 @@ namespace WzComparerR2.Comparer
         private void SaveItemTooltip(string itemTooltipPath)
         {
             ItemTooltipRender2[] itemRenderNewOld = new ItemTooltipRender2[2];
-            bool[] isItemNull = new bool[2] { false, false };
             int count = 0;
             int allCount = OutputItemTooltipIDs.Count;
             var itemTypeFont = new Font("MS Gothic", 11f, GraphicsUnit.Pixel);
@@ -1035,6 +1035,7 @@ namespace WzComparerR2.Comparer
             {
                 StateInfo = string.Format("{0}/{1} アイテム: {2}", ++count, allCount, itemID);
                 StateDetail = "Item 変更点をツールチップ画像に出力中...";
+                bool[] isItemNull = new bool[2] { false, false };
                 string itemType = "";
                 string itemNodePath = null;
                 string categoryPath = "";
@@ -1195,7 +1196,6 @@ namespace WzComparerR2.Comparer
         private void SaveGearTooltip(string gearTooltipPath)
         {
             GearTooltipRender2[] gearRenderNewOld = new GearTooltipRender2[2];
-            bool[] isGearNull = new bool[2] { false, false };
             int count = 0;
             int allCount = OutputGearTooltipIDs.Count;
             var gearTypeFont = new Font("MS Gothic", 11f, GraphicsUnit.Pixel);
@@ -1221,6 +1221,7 @@ namespace WzComparerR2.Comparer
             {
                 StateInfo = string.Format("{0}/{1} 装備: {2}", ++count, allCount, gearID);
                 StateDetail = "Character 変更点をツールチップ画像に出力中...";
+                bool[] isGearNull = new bool[2] { false, false };
                 string gearType = "";
                 string gearNodePath = null;
                 string categoryPath = "";
@@ -1467,7 +1468,6 @@ namespace WzComparerR2.Comparer
         private void SaveGearTooltip3(string gearTooltipPath)
         {
             GearTooltipRender3[] gearRenderNewOld = new GearTooltipRender3[2];
-            bool[] isGearNull = new bool[2] { false, false };
             int count = 0;
             int allCount = OutputGearTooltipIDs.Count;
             var gearTypeFont = new Font("MS Gothic", 11f, GraphicsUnit.Pixel);
@@ -1492,6 +1492,7 @@ namespace WzComparerR2.Comparer
             {
                 StateInfo = string.Format("{0}/{1} 装備: {2}", ++count, allCount, gearID);
                 StateDetail = "Character 変更点をツールチップ画像に出力中...";
+                bool[] isGearNull = new bool[2] { false, false };
                 string gearType = "";
                 string gearNodePath = null;
                 string categoryPath = "";
@@ -1737,7 +1738,6 @@ namespace WzComparerR2.Comparer
         private void SaveMapTooltip(string mapTooltipPath)
         {
             MapTooltipRenderer[] mapRenderNewOld = new MapTooltipRenderer[2];
-            bool[] isMapNull = new bool[2] { false, false };
             int count = 0;
             int allCount = OutputMapTooltipIDs.Count;
             var mapTypeFont = new Font("MS Gothic", 11f, GraphicsUnit.Pixel);
@@ -1766,6 +1766,7 @@ namespace WzComparerR2.Comparer
                 if (!int.TryParse(mapID, out _)) continue;
                 StateInfo = string.Format("{0}/{1} マップ: {2}", ++count, allCount, mapID);
                 StateDetail = "Map 変更点をツールチップ画像に出力中...";
+                bool[] isMapNull = new bool[2] { false, false };
                 string mapType = "";
                 string mapNodePath = String.Format(@"Map\Map\Map{0}\{1:D}.img", int.Parse(mapID) / 100000000, mapID);
 
@@ -1883,7 +1884,6 @@ namespace WzComparerR2.Comparer
         private void SaveMobTooltip(string mobTooltipPath)
         {
             MobTooltipRenderer[] mobRenderNewOld = new MobTooltipRenderer[2];
-            bool[] isMobNull = new bool[2] { false, false };
             int count = 0;
             int allCount = OutputMobTooltipIDs.Count;
             var mobTypeFont = new Font("MS Gothic", 11f, GraphicsUnit.Pixel);
@@ -1905,6 +1905,8 @@ namespace WzComparerR2.Comparer
             {
                 StateInfo = string.Format("{0}/{1} モンスター: {2}", ++count, allCount, mobID);
                 StateDetail = "Mob 変更点をツールチップ画像に出力中...";
+
+                bool[] isMobNull = new bool[2] { false, false };
                 string mobType = "";
                 string mobNodePath = String.Format(@"Mob\{0:D}.img", mobID);
 
@@ -2022,7 +2024,6 @@ namespace WzComparerR2.Comparer
         private void SaveNpcTooltip(string npcTooltipPath)
         {
             NpcTooltipRenderer[] npcRenderNewOld = new NpcTooltipRenderer[2];
-            bool[] isNpcNull = new bool[2] { false, false };
             int count = 0;
             int allCount = OutputNpcTooltipIDs.Count;
             var npcTypeFont = new Font("MS Gothic", 11f, GraphicsUnit.Pixel);
@@ -2044,6 +2045,7 @@ namespace WzComparerR2.Comparer
             {
                 StateInfo = string.Format("{0}/{1} NPC: {2}", ++count, allCount, npcID);
                 StateDetail = "Npc 変更点をツールチップ画像に出力中...";
+                bool[] isNpcNull = new bool[2] { false, false };
                 string npcType = "";
                 string npcNodePath = String.Format(@"Npc\{0:D}.img", npcID);
 
@@ -2161,7 +2163,6 @@ namespace WzComparerR2.Comparer
         private void SaveCashTooltip(string itemTooltipPath)
         {
             CashPackageTooltipRender[] cashRenderNewOld = new CashPackageTooltipRender[2];
-            bool[] isCashNull = new bool[2] { false, false };
             int count = 0;
             int allCount = OutputCashTooltipIDs.Count;
             var itemTypeFont = new Font("MS Gothic", 11f, GraphicsUnit.Pixel);
@@ -2183,6 +2184,7 @@ namespace WzComparerR2.Comparer
             {
                 StateInfo = string.Format("{0}/{1} パッケージ: {2}", ++count, allCount, itemID);
                 StateDetail = "Item 変更点をツールチップ画像に出力中...";
+                bool[] isCashNull = new bool[2] { false, false };
                 string itemType = "";
                 string itemNodePath = null;
 
@@ -2304,7 +2306,6 @@ namespace WzComparerR2.Comparer
         private void SaveQuestTooltip(string questTooltipPath)
         {
             QuestTooltipRenderer[] questRenderNewOld = new QuestTooltipRenderer[2];
-            bool[] isQuestNull = new bool[2] { false, false };
             int count = 0;
             int allCount = OutputQuestTooltipIDs.Count;
             var questTypeFont = new Font("MS Gothic", 11f, GraphicsUnit.Pixel);
@@ -2329,6 +2330,7 @@ namespace WzComparerR2.Comparer
                 if (!int.TryParse(questID, out _)) continue;
                 StateInfo = string.Format("{0}/{1} クエスト: {2}", ++count, allCount, questID);
                 StateDetail = "Quest 変更点をツールチップ画像に出力中...";
+                bool[] isQuestNull = new bool[2] { false, false };
                 string questType = "";
                 string questNodePath = String.Format(@"Quest\QuestData\{0:D}.img", questID);
                 string questNodePathLegacy = String.Format(@"Quest\QuestInfo.img\{0:D}", questID);
