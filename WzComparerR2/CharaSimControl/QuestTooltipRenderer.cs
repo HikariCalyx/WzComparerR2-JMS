@@ -615,7 +615,7 @@ namespace WzComparerR2.CharaSimControl
                         return "未完";
 
                     case "h0":
-                        return "플레이어";
+                        return "プレイヤー";
 
                     case "o9101069f":
                         Wz_Node stringNodeMF = PluginManager.FindWz($@"String\MobFilter.img\{info}", this.SourceWzFile);
@@ -669,7 +669,9 @@ namespace WzComparerR2.CharaSimControl
             text = text.Replace("#g", "");
             text = text.Replace("#l", "");
             text = text.Replace("#eqp#", "");
+            text = text.Replace("#es", "#ＥＳ"); // plural suffix for English region
             text = text.Replace("#e", "");
+            text = text.Replace("ＥＳ", "es");
             text = text.Replace("#E", "");
             text = text.Replace("#n", " ");
 
