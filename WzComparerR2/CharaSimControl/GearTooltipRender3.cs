@@ -432,7 +432,7 @@ namespace WzComparerR2.CharaSimControl
             // 스페셜 아이템
             if (Gear.GetBooleanValue(GearPropType.specialGrade))
             {
-                TextRenderer.DrawText(g, "Special Item", GearGraphics.EquipMDMoris9Font, new Point(width, picH), Color.White, TextFormatFlags.HorizontalCenter);
+                TextRenderer.DrawText(g, "スペシャルアイテム", GearGraphics.EquipMDMoris9Font, new Point(width, picH), Color.White, TextFormatFlags.HorizontalCenter);
                 picH += 16;
             }
             else if (Gear.Props.TryGetValue(GearPropType.royalSpecial, out value) && value > 0)
@@ -641,7 +641,7 @@ namespace WzComparerR2.CharaSimControl
                 switch (reqJob)
                 {
                     case -1: reqJobStr = "初心者"; break;
-                    case 0: reqJobStr = "共通"; break;
+                    case 0: reqJobStr = "共用"; break;
                 }
             }
             else
@@ -677,12 +677,7 @@ namespace WzComparerR2.CharaSimControl
                 extraReq = ItemStringHelper.GetExtraJobReqString(Gear.ReqSpecJobs, isMsnClient);
             }
             TextRenderer.DrawText(g, "着用職業", GearGraphics.EquipMDMoris9Font, new Point(15, picH), ((SolidBrush)GearGraphics.Equip22BrushGray).Color, TextFormatFlags.NoPadding);
-            TextRenderer.DrawText(g, extraReq == null ? reqJobStr : extraReq.Replace("着用可能", ""), GearGraphics.EquipMDMoris9Font, new Point(79, picH), Color.White, TextFormatFlags.NoPadding);
-            picH += 16;
-            if (!string.IsNullOrEmpty(extraReq))
-            {
-                if (extraReq.Contains("\r\n")) picH += 16;
-            }
+            GearGraphics.DrawString(g, (extraReq == null ? reqJobStr : extraReq).Replace("着用可能", "").Trim(), GearGraphics.EquipMDMoris9Font, equip22ColorTable, 100, 308, ref picH, 16);
 
             // 요구 레벨
             this.Gear.Props.TryGetValue(GearPropType.reqLevel, out value2);
@@ -1000,8 +995,8 @@ namespace WzComparerR2.CharaSimControl
                 if (Gear.Props.TryGetValue(GearPropType.level, out value) && !Gear.FixLevel)
                 {
                     bool max = (Gear.Levels != null && value >= Gear.Levels.Count);
-                    string expString = Gear.Levels != null && Gear.Levels.First().Point != 0 ? ": 0 / " + Gear.Levels.First().Point : ": 0%";
-                    textList.Add($"#$gLv : {(max ? "MAX" : value.ToString())}  EXP {(max ? ": MAX" : expString)}#");
+                    string expString = Gear.Levels != null && Gear.Levels.First().Point != 0 ? ":0 / " + Gear.Levels.First().Point : ":0%";
+                    textList.Add($"#$gLv:{(max ? "MAX" : value.ToString())}  EXP{(max ? ":MAX" : expString)}#");
                 }
                 else if ((GearType)Gear.type == GearType.arcaneSymbol)
                 {
@@ -1557,12 +1552,12 @@ namespace WzComparerR2.CharaSimControl
                 if (enhance_starForce == 0)
                     cantEnhanceList.Add("スターフォース");
                 if (enhance_scroll == 0)
-                    cantEnhanceList.Add("注文書");
+                    cantEnhanceList.Add("呪文書");
                 if (enhance_bonusStat == 0)
                     cantEnhanceList.Add("追加オプション");
                 if (cantEnhanceList.Count > 0)
                 {
-                    GearGraphics.DrawString(g, $"#$d{string.Join(", ", cantEnhanceList)}強化不可#", GearGraphics.EquipMDMoris9Font, equip22ColorTable, 15, 305, ref picH, 16);
+                    GearGraphics.DrawString(g, $"#$d#{string.Join(", ", cantEnhanceList)} 強化不可#", GearGraphics.EquipMDMoris9Font, equip22ColorTable, 15, 305, ref picH, 16);
                 }
 
                 switch (enhance_starForce)
@@ -1583,13 +1578,13 @@ namespace WzComparerR2.CharaSimControl
                 switch (enhance_scroll)
                 {
                     case 0:
-                        //text = $"#$d注文書の強化 : 強化不可#";
+                        //text = $"#$d呪文書の強化 : 強化不可#";
                         break;
                     case 1:
-                        text = $"#$d注文書の強化 : なし# (残り{tuc}回、復旧可能0回)";
+                        text = $"#$d呪文書 強化 なし (残り{tuc}回、復旧可能0回)#";
                         break;
                     case 2:
-                        text = $"#$s注文書の強化 : {Gear.ScrollUp}回# (残り{tuc}回、復旧可能0回)";
+                        text = $"#$s呪文書 強化 {Gear.ScrollUp}回# (残り{tuc}回、復旧可能0回)";
                         break;
                 }
                 if (!string.IsNullOrEmpty(text))
@@ -1609,7 +1604,7 @@ namespace WzComparerR2.CharaSimControl
                     GearGraphics.DrawString(g, text, GearGraphics.EquipMDMoris9Font, equip22ColorTable, 15, 305, ref picH, 16);
                 */
 
-                GearGraphics.DrawString(g, "#$dNPC/採集キーにより強化情報詳細確認可能#", GearGraphics.EquipMDMoris9Font, equip22ColorTable, 15, 305, ref picH, 16);
+                GearGraphics.DrawString(g, "#$dNPC/採集キーで強化情報の詳細を確認可能#", GearGraphics.EquipMDMoris9Font, equip22ColorTable, 15, 305, ref picH, 16);
                 picH += 4;
 
 
@@ -1623,12 +1618,12 @@ namespace WzComparerR2.CharaSimControl
                 switch (enhance_potential)
                 {
                     case 0:
-                        text = $"#${GetPotentialColorTag(GearGrade.C)}潜在オプション : 強化不可#";
+                        text = $"#${GetPotentialColorTag(GearGrade.C)}潜在能力 : 強化不可#";
                         g.DrawImage(GetPotentialGradeIcon(GearGrade.C), 15, picH);
                         GearGraphics.DrawString(g, text, GearGraphics.EquipMDMoris9Font, itemPotentialColorTable, 30, 305, ref picH, 16);
                         break;
                     case 1:
-                        text = $"#${GetPotentialColorTag(Gear.Grade)}潜在オプション  : {GetPotentialString((int)Gear.Grade)}#{(fixedPotential ? " (追加強化不可)" : "")}";
+                        text = $"#${GetPotentialColorTag(Gear.Grade)}潜在能力 : {GetPotentialString((int)Gear.Grade)}#{(fixedPotential ? " (追加強化不可)" : "")}";
                         g.DrawImage(GetPotentialGradeIcon(Gear.Grade), 15, picH);
                         GearGraphics.DrawString(g, text, GearGraphics.EquipMDMoris9Font, itemPotentialColorTable, 30, 305, ref picH, 16);
 
@@ -1657,12 +1652,12 @@ namespace WzComparerR2.CharaSimControl
                         }
                         break;
                     case 10:
-                        text = $"#${GetPotentialColorTag(GearGrade.S)}潜在オプション  : {GetPotentialString((int)GearGrade.S)}#";
+                        text = $"#${GetPotentialColorTag(GearGrade.S)}潜在能力 : {GetPotentialString((int)GearGrade.S)}#";
                         g.DrawImage(GetPotentialGradeIcon(GearGrade.S), 15, picH);
                         GearGraphics.DrawString(g, text, GearGraphics.EquipMDMoris9Font, itemPotentialColorTable, 30, 305, ref picH, 16);
                         break;
                     case 11:
-                        text = $"#${GetPotentialColorTag(GearGrade.C)}潜在オプション  : ジェネシス武器オプションアップ#";
+                        text = $"#${GetPotentialColorTag(GearGrade.C)}潜在能力 : ジェネシス武器オプションアップ#";
                         g.DrawImage(GetPotentialGradeIcon(GearGrade.C), 15, picH);
                         GearGraphics.DrawString(g, text, GearGraphics.EquipMDMoris9Font, itemPotentialColorTable, 30, 305, ref picH, 16);
                         break;
@@ -1671,12 +1666,12 @@ namespace WzComparerR2.CharaSimControl
                 switch (enhance_addiPotential)
                 {
                     case 0:
-                        text = $"#${GetPotentialColorTag(GearGrade.C)}アディショナル潜在オプション : 強化不可#";
+                        text = $"#${GetPotentialColorTag(GearGrade.C)}アディショナル潜在能力 : 強化不可#";
                         g.DrawImage(GetPotentialGradeIcon(GearGrade.C), 15, picH);
                         GearGraphics.DrawString(g, text, GearGraphics.EquipMDMoris9Font, itemPotentialColorTable, 30, 305, ref picH, 16);
                         break;
                     case 1:
-                        text = $"#${GetPotentialColorTag(Gear.Grade)}アディショナル潜在オプション  : {GetPotentialString((int)Gear.Grade)}#";
+                        text = $"#${GetPotentialColorTag(Gear.Grade)}アディショナル潜在能力 : {GetPotentialString((int)Gear.Grade)}#";
                         g.DrawImage(GetPotentialGradeIcon(Gear.Grade), 15, picH);
                         GearGraphics.DrawString(g, text, GearGraphics.EquipMDMoris9Font, itemPotentialColorTable, 30, 305, ref picH, 16);
 
@@ -1704,12 +1699,12 @@ namespace WzComparerR2.CharaSimControl
                         }
                         break;
                     case 10:
-                        text = $"#${GetPotentialColorTag(GearGrade.A)}アディショナル潜在オプション  : {GetPotentialString((int)GearGrade.A)}#";
+                        text = $"#${GetPotentialColorTag(GearGrade.A)}アディショナル潜在能力 : {GetPotentialString((int)GearGrade.A)}#";
                         g.DrawImage(GetPotentialGradeIcon(GearGrade.A), 15, picH);
                         GearGraphics.DrawString(g, text, GearGraphics.EquipMDMoris9Font, itemPotentialColorTable, 30, 305, ref picH, 16);
                         break;
                     case 11:
-                        text = $"#${GetPotentialColorTag(GearGrade.C)}アディショナル潜在オプション  : ジェネシス武器オプションアップ#";
+                        text = $"#${GetPotentialColorTag(GearGrade.C)}アディショナル潜在能力 : ジェネシス武器オプションアップ#";
                         g.DrawImage(GetPotentialGradeIcon(GearGrade.C), 15, picH);
                         GearGraphics.DrawString(g, text, GearGraphics.EquipMDMoris9Font, itemPotentialColorTable, 30, 305, ref picH, 16);
                         break;
@@ -1720,7 +1715,7 @@ namespace WzComparerR2.CharaSimControl
             {
                 hasThirdContents = true;
 
-                GearGraphics.DrawString(g, $"#$d注文書の強化 : なし# (残り{tuc}回、復旧可能0回)", GearGraphics.EquipMDMoris9Font, equip22ColorTable, 15, 305, ref picH, 16);
+                GearGraphics.DrawString(g, $"#$d呪文書 強化 なし# (残り{tuc}回、復旧可能0回)", GearGraphics.EquipMDMoris9Font, equip22ColorTable, 15, 305, ref picH, 16);
                 picH += 4;
             }
 
@@ -1743,7 +1738,7 @@ namespace WzComparerR2.CharaSimControl
                 thirdLineNeeded = false;
 
                 g.DrawImage(Resource.UIToolTipNew_img_Item_Equip_textIcon_soulWeapon_normal, 15, picH - 2);
-                TextRenderer.DrawText(g, "魂 : 魂の武器に変換可能", GearGraphics.EquipMDMoris9Font, new Point(29, picH), Color.White, TextFormatFlags.NoPadding);
+                TextRenderer.DrawText(g, "魂 : 魂の武器に変換が必要", GearGraphics.EquipMDMoris9Font, new Point(29, picH), Color.White, TextFormatFlags.NoPadding);
                 picH += 20;
             }
 

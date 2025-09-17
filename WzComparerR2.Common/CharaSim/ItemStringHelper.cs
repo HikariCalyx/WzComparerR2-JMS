@@ -74,8 +74,8 @@ namespace WzComparerR2.CharaSim
                 case GearPropType.incINTr: return "INT : " + sign + value + "%";
                 case GearPropType.incLUK: return "LUK : " + sign + value;
                 case GearPropType.incLUKr: return "LUK : " + sign + value + "%";
-                case GearPropType.incAllStat: return "Allｽﾃｰﾀｽ：" + sign + value;
-                case GearPropType.statR: return "Allｽﾃｰﾀｽ: " + sign + value + "%";
+                case GearPropType.incAllStat: return "全ステータス" + sign + value;
+                case GearPropType.statR: return "全ステータス" + sign + value + "%";
                 case GearPropType.incMHP: return "最大HP : " + sign + value;
                 case GearPropType.incMHPr: return "最大HP : " + sign + value + "%";
                 case GearPropType.incMMP: return "最大MP : " + sign + value;
@@ -148,13 +148,13 @@ namespace WzComparerR2.CharaSim
                 case GearPropType.noLookChange: return value == 0 ? null : "神秘のカナトコ使用不可";
                 case GearPropType.reissueBan: return value == 0 ? null : "再発行不可";
 
-                case GearPropType.incAllStat_incMHP25: return "Allｽﾃｰﾀｽ：" + sign + value + ", 最大HP : " + sign + (value * 25);// check once Lv 250 set comes out in GMS
-                case GearPropType.incAllStat_incMHP50_incMMP50: return "Allｽﾃｰﾀｽ：" + sign + value + ", 最大HP / 最大MP : " + sign + (value * 50);
-                case GearPropType.incMHP_incMMP: return "最大HP / 最大MP : " + sign + value;
-                case GearPropType.incMHPr_incMMPr: return "最大HP / 最大MP : " + sign + value + "%";
+                case GearPropType.incAllStat_incMHP25: return "全ステータス" + sign + value + ", 最大HP" + sign + (value * 25);// check once Lv 250 set comes out in GMS
+                case GearPropType.incAllStat_incMHP50_incMMP50: return "全ステータス" + sign + value + ", 最大HP/最大MP" + sign + (value * 50);
+                case GearPropType.incMHP_incMMP: return "最大HP / 最大MP" + sign + value;
+                case GearPropType.incMHPr_incMMPr: return "最大HP / 最大MP" + sign + value + "%";
                 case GearPropType.incPAD_incMAD:
-                case GearPropType.incAD: return "攻撃力 / 魔力 : " + sign + value;
-                case GearPropType.incPDD_incMDD: return "防御力 : " + sign + value;
+                case GearPropType.incAD: return "攻撃力/魔力" + sign + value;
+                case GearPropType.incPDD_incMDD: return "防御力" + sign + value;
                 //case GearPropType.incACC_incEVA: return "ACC/AVO :" + sign + value;
 
                 case GearPropType.incARC: return "ARC : " + sign + value;
@@ -222,11 +222,11 @@ namespace WzComparerR2.CharaSim
                     res[1] = sign + value + "%";
                     return res;
                 case GearPropType.incAllStat:
-                    res[0] = "Allｽﾃｰﾀｽ";
+                    res[0] = "全ステータス";
                     res[1] = sign + value;
                     return res;
                 case GearPropType.statR:
-                    res[0] = "Allｽﾃｰﾀｽ";
+                    res[0] = "全ステータス";
                     res[1] = sign + value + "%";
                     return res;
                 case GearPropType.incMHP:
@@ -307,12 +307,12 @@ namespace WzComparerR2.CharaSim
                     return res;
                 case GearPropType.incBDR:
                 case GearPropType.bdR:
-                    res[0] = "ﾎﾞｽﾓﾝｽﾀｰﾀﾞﾒｰｼﾞ";
+                    res[0] = "ボスモンスター攻撃時のダメージ";
                     res[1] = "+" + value + "%";
                     return res;
                 case GearPropType.incIMDR:
                 case GearPropType.imdR:
-                    res[0] = "ﾓﾝｽﾀｰ防御率無視";
+                    res[0] = "モンスター防御率無視";
                     res[1] = "+" + value + "%";
                     return res;
                 case GearPropType.limitBreak:
@@ -355,10 +355,10 @@ namespace WzComparerR2.CharaSim
                     res[0] = value == 0 ? null : "#$rﾜｰﾙﾄﾞ内の自分のｷｬﾗｸﾀｰ間で1回移動可能 (移動後交換不可)#";
                     return res;
                 case GearPropType.only:
-                    res[0] = value == 0 ? null : "#$r固有ｱｲﾃﾑ#";
+                    res[0] = value == 0 ? null : "#$r重複所持不可#";
                     return res;
                 case GearPropType.onlyEquip:
-                    res[0] = value == 0 ? null : "#$r固有装備アイテム#";
+                    res[0] = value == 0 ? null : "#$r重複装着不可#";
                     return res;
                 case GearPropType.equipTradeBlock:
                     res[0] = value == 0 ? null : "#$r装着すると交換不可#";
@@ -391,10 +391,10 @@ namespace WzComparerR2.CharaSim
                     switch (value)
                     {
                         case 1:
-                            res[0] = "#$gカルマのはさみを使用すると1回交換可能になります#";
+                            res[0] = "#$gカルマのはさみ使用すると1回交換可能#";
                             return res;
                         case 2:
-                            res[0] = "#$gカルマのはさみを使用すると1回交換可能になります#";
+                            res[0] = "#$gカルマのはさみ使用すると1回交換可能#";
                             return res;
                         default: return res;
                     }
@@ -415,20 +415,20 @@ namespace WzComparerR2.CharaSim
                 //case GearPropType.cantRepair: return value == 0 ? null : "수리 불가";
 
                 case GearPropType.incAllStat_incMHP25:
-                    res[0] = "Allｽﾃｰﾀｽ  " + sign + value + ", 最大HP  " + sign + (value * 25);
+                    res[0] = "全ステータス  " + sign + value + ", 最大HP  " + sign + (value * 25);
                     return res;
                 case GearPropType.incAllStat_incMHP50_incMMP50:
-                    res[0] = "Allｽﾃｰﾀｽ  " + sign + value + ", 最大HP / 最大MP  " + sign + (value * 50);
+                    res[0] = "全ステータス  " + sign + value + ", 最大HP/最大MP  " + sign + (value * 50);
                     return res;
                 case GearPropType.incMHP_incMMP:
-                    res[0] = "最大HP / 最大MP  " + sign + value;
+                    res[0] = "最大HP/最大MP  " + sign + value;
                     return res;
                 case GearPropType.incMHPr_incMMPr:
-                    res[0] = "最大HP / 最大MP  " + sign + value + "%";
+                    res[0] = "最大HP/最大MP  " + sign + value + "%";
                     return res;
                 case GearPropType.incPAD_incMAD:
                 case GearPropType.incAD:
-                    res[0] = "攻撃力 / 魔力  " + sign + " " + value;
+                    res[0] = "攻撃力/魔力  " + sign + " " + value;
                     return res;
                 case GearPropType.incPDD_incMDD:
                     res[0] = "防御力  " + sign + value;
@@ -1035,13 +1035,13 @@ namespace WzComparerR2.CharaSim
                     switch (specJob)
                     {
                         case 1: extraJobNames.AddRange(new[] { "ヒーロー", "パラデイン" }); break;
-                        case 2: extraJobNames.AddRange(new[] { "ｱｰｸﾒｲｼﾞ(氷･雷)", "ｱｰｸﾒｲｼﾞ(火･毒)", "ﾋﾞｼｮｯﾌﾟ" }); break;
+                        case 2: extraJobNames.AddRange(new[] { "アークメイジ(氷、雷)", "アークメイジ(火、毒)", "ビショップ" }); break;
                         case 4: extraJobNames.Add("シャドー"); break;
                         case 11: extraJobNames.Add("ソウルマスター"); break;
-                        case 12: extraJobNames.Add("\r\nﾌﾚｲﾑｳｨｻﾞｰﾄﾞ"); break;
-                        case 22: extraJobNames.Add("ｴｳﾞｧﾝ"); break;
-                        case 32: extraJobNames.Add("ﾊﾞﾄﾙﾒｲｼﾞ"); break;
-                        case 172: extraJobNames.Add("ﾘﾝ"); break;
+                        case 12: extraJobNames.Add("フレイムウィザード"); break;
+                        case 22: extraJobNames.Add("エヴァン"); break;
+                        case 32: extraJobNames.Add("バトルメイジ"); break;
+                        case 172: extraJobNames.Add("リン"); break;
                         default: extraJobNames.Add(specJob.ToString()); break;
                     }
                 }
