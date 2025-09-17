@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Buffers.Binary;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text;
+using CSChaCha20;
 using WzComparerR2.WzLib.Cryptography;
 
 namespace WzComparerR2.WzLib
@@ -59,27 +61,69 @@ namespace WzComparerR2.WzLib
             // 1. random bytes
             int randByteCount = fileName.Sum(c => (int)c) % 312 + 30;
             byte[] randBytes = bReader.ReadBytes(randByteCount);
+            byte[] testRandBytes = randBytes;
+            for (int i = 0; i < testRandBytes.Length; ++i)
+            {
+                testRandBytes[i] = (byte)((sbyte)testRandBytes[i] >> 1);
+            }
+
+            var pack_type = bReader.ReadByte() ^ testRandBytes[0];
+
+            if (pack_type != 4)
+            {
+                return;
+            }
 
             // 2. encrypted snowKeySalt
             int hashedSaltLen = bReader.ReadInt32();
             int saltLen = (byte)hashedSaltLen ^ randBytes[0];
             byte[] saltBytes = bReader.ReadBytes(saltLen * 2);
             char[] saltChars = new char[saltLen];
+            char[] saltChars2 = new char[saltLen];
             for (int i = 0; i < saltLen; i++)
             {
                 saltChars[i] = (char)(randBytes[i] ^ saltBytes[i * 2]);
+                int a = randBytes[i] ^ saltBytes[i * 2];
+                int b = a | 0x4B;
+                b = b << 1;
+                b = b - a;
+                b = b - 75;
+                saltChars2[i] = (char)b;
             }
             string saltStr = new string(saltChars);
+            string saltStr2 = new string(saltChars2);
+
+            byte[] chacha20key_xor = { 0x7B, 0x2F, 0x35, 0x48, 0x43, 0x95, 0x02, 0xB9, 0xAE, 0x91, 0xA6, 0xE1, 0xD8, 0xD6, 0x24, 0xB4, 0x33, 0x10, 0x1D, 0x3D, 0xC1, 0xBB, 0xC6, 0xF4, 0xA5, 0xFE, 0xB3, 0x69, 0x6B, 0x56, 0xE4, 0x75 };
 
             // 3. decrypt 9 bytes header with snow cipher
             // generate snow key based on filename+keySalt
             string fileNameWithSalt = fileName + saltStr;
+            byte[] chacha20_key1 = new byte[32];
             Span<byte> snowCipherKey = stackalloc byte[16]; // should be 128 but we only use front 16 bytes
+            for (int i = 0; i < 32; ++i)
+            {
+                chacha20_key1[i] = (byte)(fileNameWithSalt[i % fileNameWithSalt.Length] + i);
+                chacha20_key1[i] ^= chacha20key_xor[i];
+            }
+            var empty_nonce = new byte[ChaCha20.allowedNonceLength];
             for (int i = 0; i < snowCipherKey.Length; i++)
             {
                 snowCipherKey[i] = (byte)(fileNameWithSalt[i % fileNameWithSalt.Length] + i);
             }
             long headerStartPos = this.BaseStream.Position;
+
+            UInt32 chacha20_hash = 0;
+            UInt32 chacha20_entry_count = 0;
+
+            using (var chacha20 = new ChaCha20(chacha20_key1, empty_nonce, 0))
+            {
+                var ciphertext = br.ReadBytes(ChaCha20.processBytesAtTime);
+                var plaintext = new byte[ciphertext.Length];
+                chacha20.DecryptBytes(plaintext, ciphertext);
+                chacha20_hash = BinaryPrimitives.ReadUInt32LittleEndian(plaintext.AsSpan());
+                chacha20_entry_count = BinaryPrimitives.ReadUInt32LittleEndian(plaintext.AsSpan(4));
+            }
+
             var snowCipher = new Snow2CryptoTransform(snowCipherKey, null, false);
             var snowDecoderStream = new CryptoStream(this.BaseStream, snowCipher, CryptoStreamMode.Read);
             var snowReader = new BinaryReader(snowDecoderStream);
@@ -108,7 +152,7 @@ namespace WzComparerR2.WzLib
             this.Header = header;
         }
 
-        public void ReadEntries()
+        public void ReadEntriesSnow()
         {
             if (this.Header == null || this.Header.EntryCount == 0 || this.Header.EntryCount == this.Entries.Count)
             {
@@ -163,6 +207,11 @@ namespace WzComparerR2.WzLib
             {
                 entry.StartPos = dataStartPos + entry.StartPos * 1024;
             }
+        }
+
+        public void ReadEntriesChaCha20()
+        {
+
         }
 
         public void GetDirTree(Wz_Node parent)

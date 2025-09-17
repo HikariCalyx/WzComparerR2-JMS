@@ -32,7 +32,7 @@ namespace WzComparerR2
         public static string FRMUPDATER_UPDATE_DOWNLOAD_FAIL = "ダウンロードに失敗しました";
 
         public static string MAINFORM_OPENWZDLG_TITLE = "WZファイルを選択";
-        public static string MAINFORM_OPENWZDLG_FILTER = "メイプルストーリーリソースファイル (Base.wz; *.wz; *.ms)|*.wz;*.ms";
+        public static string MAINFORM_OPENWZDLG_FILTER = "メイプルストーリーリソースファイル (Base.wz; *.wz; *.ms; *.mn)|*.wz;*.ms;*.mn";
         public static string MAINFORM_OPENWZDLG_ALREADYOPENED = "このWZファイルはすでに開かれています。";
         public static string MAINFORM_CLOSEWZDLG_FILENOTSELECTED = "閉じたいWZファイルが選択されていません。";
         public static string MAINFORM_COMMON_FILENOTFOUND = "ファイルが見つかりません。";

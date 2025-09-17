@@ -1192,7 +1192,7 @@ namespace WzComparerR2
             advTree1.BeginUpdate();
             try
             {
-                if (string.Equals(Path.GetExtension(wzFilePath), ".ms", StringComparison.OrdinalIgnoreCase))
+                if (string.Equals(Path.GetExtension(wzFilePath), ".ms", StringComparison.OrdinalIgnoreCase) || string.Equals(Path.GetExtension(wzFilePath), ".mn", StringComparison.OrdinalIgnoreCase))
                 {
                     wz.LoadMsFile(wzFilePath);
                 }
@@ -1207,6 +1207,10 @@ namespace WzComparerR2
                             foreach (var msFile in Directory.GetFiles(packsDir, "*.ms"))
                             {
                                 wz.LoadMsFile(msFile);
+                            }
+                            foreach (var mnFile in Directory.GetFiles(packsDir, "*.mn"))
+                            {
+                                wz.LoadMsFile(mnFile);
                             }
                         }
                     }

@@ -280,7 +280,7 @@ namespace WzComparerR2.WzLib
             try
             {
                 file = new Ms_File(fileName, this);
-                file.ReadEntries();
+                file.ReadEntriesSnow();
                 file.GetDirTree(node);
                 this.ms_files.Add(file);
             }
