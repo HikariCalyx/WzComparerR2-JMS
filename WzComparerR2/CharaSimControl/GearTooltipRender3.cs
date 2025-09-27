@@ -1061,7 +1061,7 @@ namespace WzComparerR2.CharaSimControl
                 hasThirdContents = true;
                 hasOptionPart = true;
 
-                TextRenderer.DrawText(g, "耐久性 : 100%", GearGraphics.EquipMDMoris9Font, new Point(15, picH), ((SolidBrush)GearGraphics.Equip22BrushLegendary).Color, TextFormatFlags.NoPadding);
+                TextRenderer.DrawText(g, "耐久度 : 100%", GearGraphics.EquipMDMoris9Font, new Point(15, picH), ((SolidBrush)GearGraphics.Equip22BrushLegendary).Color, TextFormatFlags.NoPadding);
                 picH += 16;
             }
 

@@ -672,8 +672,8 @@ namespace WzComparerR2.CharaSim
                 case GearType.gun: return "銃";
                 case GearType.android: return "アンドロイド";
                 case GearType.machineHeart: return "機械心臓部";
-                case GearType.pickaxe: return "採鉱工具";
-                case GearType.shovel: return "薬草採集工具";
+                case GearType.pickaxe: return "採鉱道具";
+                case GearType.shovel: return "薬草採集道具";
                 case GearType.pocket: return "ポケットアイテム";
                 case GearType.dualBow: return "デュアルボウガン";
                 case GearType.handCannon: return "ハンドキャノン";

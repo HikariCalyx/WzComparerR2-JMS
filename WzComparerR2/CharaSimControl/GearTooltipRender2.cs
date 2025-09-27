@@ -821,7 +821,7 @@ namespace WzComparerR2.CharaSimControl
             //绘制耐久度
             if (Gear.Props.TryGetValue(GearPropType.durability, out value))
             {
-                TextRenderer.DrawText(g, "耐久性：" + "100%", GearGraphics.EquipDetailFont, new Point(13, picH), ((SolidBrush)GearGraphics.GreenBrush2).Color, TextFormatFlags.NoPadding | TextFormatFlags.NoPrefix);
+                TextRenderer.DrawText(g, "耐久度：" + "100%", GearGraphics.EquipDetailFont, new Point(13, picH), ((SolidBrush)GearGraphics.GreenBrush2).Color, TextFormatFlags.NoPadding | TextFormatFlags.NoPrefix);
                 picH += 15;
             }
 
@@ -1053,6 +1053,40 @@ namespace WzComparerR2.CharaSimControl
                 hasPart2 = true;
             }
 
+            if (Gear.type == GearType.shovel || Gear.type == GearType.pickaxe)
+            {
+                string skillName = null;
+                switch (Gear.type)
+                {
+                    case GearType.shovel: skillName = "薬草採集"; break;
+                    case GearType.pickaxe: skillName = "採鉱"; break;
+                }
+                if (Gear.Props.TryGetValue(GearPropType.gatherTool_incSkillLevel, out value) && value > 0)
+                {
+                    TextRenderer.DrawText(g, skillName + "スキルレベル：+" + value, GearGraphics.EquipDetailFont, new Point(13, picH), Color.White, TextFormatFlags.NoPadding);
+                    picH += 15;
+                    hasPart2 = true;
+                }
+                if (Gear.Props.TryGetValue(GearPropType.gatherTool_incSpeed, out value) && value > 0)
+                {
+                    TextRenderer.DrawText(g, skillName + "速度增加: +" + value + "%", GearGraphics.EquipDetailFont, new Point(13, picH), Color.White, TextFormatFlags.NoPadding);
+                    picH += 15;
+                    hasPart2 = true;
+                }
+                if (Gear.Props.TryGetValue(GearPropType.gatherTool_incNum, out value) && value > 0)
+                {
+                    TextRenderer.DrawText(g, "アイテムを最大" + value + "個まで獲得可能", GearGraphics.EquipDetailFont, new Point(13, picH), Color.White, TextFormatFlags.NoPadding);
+                    picH += 15;
+                    hasPart2 = true;
+                }
+                if (Gear.Props.TryGetValue(GearPropType.gatherTool_reqSkillLevel, out value) && value > 0)
+                {
+                    TextRenderer.DrawText(g, skillName + "スキルレベル " + value + "以上使用可能", GearGraphics.EquipDetailFont, new Point(13, picH), Color.White, TextFormatFlags.NoPadding);
+                    picH += 15;
+                    hasPart2 = true;
+                }
+            }
+
             if (!Gear.CanPotential && !Gear.Cash)
             {
                 TextRenderer.DrawText(g, "潜在能力設定不可", GearGraphics.EquipDetailFont, new Point(13, picH), Color.White, TextFormatFlags.NoPadding);
@@ -1138,40 +1172,6 @@ namespace WzComparerR2.CharaSimControl
                 picH += 16;
                 hasPart2 = true;
             }*/
-
-            if (Gear.type == GearType.shovel || Gear.type == GearType.pickaxe)
-            {
-                string skillName = null;
-                switch (Gear.type)
-                {
-                    case GearType.shovel: skillName = "薬草採集"; break;
-                    case GearType.pickaxe: skillName = "採鉱"; break;
-                }
-                if (Gear.Props.TryGetValue(GearPropType.gatherTool_incSkillLevel, out value) && value > 0)
-                {
-                    TextRenderer.DrawText(g, skillName + "スキルレベル：+" + value, GearGraphics.EquipDetailFont, new Point(13, picH), Color.White, TextFormatFlags.NoPadding);
-                    picH += 15;
-                    hasPart2 = true;
-                }
-                if (Gear.Props.TryGetValue(GearPropType.gatherTool_incSpeed, out value) && value > 0)
-                {
-                    TextRenderer.DrawText(g, skillName + "速度增加: +" + value + "%", GearGraphics.EquipDetailFont, new Point(13, picH), Color.White, TextFormatFlags.NoPadding);
-                    picH += 15;
-                    hasPart2 = true;
-                }
-                if (Gear.Props.TryGetValue(GearPropType.gatherTool_incNum, out value) && value > 0)
-                {
-                    TextRenderer.DrawText(g, "最大" + value + "つのアイテムを獲得可能", GearGraphics.EquipDetailFont, new Point(13, picH), Color.White, TextFormatFlags.NoPadding);
-                    picH += 15;
-                    hasPart2 = true;
-                }
-                if (Gear.Props.TryGetValue(GearPropType.gatherTool_reqSkillLevel, out value) && value > 0)
-                {
-                    TextRenderer.DrawText(g, skillName + "スキルレベル " + value + "以上使用可能", GearGraphics.EquipDetailFont, new Point(13, picH), Color.White, TextFormatFlags.NoPadding);
-                    picH += 15;
-                    hasPart2 = true;
-                }
-            }
 
             picH += 5;
 
