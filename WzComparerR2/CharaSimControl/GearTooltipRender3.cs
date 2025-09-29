@@ -2381,6 +2381,14 @@ namespace WzComparerR2.CharaSimControl
             {
                 categories.Add("アクセサリ");
             }
+            else if (Gear.IsMechanicGear(Gear.type))
+            {
+                categories.Add("メカニック装備");
+            }
+            else if (Gear.IsDragonGear(Gear.type))
+            {
+                categories.Add("ドラゴン装備");
+            }
 
             var text = ItemStringHelper.GetGearTypeString(Gear.type);
             if (!string.IsNullOrEmpty(text))
