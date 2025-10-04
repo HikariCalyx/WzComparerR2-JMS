@@ -1461,6 +1461,7 @@ namespace WzComparerR2
             this.buttonItemIgnoreArticles.AutoCheckOnClick = true;
             this.buttonItemIgnoreArticles.Name = "buttonItemIgnoreArticles";
             this.buttonItemIgnoreArticles.Text = "英語の結果から冠詞を無視 (a, an, the)";
+            this.buttonItemIgnoreArticles.Tooltip = "この機能は英語のコンテンツを検索するためにのみ設計されています。英語以外の言語で検索する場合は、無効にしてください。";
             this.buttonItemIgnoreArticles.Click += new System.EventHandler(this.buttonItemIgnoreArticles_Click);
             // 
             // ribbonBar1
