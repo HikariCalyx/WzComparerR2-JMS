@@ -1799,7 +1799,7 @@ namespace WzComparerR2.Comparer
                 }
                 catch (Exception ex)
                 {
-                    FailToExportNodes.Add("Gear Tooltip 3: " + gearID, ex.Message);
+                    FailToExportTooltips.Add("Gear Tooltip 3: " + gearID, ex.Message);
                 }
             }
             OutputGearTooltipIDs.Clear();
@@ -3239,7 +3239,14 @@ namespace WzComparerR2.Comparer
                         }
                         catch (Exception ex)
                         {
-                            FailToExportNodes.Add(colName + ": " + fullPath.Replace('\\', '/'), ex.Message);
+                            if (!FailToExportNodes.ContainsKey(colName + ": " + fullPath.Replace('\\', '/')))
+                            {
+                                FailToExportNodes.Add(colName + ": " + fullPath.Replace('\\', '/'), ex.Message);
+                            }
+                            else
+                            {
+                                FailToExportNodes[colName + ": " + fullPath.Replace('\\', '/')] = ex.Message;
+                            }
                             return string.Format("解析できないPNGデータ {0} bytes", png.DataLength);
                         }
                         return string.Format("<img src=\"{0}/{1}\" />", (isCanvas && !this.Comparer.ResolvePngLink) ? Path.Combine(outputDirName, canvas) : outputDirName, WebUtility.UrlEncode(fileName));
@@ -3279,7 +3286,14 @@ namespace WzComparerR2.Comparer
                         }
                         catch (Exception ex)
                         {
-                            FailToExportNodes.Add(colName + ": " + fullPath.Replace('\\', '/'), ex.ToString());
+                            if (!FailToExportNodes.ContainsKey(colName + ": " + fullPath.Replace('\\', '/')))
+                            {
+                                FailToExportNodes.Add(colName + ": " + fullPath.Replace('\\', '/'), ex.Message);
+                            }
+                            else
+                            {
+                                FailToExportNodes[colName + ": " + fullPath.Replace('\\', '/')] = ex.Message;
+                            }
                             return string.Format("解析できない音声データ {0} bytes", sound.DataLength);
                         }
                         return string.Format("<audio controls src=\"{0}\" type=\"audio/mpeg\">audio {1} ms\n</audio>", Path.Combine(new DirectoryInfo(outputDir).Name, filePath), sound.Ms);
