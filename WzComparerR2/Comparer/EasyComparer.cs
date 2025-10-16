@@ -6,6 +6,8 @@ using System.Net;
 using System.Drawing;
 using System.Linq;
 using System.Security.Cryptography;
+using System.Threading;
+using System.Threading.Tasks;
 using WzComparerR2.WzLib;
 using WzComparerR2.Common;
 using WzComparerR2.PluginBase;
@@ -18,10 +20,12 @@ namespace WzComparerR2.Comparer
 {
     public class EasyComparer
     {
+        private static readonly SemaphoreSlim FailToExportSemaphore = new SemaphoreSlim(1, 1);
         public EasyComparer()
         {
             this.Comparer = new WzFileComparer();
         }
+        private static readonly SemaphoreSlim WzLibSemaphore = new SemaphoreSlim(1, 1);
         private Wz_Node[] WzNewOld { get; set; } = new Wz_Node[2];
         private Wz_File[] WzFileNewOld { get; set; } = new Wz_File[2];
         private Wz_File[] StringWzNewOld { get; set; } = new Wz_File[2];
@@ -875,7 +879,25 @@ namespace WzComparerR2.Comparer
                 skillRenderNewOld[i].Enable22AniStyle = this.Enable22AniStyle;
             }
 
-            foreach (var skillID in OutputSkillTooltipIDs)
+            int maxThread = 0;
+            if (OutputSkillTooltipIDs.Count < 5)
+            {
+                maxThread = 1;
+            }
+            else if (OutputSkillTooltipIDs.Count >= 5 && OutputSkillTooltipIDs.Count < 100)
+            {
+                maxThread = 5;
+            }
+            else if (OutputSkillTooltipIDs.Count > 100)
+            {
+                maxThread = 10;
+            }
+            ParallelOptions options = new ParallelOptions
+            {
+                MaxDegreeOfParallelism = maxThread
+            };
+
+            Parallel.ForEach(OutputSkillTooltipIDs, options, skillID =>
             {
                 try
                 {
@@ -883,9 +905,14 @@ namespace WzComparerR2.Comparer
                     StateInfo = string.Format("{0}/{1} スキル: {2}", ++count, allCount, skillID);
                     StateDetail = "Skill 変更点をツールチップ画像に出力中...";
 
+                    if (count == allCount)
+                    {
+                        StateDetail = "すべての Skill 変更点がエクスポートされるのを待機しています...";
+                    }
+
                     bool[] isSkillNull = new bool[2] { false, false };
 
-                    if (SkipKMSContent && isKMSSkillID(Int32.Parse(skillID))) continue;
+                    if (SkipKMSContent && isKMSSkillID(Int32.Parse(skillID))) return;
 
                     string skillType = "";
                     string skillNodePath = int.Parse(skillID) / 10000000 == 8 ? String.Format(@"\{0:D}.img\skill\{1:D}", int.Parse(skillID) / 100, skillID) : String.Format(@"\{0:D}.img\skill\{1:D}", int.Parse(skillID) / 10000, skillID);
@@ -918,6 +945,7 @@ namespace WzComparerR2.Comparer
                     // 変更前後のツールチップ画像の作成
                     for (int i = 0; i < 2; i++) // 0: New, 1: Old
                     {
+                        WzLibSemaphore.Wait();
                         Skill skill = Skill.CreateFromNode(PluginManager.FindWz("Skill" + skillNodePath, WzFileNewOld[i]), PluginManager.FindWz, PluginManager.FindWz, WzFileNewOld[i]) ??
                             (Skill.CreateFromNode(PluginManager.FindWz("Skill001" + skillNodePath, WzFileNewOld[i]), PluginManager.FindWz, PluginManager.FindWz, WzFileNewOld[i]) ??
                             (Skill.CreateFromNode(PluginManager.FindWz("Skill002" + skillNodePath, WzFileNewOld[i]), PluginManager.FindWz, PluginManager.FindWz, WzFileNewOld[i]) ??
@@ -933,6 +961,7 @@ namespace WzComparerR2.Comparer
                             isSkillNull[i] = true;
                             nullSkillIdx = i + 1;
                         }
+                        WzLibSemaphore.Release();
                     }
 
                     // ツールチップ画像を合わせる
@@ -964,14 +993,14 @@ namespace WzComparerR2.Comparer
 
                         case 1: // delete
                             skillType = "削除";
-                            if (isSkillNull[1]) continue;
+                            if (isSkillNull[1]) return;
                             resultImage = skillRenderNewOld[1].Render();
                             g = Graphics.FromImage(resultImage);
                             break;
 
                         case 2: // add
                             skillType = "追加";
-                            if (isSkillNull[0]) continue;
+                            if (isSkillNull[0]) return;
                             resultImage = skillRenderNewOld[0].Render();
                             g = Graphics.FromImage(resultImage);
                             break;
@@ -982,7 +1011,7 @@ namespace WzComparerR2.Comparer
 
                     if (resultImage == null || g == null)
                     {
-                        continue;
+                        return;
                     }
 
                     var skillTypeTextInfo = g.MeasureString(skillType, GearGraphics.ItemDetailFont);
@@ -1006,9 +1035,11 @@ namespace WzComparerR2.Comparer
                 }
                 catch (Exception ex)
                 {
+                    FailToExportSemaphore.Wait();
                     FailToExportTooltips.Add("Skill Tooltip: " + skillID, ex.Message);
+                    FailToExportSemaphore.Release();
                 }
-            }
+            });
             OutputSkillTooltipIDs.Clear();
             DiffSkillTags.Clear();
         }
@@ -2775,7 +2806,7 @@ namespace WzComparerR2.Comparer
         {
             if (node == null) return; // 변경은 확인하지 않음 // 추가,삭제만 확인
 
-            Match match = Regex.Match(node.FullPathToFile, @"^Quest\\QuestInfo.img\\(\d+).*\\.*"); 
+            Match match = Regex.Match(node.FullPathToFile, @"^Quest\\QuestInfo.img\\(\d+).*\\.*");
 
             if (!match.Success)
             {
@@ -2992,7 +3023,7 @@ namespace WzComparerR2.Comparer
             }
         }
 
-        private void CompareImg(Wz_Image imgNew, Wz_Image imgOld, string imgName, string anchorName, string menuAnchorName, string outputDir, StreamWriter sw, int newNumber=0, int oldNumber=0)
+        private void CompareImg(Wz_Image imgNew, Wz_Image imgOld, string imgName, string anchorName, string menuAnchorName, string outputDir, StreamWriter sw, int newNumber = 0, int oldNumber = 0)
         {
             StateDetail = "IMGを抽出中";
             if (!imgNew.TryExtract() || !imgOld.TryExtract())

@@ -21,6 +21,8 @@ namespace WzComparerR2.CharaSim
 {
     public class Translator
     {
+        private static readonly SemaphoreSlim semaphore = new SemaphoreSlim(1, 1);
+
         // L2C stands for Language to Currency
         private static Dictionary<string, string> dictL2C = new Dictionary<string, string>()
         {
@@ -756,12 +758,15 @@ namespace WzComparerR2.CharaSim
             {
                 try
                 {
+                    semaphore.Wait();
                     JObject currentTranslationCache = JObject.Parse(File.ReadAllText(cachePath));
                     string translatedResult = currentTranslationCache.SelectToken(String.Format("['{0}']", GetSha256Checksum(orgText))).ToString();
+                    semaphore.Release();
                     return translatedResult;
                 }
                 catch
                 {
+                    semaphore.Release();
                     return "";
                 }
             }
@@ -808,9 +813,18 @@ namespace WzComparerR2.CharaSim
             {
                 string content = File.ReadAllText(cachePath);
                 if (!String.IsNullOrEmpty(content)) currentTranslationCache = JObject.Parse(content);
-            }   
-            currentTranslationCache.Add(new JProperty(GetSha256Checksum(orgText), translatedText));
+            }
+            if (currentTranslationCache.ContainsKey(GetSha256Checksum(orgText)))
+            {
+                currentTranslationCache[GetSha256Checksum(orgText)] = translatedText;
+            }
+            else
+            {
+                currentTranslationCache.Add(new JProperty(GetSha256Checksum(orgText), translatedText));
+            }
+            semaphore.Wait();
             File.WriteAllText(cachePath, currentTranslationCache.ToString());
+            semaphore.Release();
         }
 
         private static bool UseGlossaryTable()
