@@ -856,7 +856,7 @@ namespace WzComparerR2.Comparer
         // 変更されたスキルツールチップ出力
         private void SaveSkillTooltip(string skillTooltipPath)
         {
-            SkillTooltipRender2[] skillRenderNewOld = new SkillTooltipRender2[2];
+            SkillTooltipRender2[] skillRenderNewOldConfig = new SkillTooltipRender2[2];
             int count = 0;
             int allCount = OutputSkillTooltipIDs.Count;
             var skillTypeFont = new Font("MS Gothic", 11f, GraphicsUnit.Pixel);
@@ -868,15 +868,15 @@ namespace WzComparerR2.Comparer
                 this.EtcWzNewOld[i] = WzNewOld[i]?.FindNodeByPath("Etc").GetNodeWzFile();
                 this.QuestWzNewOld[i] = WzNewOld[i]?.FindNodeByPath("Quest").GetNodeWzFile();
 
-                skillRenderNewOld[i] = new SkillTooltipRender2();
-                skillRenderNewOld[i].StringLinker = new StringLinker();
-                skillRenderNewOld[i].StringLinker.Load(StringWzNewOld[i], ItemWzNewOld[i], EtcWzNewOld[i], QuestWzNewOld[i]);
-                skillRenderNewOld[i].ShowObjectID = this.ShowObjectID;
-                skillRenderNewOld[i].ShowDelay = true;
-                skillRenderNewOld[i].wzNode = WzNewOld[i];
-                skillRenderNewOld[i].DiffSkillTags = this.DiffSkillTags;
-                skillRenderNewOld[i].IgnoreEvalError = true;
-                skillRenderNewOld[i].Enable22AniStyle = this.Enable22AniStyle;
+                skillRenderNewOldConfig[i] = new SkillTooltipRender2();
+                skillRenderNewOldConfig[i].StringLinker = new StringLinker();
+                skillRenderNewOldConfig[i].StringLinker.Load(StringWzNewOld[i], ItemWzNewOld[i], EtcWzNewOld[i], QuestWzNewOld[i]);
+                skillRenderNewOldConfig[i].ShowObjectID = this.ShowObjectID;
+                skillRenderNewOldConfig[i].ShowDelay = true;
+                skillRenderNewOldConfig[i].wzNode = WzNewOld[i];
+                skillRenderNewOldConfig[i].DiffSkillTags = this.DiffSkillTags;
+                skillRenderNewOldConfig[i].IgnoreEvalError = true;
+                skillRenderNewOldConfig[i].Enable22AniStyle = this.Enable22AniStyle;
             }
 
             int maxThread = 0;
@@ -901,6 +901,7 @@ namespace WzComparerR2.Comparer
             {
                 try
                 {
+                    SkillTooltipRender2[] skillRenderNewOld = skillRenderNewOldConfig;
 
                     StateInfo = string.Format("{0}/{1} スキル: {2}", ++count, allCount, skillID);
                     StateDetail = "Skill 変更点をツールチップ画像に出力中...";
@@ -973,15 +974,24 @@ namespace WzComparerR2.Comparer
                         case 0: // change
                             skillType = "変更";
 
-                            Bitmap ImageNew = skillRenderNewOld[0].Render(true);
-                            Bitmap ImageOld = skillRenderNewOld[1].Render(true);
+                            Bitmap ImageNew = (Bitmap)skillRenderNewOld[0].Render(true).Clone();
+                            Bitmap ImageOld = (Bitmap)skillRenderNewOld[1].Render(true).Clone();
                             if (ShowChangeType)
                             {
                                 int picHchange = ShowObjectID ? 13 : 1;
-                                Graphics[] gNewOld = new Graphics[] { Graphics.FromImage(ImageNew), Graphics.FromImage(ImageOld) };
-                                GearGraphics.DrawPlainText(gNewOld[1], "変更前", skillTypeFont, Color.FromArgb(255, 255, 255), 2, 64, ref picHchange, 10);
+                                Graphics[] gNewOld = new Graphics[] { null, null };
+                                using (Graphics gOld = Graphics.FromImage(ImageOld))
+                                {
+                                    GearGraphics.DrawPlainText(gOld, "変更前", skillTypeFont, Color.FromArgb(255, 255, 255), 2, 64, ref picHchange, 10);
+                                    gNewOld[1] = gOld;
+                                }
                                 picHchange = ShowObjectID ? 13 : 1;
-                                GearGraphics.DrawPlainText(gNewOld[0], "変更後", skillTypeFont, Color.FromArgb(255, 255, 255), 2, 64, ref picHchange, 10);
+                                using (Graphics gNew = Graphics.FromImage(ImageNew))
+                                {
+                                    GearGraphics.DrawPlainText(gNew, "変更後", skillTypeFont, Color.FromArgb(255, 255, 255), 2, 64, ref picHchange, 10);
+                                    gNewOld[0] = gNew;
+                                }
+                                
                             }
 
                             resultImage = new Bitmap(ImageNew.Width + ImageOld.Width, Math.Max(ImageNew.Height, ImageOld.Height));
@@ -994,14 +1004,14 @@ namespace WzComparerR2.Comparer
                         case 1: // delete
                             skillType = "削除";
                             if (isSkillNull[1]) return;
-                            resultImage = skillRenderNewOld[1].Render();
+                            resultImage = (Bitmap)skillRenderNewOld[1].Render().Clone();
                             g = Graphics.FromImage(resultImage);
                             break;
 
                         case 2: // add
                             skillType = "追加";
                             if (isSkillNull[0]) return;
-                            resultImage = skillRenderNewOld[0].Render();
+                            resultImage = (Bitmap)skillRenderNewOld[0].Render().Clone();
                             g = Graphics.FromImage(resultImage);
                             break;
 
@@ -1036,7 +1046,7 @@ namespace WzComparerR2.Comparer
                 catch (Exception ex)
                 {
                     FailToExportSemaphore.Wait();
-                    FailToExportTooltips.Add("Skill Tooltip: " + skillID, ex.Message);
+                    FailToExportTooltips.Add("Skill Tooltip: " + skillID, ex.Message + ex.StackTrace);
                     FailToExportSemaphore.Release();
                 }
             });
