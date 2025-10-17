@@ -2378,6 +2378,26 @@ namespace WzComparerR2.Avatar.UI
                             ToastNotification.Show(this, $"警告: {ex.Message}", null, 3000, eToastGlowColor.Orange, eToastPosition.TopCenter);
                         }
                         break;
+                    case 3: // CMS
+                        this.API = new NexonOpenAPI("-", "KMS");
+                        try
+                        {
+                            ToastNotification.Show(this, $"アバターを取得しています。お待ちください...", null, 3000, eToastGlowColor.Green, eToastPosition.TopCenter);
+                            avatarCode = await this.API.GetAvatarCode(dlg.CharaName, "CMS");
+                            if (string.IsNullOrEmpty(avatarCode))
+                            {
+                                ToastNotification.Show(this, $"キャラクターが見つかりません。", null, 3000, eToastGlowColor.Red, eToastPosition.TopCenter);
+                            }
+                            else
+                            {
+                                await Type3(avatarCode);
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            ToastNotification.Show(this, $"警告: {ex.Message}", null, 3000, eToastGlowColor.Orange, eToastPosition.TopCenter);
+                        }
+                        break;
                     case 4: // GMS-NA
                         this.API = new NexonOpenAPI("-", "KMS");
                         try
@@ -2450,7 +2470,14 @@ namespace WzComparerR2.Avatar.UI
                             }
                             else
                             {
-                                await Type4(avatarCode);
+                                if (Regex.IsMatch(avatarCode, @"^[0-9A-Fa-f]*$"))
+                                {
+                                    await Type4(avatarCode);
+                                }
+                                else
+                                {
+                                    await Type3(avatarCode);
+                                }
                             }
                         }
                         catch (Exception ex)

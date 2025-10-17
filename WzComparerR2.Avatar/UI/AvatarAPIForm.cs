@@ -135,19 +135,24 @@ namespace WzComparerR2.Avatar.UI
                     labelX1.Text = "結果のアバターは正確ではない可能性があります。";
                     labelX1.Visible = true;
                     break;
+                case 3:
+                    labelX1.Text = "名前に見えない文字が含まれている場合は、その\r\nまま入力してください。";
+                    labelX1.Visible = true;
+                    break;
                 case 4:
                 case 5:
                     labelX1.Text = "長年ログインしていないキャラクターは正しく読み\r\n取れない可能性があります。";
                     labelX1.Visible = true;
                     break;
                 case 6:
+                case 7:
                     labelX1.Text = "見つからない場合はキャラクターにログインして\r\nください。";
                     labelX1.Visible = true;
                     break;
-                case 7:
-                    labelX1.Text = "ユニオンランキングに掲載されているキャラクター\r\nのみ検索できます。";
-                    labelX1.Visible = true;
-                    break;
+                //case 7:
+                //    labelX1.Text = "ユニオンランキングに掲載されているキャラクター\r\nのみ検索できます。";
+                //    labelX1.Visible = true;
+                //    break;
                 default:
                     labelX1.Visible = false;
                     break;
