@@ -2110,6 +2110,71 @@ namespace WzComparerR2.Avatar.UI
                     return;
             }
         }
+        private void btnFrieren_Click(object sender, EventArgs e)
+        {
+            switch (MessageBoxEx.Show("フリーレンを呼びますか？", "確認", MessageBoxButtons.YesNo))
+            {
+                case DialogResult.Yes:
+                    LoadCode("2012,12012,22035,42540,1054555,1074234,1703722", 0);
+                    return;
+
+                case DialogResult.No:
+                default:
+                    return;
+            }
+        }
+        private void btnFern_Click(object sender, EventArgs e)
+        {
+            switch (MessageBoxEx.Show("フェルンを呼びますか？", "確認", MessageBoxButtons.YesNo))
+            {
+                case DialogResult.Yes:
+                    LoadCode("2012,12012,22036,42570,1054558,1074235,1703723", 0);
+                    return;
+
+                case DialogResult.No:
+                default:
+                    return;
+            }
+        }
+        private void btnStark_Click(object sender, EventArgs e)
+        {
+            switch (MessageBoxEx.Show("シュタルクを呼びますか？", "確認", MessageBoxButtons.YesNo))
+            {
+                case DialogResult.Yes:
+                    LoadCode("2000,12000,56095,67490,1054200,1073963,1012832,1703724", 0);
+                    return;
+
+                case DialogResult.No:
+                default:
+                    return;
+            }
+        }
+        private void btnHimmel_Click(object sender, EventArgs e)
+        {
+            switch (MessageBoxEx.Show("ヒンメルを呼びますか？", "確認", MessageBoxButtons.YesNo))
+            {
+                case DialogResult.Yes:
+                    LoadCode("2012,12012,22038,42590,1054561,1074237,1703725", 0);
+                    return;
+
+                case DialogResult.No:
+                default:
+                    return;
+            }
+        }
+        private void btnÜbel_Click(object sender, EventArgs e)
+        {
+            switch (MessageBoxEx.Show("ユーベルを呼びますか？", "確認", MessageBoxButtons.YesNo))
+            {
+                case DialogResult.Yes:
+                    LoadCode("2003,12003,22039,42600,1054562,1074238,1703726", 0);
+                    return;
+
+                case DialogResult.No:
+                default:
+                    return;
+            }
+        }
         private void btnLaraTheSheep_Click(object sender, EventArgs e)
         {
             switch (MessageBoxEx.Show("著者のララのアバターを呼びますか？", "確認", MessageBoxButtons.YesNo))
