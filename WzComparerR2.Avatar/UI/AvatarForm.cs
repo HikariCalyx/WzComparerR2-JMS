@@ -2110,6 +2110,84 @@ namespace WzComparerR2.Avatar.UI
                     return;
             }
         }
+        private void btnShinobuKocho_Click(object sender, EventArgs e)
+        {
+            switch (MessageBoxEx.Show("胡蝶しのぶを呼びますか？", "確認", MessageBoxButtons.YesNo))
+            {
+                case DialogResult.Yes:
+                    LoadCode("2015,12015,56696,67506,1054202,1073966", 0);
+                    return;
+
+                case DialogResult.No:
+                default:
+                    return;
+            }
+        }
+        private void btnGiyuTomioka_Click(object sender, EventArgs e)
+        {
+            switch (MessageBoxEx.Show("冨岡義勇を呼びますか？", "確認", MessageBoxButtons.YesNo))
+            {
+                case DialogResult.Yes:
+                    LoadCode("2012,12012,55176,63840,1054203,1073967", 0);
+                    return;
+
+                case DialogResult.No:
+                default:
+                    return;
+            }
+        }
+        private void btnKanaoTsuyuri_Click(object sender, EventArgs e)
+        {
+            switch (MessageBoxEx.Show("栗花落カナヲを呼びますか？", "確認", MessageBoxButtons.YesNo))
+            {
+                case DialogResult.Yes:
+                    LoadCode("2015,12015,56697,67510,1054204,1073968", 0);
+                    return;
+
+                case DialogResult.No:
+                default:
+                    return;
+            }
+        }
+        private void btnKyojuroRengoku_Click(object sender, EventArgs e)
+        {
+            switch (MessageBoxEx.Show("煉獄杏寿郎を呼びますか？", "確認", MessageBoxButtons.YesNo))
+            {
+                case DialogResult.Yes:
+                    LoadCode("2000,12000,55277,63853,1054205,1073969", 0);
+                    return;
+
+                case DialogResult.No:
+                default:
+                    return;
+            }
+        }
+        private void btnTengenUzui_Click(object sender, EventArgs e)
+        {
+            switch (MessageBoxEx.Show("宇髄天元を呼びますか？", "確認", MessageBoxButtons.YesNo))
+            {
+                case DialogResult.Yes:
+                    LoadCode("2003,12003,55778,63860,1022345,1054206,1073970,1082820,1103741", 0);
+                    return;
+
+                case DialogResult.No:
+                default:
+                    return;
+            }
+        }
+        private void btnMuzanKibutsuji_Click(object sender, EventArgs e)
+        {
+            switch (MessageBoxEx.Show("鬼舞辻無惨を呼びますか？", "確認", MessageBoxButtons.YesNo))
+            {
+                case DialogResult.Yes:
+                    LoadCode("2012,12012,55279,63870,1006568,1054207,1073971", 0);
+                    return;
+
+                case DialogResult.No:
+                default:
+                    return;
+            }
+        }
         private void btnFrieren_Click(object sender, EventArgs e)
         {
             switch (MessageBoxEx.Show("フリーレンを呼びますか？", "確認", MessageBoxButtons.YesNo))
