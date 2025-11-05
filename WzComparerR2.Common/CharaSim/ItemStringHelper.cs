@@ -1237,7 +1237,7 @@ namespace WzComparerR2.CharaSim
                 case 1110: return "ソウルマスター(2次)";
                 case 1111: return "ソウルマスター(3次)";
                 case 1112: return "ソウルマスター(4次)";
-                case 1114: return "ソウルマスター((6次)";
+                case 1114: return "ソウルマスター(6次)";
                 case 1200: return "フレイムウィザード(1次)";
                 case 1210: return "フレイムウィザード(2次)";
                 case 1211: return "フレイムウィザード(3次)";
