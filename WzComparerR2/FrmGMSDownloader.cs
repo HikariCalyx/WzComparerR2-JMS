@@ -34,7 +34,7 @@ namespace WzComparerR2
             // https://learn.microsoft.com/en-us/dotnet/core/compatibility/fx-core#controldefaultfont-changed-to-segoe-ui-9pt
             this.Font = new Font(new FontFamily("MS Gothic"), 9f);
 #endif
-            this.richTextBoxEx1.AppendText("GMSをダウンロードするには、アップデートマニフェストファイルが必要です。マニフェストファイルは、Discordサーバーの #gamepatch-feed チャネルから見つかります。\r\n\r\nマニフェストファイルをPCにダウンロードしたら、「ダウンロード」ボタンをクリックしてロードしてください。");
+            this.richTextBoxEx1.AppendText("GMSをダウンロードするには、アップデートマニフェストファイルが必要です。マニフェストファイルは、Discordサーバーの #gamepatch-feed チャネルから見つかります。\r\n\r\n「ダウンロード」ボタンをクリックした後、次のダイアログに URL を貼り付けてください。");
             //var downloaderSession = new DownloaderSession();
             //Task.Run(() => this.ExecuteUpdateAsync(downloaderSession, downloaderSession.CancellationToken));
         }
