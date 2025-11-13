@@ -34,9 +34,9 @@ namespace WzComparerR2
             // https://learn.microsoft.com/en-us/dotnet/core/compatibility/fx-core#controldefaultfont-changed-to-segoe-ui-9pt
             this.Font = new Font(new FontFamily("MS Gothic"), 9f);
 #endif
-
-            var downloaderSession = new DownloaderSession();
-            Task.Run(() => this.ExecuteUpdateAsync(downloaderSession, downloaderSession.CancellationToken));
+            this.richTextBoxEx1.AppendText("GMSをダウンロードするには、アップデートマニフェストファイルが必要です。マニフェストファイルは、Discordサーバーの #gamepatch-feed チャネルから見つかります。\r\n\r\nマニフェストファイルをPCにダウンロードしたら、「ダウンロード」ボタンをクリックしてロードしてください。");
+            //var downloaderSession = new DownloaderSession();
+            //Task.Run(() => this.ExecuteUpdateAsync(downloaderSession, downloaderSession.CancellationToken));
         }
 
 
@@ -58,7 +58,7 @@ namespace WzComparerR2
                 string majorVersion = UpdateContent.SelectToken("majorVersion").ToString();
                 string minorVersion = UpdateContent.SelectToken("minorVersion").ToString();
                 string revision = UpdateContent.SelectToken("revision").ToString();
-                string releaseDate = UpdateContent.SelectToken("releaseDate").ToString(); 
+                string releaseDate = UpdateContent.SelectToken("releaseDate").ToString();
                 manifestUrl = UpdateContent.SelectToken("manifestUrl").ToString();
 
                 this.lblUpdateDate.Text = releaseDate + " UTC";
@@ -144,7 +144,7 @@ namespace WzComparerR2
                 }
                 Encoding fileNameEnc = manifest.filepath_encoding == "utf16" ? Encoding.Unicode : Encoding.UTF8;
 
-                foreach (var kv in manifest.files)
+                Parallel.ForEach(manifest.files, new ParallelOptions { MaxDegreeOfParallelism = 20 }, kv =>
                 {
                     string fileName = new StreamReader(new MemoryStream(Convert.FromBase64String(kv.Key))).ReadToEnd();
                     string fullFileName = Path.Combine(applyPath, "appdata", fileName);
@@ -161,6 +161,10 @@ namespace WzComparerR2
                         if (!File.Exists(fullFileName) || new FileInfo(fullFileName).Length != kv.Value.fsize)
                         {
                             AppendStateText(String.Format("ダウンロードファイル: {0}...", fullFileName), Color.Black);
+                            if (!Directory.Exists(Path.GetDirectoryName(fullFileName)))
+                            {
+                                Directory.CreateDirectory(Path.GetDirectoryName(fullFileName));
+                            }
                             using (var fs = File.Create(fullFileName))
                             {
                                 for (int p = 0; p < kv.Value.objects.Length; p++)
@@ -194,6 +198,7 @@ namespace WzComparerR2
                         }
                     }
                 }
+                );
                 this.lblUpdateContent.Text = "ダウンロード完了";
             }
             catch (Exception ex)
@@ -238,6 +243,21 @@ namespace WzComparerR2
         private void buttonX1_Click(object sender, EventArgs e)
         {
             downloaderSession = new DownloaderSession();
+            string manifestUrl = "";
+            using (FrmGMSManifest frmManifest = new FrmGMSManifest())
+            {
+                if (frmManifest.ShowDialog() == DialogResult.OK)
+                {
+                    manifestUrl = frmManifest.ManifestUrl;
+                }
+                else return;
+            }
+            if (!manifestUrl.StartsWith(manifestBaseUrl))
+            {
+                this.richTextBoxEx1.Clear();
+                this.richTextBoxEx1.AppendText("無効なマニフェストURLです。\r\n");
+                return;
+            }
             FolderBrowserDialog dlg = new FolderBrowserDialog();
             dlg.Description = "GMSのインストールディレクトリを選択してください。";
             if (dlg.ShowDialog(this) == DialogResult.OK)
@@ -263,7 +283,6 @@ namespace WzComparerR2
                         return;
                 }
             }
-            this.lblUpdateContent.Text = LocalizedString_JP.FRMUPDATER_UPDATE_DOWNLOADING;
             buttonX1.Enabled = false;
             this.richTextBoxEx1.Clear();
             Task.Run(() => this.DownloadClientAsync(manifestUrl, downloaderSession, downloaderSession.CancellationToken));
