@@ -1443,6 +1443,9 @@ namespace WzComparerR2.CharaSim
                 case 12005:
                 case 12100: return "竈門炭治郎";
 
+                case 12006:
+                case 12200: return "サイタマ";
+
                 case 13000: return "ピンクビーン";
                 case 13001: return "イェティ";
                 case 13100: return "ピンクビーン";
