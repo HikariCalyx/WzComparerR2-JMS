@@ -1111,35 +1111,35 @@ namespace WzComparerR2.CharaSimControl
             }
 
             // JMS exclusive pricing display
-            if (!isMsnClient)
+            if (ShowSoldPrice && !isMsnClient && !item.Cash)
             {
-                if (!item.GetBooleanValue(ItemPropType.quest) && !item.GetBooleanValue(ItemPropType.notSale) && (item.Props.TryGetValue(ItemPropType.price, out value) && value > 0) && ShowSoldPrice)
+                if (!item.GetBooleanValue(ItemPropType.quest) && !item.GetBooleanValue(ItemPropType.notSale) && (item.Props.TryGetValue(ItemPropType.price, out value) && value > 0))
                 {
                     picH += 16;
                     GearGraphics.DrawString(g, "\r\n · 販売価額：" + value + "メル", GearGraphics.EquipDetailFont, 100, right, ref picH, 16);
                 }
 
-                if (item.GetBooleanValue(ItemPropType.autoPrice) && ShowSoldPrice && item.Level <= 250)
+                if (item.GetBooleanValue(ItemPropType.autoPrice) && item.Level <= 250)
                 {
                     picH += 16;
                     GearGraphics.DrawString(g, "\r\n · 販売価額：" + (item.Level * 2) + "メル", GearGraphics.EquipDetailFont, 100, right, ref picH, 16);
                 }
+            }
 
-                if (item.Cash && ShowCashPurchasePrice)
+            if (ShowCashPurchasePrice && !isMsnClient && item.Cash)
+            {
+                Commodity commodityPackage = new Commodity();
+                if (CharaSimLoader.LoadedCommoditiesByItemId.ContainsKey(item.ItemID))
                 {
-                    Commodity commodityPackage = new Commodity();
-                    if (CharaSimLoader.LoadedCommoditiesByItemId.ContainsKey(item.ItemID))
+                    commodityPackage = CharaSimLoader.LoadedCommoditiesByItemId[item.ItemID];
+                    if (commodityPackage.Price > 0)
                     {
-                        commodityPackage = CharaSimLoader.LoadedCommoditiesByItemId[item.ItemID];
-                        if (commodityPackage.Price > 0)
+                        picH += 16;
+                        GearGraphics.DrawString(g, "\r\n · 購入価額：" + commodityPackage.Price + "ポイント", GearGraphics.EquipDetailFont, 100, right, ref picH, 16);
+                        if (Translator.DefaultDesiredCurrency != "none")
                         {
-                            picH += 16;
-                            GearGraphics.DrawString(g, "\r\n · 購入価額：" + commodityPackage.Price + "ポイント", GearGraphics.EquipDetailFont, 100, right, ref picH, 16);
-                            if (Translator.DefaultDesiredCurrency != "none")
-                            {
-                                string exchangedPrice = Translator.GetConvertedCurrency(commodityPackage.Price, titleLanguage);
-                                GearGraphics.DrawString(g, "    " + exchangedPrice, GearGraphics.EquipDetailFont, 100, right, ref picH, 16);
-                            }
+                            string exchangedPrice = Translator.GetConvertedCurrency(commodityPackage.Price, titleLanguage);
+                            GearGraphics.DrawString(g, "    " + exchangedPrice, GearGraphics.EquipDetailFont, 100, right, ref picH, 16);
                         }
                     }
                 }
