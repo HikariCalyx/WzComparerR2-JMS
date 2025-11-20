@@ -541,7 +541,7 @@ namespace WzComparerR2.CharaSimControl
             // 생명의 물
             if (item.Props.TryGetValue(ItemPropType.noRevive, out value) && value > 0)
             {
-                GearGraphics.DrawString(g, "#$r생명의 물 사용 불가#", GearGraphics.ItemDetailFont, item22ColorTable, 0, tooltip.Width, ref picH, LineHeight, alignment: Text.TextAlignment.Center);
+                GearGraphics.DrawString(g, "#$r生命の水使用不可#", GearGraphics.ItemDetailFont, item22ColorTable, 0, tooltip.Width, ref picH, LineHeight, alignment: Text.TextAlignment.Center);
             }
             splitterH.Add(picH - 1);
 
@@ -763,45 +763,6 @@ namespace WzComparerR2.CharaSimControl
                 }
                 GearGraphics.DrawString(g, "#cTip. ペットのレベルが15になると特定の言葉を言わせることができます。ペットのセリフは他のキャラクターは見えません。#", GearGraphics.ItemDetailFont, item22ColorTable, descLeft, descRight, ref picH, LineHeight);
                 GearGraphics.DrawString(g, "#c例) /ペット [命令語]#", GearGraphics.ItemDetailFont, item22ColorTable, descLeft, descRight, ref picH, LineHeight);
-
-                desc += isMsnClient ? "\n#cスキル：NESO収集" : "\n#cスキル：メル収集";
-                if (item.Props.TryGetValue(ItemPropType.pickupItem, out value) && value > 0)
-                {
-                    desc += ", アイテム収集";
-                }
-                if (item.Props.TryGetValue(ItemPropType.longRange, out value) && value > 0)
-                {
-                    desc += ", 移動範囲拡大";
-                }
-                if (item.Props.TryGetValue(ItemPropType.sweepForDrop, out value) && value > 0)
-                {
-                    desc += ", 自動収集";
-                }
-                if (item.Props.TryGetValue(ItemPropType.pickupAll, out value) && value > 0)
-                {
-                    desc += ", 所有権のないアイテム収集やメルの収集";
-                }
-                if (item.Props.TryGetValue(ItemPropType.consumeHP, out value) && value > 0)
-                {
-                    desc += ", HP回復薬充填";
-                }
-                if (item.Props.TryGetValue(ItemPropType.consumeMP, out value) && value > 0)
-                {
-                    desc += ", MP回復薬充填";
-                }
-                if (item.Props.TryGetValue(ItemPropType.autoBuff, out value) && value > 0)
-                {
-                    desc += ", バフスキル自動発動";
-                }
-                if (item.Props.TryGetValue(ItemPropType.giantPet, out value) && value > 0)
-                {
-                    desc += ", ペットジャイアントスキル";
-                }
-                if (item.Props.TryGetValue(ItemPropType.consumeCure, out value) && value > 0)
-                {
-                    desc += ", 万病治療薬自動使用";
-                }
-                desc += "#";
             }
 
             // 미리보기
@@ -1151,19 +1112,32 @@ namespace WzComparerR2.CharaSimControl
             {
                 var count = 1;
                 ItemPropType[] petSkills = [ItemPropType.pickupItem, ItemPropType.longRange, ItemPropType.sweepForDrop, ItemPropType.pickupAll, ItemPropType.consumeHP, ItemPropType.consumeMP,
-                    ItemPropType.autoBuff, ItemPropType.giantPet];
+                    ItemPropType.autoBuff, ItemPropType.giantPet, ItemPropType.consumeCure];
+                List<string> petSkillNames = new List<string> { isMsnClient ? "NESO収集" : "メル収集" };
                 foreach (var petSkill in petSkills)
                 {
                     if (item.Props.TryGetValue(petSkill, out value) && value > 0)
                     {
                         count++;
+                        switch (petSkill)
+                        {
+                            case ItemPropType.pickupItem: petSkillNames.Add("アイテム収集"); break;
+                            case ItemPropType.longRange: petSkillNames.Add("移動範囲拡大"); break;
+                            case ItemPropType.sweepForDrop: petSkillNames.Add("自動収集"); break;
+                            case ItemPropType.pickupAll: petSkillNames.Add("所有権のないアイテム収集やメルの収集"); break;
+                            case ItemPropType.consumeHP: petSkillNames.Add("HP回復薬充填"); break;
+                            case ItemPropType.consumeMP: petSkillNames.Add("MP回復薬充填"); break;
+                            case ItemPropType.autoBuff: petSkillNames.Add("バフスキル自動発動"); break;
+                            case ItemPropType.giantPet: petSkillNames.Add("ペットジャイアントスキル"); break;
+                            case ItemPropType.consumeCure: petSkillNames.Add("万病治療薬自動使用"); break;
+                        }
                     }
                 }
-                tags.Add($"#c{count}つのスキル保有（マウス右クリックで確認可能）#");
+                tags.Add($"#c{count}つのスキル保有：{string.Join("、", petSkillNames)}#");
 
                 if (item.Props.TryGetValue(ItemPropType.noScroll, out value) && value > 0)
                 {
-                    tags.Add("#$rペットスキル注文書、ペット作名する使用不可#");
+                    tags.Add("#$rペットのスキルスクロールやペットの名前タグは使用不可#");
                 }
             }
 
