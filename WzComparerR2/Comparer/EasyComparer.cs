@@ -1144,8 +1144,6 @@ namespace WzComparerR2.Comparer
             int count = 0;
             int allCount = OutputItemTooltipIDs.Count;
             var itemTypeFont = new Font("MS Gothic", 11f, GraphicsUnit.Pixel);
-            bool isDamageSkin = false;
-            bool isFamiliar = false;
 
             for (int i = 0; i < 2; i++) // 0: New, 1: Old
             {
@@ -1185,6 +1183,9 @@ namespace WzComparerR2.Comparer
                     string itemType = "";
                     string itemNodePath = null;
                     string categoryPath = "";
+
+                    bool isDamageSkin = false;
+                    bool isFamiliar = false;
 
                     if (!int.TryParse(itemID, out _)) continue;
                     if (SkipKMSContent && KMSContentID["Item"].Contains((Int32.Parse(itemID)))) continue;
@@ -1431,8 +1432,6 @@ namespace WzComparerR2.Comparer
             int count = 0;
             int allCount = OutputItemTooltipIDs.Count;
             var itemTypeFont = new Font("MS Gothic", 11f, GraphicsUnit.Pixel);
-            bool isDamageSkin = false;
-            bool isFamiliar = false;
 
             for (int i = 0; i < 2; i++) // 0: New, 1: Old
             {
@@ -1471,6 +1470,9 @@ namespace WzComparerR2.Comparer
                     string itemType = "";
                     string itemNodePath = null;
                     string categoryPath = "";
+
+                    bool isDamageSkin = false;
+                    bool isFamiliar = false;
 
                     if (!int.TryParse(itemID, out _)) continue;
                     if (SkipKMSContent && KMSContentID["Item"].Contains((Int32.Parse(itemID)))) continue;
