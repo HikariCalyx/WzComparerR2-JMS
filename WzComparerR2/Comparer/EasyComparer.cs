@@ -1260,23 +1260,23 @@ namespace WzComparerR2.Comparer
                             itemRenderNewOld[i].Item = item;
                             isDamageSkin = (item.DamageSkinID != null);
                             isFamiliar = (item.FamiliarID != null);
+
+                            if (isDamageSkin)
+                            {
+                                DamageSkin damageSkin = DamageSkin.CreateFromNode(PluginManager.FindWz($@"Etc\DamageSkin.img\{item.DamageSkinID}", WzFileNewOld[i]), PluginManager.FindWz);
+                                damageSkinRenderNewOld[i].DamageSkin = damageSkin;
+                                categoryPath = "DamageSkin_ダメスキ";
+
+                                if (!Directory.Exists(Path.Combine(itemTooltipPath, categoryPath, "DamageSkinSample")))
+                                {
+                                    Directory.CreateDirectory(Path.Combine(itemTooltipPath, categoryPath, "DamageSkinSample"));
+                                }
+                            }
                         }
                         else
                         {
                             isItemNull[i] = true;
                             nullItemIdx = i + 1;
-                        }
-
-                        if (isDamageSkin)
-                        {
-                            DamageSkin damageSkin = DamageSkin.CreateFromNode(PluginManager.FindWz($@"Etc\DamageSkin.img\{item.DamageSkinID}", WzFileNewOld[i]), PluginManager.FindWz);
-                            damageSkinRenderNewOld[i].DamageSkin = damageSkin;
-                            categoryPath = "DamageSkin_ダメスキ";
-
-                            if (!Directory.Exists(Path.Combine(itemTooltipPath, categoryPath, "DamageSkinSample")))
-                            {
-                                Directory.CreateDirectory(Path.Combine(itemTooltipPath, categoryPath, "DamageSkinSample"));
-                            }
                         }
 
                         if (isFamiliar)
@@ -1417,7 +1417,7 @@ namespace WzComparerR2.Comparer
                 }
                 catch (Exception ex)
                 {
-                    FailToExportTooltips.Add("Item Tooltip: " + itemID, ex.Message);
+                    FailToExportTooltips.Add("Item Tooltip: " + itemID, ex.Message + ex.StackTrace);
                 }
             }
             OutputItemTooltipIDs.Clear();
@@ -1545,23 +1545,24 @@ namespace WzComparerR2.Comparer
                         {
                             itemRenderNewOld[i].Item = item;
                             isDamageSkin = (item.DamageSkinID != null);
+                            isFamiliar = (item.FamiliarID != null);
+
+                            if (isDamageSkin)
+                            {
+                                DamageSkin damageSkin = DamageSkin.CreateFromNode(PluginManager.FindWz($@"Etc\DamageSkin.img\{item.DamageSkinID}", WzFileNewOld[i]), PluginManager.FindWz);
+                                damageSkinRenderNewOld[i].DamageSkin = damageSkin;
+                                categoryPath = "DamageSkin_ダメスキ";
+
+                                if (!Directory.Exists(Path.Combine(itemTooltipPath, categoryPath, "DamageSkinSample")))
+                                {
+                                    Directory.CreateDirectory(Path.Combine(itemTooltipPath, categoryPath, "DamageSkinSample"));
+                                }
+                            }
                         }
                         else
                         {
                             isItemNull[i] = true;
                             nullItemIdx = i + 1;
-                        }
-
-                        if (isDamageSkin)
-                        {
-                            DamageSkin damageSkin = DamageSkin.CreateFromNode(PluginManager.FindWz($@"Etc\DamageSkin.img\{item.DamageSkinID}", WzFileNewOld[i]), PluginManager.FindWz);
-                            damageSkinRenderNewOld[i].DamageSkin = damageSkin;
-                            categoryPath = "DamageSkin_ダメスキ";
-
-                            if (!Directory.Exists(Path.Combine(itemTooltipPath, categoryPath, "DamageSkinSample")))
-                            {
-                                Directory.CreateDirectory(Path.Combine(itemTooltipPath, categoryPath, "DamageSkinSample"));
-                            }
                         }
 
                         if (isFamiliar)
@@ -1702,7 +1703,7 @@ namespace WzComparerR2.Comparer
                 }
                 catch (Exception ex)
                 {
-                    FailToExportTooltips.Add("Item Tooltip 3: " + itemID, ex.Message);
+                    FailToExportTooltips.Add("Item Tooltip 3: " + itemID, ex.Message + ex.StackTrace);
                 }
             }
             OutputItemTooltipIDs.Clear();
