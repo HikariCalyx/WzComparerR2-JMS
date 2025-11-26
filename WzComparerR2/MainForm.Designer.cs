@@ -2987,7 +2987,7 @@ namespace WzComparerR2
             this.chkPostChangesToDiscord.Size = new System.Drawing.Size(185, 25);
             this.chkPostChangesToDiscord.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
             this.chkPostChangesToDiscord.TabIndex = 26;
-            this.chkPostChangesToDiscord.Text = "Discordに変更を公開";
+            this.chkPostChangesToDiscord.Text = "変更をDiscordに公開";
             this.chkPostChangesToDiscord.Checked = true;
             // 
             // chkOutputRemovedImg
