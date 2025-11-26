@@ -231,6 +231,8 @@ namespace WzComparerR2
             UpdateWzLoadingSettings();
             //Translator Configuration Load
             UpdateTranslateSettings();
+            //Discord Config
+            UpdateDiscordConfig();
 
             //杂项配置
             labelItemAutoSaveFolder.Text = ImageHandlerConfig.Default.AutoSavePictureFolder;
@@ -393,6 +395,13 @@ namespace WzComparerR2
             Translator.IsExtraParamEnabled = config.OpenAIExtraOption;
             Translator.ExchangeTable = null;
             Translator.InitializeCache();
+        }
+
+        void UpdateDiscordConfig()
+        {
+            var config = WcR2Config.Default;
+            DiscordService.BotToken = config.DiscordBotToken;
+            DiscordService.ChannelIDList = config.DiscordChannelID;
         }
 
         async Task<bool> AutomaticCheckUpdate()
@@ -4732,6 +4741,7 @@ namespace WzComparerR2
                     comparer.ShowLinkedTamingMob = chkShowLinkedTamingMob.Checked;
                     comparer.SkipKMSContent = chkSkipKMSContent.Checked;
                     comparer.SkipGodChangseopDuplicatedNodes = chkSkipGodChangseopDuplicatedNodes.Checked;
+                    comparer.PostChangesToDiscord = chkPostChangesToDiscord.Checked;
                     comparer.Enable22AniStyle = GearGraphics.is22aniStyle;
                     comparer.EnableAssembleTooltip = CharaSimConfig.Default.Item.UseAssembleUI;
                     comparer.ShowDamageSkin = CharaSimConfig.Default.DamageSkin.ShowDamageSkin;
@@ -4782,6 +4792,7 @@ namespace WzComparerR2
                                     chkShowLinkedTamingMob.Enabled = false;
                                     chkSkipKMSContent.Enabled = false;
                                     chkSkipGodChangseopDuplicatedNodes.Enabled = false;
+                                    chkPostChangesToDiscord.Enabled = false;
                                     if (chkSkipKMSContent.Checked)
                                     {
                                         switch (MessageBoxEx.Show(this, "KMSコンテンツデータベースをダウンロードしますか?\r\n\r\n「No」を選択した場合は、KMSスキルのみをスキップします。", "WZ比較", MessageBoxButtons.YesNo))
@@ -4850,6 +4861,7 @@ namespace WzComparerR2
                         chkShowLinkedTamingMob.Enabled = true;
                         chkSkipKMSContent.Enabled = true;
                         chkSkipGodChangseopDuplicatedNodes.Enabled = true;
+                        chkPostChangesToDiscord.Enabled = true;
                         if (comparer.FailToExportNodes.Count > 0 || comparer.FailToExportTooltips.Count > 0)
                         {
                             string failData = Newtonsoft.Json.JsonConvert.SerializeObject(comparer.FailToExportNodes, Newtonsoft.Json.Formatting.Indented) + "\r\n" + Newtonsoft.Json.JsonConvert.SerializeObject(comparer.FailToExportTooltips, Newtonsoft.Json.Formatting.Indented);
@@ -5351,6 +5363,7 @@ namespace WzComparerR2
                 ConfigManager.Save();
                 UpdateWzLoadingSettings();
                 UpdateTranslateSettings();
+                UpdateDiscordConfig();
             }
         }
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)

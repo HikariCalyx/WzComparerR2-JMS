@@ -1,18 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
-using System.IO;
-using System.Net;
 using System.Drawing;
+using System.Drawing.Imaging;
+using System.IO;
 using System.Linq;
+using System.Net;
 using System.Security.Cryptography;
-using WzComparerR2.WzLib;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Windows.Forms.VisualStyles;
+using WzComparerR2.CharaSim;
+using WzComparerR2.CharaSimControl;
 using WzComparerR2.Common;
 using WzComparerR2.PluginBase;
-using WzComparerR2.CharaSimControl;
-using WzComparerR2.CharaSim;
-using System.Text.RegularExpressions;
-using System.Drawing.Imaging;
+using WzComparerR2.WzLib;
 
 namespace WzComparerR2.Comparer
 {
@@ -52,6 +55,7 @@ namespace WzComparerR2.Comparer
         public Dictionary<string, string> FailToExportNodes { get; private set; } = new Dictionary<string, string>();
         public Dictionary<string, string> FailToExportTooltips { get; private set; } = new Dictionary<string, string>();
         private Dictionary<string, HashSet<int>> ChangedActions { get; set; } = new Dictionary<string, HashSet<int>>();
+        private DiscordService DiscordSvc = new DiscordService();
         public WzFileComparer Comparer { get; protected set; }
         private string stateInfo;
         private string stateDetail;
@@ -84,6 +88,7 @@ namespace WzComparerR2.Comparer
         public long DamageSkinNumber { get; set; }
         public bool AllowFamiliarOutOfBounds { get; set; }
         public bool UseCTFamiliarUI { get; set; }
+        public bool PostChangesToDiscord { get; set; }
         public Dictionary<string, bool> selectedNodes { get; set; }
 
         public string StateInfo
@@ -130,6 +135,8 @@ namespace WzComparerR2.Comparer
 
         public void EasyCompareWzFiles(Wz_File fileNew, Wz_File fileOld, string outputDir, StreamWriter index = null)
         {
+            ReportVersionToDiscord(string.Format("{0} -> {1}", fileOld.Header.WzVersion, fileNew.Header.WzVersion));
+
             StateInfo = "比較中...";
 
             if ((fileNew.Type == Wz_Type.Base || fileOld.Type == Wz_Type.Base) && index == null) //至少有一个base 拆分对比
@@ -1085,6 +1092,7 @@ namespace WzComparerR2.Comparer
                     if (!File.Exists(imageName))
                     {
                         resultImage.Save(imageName, System.Drawing.Imaging.ImageFormat.Png);
+                        SendImage(imageName, string.Format("新しいスキルの変更が見つかりました。\r\n職業: `{0}`\r\n変更タイプ: {1}\r\nスキル名: `{2}`\r\nID: `{3}`", categoryPath, skillType, skillName, skillID));
                     }
                     resultImage.Dispose();
                     g.Dispose();
@@ -1329,7 +1337,7 @@ namespace WzComparerR2.Comparer
                                 for (int i = 0; i < 2; i++)
                                 {
                                     string sampleName = Path.Combine(itemTooltipPath, categoryPath, "DamageSkinSample", itemID + "_" + ItemName + "_mini_NonCritical" + dmgSampleDesc[i] + ".png");
-                                    nonCriticalDmgMiniSampleNewOld[i].Save(sampleName, System.Drawing.Imaging.ImageFormat.Png); 
+                                    nonCriticalDmgMiniSampleNewOld[i].Save(sampleName, System.Drawing.Imaging.ImageFormat.Png);
                                     sampleName = Path.Combine(itemTooltipPath, categoryPath, "DamageSkinSample", itemID + "_" + ItemName + "_big_nonCritical" + dmgSampleDesc[i] + ".png");
                                     nonCriticalDmgBigSampleNewOld[i].Save(sampleName, System.Drawing.Imaging.ImageFormat.Png);
                                     sampleName = Path.Combine(itemTooltipPath, categoryPath, "DamageSkinSample", itemID + "_" + ItemName + "_mini_Critical" + dmgSampleDesc[i] + ".png");
@@ -1353,7 +1361,7 @@ namespace WzComparerR2.Comparer
                                 Bitmap nonCriticalBigMiniSample = damageSkinRenderNewOld[1].GetCustomSample(this.DamageSkinNumber, false, false);
                                 Bitmap criticalDmgMiniSample = damageSkinRenderNewOld[1].GetCustomSample(this.DamageSkinNumber, true, true);
                                 Bitmap criticalBigMiniSample = damageSkinRenderNewOld[1].GetCustomSample(this.DamageSkinNumber, false, true);
-                                Bitmap extraDmgSample = damageSkinRenderNewOld[1].GetExtraEffect(); 
+                                Bitmap extraDmgSample = damageSkinRenderNewOld[1].GetExtraEffect();
                                 string sampleName = Path.Combine(itemTooltipPath, categoryPath, "DamageSkinSample", itemID + "_" + ItemName + "_mini_NonCritical_" + itemType + ".png");
                                 nonCriticalDmgMiniSample.Save(sampleName, System.Drawing.Imaging.ImageFormat.Png);
                                 sampleName = Path.Combine(itemTooltipPath, categoryPath, "DamageSkinSample", itemID + "_" + ItemName + "_big_nonCritical_" + itemType + ".png");
@@ -1414,6 +1422,7 @@ namespace WzComparerR2.Comparer
                     if (!File.Exists(imageName))
                     {
                         resultImage.Save(imageName, System.Drawing.Imaging.ImageFormat.Png);
+                        SendImage(imageName, string.Format("新しいアイテムの変更が見つかりました。\r\nアイテムの種類: `{0}`\r\n変更タイプ: {1}\r\nアイテム名: `{2}`\r\nID: `{3}`", categoryPath, itemType, ItemName, itemID));
                     }
                     resultImage.Dispose();
                     g.Dispose();
@@ -1702,6 +1711,7 @@ namespace WzComparerR2.Comparer
                     if (!File.Exists(imageName))
                     {
                         resultImage.Save(imageName, System.Drawing.Imaging.ImageFormat.Png);
+                        SendImage(imageName, string.Format("新しいアイテムの変更が見つかりました。\r\nアイテムの種類: `{0}`\r\n変更タイプ: {1}\r\nアイテム名: `{2}`\r\nID: `{3}`", categoryPath, itemType, ItemName, itemID));
                     }
                     resultImage.Dispose();
                     g.Dispose();
@@ -1984,6 +1994,7 @@ namespace WzComparerR2.Comparer
                     if (!File.Exists(imageName))
                     {
                         resultImage.Save(imageName, System.Drawing.Imaging.ImageFormat.Png);
+                        SendImage(imageName, string.Format("新しい装備の変更が見つかりました。\r\n装備の種類: `{0}`\r\n変更タイプ: {1}\r\n装備名: `{2}`\r\nID: `{3}`", categoryPath, gearType, EqpName, gearID));
                     }
                     resultImage.Dispose();
                     g.Dispose();
@@ -2262,6 +2273,7 @@ namespace WzComparerR2.Comparer
                     if (!File.Exists(imageName))
                     {
                         resultImage.Save(imageName, System.Drawing.Imaging.ImageFormat.Png);
+                        SendImage(imageName, string.Format("新しい装備の変更が見つかりました。\r\n装備の種類: `{0}`\r\n変更タイプ: {1}\r\n装備名: `{2}`\r\nID: `{3}`", categoryPath, gearType, EqpName, gearID));
                     }
                     resultImage.Dispose();
                     g.Dispose();
@@ -2416,6 +2428,7 @@ namespace WzComparerR2.Comparer
                     if (!File.Exists(imageName))
                     {
                         resultImage.Save(imageName, System.Drawing.Imaging.ImageFormat.Png);
+                        SendImage(imageName, string.Format("新しいマップの変更が見つかりました。\r\n変更タイプ: {0}\r\nマップ名: `{1}`\r\nID: `{2}`", mapType, MapName, mapID));
                     }
                     resultImage.Dispose();
                     g.Dispose();
@@ -2564,6 +2577,7 @@ namespace WzComparerR2.Comparer
                     if (!File.Exists(imageName))
                     {
                         resultImage.Save(imageName, System.Drawing.Imaging.ImageFormat.Png);
+                        SendImage(imageName, string.Format("新しいモンスターの変更が見つかりました。\r\n変更タイプ: {0}\r\nモンスター名: `{1}`\r\nID: `{2}`", mobType, MobName, mobID));
                     }
                     resultImage.Dispose();
                     g.Dispose();
@@ -2711,6 +2725,7 @@ namespace WzComparerR2.Comparer
                     if (!File.Exists(imageName))
                     {
                         resultImage.Save(imageName, System.Drawing.Imaging.ImageFormat.Png);
+                        SendImage(imageName, string.Format("新しいNPCの変更が見つかりました。\r\n変更タイプ: {0}\r\nNPC名: `{1}`\r\nID: `{2}`", npcType, NpcName, npcID));
                     }
                     resultImage.Dispose();
                     g.Dispose();
@@ -3022,6 +3037,7 @@ namespace WzComparerR2.Comparer
                     if (!File.Exists(imageName))
                     {
                         resultImage.Save(imageName, System.Drawing.Imaging.ImageFormat.Png);
+                        SendImage(imageName, string.Format("新しいクエストの変更が見つかりました。\r\n変更タイプ: {0}\r\nクエスト名: `{1}`\r\nID: `{2}`", questType, QuestName, questID));
                     }
                     resultImage.Dispose();
                     g.Dispose();
@@ -3263,7 +3279,7 @@ namespace WzComparerR2.Comparer
         {
             if (node == null) return; // 변경은 확인하지 않음 // 추가,삭제만 확인
 
-            Match match = Regex.Match(node.FullPathToFile, @"^Quest\\QuestInfo.img\\(\d+).*\\.*"); 
+            Match match = Regex.Match(node.FullPathToFile, @"^Quest\\QuestInfo.img\\(\d+).*\\.*");
 
             if (!match.Success)
             {
@@ -3431,6 +3447,7 @@ namespace WzComparerR2.Comparer
                     if (!File.Exists(imageName))
                     {
                         resultImage.Save(imageName, System.Drawing.Imaging.ImageFormat.Png);
+                        SendImage(imageName, string.Format("新しい業績の変更が見つかりました。\r\n変更タイプ: {0}\r\n業績名: `{1}`\r\nID: `{2}`", achvType, AchievementName, achvID));
                     }
                     resultImage.Dispose();
                     g.Dispose();
@@ -3480,7 +3497,7 @@ namespace WzComparerR2.Comparer
             }
         }
 
-        private void CompareImg(Wz_Image imgNew, Wz_Image imgOld, string imgName, string anchorName, string menuAnchorName, string outputDir, StreamWriter sw, int newNumber=0, int oldNumber=0)
+        private void CompareImg(Wz_Image imgNew, Wz_Image imgOld, string imgName, string anchorName, string menuAnchorName, string outputDir, StreamWriter sw, int newNumber = 0, int oldNumber = 0)
         {
             StateDetail = "IMGを抽出中";
             if (!imgNew.TryExtract() || !imgOld.TryExtract())
@@ -4258,6 +4275,39 @@ namespace WzComparerR2.Comparer
                     }
                 default:
                     return true;
+            }
+        }
+
+        private void ReportVersionToDiscord(string version)
+        {
+            if (PostChangesToDiscord)
+            {
+                Thread t = new Thread(() =>
+                {
+                    Task.Run(async () =>
+                    {
+                        await DiscordSvc.InitializeAsync();
+                        await DiscordSvc.BroadcastMessageAsync("現在、WZ比較を実施中です。変更内容の報告をお待ちください。\r\nバージョン: " + version);
+                    }).GetAwaiter().GetResult();
+                });
+
+                t.Start();
+            }
+        }
+
+        private void SendImage(string imagePath, string description)
+        {
+            if (PostChangesToDiscord)
+            {
+                Thread t = new Thread(() =>
+                {
+                    Task.Run(async () =>
+                    {
+                        await DiscordSvc.InitializeAsync();
+                        await DiscordSvc.BroadcastImageAsync(imagePath, description);
+                    });
+                });
+                t.Start();
             }
         }
     }
