@@ -2151,7 +2151,7 @@ namespace WzComparerR2.CharaSimControl
                             }
                             else if (!itemGroup.EndsWith(".") && !itemGroup.EndsWith("。"))
                             {
-                                itemGroup += "リュアイテム";
+                                itemGroup += "アイテム";
                             }
                             exclusiveEquip = $"#$rアイテムグループ内の重複装着不可# ({itemGroup})";
                         }
