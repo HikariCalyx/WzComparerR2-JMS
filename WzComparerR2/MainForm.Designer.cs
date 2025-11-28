@@ -253,6 +253,7 @@ namespace WzComparerR2
             this.labelX1 = new DevComponents.DotNetBar.LabelX();
             this.labelX2 = new DevComponents.DotNetBar.LabelX();
             this.chkOutputPng = new DevComponents.DotNetBar.Controls.CheckBoxX();
+            this.chkOutputWzVideo = new DevComponents.DotNetBar.Controls.CheckBoxX();
             this.cmbComparePng = new DevComponents.DotNetBar.Controls.ComboBoxEx();
             this.labelXComp2 = new DevComponents.DotNetBar.LabelX();
             this.labelXComp1 = new DevComponents.DotNetBar.LabelX();
@@ -2717,6 +2718,7 @@ namespace WzComparerR2
             this.superTabControlPanel2.Controls.Add(this.chkOutputAddedImg);
             this.superTabControlPanel2.Controls.Add(this.labelX1);
             this.superTabControlPanel2.Controls.Add(this.chkOutputPng);
+            this.superTabControlPanel2.Controls.Add(this.chkOutputWzVideo);
             this.superTabControlPanel2.Controls.Add(this.cmbComparePng);
             this.superTabControlPanel2.Controls.Add(this.labelXComp2);
             this.superTabControlPanel2.Controls.Add(this.labelXComp1);
@@ -2737,7 +2739,7 @@ namespace WzComparerR2
             // 
             // 
             this.chkResolvePngLink.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
-            this.chkResolvePngLink.Location = new System.Drawing.Point(328, 34);
+            this.chkResolvePngLink.Location = new System.Drawing.Point(333, 34);
             this.chkResolvePngLink.Name = "chkResolvePngLink";
             this.chkResolvePngLink.Size = new System.Drawing.Size(137, 23);
             this.chkResolvePngLink.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
@@ -2753,7 +2755,7 @@ namespace WzComparerR2
             this.chkEnableDarkMode.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
             this.chkEnableDarkMode.Location = new System.Drawing.Point(235, 61);
             this.chkEnableDarkMode.Name = "chkEnableDarkMode";
-            this.chkEnableDarkMode.Size = new System.Drawing.Size(115, 23);
+            this.chkEnableDarkMode.Size = new System.Drawing.Size(95, 23);
             this.chkEnableDarkMode.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
             this.superTooltip1.SetSuperTooltip(this.chkEnableDarkMode, new DevComponents.DotNetBar.SuperTooltipInfo("ダークモード", "", "ダークモードHTMLとの比較を出力します。", null, null, DevComponents.DotNetBar.eTooltipColor.System, true, false, new System.Drawing.Size(180, 70)));
             this.chkEnableDarkMode.TabIndex = 9;
@@ -3030,6 +3032,23 @@ namespace WzComparerR2
             this.labelX1.Size = new System.Drawing.Size(44, 16);
             this.labelX1.TabIndex = 6;
             this.labelX1.Text = "PNG :";
+            // 
+            // chkOutputWzVideo
+            // 
+            // 
+            // 
+            // 
+            this.chkOutputWzVideo.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
+            this.chkOutputWzVideo.Checked = true;
+            this.chkOutputWzVideo.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkOutputWzVideo.CheckValue = "Y";
+            this.chkOutputWzVideo.Location = new System.Drawing.Point(333, 61);
+            this.chkOutputWzVideo.Name = "chkOutputWzVideo";
+            this.chkOutputWzVideo.Size = new System.Drawing.Size(107, 23);
+            this.chkOutputWzVideo.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
+            this.superTooltip1.SetSuperTooltip(this.chkOutputWzVideo, new DevComponents.DotNetBar.SuperTooltipInfo("WZビデオ", "", "WZビデオを標準形式で出力します。", null, null, DevComponents.DotNetBar.eTooltipColor.System, true, false, new System.Drawing.Size(180, 60)));
+            this.chkOutputWzVideo.TabIndex = 6;
+            this.chkOutputWzVideo.Text = "WZビデオ";
             // 
             // chkOutputPng
             // 
@@ -3946,6 +3965,7 @@ namespace WzComparerR2
         private DevComponents.DotNetBar.LabelX labelX1;
         private DevComponents.DotNetBar.LabelX labelX2;
         private DevComponents.DotNetBar.Controls.CheckBoxX chkOutputPng;
+        private DevComponents.DotNetBar.Controls.CheckBoxX chkOutputWzVideo;
         private DevComponents.DotNetBar.Controls.ComboBoxEx cmbComparePng;
         private DevComponents.DotNetBar.Controls.CheckBoxX chkOutputRemovedImg;
         private DevComponents.DotNetBar.Controls.CheckBoxX chkOutputAddedImg;

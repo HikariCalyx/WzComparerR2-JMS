@@ -14,6 +14,7 @@ using System.Windows.Forms.VisualStyles;
 using WzComparerR2.CharaSim;
 using WzComparerR2.CharaSimControl;
 using WzComparerR2.Common;
+using WzComparerR2.Controls;
 using WzComparerR2.PluginBase;
 using WzComparerR2.WzLib;
 
@@ -57,9 +58,11 @@ namespace WzComparerR2.Comparer
         private Dictionary<string, HashSet<int>> ChangedActions { get; set; } = new Dictionary<string, HashSet<int>>();
         private DiscordService DiscordSvc = new DiscordService();
         public WzFileComparer Comparer { get; protected set; }
+        private PictureBoxEx virtualPictureBoxEx = new PictureBoxEx();
         private string stateInfo;
         private string stateDetail;
         public bool OutputPng { get; set; }
+        public bool OutputWzVideo { get; set; }
         public bool OutputAddedImg { get; set; }
         public bool OutputRemovedImg { get; set; }
         public bool EnableDarkMode { get; set; }
@@ -137,6 +140,22 @@ namespace WzComparerR2.Comparer
         public void EasyCompareWzFiles(Wz_File fileNew, Wz_File fileOld, string outputDir, StreamWriter index = null)
         {
             ReportVersionToDiscord(string.Format("{0} -> {1}", fileOld.Header.WzVersion, fileNew.Header.WzVersion));
+
+            if (OutputWzVideo)
+            {
+                this.virtualPictureBoxEx.AutoAdjustPosition = true;
+                this.virtualPictureBoxEx.FrameInterval = 30;
+                this.virtualPictureBoxEx.GlobalScale = 1F;
+                this.virtualPictureBoxEx.IsPlaying = true;
+                this.virtualPictureBoxEx.Location = new System.Drawing.Point(0, 1);
+                this.virtualPictureBoxEx.Name = "virtualPictureBoxEx";
+                this.virtualPictureBoxEx.Padding = new System.Windows.Forms.Padding(0, 14, 0, 0);
+                this.virtualPictureBoxEx.PictureName = null;
+                this.virtualPictureBoxEx.ShowInfo = true;
+                this.virtualPictureBoxEx.ShowPositionGridOnDrag = true;
+                this.virtualPictureBoxEx.Size = new System.Drawing.Size(1, 1);
+                this.virtualPictureBoxEx.Text = "virtualPictureBoxEx";
+            }
 
             StateInfo = "比較中...";
 
@@ -586,6 +605,7 @@ namespace WzComparerR2.Comparer
                 sw.WriteLine("<tr><td>現在の時刻</td><td colspan='3'>{0:yyyy年 M月 d日 HH:mm:ss.fff}</td></tr>", DateTime.Now);
                 sw.WriteLine("<tr><td>オプション</td><td colspan='3'>{0}</td></tr>", string.Join("<br/>", new[] {
                     this.OutputPng ? "- PNGファイルを出力" : null,
+                    this.OutputWzVideo ? "- ビデオを出力" : null,
                     this.OutputAddedImg ? "- 追加ファイル" : null,
                     this.OutputRemovedImg ? "- 削除済みファイル" : null,
                     this.EnableDarkMode ? "- ダークモード" : null,
@@ -1100,7 +1120,7 @@ namespace WzComparerR2.Comparer
                 }
                 catch (Exception ex)
                 {
-                    FailToExportTooltips.Add("Skill Tooltip: " + skillID, ex.Message);
+                    FailToExportTooltips.Add("Skill Tooltip: " + skillID, ex.Message + ex.StackTrace);
                 }
             }
             OutputSkillTooltipIDs.Clear();
@@ -2087,7 +2107,7 @@ namespace WzComparerR2.Comparer
                 }
                 catch (Exception ex)
                 {
-                    FailToExportTooltips.Add("Gear Tooltip: " + gearID, ex.Message);
+                    FailToExportTooltips.Add("Gear Tooltip: " + gearID, ex.Message + ex.StackTrace);
                 }
             }
             OutputGearTooltipIDs.Clear();
@@ -2366,7 +2386,7 @@ namespace WzComparerR2.Comparer
                 }
                 catch (Exception ex)
                 {
-                    FailToExportTooltips.Add("Gear Tooltip 3: " + gearID, ex.Message);
+                    FailToExportTooltips.Add("Gear Tooltip 3: " + gearID, ex.Message + ex.StackTrace);
                 }
             }
             OutputGearTooltipIDs.Clear();
@@ -2521,7 +2541,7 @@ namespace WzComparerR2.Comparer
                 }
                 catch (Exception ex)
                 {
-                    FailToExportTooltips.Add("Map Tooltip: " + mapID, ex.Message);
+                    FailToExportTooltips.Add("Map Tooltip: " + mapID, ex.Message + ex.StackTrace);
                 }
             }
             OutputMapTooltipIDs.Clear();
@@ -2670,7 +2690,7 @@ namespace WzComparerR2.Comparer
                 }
                 catch (Exception ex)
                 {
-                    FailToExportTooltips.Add("Mob Tooltip: " + mobID, ex.Message);
+                    FailToExportTooltips.Add("Mob Tooltip: " + mobID, ex.Message + ex.StackTrace);
                 }
             }
             OutputMobTooltipIDs.Clear();
@@ -2818,7 +2838,7 @@ namespace WzComparerR2.Comparer
                 }
                 catch (Exception ex)
                 {
-                    FailToExportTooltips.Add("NPC Tooltip: " + npcID, ex.Message);
+                    FailToExportTooltips.Add("NPC Tooltip: " + npcID, ex.Message + ex.StackTrace);
                 }
             }
             OutputNpcTooltipIDs.Clear();
@@ -2969,7 +2989,7 @@ namespace WzComparerR2.Comparer
                 }
                 catch (Exception ex)
                 {
-                    FailToExportTooltips.Add("Cash Tooltip: " + itemID, ex.Message);
+                    FailToExportTooltips.Add("Cash Tooltip: " + itemID, ex.Message + ex.StackTrace);
                 }
             }
             OutputCashTooltipIDs.Clear();
@@ -3130,7 +3150,7 @@ namespace WzComparerR2.Comparer
                 }
                 catch (Exception ex)
                 {
-                    FailToExportTooltips.Add("Quest Tooltip: " + questID, ex.Message);
+                    FailToExportTooltips.Add("Quest Tooltip: " + questID, ex.Message + ex.StackTrace);
                 }
             }
             OutputQuestTooltipIDs.Clear();
@@ -3540,7 +3560,7 @@ namespace WzComparerR2.Comparer
                 }
                 catch (Exception ex)
                 {
-                    FailToExportTooltips.Add("Achievement Tooltip: " + achvID, ex.Message);
+                    FailToExportTooltips.Add("Achievement Tooltip: " + achvID, ex.Message + ex.StackTrace);
                 }
             }
             OutputAchvTooltipIDs.Clear();
@@ -3847,11 +3867,11 @@ namespace WzComparerR2.Comparer
                         {
                             if (!FailToExportNodes.ContainsKey(colName + ": " + fullPath.Replace('\\', '/')))
                             {
-                                FailToExportNodes.Add(colName + ": " + fullPath.Replace('\\', '/'), ex.Message);
+                                FailToExportNodes.Add(colName + ": " + fullPath.Replace('\\', '/'), ex.Message + ex.StackTrace);
                             }
                             else
                             {
-                                FailToExportNodes[colName + ": " + fullPath.Replace('\\', '/')] = ex.Message;
+                                FailToExportNodes[colName + ": " + fullPath.Replace('\\', '/')] = ex.Message + ex.StackTrace;
                             }
                             return string.Format("解析できないPNGデータ {0} bytes", png.DataLength);
                         }
@@ -3894,11 +3914,11 @@ namespace WzComparerR2.Comparer
                         {
                             if (!FailToExportNodes.ContainsKey(colName + ": " + fullPath.Replace('\\', '/')))
                             {
-                                FailToExportNodes.Add(colName + ": " + fullPath.Replace('\\', '/'), ex.Message);
+                                FailToExportNodes.Add(colName + ": " + fullPath.Replace('\\', '/'), ex.Message + ex.StackTrace);
                             }
                             else
                             {
-                                FailToExportNodes[colName + ": " + fullPath.Replace('\\', '/')] = ex.Message;
+                                FailToExportNodes[colName + ": " + fullPath.Replace('\\', '/')] = ex.Message + ex.StackTrace;
                             }
                             return string.Format("解析できない音声データ {0} bytes", sound.DataLength);
                         }
@@ -3916,14 +3936,94 @@ namespace WzComparerR2.Comparer
                     return string.Format("rawdata {0} bytes", rawData.Length);
 
                 case Wz_Video video:
-                    return string.Format("video {0} bytes", video.Length);
+                    if (OutputWzVideo)
+                    {
+                        char[] invalidChars = Path.GetInvalidFileNameChars();
+                        string colName = col == 0 ? "new" : (col == 1 ? "old" : col.ToString());
+                        string fileName = fullPath.Replace('\\', '.');
+                        string suffix = "_" + colName;
+                        string canvas = "_Canvas";
+
+                        for (int i = 0; i < invalidChars.Length; i++)
+                        {
+                            fileName = fileName.Replace(invalidChars[i], '_');
+                        }
+                        if (outputDir.Length + fileName.Length > 240)
+                        {
+                            fileName = fileName.Substring(0, 40) + "_" + ToHexString(MD5Hash(fileName)).Substring(0, 8);
+                        }
+                        fileName = fileName + suffix;
+                        string outputDirName = new DirectoryInfo(outputDir).Name;
+                        bool isCanvas = fileName.Contains(canvas);
+                        if (isCanvas)
+                        {
+                            if (this.Comparer.ResolvePngLink)
+                            {
+                                fileName = fileName.Replace(canvas + ".", string.Empty);
+                            }
+                            else
+                            {
+                                outputDir = Path.Combine(outputDir, canvas);
+                                if (!Directory.Exists(outputDir))
+                                {
+                                    Directory.CreateDirectory(outputDir);
+                                }
+                            }
+                        }
+                        // Skip unparseable content
+                        try
+                        {
+                            var origin = value.FindNodeByPath("origin").GetValueEx<Wz_Vector>(null);
+                            var videoFrameData = this.virtualPictureBoxEx.LoadVideo(video, origin);
+
+                            if (videoFrameData != null)
+                            {
+                                this.virtualPictureBoxEx.ShowAnimation(videoFrameData);
+                                var aniItem = this.virtualPictureBoxEx.Items;
+                                var aniItemTime = this.virtualPictureBoxEx.ItemTimes;
+                                var frameData = (aniItem?.FirstOrDefault(item => item is WzComparerR2.Animation.FrameAnimator) as WzComparerR2.Animation.FrameAnimator)?.Data;
+
+                                var config = WzComparerR2.Config.ImageHandlerConfig.Default;
+                                config.SavePngFramesEnabled = false;
+                                using var encoder = AnimateEncoderFactory.CreateEncoder(config);
+                                var cap = encoder.Compatibility;
+
+                                fileName = fileName + cap.DefaultExtension;
+
+                                var clonedAniItem = aniItem.Select(aniItem => (AnimationItem)aniItem.Clone());
+                                this.virtualPictureBoxEx.SaveAsGif(clonedAniItem, aniItemTime, Path.Combine(outputDir, fileName), config, encoder, false);
+                            }
+                            else
+                            {
+                                throw new Exception("このビデオは解析できません。");
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            if (!FailToExportNodes.ContainsKey(colName + ": " + fullPath.Replace('\\', '/')))
+                            {
+                                FailToExportNodes.Add(colName + ": " + fullPath.Replace('\\', '/'), ex.Message + ex.StackTrace);
+                            }
+                            else
+                            {
+                                FailToExportNodes[colName + ": " + fullPath.Replace('\\', '/')] = ex.Message + ex.StackTrace;
+                            }
+                            return string.Format("解析できないビデオ {0} bytes", video.Length);
+                        }
+
+                        return string.Format("<video src=\"{0}/{1}\" />", (isCanvas && !this.Comparer.ResolvePngLink) ? Path.Combine(outputDirName, canvas) : outputDirName, WebUtility.UrlEncode(fileName));
+                    }
+                    else
+                    {
+                        return string.Format("video {0} bytes", video.Length);
+                    }
 
                 case Wz_Image _:
-                    return "{ img }";
+                            return "{ img }";
 
-                default:
-                    return string.Format("<span title=\"{0}\">{1}</span>", value.GetType().Name, WebUtility.HtmlEncode(Convert.ToString(value.Value)));
-            }
+                        default:
+                            return string.Format("<span title=\"{0}\">{1}</span>", value.GetType().Name, WebUtility.HtmlEncode(Convert.ToString(value.Value)));
+                        }
         }
 
         public virtual void CreateStyleSheet(string outputDir)

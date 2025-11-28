@@ -4725,6 +4725,7 @@ namespace WzComparerR2
                     comparer.Comparer.PngComparison = (WzPngComparison)cmbComparePng.SelectedItem;
                     comparer.Comparer.ResolvePngLink = chkResolvePngLink.Checked;
                     comparer.OutputPng = chkOutputPng.Checked;
+                    comparer.OutputWzVideo = chkOutputWzVideo.Checked;
                     comparer.OutputAddedImg = chkOutputAddedImg.Checked;
                     comparer.OutputRemovedImg = chkOutputRemovedImg.Checked;
                     comparer.EnableDarkMode = chkEnableDarkMode.Checked;
@@ -4776,6 +4777,7 @@ namespace WzComparerR2
                                     clbRootNode.Enabled = false;
                                     cmbComparePng.Enabled = false;
                                     chkOutputPng.Enabled = false;
+                                    chkOutputWzVideo.Enabled = false;
                                     chkResolvePngLink.Enabled = false;
                                     chkOutputAddedImg.Enabled = false;
                                     chkOutputRemovedImg.Enabled = false;
@@ -4845,6 +4847,7 @@ namespace WzComparerR2
                         clbRootNode.Enabled = true;
                         cmbComparePng.Enabled = true;
                         chkOutputPng.Enabled = true;
+                        chkOutputWzVideo.Enabled = true;
                         chkResolvePngLink.Enabled = true;
                         chkOutputAddedImg.Enabled = true;
                         chkOutputRemovedImg.Enabled = true;
