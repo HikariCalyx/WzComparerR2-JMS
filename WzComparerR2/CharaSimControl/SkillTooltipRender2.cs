@@ -600,7 +600,7 @@ namespace WzComparerR2.CharaSimControl
             }
             else if (Skill.Ascent)
             {
-                bitmap = new Bitmap(430, 310);
+                bitmap = new Bitmap(430, 384);
             }
             Graphics g = Graphics.FromImage(bitmap);
             int picH = 13;
@@ -617,9 +617,9 @@ namespace WzComparerR2.CharaSimControl
             }
             else if (Skill.Ascent && !Skill.Invisible)
             {
-                string ascentSkillDesc = "アセントスキルはボス戦闘で再使用待機時間なしに決まった回数だけ使用可能で、最大HPが最も高いボスモンスターがいる場合にのみ使用可能です。\r\n直接攻撃時に発動される追加攻撃や効果が発動しません。\r\nアセントスキルは最大HPが高いボスモンスターを優先攻撃し、攻撃反射、攻撃無視状態の敵にもダメージを与えることができます。\r\n\r\n以下の効果により変動する能力値は、アセントスキルのダメージに影響を与えません。\r\n- 装備：帽子\r\n- 装備：指輪\r\n- 条件付きで発動するパッシブスキル効果\r\n- アクティブスキル使用効果\r\n- モンスターのパターン、デバフ\r\n- 持続時間が30分未満の消費、ポイントアイテム";
-                string ascentSkillH = "ボス戦で3回使用可能\r\nその他フィールドで使用時再使用待機時間240秒";
-                GearGraphics.DrawNewTooltipBack(g, 0, 0, bitmap.Width, 310);
+                string ascentSkillDesc = "アセントスキルはボス戦闘でクールタイムなしで決められた回数だけ使用でき、最大HPが最も高いボスモンスターが出現している時にのみ使用できます。\r\n直接攻撃が的中すると発動する追加攻撃及び効果が発動しません。\r\nアセントスキルは最大HPが最も高いボスモンスターを優先的に攻撃し、攻撃反射、攻撃無視状態の敵にもダメージを与えます。\r\nアセントスキルの10レベル、20レベル、30レベルのモンスター防御率無視、ボスモンスター攻撃時のダメージ増加効果は基本効果に足し算で適用されます。\r\n\r\n次の効果によって変動する能力値はアセントスキルのダメージに影響を与えません。\r\n- 装備：帽子\r\n- 装備：指輪\r\n- 条件付きで発動するパッシブスキル効果\r\n- アクティブスキル使用効果\r\n- モンスターの属性\r\n- モンスターのパターン、デバフ\r\n- 持続時間が30分未満の消費、ポイントアイテム";
+                string ascentSkillH = "ボス戦闘で3回使用可能\r\nその他のフィールドで使用するとクールタイム240秒";
+                GearGraphics.DrawNewTooltipBack(g, 0, 0, bitmap.Width, 384);
                 GearGraphics.DrawPlainText(g, ascentSkillDesc, GearGraphics.ItemDetailFont, Color.FromArgb(175, 173, 255), region.LevelDescLeft, region.TextRight, ref picH, 16);
                 picH += 16;
                 DrawV6SkillDotline(g, region.SplitterX1, region.SplitterX2, picH);
