@@ -770,8 +770,8 @@ namespace WzComparerR2.CharaSim
                 case GearType.gram: return "グラム";
                 case GearType.keir: return "ケイア";
 
-                case GearType.longSword: return "ロングソード";
-                case GearType.yeouiGem: return "ヨイ宝珠";
+                case GearType.longSword: return "長剣";
+                case GearType.yeouiGem: return "如意宝珠";
 
                 default: return null;
             }
