@@ -106,6 +106,9 @@ namespace WzComparerR2.CharaSimControl
         public string AutoDesc { get; set; }
         public string Hdesc { get; set; }
         public string DescLeftAlign { get; set; }
+        public string QuestAvailable { get; set; }
+        public string QuestProgress { get; set; }
+        public string QuestComplete { get; set; }
         public int NodeID { get; set; }
         public int PreferredStringCopyMethod { get; set; }
         public bool CopyParsedSkillString { get; set; }
@@ -450,6 +453,9 @@ namespace WzComparerR2.CharaSimControl
                 AutoDesc = ReplaceQuestString(AutoDesc, this.item as Quest);
                 Hdesc = ReplaceQuestString(Hdesc, this.item as Quest);
                 DescLeftAlign = ReplaceQuestString(DescLeftAlign, this.item as Quest);
+                QuestAvailable = ReplaceQuestString(QuestAvailable, this.item as Quest);
+                QuestProgress = ReplaceQuestString(QuestProgress, this.item as Quest);
+                QuestComplete = ReplaceQuestString(QuestComplete, this.item as Quest);
             }
             else
             {
@@ -530,14 +536,14 @@ namespace WzComparerR2.CharaSimControl
                         sb.AppendLine($"|req=");
                         sb.AppendLine($"|cat=");
                         sb.AppendLine($"|type=");
-                        sb.AppendLine($"|avail={this.Desc}");
-                        sb.AppendLine($"|prog={this.Pdesc}");
-                        sb.AppendLine($"|comp={this.AutoDesc}");
+                        sb.AppendLine(string.IsNullOrEmpty(this.QuestAvailable) ? $"|avail={this.Desc}" : $"|avail={this.QuestAvailable}");
+                        sb.AppendLine($"|prog={this.QuestProgress}");
+                        sb.AppendLine($"|comp={this.QuestComplete}");
                         sb.AppendLine($"|pro={this.Hdesc}");
-                        sb.AppendLine($"|reward=");
+                        sb.AppendLine($"|reward={this.Pdesc}");
                         sb.AppendLine($"|select=");
                         sb.AppendLine($"|prob=");
-                        sb.AppendLine($"|nextquest=");
+                        sb.AppendLine($"|nextquest={this.AutoDesc}");
                         sb.AppendLine($"}}}}");
                     }
                     else
