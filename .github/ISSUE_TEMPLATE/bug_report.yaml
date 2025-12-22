@@ -82,7 +82,7 @@ body:
         - "JMS"
         - "NTMS"
         - "両方のバージョン / Both versions"
-      default: 1
+      default: 0
     validations:
       required: true
 
