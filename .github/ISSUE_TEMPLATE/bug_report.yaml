@@ -35,7 +35,7 @@ body:
     attributes:
       label: 簡潔な問題の説明 / Concise Problem Description
       description: 発生している問題を簡単に説明してください。 / Briefly describe the issue you are experiencing.
-      placeholder: 如何重現此錯誤。
+      placeholder: 
     validations:
       required: true
   - type: dropdown
