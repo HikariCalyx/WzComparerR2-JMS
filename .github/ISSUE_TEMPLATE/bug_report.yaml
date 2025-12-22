@@ -1,0 +1,111 @@
+name: 不具合報告 / 故障報告 / Bug Report
+description: 使用中に発生したバグを報告する / 回報使用過程中遇到的BUG
+title: "[BUG] - 問題の簡単な説明"
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **不具合報告する前に、以下の点をご確認ください。**
+        *  このバグは[Kagamiaのアップストリームバージョン](https://github.com/Kagamia/WzComparerR2/releases)では再現できません。
+        *  公式ゲームクライアントをご使用ください。非公式ゲームクライアントのロードによるバグ報告は受け付けておりません。
+        *  **再現できない問題は解決されます。**
+        **但是，在您提交錯誤報告之前，請確保：**
+        *  此錯誤無法在 [Kagamia 的上游版本](https://github.com/Kagamia/WzComparerR2/releases)中重現。
+        *  您使用的是官方遊戲用戶端。我們不接受因載入非官方遊戲客戶端而提交的錯誤回饋。
+        *  **無法復現的故障報告將被關閉。**
+        **バグを報告する前に、以下の点をご確認ください。**
+        *  This bug cannot be reproduced in [Kagamia's upstream version](https://github.com/Kagamia/WzComparerR2/releases).
+        *  You're using official game client. We do not accept bug feedback from loading unofficial game clients.
+        *  **Issues that are non-reproducible will be closed.**
+
+  - type: checkboxes
+    id: canary_check
+    attributes:
+      label: Verification
+      description: 続行する前に、次の2点を確認してください。
+      options:
+          - label: "[Kagamiaのアップストリームバージョン](https://github.com/Kagamia/WzComparerR2/releases)で問題が再現するかどうかを確認しました。/ 我已經檢查過該問題是否無法在 [Kagamia 的上游版本](https://github.com/Kagamia/WzComparerR2/releases) 中重現。 / I have checked if the issue cannot be reproduced in [Kagamia's upstream version](https://github.com/Kagamia/WzComparerR2/releases)."
+          - label: "既存の[不具合報告](https://github.com/HikariCalyx/WzComparerR2-JMS/issues)を確認しました。 / 我已查看了現有的[問題](https://github.com/HikariCalyx/WzComparerR2-JMS/issues)。 / I have checked the existing [Issues](https://github.com/HikariCalyx/WzComparerR2-JMS/issues)."
+
+  - type: textarea
+    id: problem_description
+    attributes:
+      label: 簡潔な問題の説明 / Concise Problem Description
+      description: 発生している問題を簡単に説明してください。 / Briefly describe the issue you are experiencing.
+      placeholder: 如何重現此錯誤。
+    validations:
+      required: true
+  - type: dropdown
+    id: client_region
+    attributes:
+      label: クライアント地域 / Game Client Region
+      description: どのゲームクライアントの地域を読み込もうとしていますか? / Which game client region are you trying to load?
+      options:
+        - 韓国 (KMS, KMST)
+        - 日本 (JMS)
+        - 中国 (CMS, CMST)
+        - 台湾 (TMS)
+        - グローバル (GMS)
+        - 東南アジア (MSEA)
+        - メイプルストーリーN (MSN)
+      default: 1
+    validations:
+      required: true
+  - type: checkboxes
+    id: test_server
+    attributes:
+      label: これはテストクライアントですか? / Is this a Tespia Client?
+      description: これはテストクライアントですか? / Is this a Tespia Client?
+      options:
+        - label: "はい / Yes"
+    validations:
+      required: true
+
+  - type: textarea
+    id: client_version
+    attributes:
+      label: ゲームバージョン / Client Version
+      description: 問題が発生した対象クライアントのバージョンを指定します。 / Specify the target client version you encountered the issue.
+      placeholder: 例： KMST 1.2.1196
+    validations:
+       required: true
+
+  - type: dropdown
+    id: wcr2_fork
+    attributes:
+      label: 
+      description: 問題が発生したのは WzComparerR2 のどのブランチですか? / Which branch of WzComparerR2 you have encountered the issue?
+      options:
+        - "JMS"
+        - "NTMS"
+        - "両方のバージョン / Both versions"
+      default: 1
+    validations:
+      required: true
+
+
+  - type: textarea
+    id: steps_to_reproduce
+    attributes:
+      label: エラーを再現する手順 / Steps to reproduce the error
+      description: "エラーを再現する方法について詳細な手順ガイドを提供してください。 / Please provide a detailed step-by-step guide on how to reproduce the error."
+    validations:
+      required: true
+
+  - type: textarea
+    id: fault_node_path
+    attributes:
+      label: ノードパス（オプション） / Node Path (Optional)
+      description: ノードをプレビューしようとしているときにこの問題が発生する場合は、ノードのパスを提供してください。 /  If this issue happens when you're trying to preview a node, provide us the node path.
+      placeholder: 例： NPC/3005100.img
+    validations:
+      required: false
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: 関連する未処理の例外ログを添付する（オプション） / Attach Relevant Unhandled Exception Log (Optional)
+      description: 未処理の例外エラー ウィンドウが表示された場合は、ここでログを提供してください。 / If an unhandled exception error window appears, please provide the log here.
+    validations:
+        required: false
