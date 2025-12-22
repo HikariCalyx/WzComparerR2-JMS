@@ -22,7 +22,7 @@ body:
   - type: checkboxes
     id: canary_check
     attributes:
-      label: Verification
+      label: 検証 / Verification
       description: 続行する前に、次の2点を確認してください。
       options:
           - label: "[Kagamiaのアップストリームバージョン](https://github.com/Kagamia/WzComparerR2/releases)で問題が再現するかどうかを確認しました。/ 我已經檢查過該問題是否無法在 [Kagamia 的上游版本](https://github.com/Kagamia/WzComparerR2/releases) 中重現。 / I have checked if the issue cannot be reproduced in [Kagamia's upstream version](https://github.com/Kagamia/WzComparerR2/releases)."
@@ -74,7 +74,7 @@ body:
   - type: dropdown
     id: wcr2_fork
     attributes:
-      label: 
+      label: ブランチ / Branch
       description: 問題が発生したのは WzComparerR2 のどのブランチですか? / Which branch of WzComparerR2 you have encountered the issue?
       options:
         - "JMS"
