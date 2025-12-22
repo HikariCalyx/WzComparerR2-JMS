@@ -10,11 +10,13 @@ body:
         *  このバグは[Kagamiaのアップストリームバージョン](https://github.com/Kagamia/WzComparerR2/releases)では再現できません。
         *  公式ゲームクライアントをご使用ください。非公式ゲームクライアントのロードによるバグ報告は受け付けておりません。
         *  **再現できない問題は解決されます。**
-        **但是，在您提交錯誤報告之前，請確保：**
+        
+        **在您提交錯誤報告之前，請確保：**
         *  此錯誤無法在 [Kagamia 的上游版本](https://github.com/Kagamia/WzComparerR2/releases)中重現。
         *  您使用的是官方遊戲用戶端。我們不接受因載入非官方遊戲客戶端而提交的錯誤回饋。
         *  **無法復現的故障報告將被關閉。**
-        **バグを報告する前に、以下の点をご確認ください。**
+        
+        **Before you report a bug, make sure:**
         *  This bug cannot be reproduced in [Kagamia's upstream version](https://github.com/Kagamia/WzComparerR2/releases).
         *  You're using official game client. We do not accept bug feedback from loading unofficial game clients.
         *  **Issues that are non-reproducible will be closed.**
