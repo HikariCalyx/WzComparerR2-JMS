@@ -1450,6 +1450,11 @@ namespace WzComparerR2.CharaSimControl
                 if (texts.Count > 0 && Gear.Cash)
                 {
                     AddLines(0, 7, ref picH, condition: secondLineNeeded);
+
+                    if (Gear.Props.TryGetValue(GearPropType.colorvar, out value) && value > 0)
+                    {
+                        GearGraphics.DrawString(g, $"{ItemStringHelper.GetGearPropString(GearPropType.colorvar, value)}", GearGraphics.EquipMDMoris9Font, equip22ColorTable, 15, 305, ref picH, 16, strictlyAlignLeft: 1);
+                    }
                     secondLineNeeded = false;
                     hasThirdContents = true;
                     hasDescPart = true;
@@ -2104,7 +2109,7 @@ namespace WzComparerR2.CharaSimControl
                 tags.Add(ItemStringHelper.GetGearPropString3(GearPropType.accountShareTag, value)[0]);
             }
 
-            if (Gear.Props.TryGetValue(GearPropType.colorvar, out value) && value > 0)
+            if (Gear.Props.TryGetValue(GearPropType.colorvar, out value) && value > 0 && !Gear.Cash)
             {
                 tags.Add(ItemStringHelper.GetGearPropString(GearPropType.colorvar, value));
             }
