@@ -67,12 +67,15 @@ namespace WzComparerR2.CharaSimControl
                 }
                 else if (MobInfo.ChangeableMob)
                 {
-                    sbExt.Append($"[クエストモンスターセット: スペシャル] ");
+                    sbExt.Append($"[クエストモンスターセット: エリートモンスター] ");
                 }
                 else if (MobInfo.Filters != 0)
                 {
                     switch (MobInfo.Filters)
                     {
+                        case 1: sbExt.Append($"[クエストモンスターセット: スターフォース地域モンスター] "); break;
+                        case 2: sbExt.Append($"[クエストモンスターセット: アーケインリバー地域モンスター] "); break;
+                        case 5: sbExt.Append($"[クエストモンスターセット: スターフォース地域エリートモンスター] "); break;
                         case -10: sbExt.Append($"[クエストモンスターセット: アーケイン/オーセンティック地域モンスター] "); break;
                         default: sbExt.Append($"[クエストモンスターセット: スペシャル] "); break;
                     }
@@ -393,6 +396,7 @@ namespace WzComparerR2.CharaSimControl
             Rectangle imgRect = Rectangle.Empty;
             Rectangle textRect = Measure(propBlocks);
             Bitmap mobImg = MobInfo.Default.Bitmap;
+            Bitmap mobIcon = GetMobIcon(MobInfo.ID);
             if (MobInfo.IsAvatarLook)
             {
                 if (this.avatar == null)
@@ -435,7 +439,6 @@ namespace WzComparerR2.CharaSimControl
                 }
             }
 
-
             //布局 
             //水平排列
             int width = 0;
@@ -457,6 +460,15 @@ namespace WzComparerR2.CharaSimControl
                 imgRect.Y += titleRect.Bottom + 4;
                 textRect.Y += titleRect.Bottom + 4;
             }
+            if (mobIcon != null)
+            {
+                if (textRect.Y < titleRect.Y - (mobIcon.Height - titleRect.Height) / 2 + mobIcon.Height)
+                {
+                    int heightDelta = titleRect.Y - (mobIcon.Height - titleRect.Height) / 2 + mobIcon.Height - textRect.Y;
+                    height += heightDelta + 4;
+                    textRect.Y += heightDelta + 4;
+                }
+            }
 
             //绘制
             Bitmap baseBmp = new Bitmap(width + 20, height + 20);
@@ -472,6 +484,10 @@ namespace WzComparerR2.CharaSimControl
                 {
                     DrawText(g, item, titleRect.Location);
                 }
+                if (mobIcon != null)
+                {
+                    g.DrawImage(mobIcon, titleRect.Location.X - mobIcon.Width - 4, titleRect.Y - (mobIcon.Height - titleRect.Height) / 2, new Rectangle(0, 0, mobIcon.Width, mobIcon.Height), GraphicsUnit.Pixel);
+                }
                 //绘制图像
                 if (mobImg != null && !imgRect.IsEmpty)
                 {
@@ -482,6 +498,7 @@ namespace WzComparerR2.CharaSimControl
                 {
                     DrawText(g, item, textRect.Location);
                 }
+                //Attempt Draw Mob Icon
             }
             if (subMobBmpTooltip != null)
             {
@@ -515,6 +532,12 @@ namespace WzComparerR2.CharaSimControl
             {
                 return sr.Name;
             }
+        }
+
+        private Bitmap GetMobIcon(int mobID)
+        {
+            BitmapOrigin mobIconOrigin = BitmapOrigin.CreateFromNode(PluginManager.FindWz($@"UI\UIWindow2.img\MobGage\Mob\{mobID.ToString()}", this.SourceWzFile), PluginManager.FindWz);
+            return mobIconOrigin.Bitmap;
         }
 
         private string GetElemAttrString(MobElemAttr elemAttr)
