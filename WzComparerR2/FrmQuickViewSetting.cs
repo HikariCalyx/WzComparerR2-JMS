@@ -351,6 +351,13 @@ namespace WzComparerR2
         }
 
         [Link]
+        public bool Mob_EnableMonsterBook
+        {
+            get { return chkEnableMonsterBook.Checked; }
+            set { chkEnableMonsterBook.Checked = value; }
+        }
+
+        [Link]
         public bool Npc_ShowAllIllustAtOnce
         {
             get { return chkShowAllIllustAtOnce.Checked; }
@@ -494,6 +501,24 @@ namespace WzComparerR2
             this.comboBoxExQuestState.Enabled = !this.chkQAS.Checked;
             this.labelXQS.Enabled = !this.chkQAS.Checked;
             this.labelXQSHint.Enabled = !this.chkQAS.Checked;
+        }
+
+        private void chkEnableWorldArchive_CheckedChanged(object sender, EventArgs e)
+        {
+            this.chkEnableMonsterBook.Enabled = chkEnableWorldArchive.Checked;
+        }
+
+        private void chkEnableMonsterBook_Click(object sender, EventArgs e)
+        {
+            if (!this.chkEnableMonsterBook.Checked)
+            {
+                DialogResult dResult = DevComponents.DotNetBar.MessageBoxEx.Show(this, "モンスターブックの情報は古くなっており、現在のバージョンの状態を反映していません。\r\nそれでも有効にしますか?", "警告", MessageBoxButtons.YesNo);
+                switch (dResult)
+                {
+                    case DialogResult.Yes: return;
+                    case DialogResult.No: this.chkEnableMonsterBook.Checked = false; return;
+                }
+            }
         }
 
         private void txtDamageSkinNumber_TextChanged(object sender, EventArgs e)

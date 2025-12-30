@@ -34,6 +34,7 @@ namespace WzComparerR2
             this.superTabControl1 = new DevComponents.DotNetBar.SuperTabControl();
             this.superTabControlPanel1 = new DevComponents.DotNetBar.SuperTabControlPanel();
             this.chkEnable22AniStyle = new DevComponents.DotNetBar.Controls.CheckBoxX();
+            this.chkEnableMonsterBook = new DevComponents.DotNetBar.Controls.CheckBoxX();
             this.chkEnableWorldArchive = new DevComponents.DotNetBar.Controls.CheckBoxX();
             this.chkShowAllIllustAtOnce = new DevComponents.DotNetBar.Controls.CheckBoxX();
             this.chkShowAllSubMobAtOnce = new DevComponents.DotNetBar.Controls.CheckBoxX();
@@ -1288,6 +1289,7 @@ namespace WzComparerR2
             this.superTabControlPanel5.Controls.Add(this.chkShowAllSubMobAtOnce);
             this.superTabControlPanel5.Controls.Add(this.chkShowAllIllustAtOnce);
             this.superTabControlPanel5.Controls.Add(this.chkEnable22AniStyle);
+            this.superTabControlPanel5.Controls.Add(this.chkEnableMonsterBook);
             this.superTabControlPanel5.Controls.Add(this.chkEnableWorldArchive);
             this.superTabControlPanel5.Controls.Add(this.chkCopyParsedSkillString);
             this.superTabControlPanel5.Controls.Add(this.labelX4);
@@ -1410,6 +1412,23 @@ namespace WzComparerR2
             this.chkEnableWorldArchive.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
             this.chkEnableWorldArchive.TabIndex = 7;
             this.chkEnableWorldArchive.Text = "ワールドアーカイブを有効にする";
+            this.chkEnableWorldArchive.CheckedChanged += chkEnableWorldArchive_CheckedChanged;
+            // 
+            // chkEnableMonsterBook
+            // 
+            this.chkEnableMonsterBook.AutoSize = true;
+            this.chkEnableMonsterBook.BackColor = System.Drawing.Color.Transparent;
+            // 
+            // 
+            // 
+            this.chkEnableMonsterBook.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
+            this.chkEnableMonsterBook.Location = new System.Drawing.Point(13, 156);
+            this.chkEnableMonsterBook.Name = "chkEnableMonsterBook";
+            this.chkEnableMonsterBook.Size = new System.Drawing.Size(145, 16);
+            this.chkEnableMonsterBook.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
+            this.chkEnableMonsterBook.TabIndex = 8;
+            this.chkEnableMonsterBook.Text = "モンスターブックを有効にする";
+            this.chkEnableMonsterBook.Click += chkEnableMonsterBook_Click;
             // 
             // buttonX2
             // 
@@ -1536,6 +1555,7 @@ namespace WzComparerR2
         private DevComponents.DotNetBar.Controls.CheckBoxX checkBoxX22;
         private DevComponents.DotNetBar.Controls.CheckBoxX checkBoxX23;
         private DevComponents.DotNetBar.Controls.CheckBoxX chkEnable22AniStyle;
+        private DevComponents.DotNetBar.Controls.CheckBoxX chkEnableMonsterBook;
         private DevComponents.DotNetBar.Controls.CheckBoxX chkEnableWorldArchive;
         private DevComponents.DotNetBar.Controls.CheckBoxX chkShowAllSubMobAtOnce;
         private DevComponents.DotNetBar.Controls.CheckBoxX chkShowAllIllustAtOnce;
