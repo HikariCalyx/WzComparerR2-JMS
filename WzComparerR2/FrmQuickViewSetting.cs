@@ -442,6 +442,8 @@ namespace WzComparerR2
             set { chkQAS.Checked = value; }
         }
 
+        private DialogResult enableMonsterBookConfirmation = DialogResult.Yes;
+
 
         public void Load(CharaSimConfig config)
         {
@@ -512,11 +514,20 @@ namespace WzComparerR2
         {
             if (!this.chkEnableMonsterBook.Checked)
             {
-                DialogResult dResult = DevComponents.DotNetBar.MessageBoxEx.Show(this, "モンスターブックの情報は古くなっており、現在のバージョンの状態を反映していません。\r\nそれでも有効にしますか?", "警告", MessageBoxButtons.YesNo);
-                switch (dResult)
+                this.enableMonsterBookConfirmation = DevComponents.DotNetBar.MessageBoxEx.Show(this, "モンスターブックの情報は古くなっており、現在のバージョンの状態を反映していません。\r\nそれでも有効にしますか?", "警告", MessageBoxButtons.YesNo);
+            }
+        }
+
+        private void chkEnableMonsterBook_CheckedChanged(object sender, EventArgs e)
+        {
+            if (this.chkEnableMonsterBook.Checked)
+            {
+                switch (this.enableMonsterBookConfirmation)
                 {
                     case DialogResult.Yes: return;
-                    case DialogResult.No: this.chkEnableMonsterBook.Checked = false; return;
+                    default:
+                        this.chkEnableMonsterBook.Checked = false;
+                        return;
                 }
             }
         }

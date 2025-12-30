@@ -1429,6 +1429,7 @@ namespace WzComparerR2
             this.chkEnableMonsterBook.TabIndex = 8;
             this.chkEnableMonsterBook.Text = "モンスターブックを有効にする";
             this.chkEnableMonsterBook.Click += chkEnableMonsterBook_Click;
+            this.chkEnableMonsterBook.CheckedChanged += chkEnableMonsterBook_CheckedChanged;
             // 
             // buttonX2
             // 
