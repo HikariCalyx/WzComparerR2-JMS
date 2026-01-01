@@ -478,7 +478,7 @@ namespace WzComparerR2.CharaSimControl
                 }
                 if (Skill.IsRoguelikeSkill)
                 {
-                    attr.Add("ローグライクスキル");
+                    attr.Add("ローグライクスキル: " + (Skill.IsRedmoon ? "紅き月の森" : "ファラオの宝物"));
                 }
                 if (Skill.Invisible)
                 {
