@@ -104,6 +104,8 @@ namespace WzComparerR2
             { "アイエル", new int[] { 18002, 18300, 18310, 18311, 18312, 18314 } },
             { "5次スキル(その他)", new int[] { 40000, 40001, 40002, 40003, 40004, 40005 } },
             { "6次スキル(その他)", new int[] { 50000, 50006, 50007 } },
+            { "ローグライクスキル(ファラオの宝物)", new int[] { 99990000 } },
+            { "ローグライクスキル(紅き月の森)", new int[] { 99990001 } },
         };
 
         private static Dictionary<string, int[]> jobNameToCodeSorted = new Dictionary<string, int[]>()
@@ -172,6 +174,8 @@ namespace WzComparerR2
             { "リン", new int[] { 17001, 17200, 17210, 17211, 17212, 17214 } },
             { "ルミナス", new int[] { 2004, 2700, 2710, 2711, 2712, 2714 } },
             { "レン", new int[] { 16002, 16100, 16110, 16111, 16112, 16114 } },
+            { "ローグライクスキル(紅き月の森)", new int[] { 99990001 } },
+            { "ローグライクスキル(ファラオの宝物)", new int[] { 99990000 } },
             { "ワイルドハンター", new int[] { 3000, 3300, 3310, 3311, 3312, 3314 } },
             { "5次スキル(その他)", new int[] { 40000, 40001, 40002, 40003, 40004, 40005 } },
             { "6次スキル(その他)", new int[] { 50000, 50006, 50007 } },
@@ -249,6 +253,14 @@ namespace WzComparerR2
                 if (this.clbJobName.CheckedItems.Contains("その他"))
                 {
                     selectedJob.AddRange(skillImg.Except(AllClassesCode()));
+                }
+                if (this.clbJobName.CheckedItems.Contains("ローグライクスキル(ファラオの宝物)"))
+                {
+                    selectedJob.Add(99990000);
+                }
+                if (this.clbJobName.CheckedItems.Contains("ローグライクスキル(紅き月の森)"))
+                {
+                    selectedJob.Add(99990001);
                 }
                 ExportFolderPath = dlg.SelectedPath;
                 SelectedJobCodes = allSelected ? skillImg : selectedJob;
