@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using WzComparerR2.CharaSim;
@@ -277,6 +278,7 @@ namespace WzComparerR2.CharaSimControl
                 {
                     StringBuilder gcrSb = new StringBuilder();
                     gcrSb.AppendLine(hdesc);
+                    List<string> OrRequirements = new List<string>();
                     if (Skill.GuildCastleResearchRequirements.Count > 0)
                     {
                         gcrSb.AppendLine();
@@ -303,7 +305,18 @@ namespace WzComparerR2.CharaSimControl
                                     subSr = sr3;
                                     break;
                             }
-                            gcrSb.AppendLine(StringLinker.StringGuildCastleResearchTooltip["requirementElem"].Desc.Replace("#requirementElem", subSr.Name).Replace("#level", i.Value.ToString()));
+                            if (Skill.GuildCastleResearchReqCondition != "OR")
+                            {
+                                gcrSb.AppendLine(StringLinker.StringGuildCastleResearchTooltip["requirementElem"].Desc.Replace("#requirementElem", subSr.Name).Replace("#level", i.Value.ToString()));
+                            }
+                            else
+                            {
+                                OrRequirements.Add(StringLinker.StringGuildCastleResearchTooltip["requirementElem"].Desc.Replace("#requirementElem", subSr.Name).Replace("#level", i.Value.ToString()));
+                            }
+                        }
+                        if (OrRequirements.Count > 0)
+                        {
+                            gcrSb.AppendLine(string.Join("\r\nまたは\r\n", OrRequirements));
                         }
                     }
                     hdesc = gcrSb.ToString();

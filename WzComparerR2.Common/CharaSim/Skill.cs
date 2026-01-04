@@ -23,6 +23,7 @@ namespace WzComparerR2.CharaSim
             this.IsGuildCastleResearch = false;
             this.GuildCastleResearchType = 0;
             this.GuildCastleResearchRequirements = new Dictionary<int, int>();
+            this.GuildCastleResearchReqCondition = "";
             this.VariableProps = new List<string>();
         }
 
@@ -369,6 +370,9 @@ namespace WzComparerR2.CharaSim
                     case "requirement":
                         if (skill.IsGuildCastleResearch)
                         {
+                            Wz_Node conditionNode = childNode.FindNodeByPath("condition");
+                            if (conditionNode != null)
+                                skill.GuildCastleResearchReqCondition = conditionNode.Value.ToString();
                             foreach (Wz_Node reqNode in childNode.Nodes)
                             {
                                 Wz_Node researchIDNode = reqNode.FindNodeByPath("researchID");
