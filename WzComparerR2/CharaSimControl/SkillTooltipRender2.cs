@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Text;
 using System.Windows.Forms;
 using WzComparerR2.CharaSim;
 using WzComparerR2.Common;
@@ -175,6 +176,28 @@ namespace WzComparerR2.CharaSimControl
                 }
                 sr = sr2;
             }
+            else if (Skill.IsGuildCastleResearch)
+            {
+                switch (Skill.GuildCastleResearchType)
+                {
+                    case 0:
+                        if (StringLinker == null || !(StringLinker.StringGuildCastleGuildResearch.TryGetValue(Skill.SkillID, out StringResult _sr2) && _sr2 is StringResultSkill sr2))
+                        {
+                            sr2 = new StringResultSkill();
+                            sr2.Name = "(null)";
+                        }
+                        sr = sr2;
+                        break;
+                    case 1:
+                        if (StringLinker == null || !(StringLinker.StringGuildCastlePersonalResearch.TryGetValue(Skill.SkillID, out _sr2) && _sr2 is StringResultSkill sr3))
+                        {
+                            sr3 = new StringResultSkill();
+                            sr3.Name = "(null)";
+                        }
+                        sr = sr3;
+                        break;
+                }
+            }
 
             bool isTranslateRequired = Translator.IsTranslateEnabled;
             bool isNewLineRequired = false;
@@ -249,6 +272,41 @@ namespace WzComparerR2.CharaSimControl
                 if (Skill.IsRoguelikeSkill)
                 {
                     hdesc = hdesc.Replace("<style color=\"Orange\">", "#c").Replace("</>", "#");
+                }
+                if (Skill.IsGuildCastleResearch)
+                {
+                    StringBuilder gcrSb = new StringBuilder();
+                    gcrSb.AppendLine(hdesc);
+                    if (Skill.GuildCastleResearchRequirements.Count > 0)
+                    {
+                        gcrSb.AppendLine();
+                        gcrSb.AppendLine(StringLinker.StringGuildCastleResearchTooltip["requirementTitle"].Desc);
+                        foreach (var i in Skill.GuildCastleResearchRequirements)
+                        {
+                            StringResultSkill subSr = new StringResultSkill();
+                            switch (Skill.GuildCastleResearchType)
+                            {
+                                case 0:
+                                    if (StringLinker == null || !(StringLinker.StringGuildCastleGuildResearch.TryGetValue(i.Key, out StringResult _sr2) && _sr2 is StringResultSkill sr2))
+                                    {
+                                        sr2 = new StringResultSkill();
+                                        sr2.Name = "(null)";
+                                    }
+                                    subSr = sr2;
+                                    break;
+                                case 1:
+                                    if (StringLinker == null || !(StringLinker.StringGuildCastlePersonalResearch.TryGetValue(i.Key, out _sr2) && _sr2 is StringResultSkill sr3))
+                                    {
+                                        sr3 = new StringResultSkill();
+                                        sr3.Name = "(null)";
+                                    }
+                                    subSr = sr3;
+                                    break;
+                            }
+                            gcrSb.AppendLine(StringLinker.StringGuildCastleResearchTooltip["requirementElem"].Desc.Replace("#requirementElem", subSr.Name).Replace("#level", i.Value.ToString()));
+                        }
+                    }
+                    hdesc = gcrSb.ToString();
                 }
                 if (isTranslateRequired)
                 {
@@ -346,6 +404,13 @@ namespace WzComparerR2.CharaSimControl
                 }
                 string hStr = SummaryParser.GetSkillSummary(Skill, Skill.Level, sr, SummaryParams.Default, skillSummaryOptions, doHighlight, skillIDstr, this.DiffSkillTags);
 
+                if (Skill.IsGuildCastleResearch && Skill.VariableProps.Contains("ResearchTimeCost"))
+                {
+                    string extraHstr = StringLinker.StringGuildCastleResearchTooltip["ResearchTimeCost"].Desc.Replace("#ResearchTimeCost", $"#ResearchTimeCost_{Skill.Level}");
+                    hStr += "\r\n";
+                    hStr += SummaryParser.GetSkillSummary(extraHstr, Skill.Level, Skill.Common, SummaryParams.Default, skillSummaryOptions);
+                }
+
                 GearGraphics.DrawString(g, "[現在レベル" + Skill.Level + "]", GearGraphics.ItemDetailFont, region.LevelDescLeft, region.TextRight, ref picH, 16);
                 if (Skill.SkillID / 10000 / 1000 == 10 && Skill.Level == 1 && Skill.ReqLevel > 0)
                 {
@@ -380,6 +445,12 @@ namespace WzComparerR2.CharaSimControl
                     ConvertPerM = this.DisplayPermyriadAsPercent,
                     IgnoreEvalError = this.IgnoreEvalError,
                 });
+                if (Skill.IsGuildCastleResearch && Skill.VariableProps.Contains("ResearchTimeCost"))
+                {
+                    string extraHstr = StringLinker.StringGuildCastleResearchTooltip["ResearchTimeCost"].Desc.Replace("#ResearchTimeCost", $"#ResearchTimeCost_{Skill.Level + 1}");
+                    hStr += "\r\n";
+                    hStr += SummaryParser.GetSkillSummary(extraHstr, Skill.Level + 1, Skill.Common, SummaryParams.Default, skillSummaryOptions);
+                }
                 GearGraphics.DrawString(g, "[次のレベル" + (Skill.Level + 1) + "]", GearGraphics.ItemDetailFont, region.LevelDescLeft, region.TextRight, ref picH, 16);
                 if (Skill.SkillID / 10000 / 1000 == 10 && (Skill.Level + 1) == 1 && Skill.ReqLevel > 0)
                 {
@@ -483,6 +554,14 @@ namespace WzComparerR2.CharaSimControl
                 if (Skill.IsRoguelikeSkill)
                 {
                     attr.Add("ローグライクスキル: " + (Skill.IsRedmoon ? "紅き月の森" : "ファラオの宝物"));
+                }
+                if (Skill.IsGuildCastleResearch)
+                {
+                    switch (Skill.GuildCastleResearchType)
+                    {
+                        case 0: attr.Add("ギルド城研究: 共同研究"); break;
+                        case 1: attr.Add("ギルド城研究: 個人研究"); break;
+                    }
                 }
                 if (Skill.Invisible)
                 {

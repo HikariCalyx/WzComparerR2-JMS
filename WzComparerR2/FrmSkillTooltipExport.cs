@@ -106,6 +106,8 @@ namespace WzComparerR2
             { "6次スキル(その他)", new int[] { 50000, 50006, 50007 } },
             { "ローグライクスキル(ファラオの宝物)", new int[] { 99990000 } },
             { "ローグライクスキル(紅き月の森)", new int[] { 99990001 } },
+            { "ギルド城研究(共同研究)", new int[] { 99990100 } },
+            { "ギルド城研究(個人研究)", new int[] { 99990101 } },
         };
 
         private static Dictionary<string, int[]> jobNameToCodeSorted = new Dictionary<string, int[]>()
@@ -133,6 +135,8 @@ namespace WzComparerR2
             { "キャノンマスター", new int[] { 501, 530, 531, 532, 534 } },
             { "キャプテン", new int[] { 500, 520, 521, 522, 524 } },
             // { "ギルド", new int[] { 9100 } },
+            { "ギルド城研究(共同研究)", new int[] { 99990100 } },
+            { "ギルド城研究(個人研究)", new int[] { 99990101 } },
             { "クロスボウマスター", new int[] { 300, 320, 321, 322, 324 } },
             { "虎影", new int[] { 16000, 16400, 16410, 16411, 16412, 16414 } },
             { "サイタマ", new int[] { 12006, 12200 } },
@@ -261,6 +265,14 @@ namespace WzComparerR2
                 if (this.clbJobName.CheckedItems.Contains("ローグライクスキル(紅き月の森)"))
                 {
                     selectedJob.Add(99990001);
+                }
+                if (this.clbJobName.CheckedItems.Contains("ギルド城研究(共同研究)"))
+                {
+                    selectedJob.Add(99990100);
+                }
+                if (this.clbJobName.CheckedItems.Contains("ギルド城研究(個人研究)"))
+                {
+                    selectedJob.Add(99990101);
                 }
                 ExportFolderPath = dlg.SelectedPath;
                 SelectedJobCodes = allSelected ? skillImg : selectedJob;
