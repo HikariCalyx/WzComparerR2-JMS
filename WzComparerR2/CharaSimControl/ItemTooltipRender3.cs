@@ -1271,30 +1271,40 @@ namespace WzComparerR2.CharaSimControl
             // purchasePrice
             if (ShowCashPurchasePrice && !isMsnClient && item.Cash)
             {
-                if (CharaSimLoader.LoadedCommoditiesByItemId2.ContainsKey(item.ItemID))
+                List<string> priceList = new List<string>();
+                if (CharaSimLoader.LoadedCommoditiesByItemIdRegular.ContainsKey(item.ItemID))
                 {
-                    if (CharaSimLoader.LoadedCommoditiesByItemId2[item.ItemID].Count > 1)
+                    foreach (var i in CharaSimLoader.LoadedCommoditiesByItemIdRegular[item.ItemID])
                     {
-                        tags.Add(" · 購入価額：");
-                        foreach (var i in CharaSimLoader.LoadedCommoditiesByItemId2[item.ItemID])
-                        {
-                            if (i.Value == 0) continue;
-                            string approxPrice = "";
-                            if (Translator.DefaultDesiredCurrency != "none")
-                            {
-                                approxPrice = $" ({Translator.GetConvertedCurrency(i.Value, titleLanguage)})";
-                            }
-                            tags.Add(string.Format("   · {0}個で {1} ポイント{2}", i.Key, ItemStringHelper.ToCJKNumberExpr(i.Value), approxPrice));
-                        }
-                    }
-                    else
-                    {
-                        int price = CharaSimLoader.LoadedCommoditiesByItemId2[item.ItemID].Values.ToList()[0];
-                        tags.Add(string.Format(" · 購入価額：{0} ポイント", ItemStringHelper.ToCJKNumberExpr(price)));
+                        if (i.Value == 0) continue;
+                        string approxPrice = "";
                         if (Translator.DefaultDesiredCurrency != "none")
                         {
-                            tags.Add($"    {Translator.GetConvertedCurrency(price, titleLanguage)}");
+                            approxPrice = $" ({Translator.GetConvertedCurrency(i.Value, titleLanguage)})";
                         }
+                        if (CharaSimLoader.LoadedCommoditiesByItemIdReboot.ContainsKey(item.ItemID)) approxPrice += " (一般ワールド)";
+                        priceList.Add(string.Format(" · {0}個で {1} ポイント{2}", i.Key, ItemStringHelper.ToCJKNumberExpr(i.Value), approxPrice));
+                    }
+                }
+                if (CharaSimLoader.LoadedCommoditiesByItemIdReboot.ContainsKey(item.ItemID))
+                {
+                    foreach (var i in CharaSimLoader.LoadedCommoditiesByItemIdReboot[item.ItemID])
+                    {
+                        if (i.Value == 0) continue;
+                        priceList.Add(string.Format(" · {0}個で {1} メル (リブートワールド)", i.Key, ItemStringHelper.ToCJKNumberExpr(i.Value)));
+                    }
+                }
+                if (priceList.Count > 0)
+                {
+                    switch (priceList.Count)
+                    {
+                        case 1:
+                            tags.Add(" · 購入価額：" + priceList[0].Replace(" · 1個で ", "").Replace(" · ", ""));
+                            break;
+                        default:
+                            tags.Add("購入価額：");
+                            tags.AddRange(priceList);
+                            break;
                     }
                 }
             }
