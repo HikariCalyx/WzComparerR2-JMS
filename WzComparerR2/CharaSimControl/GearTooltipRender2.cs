@@ -1591,17 +1591,16 @@ namespace WzComparerR2.CharaSimControl
 
                 if (Gear.Cash && ShowCashPurchasePrice)
                 {
-                    Commodity commodityPackage = new Commodity();
-                    if (CharaSimLoader.LoadedCommoditiesByItemId.ContainsKey(Gear.ItemID))
+                    if (CharaSimLoader.LoadedCommoditiesByItemId2.ContainsKey(Gear.ItemID))
                     {
-                        commodityPackage = CharaSimLoader.LoadedCommoditiesByItemId[Gear.ItemID];
-                        if (commodityPackage.Price > 0)
+                        int price = CharaSimLoader.LoadedCommoditiesByItemId2[Gear.ItemID].Values.ToList()[0];
+                        if (price > 0)
                         {
                             picH += 16;
-                            GearGraphics.DrawString(g, "· 購入価額：" + commodityPackage.Price + "ポイント", GearGraphics.EquipDetailFont, 13, 244, ref picH, 16);
+                            GearGraphics.DrawString(g, "· 購入価額：" + price + "ポイント", GearGraphics.EquipDetailFont, 13, 244, ref picH, 16);
                             if (Translator.DefaultDesiredCurrency != "none")
                             {
-                                string exchangedPrice = Translator.GetConvertedCurrency(commodityPackage.Price, titleLanguage);
+                                string exchangedPrice = Translator.GetConvertedCurrency(price, titleLanguage);
                                 GearGraphics.DrawString(g, "    " + exchangedPrice, GearGraphics.EquipDetailFont, 13, 244, ref picH, 16);
                             }
                         }
