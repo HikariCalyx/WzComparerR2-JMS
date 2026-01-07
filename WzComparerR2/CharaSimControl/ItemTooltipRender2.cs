@@ -51,6 +51,7 @@ namespace WzComparerR2.CharaSimControl
         public bool ShowSoldPrice { get; set; }
         public bool ShowCashPurchasePrice { get; set; }
         public bool Enable22AniStyle { get; set; }
+        public int LoadedCommoditiesSlot { get; set; } = 0;
         public bool ShowDamageSkin { get; set; }
         public bool ShowDamageSkinID { get; set; }
         public bool UseMiniSizeDamageSkin { get; set; }
@@ -1165,40 +1166,46 @@ namespace WzComparerR2.CharaSimControl
             if (ShowCashPurchasePrice && !isMsnClient && item.Cash)
             {
                 List<string> priceList = new List<string>();
-                if (CharaSimLoader.LoadedCommoditiesByItemIdRegular.ContainsKey(item.ItemID))
+                if (CharaSimLoader.LoadedCommodityPricesByItemId[LoadedCommoditiesSlot].ContainsKey(item.ItemID))
                 {
-                    foreach (var i in CharaSimLoader.LoadedCommoditiesByItemIdRegular[item.ItemID])
+                    bool containRebootOnlyPrice = false;
+                    foreach (var i in CharaSimLoader.LoadedCommodityPricesByItemId[LoadedCommoditiesSlot][item.ItemID])
                     {
-                        if (i.Value == 0) continue;
-                        string approxPrice = "";
-                        if (Translator.DefaultDesiredCurrency != "none")
-                        {
-                            approxPrice = $" ({Translator.GetConvertedCurrency(i.Value, titleLanguage)})";
-                        }
-                        if (CharaSimLoader.LoadedCommoditiesByItemIdReboot.ContainsKey(item.ItemID)) approxPrice += " (一般ワールド)";
-                        priceList.Add(string.Format(" · {0}個で {1} ポイント{2}", i.Key, i.Value, approxPrice));
+                        containRebootOnlyPrice = containRebootOnlyPrice || i.Meso;
                     }
-                }
-                if (CharaSimLoader.LoadedCommoditiesByItemIdReboot.ContainsKey(item.ItemID))
-                {
-                    foreach (var i in CharaSimLoader.LoadedCommoditiesByItemIdReboot[item.ItemID])
+                    foreach (var i in CharaSimLoader.LoadedCommodityPricesByItemId[LoadedCommoditiesSlot][item.ItemID])
                     {
-                        if (i.Value == 0) continue;
-                        priceList.Add(string.Format(" · {0}個で {1} メル (リブートワールド)", i.Key, i.Value));
+                        if (i.Price == 0) continue;
+                        string currency = i.Meso ? "メル" : "ポイント";
+                        string rebootWorld = i.Reboot ? " (リブートワールド)" : (containRebootOnlyPrice ? " (一般ワールド)" : "");
+                        if (containRebootOnlyPrice && !i.Meso && i.Reboot) continue;
+                        string approxPrice = "";
+                        if (Translator.DefaultDesiredCurrency != "none" && !i.Meso)
+                        {
+                            approxPrice = $" ({Translator.GetConvertedCurrency(i.Price, titleLanguage)})";
+                            if (i.Reboot) rebootWorld += approxPrice;
+                        }
+                        priceList.Add(string.Format("#$S - {0}個で {1} {2}{3}#", i.Count, ItemStringHelper.ToCJKNumberExpr(i.Price), currency, rebootWorld));
                     }
                 }
                 if (priceList.Count > 0)
                 {
+                    var itemPriceColorTable = new Dictionary<string, Color>()
+                    {
+                        { "$S", ((SolidBrush)GearGraphics.ItemPriceBrush).Color },
+                    };
                     picH += 29;
                     switch (priceList.Count)
                     {
+                        /*
                         case 1:
                             GearGraphics.DrawString(g, " · 購入価額： " + priceList[0].Replace(" · 1個で ", "").Replace(" · ", ""), GearGraphics.EquipDetailFont, 100, right, ref picH, 16);
                             break;
+                        */
                         default:
-                            GearGraphics.DrawString(g, "購入価額：", GearGraphics.EquipDetailFont, 100, right, ref picH, 16);
+                            GearGraphics.DrawString(g, "#$S購入価額：#", GearGraphics.ItemDetailFont, itemPriceColorTable, 100, right, ref picH, 16);
                             foreach (var i in priceList)
-                                GearGraphics.DrawString(g, i, GearGraphics.EquipDetailFont, 100, right, ref picH, 16);
+                                GearGraphics.DrawString(g, i, GearGraphics.ItemDetailFont, itemPriceColorTable, 100, right, ref picH, 16);
                             break;
                     }
                 }

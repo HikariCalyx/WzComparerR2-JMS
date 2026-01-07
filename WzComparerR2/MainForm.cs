@@ -4861,7 +4861,11 @@ namespace WzComparerR2
             int count = CharaSimLoader.LoadedCommoditiesBySN.Count;
             CharaSimLoader.LoadedCommoditiesBySN.Clear();
             CharaSimLoader.LoadedCommoditiesByItemId.Clear();
-            labelItemStatus.Text = count + "ポイントアイテムが統合されました。";
+            foreach (var dict in CharaSimLoader.LoadedCommodityPricesByItemId)
+            {
+                dict.Clear();
+            }
+            labelItemStatus.Text = count + "個のポイントアイテムが統合されました。";
         }
 
         private void buttonItemCharItem_CheckedChanged(object sender, EventArgs e)
