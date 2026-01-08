@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace WzComparerR2.CharaSim
 {
@@ -820,8 +821,9 @@ namespace WzComparerR2.CharaSim
         /// </summary>
         /// <param Name="Type">表示装备类型的GearType。</param>
         /// <returns></returns>
-        public static string GetExtraJobReqString(GearType type)
+        public static string GetExtraJobReqString(GearType type, bool hasReqSpecJobs = false, Dictionary<int, AstraSubWeaponInfo> loadedAstraSubWeapons = null, int id = 0)
         {
+            string str = null;
             switch (type)
             {
                 //0xxx
@@ -843,9 +845,20 @@ namespace WzComparerR2.CharaSim
                 case GearType.cannonGunPowder2: return "キャノンシューター職業群着用可能";
                 case GearType.box:
                 case GearType.boxingClaw: return "ジェット着用可能";
+                case GearType.shield:
+                    if (!hasReqSpecJobs && GetAstraExtraJobReqString(loadedAstraSubWeapons, id, out str))
+                    {
+                        return str;
+                    }
+                    return null;
 
                 //1xxx
-                case GearType.cygnusGem: return "シグナス騎士団着用可能";
+                case GearType.cygnusGem:
+                    if (!hasReqSpecJobs && GetAstraExtraJobReqString(loadedAstraSubWeapons, id, out str))
+                    {
+                        return str;
+                    }    
+                    return "シグナス騎士団着用可能";
 
                 //2xxx
                 case GearType.aranPendulum: return GetExtraJobReqString(21);
@@ -1170,6 +1183,17 @@ namespace WzComparerR2.CharaSim
                 return null;
             }
             return string.Join("、", extraJobNames) + "着用可能";
+        }
+
+        public static bool GetAstraExtraJobReqString(Dictionary<int, AstraSubWeaponInfo> loadedAstraSubWeapons, int id, out string str)
+        {
+            str = null;
+            if (loadedAstraSubWeapons != null && loadedAstraSubWeapons.TryGetValue(id, out AstraSubWeaponInfo value))
+            {
+                str = $"{Regex.Replace(ItemStringHelper.GetJobName(value.Job), @"\s*\(\d{1,2}차\)$", "")} 착용 가능";
+                return true;
+            }
+            return false;
         }
 
         public static string GetItemPropString(ItemPropType propType, long value)

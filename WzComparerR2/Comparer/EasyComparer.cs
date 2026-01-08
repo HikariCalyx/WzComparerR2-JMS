@@ -298,6 +298,7 @@ namespace WzComparerR2.Comparer
                     StateInfo = "ポイントアイテム整理中";
                     CharaSimLoader.ClearAll();
                     CharaSimLoader.LoadSetItemsIfEmpty(fileNew);
+                    CharaSimLoader.LoadAstraSubWeaponsIfEmpty(fileNew);
                     CharaSimLoader.LoadExclusiveEquipsIfEmpty(fileNew);
                     CharaSimLoader.LoadCommodities(fileOld, slotIdx: 1);
                     CharaSimLoader.LoadCommodities(fileNew, slotIdx: 0);
