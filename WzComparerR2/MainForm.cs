@@ -5784,7 +5784,7 @@ namespace WzComparerR2
                                             skill.PerJobIndex = jobIndex;
                                             Bitmap resultImage = tooltip.Render();
                                             int jobID = skill.PerJobAttackInfo.Keys.ToList()[jobIndex];
-                                            string categoryPath = ItemStringHelper.GetJobName((i / 10000) == 5 ? jobID + 2 : jobID) ?? "その他";
+                                            string categoryPath = ItemStringHelper.GetJobName((i / 10000) == 5 ? jobID + 2 : jobID) ?? ItemStringHelper.GetJobName((i / 10000) == 5 ? jobID + 3 : jobID) ?? ItemStringHelper.GetJobName(jobID) ?? "その他";
                                             if (!Directory.Exists(Path.Combine(exportedFolder, categoryPath)))
                                             {
                                                 Directory.CreateDirectory(Path.Combine(exportedFolder, categoryPath));
