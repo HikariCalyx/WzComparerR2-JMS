@@ -415,9 +415,9 @@ namespace WzComparerR2.CharaSim
         /// </summary>
         compass = 135287,
         /// <summary>
-        /// Keir 135406x
+        /// 霊符 135_88
         /// </summary>
-        keir = 135288,
+        kannaReipu = 135288,
         /// <summary>
         /// 手杖
         /// </summary>
