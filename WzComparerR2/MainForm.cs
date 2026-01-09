@@ -2146,7 +2146,7 @@ namespace WzComparerR2
             {
                 path = "(" + objPathList.Count + ") ノード";
             }
-            labelItemStatus.Text = "画像ノードが見つかりませんでした: " + path;
+            labelItemStatus.Text = "ノードが見つかりませんでした: " + path;
         }
 
         private Wz_Node SearchNode(Wz_Node parent, string[] path, int startIndex)
@@ -3575,13 +3575,21 @@ namespace WzComparerR2
 
         private void buttonItemSelectStringWz_Click(object sender, EventArgs e)
         {
+            buttonItemSearchString.Enabled = false;
+            Task.Run(() => selectStringWz());
+        }
+
+        private async void selectStringWz()
+        {
+            labelItemStatus.Text = "文字列テーブルを読み込んでいます...";
             Wz_File stringWzFile = advTree1.SelectedNode?.AsWzNode()?.FindNodeByPath("String").GetNodeWzFile();
             Wz_File itemWzFile = advTree1.SelectedNode?.AsWzNode()?.FindNodeByPath("Item").GetNodeWzFile();
             Wz_File etcWzFile = advTree1.SelectedNode?.AsWzNode()?.FindNodeByPath("Etc").GetNodeWzFile();
             Wz_File questWzFile = advTree1.SelectedNode?.AsWzNode()?.FindNodeByPath("Quest").GetNodeWzFile();
             if (stringWzFile == null || itemWzFile == null || etcWzFile == null)
             {
-                MessageBoxEx.Show("Base.wzを選択します。", LocalizedString_JP.COMMON_ERROR);
+                MessageBoxEx.Show(this, "Base.wzを選択します。", LocalizedString_JP.COMMON_ERROR);
+                buttonItemSearchString.Enabled = true;
                 return;
             }
             QueryPerformance.Start();
@@ -3594,8 +3602,9 @@ namespace WzComparerR2
             }
             else
             {
-                MessageBoxEx.Show("文字列テーブルのリンクをリセットできません。", LocalizedString_JP.COMMON_ERROR);
+                MessageBoxEx.Show(this, "文字列テーブルのリンクをリセットできません。", LocalizedString_JP.COMMON_ERROR);
             }
+            buttonItemSearchString.Enabled = true;
         }
 
         private void buttonItemClearStringWz_Click(object sender, EventArgs e)
