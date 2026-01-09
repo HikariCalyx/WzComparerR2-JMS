@@ -691,7 +691,7 @@ namespace WzComparerR2.CharaSim
                 case GearType.saddle: return "鞍";
                 case GearType.katana: return "刀";
                 case GearType.fan: return "陰陽扇";
-                case GearType.kannaReipu: return "霊符";
+                case GearType.kannaReifu: return "霊符";
                 case GearType.swordZB: return "大剣";
                 case GearType.swordZL: return "太刀";
                 case GearType.weapon: return "武器";
@@ -880,7 +880,7 @@ namespace WzComparerR2.CharaSim
                 case GearType.kodachi:
                 case GearType.kodachi2: return GetExtraJobReqString(41);
                 case GearType.fan:
-                case GearType.kannaReipu: return "カンナ";
+                case GearType.kannaReifu: return "カンナ";
 
                 //5xxx
                 case GearType.soulShield: return "ミハエル着用可能";
