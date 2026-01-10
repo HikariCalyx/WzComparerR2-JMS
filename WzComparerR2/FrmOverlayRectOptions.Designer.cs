@@ -782,7 +782,7 @@ namespace WzComparerR2
             this.chkIsPolygon.Size = new System.Drawing.Size(64, 17);
             this.chkIsPolygon.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
             this.chkIsPolygon.TabIndex = 20;
-            this.chkIsPolygon.Text = "다각형";
+            this.chkIsPolygon.Text = "多角形";
             // 
             // chkAlphaGradation
             // 
