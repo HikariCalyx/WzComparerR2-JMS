@@ -158,7 +158,7 @@ namespace WzComparerR2
             this.labelX1.Name = "labelX1";
             this.labelX1.Size = new System.Drawing.Size(91, 19);
             this.labelX1.TabIndex = 0;
-            this.labelX1.Text = "X, Y 頂点";
+            this.labelX1.Text = "頂点座標";
             // 
             // txtX
             // 
