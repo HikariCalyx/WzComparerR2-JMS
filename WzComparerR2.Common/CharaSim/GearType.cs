@@ -415,9 +415,9 @@ namespace WzComparerR2.CharaSim
         /// </summary>
         yeouiGem = 135404,
         /// <summary>
-        /// 霊符 13543
+        /// 霊符 135430
         /// </summary>
-        kannaReifu = 13543,
+        kannaReifu = 135430,
         /// <summary>
         /// Compass 135287
         /// </summary>
