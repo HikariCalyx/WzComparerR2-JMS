@@ -415,13 +415,13 @@ namespace WzComparerR2.CharaSim
         /// </summary>
         yeouiGem = 135404,
         /// <summary>
+        /// 霊符 13543
+        /// </summary>
+        kannaReifu = 13543,
+        /// <summary>
         /// Compass 135287
         /// </summary>
         compass = 135287,
-        /// <summary>
-        /// 霊符 135_88
-        /// </summary>
-        kannaReifu = 135288,
         /// <summary>
         /// 手杖
         /// </summary>
