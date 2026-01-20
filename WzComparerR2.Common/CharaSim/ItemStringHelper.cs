@@ -123,6 +123,7 @@ namespace WzComparerR2.CharaSim
                 case GearPropType.accountSharableAfterExchange: return value == 0 ? null : "1回交換可能\n(取引後、ワールド内のキャラクター間移動のみ可能)";
                 case GearPropType.noPrism: return value == 0 ? null : "プリズム使用不可";
                 case GearPropType.mintable: return value == 0 ? null : "ミンティング可能";
+                case GearPropType.notMintable: return value == 0 ? null : "ミンティング不可";
                 case GearPropType.tradeAvailable:
                     switch (value)
                     {
@@ -387,6 +388,9 @@ namespace WzComparerR2.CharaSim
                     return res;
                 case GearPropType.mintable:
                     res[0] = value == 0 ? null : "#$rミンティング可能#";
+                    return res;
+                case GearPropType.notMintable:
+                    res[0] = value == 0 ? null : "#$rミンティング不可#";
                     return res;
                 case GearPropType.tradeAvailable:
                     switch (value)
@@ -1227,6 +1231,8 @@ namespace WzComparerR2.CharaSim
                     return value == 0 ? "一般ペット(他の一般ペットと重複使用不可)" : "マルチペット(他のペットと最大3個重複使用可能)";
                 case ItemPropType.mintable:
                     return GetGearPropString(GearPropType.mintable, value);
+                case ItemPropType.notMintable:
+                    return GetGearPropString(GearPropType.notMintable, value);
                 default:
                     return null;
             }
