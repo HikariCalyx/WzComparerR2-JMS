@@ -179,7 +179,10 @@ namespace WzComparerR2.Avatar.UI
         private void dataGridViewX1_CellClick(object sender, DataGridViewCellEventArgs e)
         {
             CurrentFileName = dataGridViewX1.Rows[e.RowIndex].Cells[e.ColumnIndex].ToolTipText;
-            Code = presetDict[CurrentFileName.Replace(".png", "")];
+            if (presetDict.ContainsKey(CurrentFileName.Replace(".png", "")))
+            {
+                Code = presetDict[CurrentFileName.Replace(".png", "")];
+            }
         }
 
         private void dataGridViewX1_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
@@ -187,7 +190,10 @@ namespace WzComparerR2.Avatar.UI
             try
             {
                 CurrentFileName = dataGridViewX1.Rows[e.RowIndex].Cells[e.ColumnIndex].ToolTipText;
-                Code = presetDict[CurrentFileName.Replace(".png", "")];
+                if (presetDict.ContainsKey(CurrentFileName.Replace(".png", "")))
+                {
+                    Code = presetDict[CurrentFileName.Replace(".png", "")];
+                }
             }
             catch
             {
