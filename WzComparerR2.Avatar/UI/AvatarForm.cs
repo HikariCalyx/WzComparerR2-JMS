@@ -2705,6 +2705,7 @@ namespace WzComparerR2.Avatar.UI
                         this.API = new NexonOpenAPI("-", "KMS");
                         try
                         {
+                            ToastNotification.Show(this, $"アバターを取得しています。お待ちください...", null, 3000, eToastGlowColor.Green, eToastPosition.TopCenter);
                             avatarCode = await this.API.GetAvatarCode(dlg.CharaName, "MSN");
                             if (string.IsNullOrEmpty(avatarCode))
                             {
