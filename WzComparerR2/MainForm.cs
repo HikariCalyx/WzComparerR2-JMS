@@ -1937,7 +1937,8 @@ namespace WzComparerR2
                         "サイズ:  " + png.Width + "*" + png.Height + "\r\n" +
                         "PNG形式:  " + png.Format + "(" + (int)png.Format + ")\r\n" +
                         "スケール: " + png.Scale + "(x" + png.ActualScale + ")\r\n" +
-                        "ページ: " + png.Pages + "(" + png.ActualPages + ")";
+                        "ページ: " + png.Pages + "(" + png.ActualPages + ")\r\n" +
+                        "不明1: " + png.Unknown1;
 
                     var sourceNode = selectedNode.GetLinkedSourceNode(PluginManager.FindWz);
                     if (sourceNode != selectedNode)
@@ -1961,7 +1962,8 @@ namespace WzComparerR2
                                 "サイズ:  " + png.Width + "*" + png.Height + "\r\n" +
                                 "PNG形式:  " + png.Format + "(" + (int)png.Format + ")\r\n" +
                                 "スケール: " + png.Scale + "(x" + png.ActualScale + ")\r\n" +
-                                "ページ: " + png.Pages + "(" + png.ActualPages + ")");
+                                "ページ: " + png.Pages + "(" + png.ActualPages + ")\r\n" +
+                                "不明1: " + png.Unknown1);
                         }
                     }
                     break;
