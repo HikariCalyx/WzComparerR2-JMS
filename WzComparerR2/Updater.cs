@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using System.Net.Http;
-using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -59,54 +58,10 @@ namespace WzComparerR2
             // reset all
             this.LatestReleaseFetched = true;
             this.Release = release;
-            this.Net48Asset = null;
-            this.Net6Asset = null;
-            this.Net8Asset = null;
-            this.Net10Asset = null;
 
             // check version
-            if (TryParseBuildVersion(release.Name, out var releaseVer))
-            {
-                this.LatestVersion = releaseVer;
-                this.LatestVersionString = $"{releaseVer.Build}.{releaseVer.Revision}";
-                if (this.CurrentVersion != default)
-                {
-                    this.UpdateAvailable = (releaseVer.Build > this.CurrentVersion.Build)
-                        || (releaseVer.Build == this.CurrentVersion.Build && releaseVer.Revision > this.CurrentVersion.Revision);
-                }
-            }
-            else
-            {
-                this.LatestVersion = default;
-                this.LatestVersionString = release.Name;
-            }
-
-            // check assets
-            if (release.Assets != null)
-            {
-                foreach (var asset in release.Assets)
-                {
-                    if (asset.Name != null)
-                    {
-                        if (asset.Name.Contains("net6"))
-                        {
-                            this.Net6Asset = asset;
-                        }
-                        else if (asset.Name.Contains("net8"))
-                        {
-                            this.Net8Asset = asset;
-                        }
-                        else if (asset.Name.Contains("net10"))
-                        {
-                            this.Net10Asset = asset;
-                        }
-                        else
-                        {
-                            this.Net48Asset = asset;
-                        }
-                    }
-                }
-            }
+            this.LatestVersionString = $"{release.MajorVersion}.{release.BuildNumber}";
+            this.UpdateAvailable = Int64.Parse(release.BuildNumber.Replace("-", "")) > Int64.Parse(BuildInfo.BuildTime.Replace("-", ""));
         }
 
         public async Task DownloadAssetAsync(string assetUrl, string fileName, OnProgressCallback onProgress = null, CancellationToken cancellationToken = default)
@@ -119,7 +74,7 @@ namespace WzComparerR2
             using var response = await client.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
             response.EnsureSuccessStatusCode();
 
-            long fileSize = response.Content.Headers.ContentLength;
+            long fileSize = (long)response.Content.Headers.ContentLength;
             // copy to file
             bool fileCreated = false;
             try
@@ -152,21 +107,6 @@ namespace WzComparerR2
             }
         }
 
-        private static bool TryParseBuildVersion(string releaseName, out Version result)
-        {
-            var m = Regex.Match(releaseName, @"(\d{8})\.(\d+)");
-            if (m.Success 
-                && int.TryParse(m.Groups[1].Value, out int build)
-                && int.TryParse(m.Groups[2].Value, out int revision))
-            {
-                result = new Version(0, 0, build, revision);
-                return true;
-            }
-
-            result = default;
-            return false;
-        }
-
         private static bool TryParseApplicationVersion(string appVersion, out Version result)
         {
             return Version.TryParse(appVersion, out result);
@@ -179,7 +119,7 @@ namespace WzComparerR2
             [JsonProperty("MajorVersion")]
             public string MajorVersion { get; set; }
             [JsonProperty("BuildNumber")]
-            public string NuildNumber { get; set; }
+            public string BuildNumber { get; set; }
             [JsonProperty("ChangeTitle")]
             public string ChangeTitle { get; set; }
             [JsonProperty("Changelog")]
@@ -190,6 +130,8 @@ namespace WzComparerR2
             public string Net60Url { get; set; }
             [JsonProperty("net80-url")]
             public string Net80Url { get; set; }
+            [JsonProperty("net100-url")]
+            public string Net100Url { get; set; }
         }
     }
 }

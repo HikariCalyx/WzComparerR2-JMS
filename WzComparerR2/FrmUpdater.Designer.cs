@@ -65,7 +65,7 @@
             this.labelX2.Name = "labelX2";
             this.labelX2.Size = new System.Drawing.Size(81, 16);
             this.labelX2.TabIndex = 1;
-            this.labelX3.Text = "バージョン情報:";
+            this.labelX2.Text = "最新バージョン:";
             // 
             // labelX3
             // 

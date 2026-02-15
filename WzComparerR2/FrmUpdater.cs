@@ -27,7 +27,7 @@ namespace WzComparerR2
 #endif
 
             this.Updater = updater;
-            this.lblCurrentVer.Text = updater.CurrentVersionString;
+            this.lblCurrentVer.Text = $"{Program.WcR2MajorVersion}{BuildInfo.BuildTime}";
         }
 
         public Updater Updater { get; set; }
@@ -71,7 +71,8 @@ namespace WzComparerR2
             if (updater.LatestReleaseFetched)
             {
                 this.lblLatestVer.Text = updater.LatestVersionString;
-                this.AppendText(updater.Release?.CreatedAt.ToLocalTime().ToString() + "\r\n" + updater.Release?.Body, Color.Black);
+                this.AppendText(updater.Release?.ChangeTitle + Environment.NewLine, Color.Red);
+                this.AppendText(updater.Release?.Changelog, Color.Black);
                 this.richTextBoxEx1.SelectionStart = 0;
                 if (updater.UpdateAvailable)
                 {
@@ -88,19 +89,14 @@ namespace WzComparerR2
         private void buttonX1_Click(object sender, EventArgs e)
         {
             var updater = this.Updater;
-            if (!updater.UpdateAvailable)
-            {
-                MessageBoxEx.Show(this, "没有获取到更新，请重试。", "注意", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
 
             var runtimeVer = Environment.Version.Major;
             var asset = runtimeVer switch
             {
-                4 => updater.Net48Asset,
-                6 => updater.Net6Asset,
-                8 => updater.Net8Asset,
-                10 => updater.Net10Asset,
+                4 => updater.Release.Net48Url,
+                6 => updater.Release.Net60Url,
+                8 => updater.Release.Net80Url,
+                10 => updater.Release.Net100Url,
                 _ => null,
             };
 
@@ -193,7 +189,7 @@ namespace WzComparerR2
 #else
             ExtractResource("WzComparerR2.Updater.exe.config", Path.Combine(wcR2Folder, "Updater.exe.config"));
 #endif
-            RunProgram("WzComparerR2.Updater.exe", "\"" + assetFileName + "\"");
+            RunProgram("Updater.exe", "\"" + assetFileName + "\"");
         }
 
         private void RunProgram(string url, string argument)

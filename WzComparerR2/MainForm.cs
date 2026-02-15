@@ -430,7 +430,7 @@ namespace WzComparerR2
                     await updater.QueryUpdateAsync();
                     if (updater.UpdateAvailable)
                     {
-                        ToastNotification.Show(this, $"检查到更新版本{updater.LatestVersionString}", 5000, eToastPosition.TopCenter);
+                        ToastNotification.Show(this, $"更新が検出されました: {updater.LatestVersionString}", 5000, eToastPosition.TopCenter);
                         var frmUpdater = new FrmUpdater(updater);
                         frmUpdater.LoadConfig(config);
                         frmUpdater.ShowDialog(this);
