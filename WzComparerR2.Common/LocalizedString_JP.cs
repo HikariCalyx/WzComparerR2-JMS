@@ -29,6 +29,8 @@ namespace WzComparerR2
         public static string FRMUPDATER_UPDATE_CHECKFAIL = "更新チェックに失敗しました";
         public static string FRMUPDATER_UPDATE_DOWNLOADING = "ダウンロード中";
         public static string FRMUPDATER_UPDATE_DOWNLOADED = "ダウンロード完了";
+        public static string FRMUPDATER_UPDATE_CANCELLED = "更新はキャンセルされました";
+        public static string FRMUPDATER_UPDATE_FAIL = "更新に失敗しました";
         public static string FRMUPDATER_UPDATE_DOWNLOAD_FAIL = "ダウンロードに失敗しました";
 
         public static string MAINFORM_OPENWZDLG_TITLE = "WZファイルを選択";
