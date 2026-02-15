@@ -35,11 +35,7 @@ namespace WzComparerR2
         public string CurrentVersionString { get; private set; }
         public string LatestVersionString { get; private set; }
 
-        public GithubReleaseResponse Release { get; private set; }
-        public GithubAsset Net48Asset { get; private set; }
-        public GithubAsset Net6Asset { get; private set; }
-        public GithubAsset Net8Asset { get; private set; }
-        public GithubAsset Net10Asset { get; private set; }
+        public HCTAPIResponse Release { get; private set; }
 
         private readonly TimeSpan defaultRequestTimeout = TimeSpan.FromSeconds(15);
 
@@ -50,7 +46,7 @@ namespace WzComparerR2
             client.Timeout = defaultRequestTimeout;
             using var request = new HttpRequestMessage(HttpMethod.Get, checkUpdateURL);
             request.Headers.Accept.ParseAdd("application/json");
-            request.Headers.UserAgent.ParseAdd($"WzComparerR2/{this.CurrentVersionString ?? "1.0"}");
+            request.Headers.UserAgent.ParseAdd($"WzComparerR2-JMS/1.0");
             using var response = await client.SendAsync(request, cancellationToken).ConfigureAwait(false);
             response.EnsureSuccessStatusCode();
 
@@ -58,7 +54,7 @@ namespace WzComparerR2
             using var responseStream = await response.Content.ReadAsStreamAsync();
             using var jsonTextReader = new JsonTextReader(new StreamReader(responseStream));
             var serializer = new JsonSerializer();
-            var release = serializer.Deserialize<GithubReleaseResponse>(jsonTextReader);
+            var release = serializer.Deserialize<HCTAPIResponse>(jsonTextReader);
 
             // reset all
             this.LatestReleaseFetched = true;
@@ -113,21 +109,17 @@ namespace WzComparerR2
             }
         }
 
-        public async Task DownloadAssetAsync(GithubAsset asset, string fileName, OnProgressCallback onProgress = null, CancellationToken cancellationToken = default)
+        public async Task DownloadAssetAsync(string assetUrl, string fileName, OnProgressCallback onProgress = null, CancellationToken cancellationToken = default)
         {
             // send request
             using var client = new HttpClient();
             client.Timeout = defaultRequestTimeout;
-            using var request = new HttpRequestMessage(HttpMethod.Get, asset.BrowserDownloadUrl);
-            if (asset.ContentType != null)
-            {
-                request.Headers.Accept.ParseAdd(asset.ContentType);
-            }
-            request.Headers.UserAgent.ParseAdd($"WzComparerR2/{this.CurrentVersionString ?? "1.0"}");
+            using var request = new HttpRequestMessage(HttpMethod.Get, assetUrl);
+            request.Headers.UserAgent.ParseAdd($"WzComparerR2-JMS/1.0");
             using var response = await client.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
             response.EnsureSuccessStatusCode();
 
-            long fileSize = response.Content.Headers.ContentLength ?? asset.Size;
+            long fileSize = response.Content.Headers.ContentLength;
             // copy to file
             bool fileCreated = false;
             try
@@ -182,41 +174,22 @@ namespace WzComparerR2
 
         public delegate void OnProgressCallback(long downloadedBytes, long totalBytes);
 
-        /// <see cref="https://docs.github.com/en/enterprise-cloud@latest/rest/releases/releases?apiVersion=2022-11-28#get-the-latest-release"/>
-        public class GithubReleaseResponse
-        {
-            [JsonProperty("name")]
-            public string Name { get; set; }
-            [JsonProperty("body")]
-            public string Body { get; set; }
-            [JsonProperty("created_at")]
-            public DateTime CreatedAt { get; set; }
-            [JsonProperty("assets")]
-            public GithubAsset[] Assets { get; set; }
-        }
-
         public class HCTAPIResponse
         {
             [JsonProperty("MajorVersion")]
-            public string majorVersion { get; set; }
+            public string MajorVersion { get; set; }
             [JsonProperty("BuildNumber")]
-            public string buildNumber { get; set; }
+            public string NuildNumber { get; set; }
             [JsonProperty("ChangeTitle")]
-            public string changeTitle { get; set; }
-        }
-
-        public class GithubAsset
-        {
-            [JsonProperty("name")]
-            public string Name { get; set; }
-            [JsonProperty("label")]
-            public string Label { get; set; }
-            [JsonProperty("content_type")]
-            public string ContentType { get; set; }
-            [JsonProperty("browser_download_url")]
-            public string BrowserDownloadUrl { get; set; }
-            [JsonProperty("size")]
-            public long Size { get; set; }
+            public string ChangeTitle { get; set; }
+            [JsonProperty("Changelog")]
+            public string Changelog { get; set; }
+            [JsonProperty("net48-url")]
+            public string Net48Url { get; set; }
+            [JsonProperty("net60-url")]
+            public string Net60Url { get; set; }
+            [JsonProperty("net80-url")]
+            public string Net80Url { get; set; }
         }
     }
 }

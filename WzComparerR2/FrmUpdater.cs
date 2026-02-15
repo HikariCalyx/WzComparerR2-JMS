@@ -90,7 +90,7 @@ namespace WzComparerR2
             var updater = this.Updater;
             if (!updater.UpdateAvailable)
             {
-                MessageBoxEx.Show(this, "没有获取到更新，请重试。", "提示", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBoxEx.Show(this, "没有获取到更新，请重试。", "注意", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
