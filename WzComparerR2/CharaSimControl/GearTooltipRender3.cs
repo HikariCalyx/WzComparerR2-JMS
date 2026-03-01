@@ -1830,7 +1830,7 @@ namespace WzComparerR2.CharaSimControl
                     GearGraphics.DrawString(g, " · 販売価額：" + value + " メル", GearGraphics.ItemDetailFont, 13, 244, ref picH, 16);
                     picH += 16;
                 }
-                if (CharaSimLoader.LoadedCommodityPricesByItemId[LoadedCommoditiesSlot].ContainsKey(Gear.ItemID) && ShowCashPurchasePrice)
+                if (CharaSimLoader.LoadedCommodityPricesByItemId[LoadedCommoditiesSlot].ContainsKey(Gear.ItemID) && ShowCashPurchasePrice && Gear.Cash)
                 {
                     var priceInfo = CharaSimLoader.LoadedCommodityPricesByItemId[LoadedCommoditiesSlot][Gear.ItemID].FirstOrDefault();
                     int price = priceInfo.Price;
