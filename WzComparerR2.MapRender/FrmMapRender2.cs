@@ -139,6 +139,7 @@ namespace WzComparerR2.MapRender
         bool captureViewPortOnly;
         bool ForceCaptureWithResolution;
         bool showFootholdBoundary;
+        bool enableMobMovement;
         Task captureTask;
         Resolution resolution;
         float opacity;
@@ -759,6 +760,7 @@ namespace WzComparerR2.MapRender
                     this.ui.ChatBox.AppendTextHelp(@"/minimap ミニマップ設定");
                     this.ui.ChatBox.AppendTextHelp(@"/scene シーン設定");
                     this.ui.ChatBox.AppendTextHelp(@"/spine Spine アニメーション指定ウィンドウを開く");
+                    this.ui.ChatBox.AppendTextHelp(@"/summon モンスター召喚");
                     this.ui.ChatBox.AppendTextHelp(@"/quest クエスト設定");
                     this.ui.ChatBox.AppendTextHelp(@"/questex クエストキーの値設定");
                     this.ui.ChatBox.AppendTextHelp(@"/date 日付設定");
@@ -1152,6 +1154,42 @@ namespace WzComparerR2.MapRender
                     uiSpineSelector.Show();
                     break;
 
+                case "/summon":
+                    var si = arguments.ElementAtOrDefault(1);
+                    var sx = arguments.ElementAtOrDefault(2);
+                    var sy = arguments.ElementAtOrDefault(3);
+                    if (int.TryParse(si, out int mobID))
+                    {
+                        int x, y;
+                        if (!int.TryParse(sx, out x) || !int.TryParse(sy, out y))
+                        {
+                            var p = this.renderEnv.Camera.CameraToWorld(renderEnv.Input.MousePosition);
+                            x = p.X;
+                            y = p.Y;
+                        }
+                        StringResult sr;
+                        string mobName = string.Empty;
+                        if (this.StringLinker != null)
+                        {
+                            this.StringLinker.StringMob.TryGetValue(mobID, out sr);
+                            mobName = sr?.Name ?? "(null)";
+                        }
+                        if (this.mapData.SummonMob(mobID, x, y, 0, 0, -1, playRegenMotion: false))
+                        {
+                            this.ui.ChatBox.AppendTextHelp($@"モンスターが召喚されました。{mobName}({mobID})");
+                        }
+                        else
+                        {
+                            this.ui.ChatBox.AppendTextHelp($@"モンスターが見つかりませんでした。({mobID})");
+                        }
+                    }
+                    else
+                    {
+                        this.ui.ChatBox.AppendTextHelp(@"/summon (mobID) マウス位置にmobIDモンスター召喚");
+                        this.ui.ChatBox.AppendTextHelp(@"/summon (mobID) (x) (y) x, y 場所にmobIDモンスター召喚");
+                    }
+                    break;
+
                 default:
                     this.ui.ChatBox.AppendTextSystem($"不明なコマンド: {arguments[0]}");
                     break;
@@ -1412,6 +1450,11 @@ namespace WzComparerR2.MapRender
             (this.Content as WcR2ContentManager).UseD2DFont = config.UseD2dRenderer;
             this.ForceCaptureWithResolution = config.ForceCaptureWithResolution;
             this.showFootholdBoundary = config.ShowFootholdBoundary;
+            this.enableMobMovement = config.EnableMobMovement;
+            if (this.mapData != null)
+            {
+                this.mapData.EnableMobMovement = this.enableMobMovement;
+            }
         }
 
         private void LoadOptionData(UIOptionsDataModel model)
@@ -1430,6 +1473,7 @@ namespace WzComparerR2.MapRender
             model.WorldMap_UseImageNameAsInfoName = this.ui.WorldMap.UseImageNameAsInfoName;
             model.ForceCaptureWithResolution = config.ForceCaptureWithResolution;
             model.ShowFootholdBoundary = config.ShowFootholdBoundary;
+            model.EnableMobMovement = config.EnableMobMovement;
             LoadCaptureRectOptionData(model);
         }
 
@@ -1450,6 +1494,7 @@ namespace WzComparerR2.MapRender
             config.WorldMap_UseImageNameAsInfoName = model.WorldMap_UseImageNameAsInfoName;
             config.ForceCaptureWithResolution = model.ForceCaptureWithResolution;
             config.ShowFootholdBoundary = model.ShowFootholdBoundary;
+            config.EnableMobMovement = model.EnableMobMovement;
             WzComparerR2.Config.ConfigManager.Save();
 
             if (int.TryParse(model.ScLeft, out int left) && int.TryParse(model.ScTop, out int top)
