@@ -591,6 +591,12 @@ namespace WzComparerR2.MapRender.UI
                  "[Alt+Enter] 解像度の変更",
                  "[S] スクショ範囲を表示",
                  "[ScrollLock] スクショ",
+                 "",
+                 "マウス:",
+                 "",
+                 "[モンスターを左クリック] 攻撃モンスター",
+                 "[モンスターをマウスのスクロールをクリック] モンスタースキル",
+                 "[右クリックを押したまま] マップ上を移動"
             };
 
             foreach (var tip in tips)
