@@ -833,7 +833,7 @@ namespace WzComparerR2.MapRender
                 case "/minimap":
                     if (this.mapData == null)
                     {
-                        this.ui.ChatBox.AppendTextHelp("맵이 로드되지 않았습니다.");
+                        this.ui.ChatBox.AppendTextHelp("マップがロードされていません。");
                         break;
                     }
                     var canvasList = this.mapData?.MiniMap?.ExtraCanvas;
@@ -866,7 +866,7 @@ namespace WzComparerR2.MapRender
                 case "/scene":
                     if (this.mapData == null)
                     {
-                        this.ui.ChatBox.AppendTextHelp("맵이 로드되지 않았습니다.");
+                        this.ui.ChatBox.AppendTextHelp("マップがロードされていません。");
                         break;
                     }
                     switch (arguments.ElementAtOrDefault(1))
@@ -969,7 +969,7 @@ namespace WzComparerR2.MapRender
                 case "/date":
                     if (this.mapData == null)
                     {
-                        this.ui.ChatBox.AppendTextHelp("맵이 로드되지 않았습니다.");
+                        this.ui.ChatBox.AppendTextHelp("マップがロードされていません。");
                         break;
                     }
                     switch (arguments.ElementAtOrDefault(1))
@@ -1006,7 +1006,7 @@ namespace WzComparerR2.MapRender
                 case "/multibgm":
                     if (this.mapData == null)
                     {
-                        this.ui.ChatBox.AppendTextHelp("맵이 로드되지 않았습니다.");
+                        this.ui.ChatBox.AppendTextHelp("マップがロードされていません。");
                         break;
                     }
                     switch (arguments.ElementAtOrDefault(1))
@@ -1072,7 +1072,7 @@ namespace WzComparerR2.MapRender
                 case "/quest":
                     if (this.mapData == null)
                     {
-                        this.ui.ChatBox.AppendTextHelp("맵이 로드되지 않았습니다.");
+                        this.ui.ChatBox.AppendTextHelp("マップがロードされていません。");
                         break;
                     }
                     switch (arguments.ElementAtOrDefault(1))
@@ -1166,7 +1166,7 @@ namespace WzComparerR2.MapRender
                 case "/spine":
                     if (this.mapData == null)
                     {
-                        this.ui.ChatBox.AppendTextHelp("맵이 로드되지 않았습니다.");
+                        this.ui.ChatBox.AppendTextHelp("マップがロードされていません。");
                         break;
                     }
                     var uiSpineSelector = this.ui.Windows.OfType<UISpineSelector>().FirstOrDefault();
@@ -1194,7 +1194,7 @@ namespace WzComparerR2.MapRender
                 case "/summon":
                     if (this.mapData == null)
                     {
-                        this.ui.ChatBox.AppendTextHelp("맵이 로드되지 않았습니다.");
+                        this.ui.ChatBox.AppendTextHelp("マップがロードされていません。");
                         break;
                     }
                     var si = arguments.ElementAtOrDefault(1);
