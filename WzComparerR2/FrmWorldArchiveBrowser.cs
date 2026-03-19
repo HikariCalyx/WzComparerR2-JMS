@@ -22,7 +22,11 @@ namespace WzComparerR2
     {
         public FrmWorldArchiveBrowser(bool isDarkMode = false)
         {
-            InitializeComponent(); 
+            InitializeComponent();
+#if NET6_0_OR_GREATER
+            // https://learn.microsoft.com/en-us/dotnet/core/compatibility/fx-core#controldefaultfont-changed-to-segoe-ui-9pt
+            this.Font = new Font(new FontFamily("MS PGothic"), 9f);
+#endif
             cmbRegion.Items.AddRange(new[]
             {
                 new ComboItem("メイプルワールド"){ Value = 0 },
