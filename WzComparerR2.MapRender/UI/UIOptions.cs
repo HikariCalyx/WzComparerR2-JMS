@@ -590,7 +590,7 @@ namespace WzComparerR2.MapRender.UI
                  "[`] チャットウィンドウ",
                  "[Alt+Enter] 解像度の変更",
                  "[S] スクショ範囲を表示",
-                 "[ScrollLock] スクショ",
+                 "[ScrollLock] / [F12] スクショ",
                  "",
                  "マウス:",
                  "",
