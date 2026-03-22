@@ -139,7 +139,7 @@ namespace WzComparerR2
                         foreach (var j in i.Value)
                         {
                             sb.AppendLine($"|Quote{quoteIndex}={j}");
-                            sb.AppendLine($"|Citation{quoteIndex}={i.Key}");
+                            sb.AppendLine($"|QuoteCitation{quoteIndex}={i.Key}");
                             quoteIndex++;
                         }
                     }
