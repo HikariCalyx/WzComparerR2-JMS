@@ -55,9 +55,8 @@ namespace WzComparerR2
             this.btnExport.Size = new System.Drawing.Size(155, 23);
             this.btnExport.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
             this.btnExport.TabIndex = 9;
-            this.btnExport.Text = "エクスポート (利用不可)";
+            this.btnExport.Text = "エクスポート";
             this.btnExport.Click += new System.EventHandler(this.btnExport_Click);
-            this.btnExport.Enabled = false;
             // 
             // btnLocateExtraIllust
             // 
