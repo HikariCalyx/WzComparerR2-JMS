@@ -88,12 +88,12 @@ namespace WzComparerR2.CharaSim
                 case GearPropType.incMADr: return "魔力: " + sign + value + "%";
                 case GearPropType.incPDD: return "防御力 : " + sign + value;
                 case GearPropType.incPDDr: return "防御力 : " + sign + value + "%";
-                //case GearPropType.incMDD: return "MAGIC DEF. : " + sign + value;
-                //case GearPropType.incMDDr: return "MAGIC DEF. : " + sign + value + "%";
-                //case GearPropType.incACC: return "ACCURACY : " + sign + value;
-                //case GearPropType.incACCr: return "ACCURACY : " + sign + value + "%";
-                //case GearPropType.incEVA: return "AVOIDABILITY : " + sign + value;
-                //case GearPropType.incEVAr: return "AVOIDABILITY : " + sign + value + "%";
+                case GearPropType.incMDD: return "魔法防御力 : " + sign + value;
+                case GearPropType.incMDDr: return "魔法防御力 : " + sign + value + "%";
+                case GearPropType.incACC: return "命中率 : " + sign + value;
+                case GearPropType.incACCr: return "命中率 : " + sign + value + "%";
+                case GearPropType.incEVA: return "回避率 : " + sign + value;
+                case GearPropType.incEVAr: return "回避率 : " + sign + value + "%";
                 case GearPropType.incSpeed: return "移動速度: " + sign + value;
                 case GearPropType.incJump: return "ジャンプ力: " + sign + value;
                 case GearPropType.incCraft: return "器用さ: " + sign + value;
@@ -157,7 +157,9 @@ namespace WzComparerR2.CharaSim
                 case GearPropType.incPAD_incMAD:
                 case GearPropType.incAD: return "攻撃力/魔力" + sign + value;
                 case GearPropType.incPDD_incMDD: return "防御力" + sign + value;
-                //case GearPropType.incACC_incEVA: return "ACC/AVO :" + sign + value;
+                case GearPropType.incACC_incEVA: return "命中/回避率 :" + sign + value;
+                case GearPropType.incCRT: return "クリティカル率 :" + sign + value;
+                case GearPropType.incCRD: return "クリティカルダメージ: " + sign + value;
 
                 case GearPropType.incARC: return "ARC : " + sign + value;
                 case GearPropType.incAUT: return "AUT : " + sign + value;
@@ -275,6 +277,30 @@ namespace WzComparerR2.CharaSim
                     res[0] = "防御力";
                     res[1] = sign + value + "%";
                     return res;
+                case GearPropType.incMDD:
+                    res[0] = "魔法防御力";
+                    res[1] = sign + value;
+                    return res;
+                case GearPropType.incMDDr:
+                    res[0] = "魔法防御力";
+                    res[1] = sign + value + "%";
+                    return res;
+                case GearPropType.incACC:
+                    res[0] = "命中率";
+                    res[1] = sign + value;
+                    return res;
+                case GearPropType.incACCr:
+                    res[0] = "命中率";
+                    res[1] = sign + value + "%";
+                    return res;
+                case GearPropType.incEVA:
+                    res[0] = "回避率";
+                    res[1] = sign + value;
+                    return res;
+                case GearPropType.incEVAr:
+                    res[0] = "回避率";
+                    res[1] = sign + value + "%";
+                    return res;
                 case GearPropType.incSpeed:
                     res[0] = "移動速度";
                     res[1] = sign + value;
@@ -292,9 +318,17 @@ namespace WzComparerR2.CharaSim
                     res[0] = "ダメージ";
                     res[1] = sign + value + "%";
                     return res;
+                case GearPropType.incCRT:
+                    res[0] = "クリティカル率";
+                    res[1] = sign + value;
+                    return res;
                 case GearPropType.incCr:
                     res[0] = "クリティカル率";
                     res[1] = sign + value + "%";
+                    return res;
+                case GearPropType.incCRD:
+                    res[0] = "クリティカルダメージ";
+                    res[1] = sign + value;
                     return res;
                 case GearPropType.incCDr:
                     res[0] = "クリティカルダメージ";
@@ -438,7 +472,9 @@ namespace WzComparerR2.CharaSim
                 case GearPropType.incPDD_incMDD:
                     res[0] = "防御力  " + sign + value;
                     return res;
-
+                case GearPropType.incACC_incEVA: 
+                    res[0] = "命中/回避率 :" + sign + value;
+                    return res;
                 case GearPropType.Etuc:
                     res[0] = $"#$dエクセプショナル : なし# (最大{value}回)";
                     return res;
