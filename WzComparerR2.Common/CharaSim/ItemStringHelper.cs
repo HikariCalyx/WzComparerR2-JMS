@@ -653,6 +653,7 @@ namespace WzComparerR2.CharaSim
                 case GearType.head_n:  return "スキン";
                 case GearType.face:
                 case GearType.face2:
+                case GearType.face3:
                 case GearType.face_n: return "顔";
                 case GearType.hair:
                 case GearType.hair2:
