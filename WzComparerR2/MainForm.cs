@@ -3450,9 +3450,18 @@ namespace WzComparerR2
 
                 case Wz_Type.Mob:
                     if (selectedNode.FullPathToFile.Contains("BossPattern")) return; // Ignore BossPattern to prevent Auto Preview crash
-                    if ((image = selectedNode.GetValue<Wz_Image>()) == null || !image.TryExtract())
-                        return;
-                    var mob = Mob.CreateFromNode(image.Node, PluginManager.FindWz);
+                    Wz_Node mobNode;
+                    if ((image = selectedNode.GetValue<Wz_Image>()) != null)
+                    {
+                        if (!image.TryExtract()) return;
+                        mobNode = image.Node;
+                    }
+                    else
+                    {
+                        // JMS structure: node is a mob ID inside a consolidated Mob.img
+                        mobNode = selectedNode;
+                    }
+                    var mob = Mob.CreateFromNode(mobNode, PluginManager.FindWz);
                     obj = mob;
                     if (stringLinker == null || !stringLinker.StringMob.TryGetValue(mob.ID, out sr))
                     {
