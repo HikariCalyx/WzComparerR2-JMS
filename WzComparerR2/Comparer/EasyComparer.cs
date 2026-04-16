@@ -2199,12 +2199,12 @@ namespace WzComparerR2.Comparer
                         gearNodePath = String.Format(@"Character\TamingMob\{0:D}.img", gearID);
                         categoryPath = "TamedMonster_テイムドモンスター";
                     }
-                    else if (Regex.IsMatch(gearID, "^0002|^0005")) // 判断开头是否是0002或0005
+                    else if (Regex.IsMatch(gearID, "^0002|^0005|^0008")) // 判断开头是否是0002或0005
                     {
                         gearNodePath = String.Format(@"Character\Face\{0:D}.img", gearID);
                         categoryPath = "Cosmetic_化粧";
                     }
-                    else if (Regex.IsMatch(gearID, "^0003|^0004|^0006")) // 判断开头是否是0003、0004或0006
+                    else if (Regex.IsMatch(gearID, "^0003|^0004|^0006|^0007")) // 判断开头是否是0003、0004或0006
                     {
                         gearNodePath = String.Format(@"Character\Hair\{0:D}.img", gearID);
                         categoryPath = "Cosmetic_化粧";
@@ -2485,12 +2485,12 @@ namespace WzComparerR2.Comparer
                         gearNodePath = String.Format(@"Character\TamingMob\{0:D}.img", gearID);
                         categoryPath = "TamedMonster_テイムドモンスター";
                     }
-                    else if (Regex.IsMatch(gearID, "^0002|^0005")) // 判断开头是否是0002或0005
+                    else if (Regex.IsMatch(gearID, "^0002|^0005|^0008")) // 判断开头是否是0002或0005
                     {
                         gearNodePath = String.Format(@"Character\Face\{0:D}.img", gearID);
                         categoryPath = "Cosmetic_化粧";
                     }
-                    else if (Regex.IsMatch(gearID, "^0003|^0004|^0006")) // 判断开头是否是0003、0004或0006
+                    else if (Regex.IsMatch(gearID, "^0003|^0004|^0006|^0007")) // 判断开头是否是0003、0004或0006
                     {
                         gearNodePath = String.Format(@"Character\Hair\{0:D}.img", gearID);
                         categoryPath = "Cosmetic_化粧";
