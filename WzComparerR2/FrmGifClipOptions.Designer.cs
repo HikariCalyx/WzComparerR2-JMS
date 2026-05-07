@@ -72,7 +72,11 @@ namespace WzComparerR2
             this.txtHeightNew = new DevComponents.Editors.IntegerInput();
             this.txtScaleNew = new DevComponents.Editors.IntegerInput();
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
-            this.chk768Preset = new System.Windows.Forms.CheckBox();
+            this.btnPreset = new DevComponents.DotNetBar.ButtonX();
+            this.btn768CenterPreset = new DevComponents.DotNetBar.ButtonItem();
+            this.btn768ShrinkPreset = new DevComponents.DotNetBar.ButtonItem();
+            this.btn768SpecialPreset = new DevComponents.DotNetBar.ButtonItem();
+            this.btnDefaultPreset = new DevComponents.DotNetBar.ButtonItem();
             this.tableLayoutPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.txtStartTime)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.txtStopTime)).BeginInit();
@@ -865,7 +869,7 @@ namespace WzComparerR2
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 40F));
             this.tableLayoutPanel2.Controls.Add(this.buttonCancel, 1, 0);
             this.tableLayoutPanel2.Controls.Add(this.buttonOK, 0, 0);
-            this.tableLayoutPanel2.Controls.Add(this.chk768Preset, 2, 0);
+            this.tableLayoutPanel2.Controls.Add(this.btnPreset, 2, 0);
             this.tableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.tableLayoutPanel2.Location = new System.Drawing.Point(8, 313);
             this.tableLayoutPanel2.Name = "tableLayoutPanel2";
@@ -874,18 +878,51 @@ namespace WzComparerR2
             this.tableLayoutPanel2.Size = new System.Drawing.Size(328, 30);
             this.tableLayoutPanel2.TabIndex = 3;
             // 
-            // chk768Preset
+            // btnPreset
             // 
-            this.chk768Preset.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.chk768Preset.AutoSize = true;
-            this.chk768Preset.Font = new System.Drawing.Font("MS PGothic", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
-            this.chk768Preset.Location = new System.Drawing.Point(199, 7);
-            this.chk768Preset.Name = "chk768Preset";
-            this.chk768Preset.Size = new System.Drawing.Size(120, 16);
-            this.chk768Preset.TabIndex = 2;
-            this.chk768Preset.Text = "1366x768プリセット";
-            this.chk768Preset.UseVisualStyleBackColor = true;
-            this.chk768Preset.CheckedChanged += new System.EventHandler(this.chk768Preset_CheckedChanged);
+            this.btnPreset.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.btnPreset.AutoSize = true;
+            this.btnPreset.Font = new System.Drawing.Font("MS PGothic", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
+            this.btnPreset.ColorTable = DevComponents.DotNetBar.eButtonColor.OrangeWithBackground;
+            this.btnPreset.AutoExpandOnClick = true;
+            this.btnPreset.Location = new System.Drawing.Point(199, 7);
+            this.btnPreset.Name = "btnPreset";
+            this.btnPreset.Size = new System.Drawing.Size(120, 16);
+            this.btnPreset.TabIndex = 2;
+            this.btnPreset.Text = "トリムプリセット";
+            this.btnPreset.SubItems.AddRange(new DevComponents.DotNetBar.BaseItem[] {
+            this.btn768CenterPreset,
+            this.btn768ShrinkPreset,
+            this.btn768SpecialPreset,
+            this.btnDefaultPreset});
+            //
+            // btn768CenterPreset
+            //
+            this.btn768CenterPreset.Name = "btn768CenterPreset";
+            this.btn768CenterPreset.Text = "origin設定により、表示サイズは1366x768となります";
+            this.btn768CenterPreset.Tooltip = "このプリセットでは、実際のアニメーションの左上と右下のオフセットが (-683, -384) と (683, 384) であると想定されます。\r\n\r\n適切な使用例: ボスカットシーン動画";
+            this.btn768CenterPreset.Click += new System.EventHandler(this.btn768CenterPreset_Click);
+            //
+            // btn768ShrinkPreset
+            //
+            this.btn768ShrinkPreset.Name = "btn768ShrinkPreset";
+            this.btn768ShrinkPreset.Text = "元のサイズを基準に、四辺を均等に1366x768にトリミングします";
+            this.btn768ShrinkPreset.Tooltip = "このプリセットは、実際のサイズと1366x768のデルタを計算し、4辺からトリミングします。";
+            this.btn768ShrinkPreset.Click += new System.EventHandler(this.btn768ShrinkPreset_Click);
+            //
+            // btn768SpecialPreset
+            //
+            this.btn768SpecialPreset.Name = "btn768SpecialPreset";
+            this.btn768SpecialPreset.Text = "特別な数式を使用して1366x768にトリミングします";
+            this.btn768SpecialPreset.Tooltip = "このプリセットは、左上隅のオフセットを実際のサイズと1366x768間のデルタとして構成します。\r\n\r\n適切な使用例: 特定のオリジンスキル動画";
+            this.btn768SpecialPreset.Click += new System.EventHandler(this.btn768SpecialPreset_Click);
+            //
+            // btnDefaultPreset
+            //
+            this.btnDefaultPreset.Name = "btnDefaultPreset";
+            this.btnDefaultPreset.Text = "デフォルト";
+            this.btnDefaultPreset.Tooltip = "値をデフォルトに戻します。";
+            this.btnDefaultPreset.Click += new System.EventHandler(this.btnDefaultPreset_Click);
             // 
             // FrmGifClipOptions
             // 
@@ -974,6 +1011,10 @@ namespace WzComparerR2
         private DevComponents.Editors.IntegerInput txtWidthNew;
         private DevComponents.Editors.IntegerInput txtHeightNew;
         private DevComponents.Editors.IntegerInput txtScaleNew;
-        private System.Windows.Forms.CheckBox chk768Preset;
+        private DevComponents.DotNetBar.ButtonX btnPreset;
+        private DevComponents.DotNetBar.ButtonItem btn768CenterPreset;
+        private DevComponents.DotNetBar.ButtonItem btn768ShrinkPreset;
+        private DevComponents.DotNetBar.ButtonItem btn768SpecialPreset;
+        private DevComponents.DotNetBar.ButtonItem btnDefaultPreset;
     }
 }

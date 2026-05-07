@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace WzComparerR2.CharaSim
 {
@@ -74,8 +75,8 @@ namespace WzComparerR2.CharaSim
                 case GearPropType.incINTr: return "INT : " + sign + value + "%";
                 case GearPropType.incLUK: return "LUK : " + sign + value;
                 case GearPropType.incLUKr: return "LUK : " + sign + value + "%";
-                case GearPropType.incAllStat: return "Allｽﾃｰﾀｽ：" + sign + value;
-                case GearPropType.statR: return "Allｽﾃｰﾀｽ: " + sign + value + "%";
+                case GearPropType.incAllStat: return "全ステータス" + sign + value;
+                case GearPropType.statR: return "全ステータス" + sign + value + "%";
                 case GearPropType.incMHP: return "最大HP : " + sign + value;
                 case GearPropType.incMHPr: return "最大HP : " + sign + value + "%";
                 case GearPropType.incMMP: return "最大MP : " + sign + value;
@@ -87,12 +88,12 @@ namespace WzComparerR2.CharaSim
                 case GearPropType.incMADr: return "魔力: " + sign + value + "%";
                 case GearPropType.incPDD: return "防御力 : " + sign + value;
                 case GearPropType.incPDDr: return "防御力 : " + sign + value + "%";
-                //case GearPropType.incMDD: return "MAGIC DEF. : " + sign + value;
-                //case GearPropType.incMDDr: return "MAGIC DEF. : " + sign + value + "%";
-                //case GearPropType.incACC: return "ACCURACY : " + sign + value;
-                //case GearPropType.incACCr: return "ACCURACY : " + sign + value + "%";
-                //case GearPropType.incEVA: return "AVOIDABILITY : " + sign + value;
-                //case GearPropType.incEVAr: return "AVOIDABILITY : " + sign + value + "%";
+                case GearPropType.incMDD: return "魔法防御力 : " + sign + value;
+                case GearPropType.incMDDr: return "魔法防御力 : " + sign + value + "%";
+                case GearPropType.incACC: return "命中率 : " + sign + value;
+                case GearPropType.incACCr: return "命中率 : " + sign + value + "%";
+                case GearPropType.incEVA: return "回避率 : " + sign + value;
+                case GearPropType.incEVAr: return "回避率 : " + sign + value + "%";
                 case GearPropType.incSpeed: return "移動速度: " + sign + value;
                 case GearPropType.incJump: return "ジャンプ力: " + sign + value;
                 case GearPropType.incCraft: return "器用さ: " + sign + value;
@@ -120,7 +121,9 @@ namespace WzComparerR2.CharaSim
                 case GearPropType.onlyEquip: return value == 0 ? null : "固有装備アイテム";
                 case GearPropType.notExtend: return value == 0 ? null : "有効期間延長不可";
                 case GearPropType.accountSharableAfterExchange: return value == 0 ? null : "1回交換可能\n(取引後、ワールド内のキャラクター間移動のみ可能)";
+                case GearPropType.noPrism: return value == 0 ? null : "プリズム使用不可";
                 case GearPropType.mintable: return value == 0 ? null : "ミンティング可能";
+                case GearPropType.notMintable: return value == 0 ? null : "ミンティング不可";
                 case GearPropType.tradeAvailable:
                     switch (value)
                     {
@@ -145,18 +148,23 @@ namespace WzComparerR2.CharaSim
                 case GearPropType.colorvar: return value == 0 ? null : "#cこのアイテムは染料使用可能#";
                 case GearPropType.cantRepair: return value == 0 ? null : "修理不可";
                 case GearPropType.noLookChange: return value == 0 ? null : "神秘のカナトコ使用不可";
+                case GearPropType.reissueBan: return value == 0 ? null : "再発行不可";
 
-                case GearPropType.incAllStat_incMHP25: return "Allｽﾃｰﾀｽ：" + sign + value + ", 最大HP : " + sign + (value * 25);// check once Lv 250 set comes out in GMS
-                case GearPropType.incAllStat_incMHP50_incMMP50: return "Allｽﾃｰﾀｽ：" + sign + value + ", 最大HP / 最大MP : " + sign + (value * 50);
-                case GearPropType.incMHP_incMMP: return "最大HP / 最大MP : " + sign + value;
-                case GearPropType.incMHPr_incMMPr: return "最大HP / 最大MP : " + sign + value + "%";
+                case GearPropType.incAllStat_incMHP25: return "全ステータス" + sign + value + ", 最大HP" + sign + (value * 25);// check once Lv 250 set comes out in GMS
+                case GearPropType.incAllStat_incMHP50_incMMP50: return "全ステータス" + sign + value + ", 最大HP/最大MP" + sign + (value * 50);
+                case GearPropType.incMHP_incMMP: return "最大HP / 最大MP" + sign + value;
+                case GearPropType.incMHPr_incMMPr: return "最大HP / 最大MP" + sign + value + "%";
                 case GearPropType.incPAD_incMAD:
-                case GearPropType.incAD: return "攻撃力 / 魔力 : " + sign + value;
-                case GearPropType.incPDD_incMDD: return "防御力 : " + sign + value;
-                //case GearPropType.incACC_incEVA: return "ACC/AVO :" + sign + value;
+                case GearPropType.incAD: return "攻撃力/魔力" + sign + value;
+                case GearPropType.incPDD_incMDD: return "防御力" + sign + value;
+                case GearPropType.incACC_incEVA: return "命中/回避率 :" + sign + value;
+                case GearPropType.incCRT: return "クリティカル率 :" + sign + value;
+                case GearPropType.incCRD: return "クリティカルダメージ: " + sign + value;
 
                 case GearPropType.incARC: return "ARC : " + sign + value;
                 case GearPropType.incAUT: return "AUT : " + sign + value;
+
+                case GearPropType.incCHUC: return "スターフォース : " + sign + value;
 
                 case GearPropType.Etuc: return "エクセプショナル強化かできます。 (最大\n\r: " + value + "回)";
                 case GearPropType.CuttableCount: return "はさみ使用可能回数：" + value + "回";
@@ -218,11 +226,11 @@ namespace WzComparerR2.CharaSim
                     res[1] = sign + value + "%";
                     return res;
                 case GearPropType.incAllStat:
-                    res[0] = "Allｽﾃｰﾀｽ";
+                    res[0] = "全ステータス";
                     res[1] = sign + value;
                     return res;
                 case GearPropType.statR:
-                    res[0] = "Allｽﾃｰﾀｽ";
+                    res[0] = "全ステータス";
                     res[1] = sign + value + "%";
                     return res;
                 case GearPropType.incMHP:
@@ -269,6 +277,30 @@ namespace WzComparerR2.CharaSim
                     res[0] = "防御力";
                     res[1] = sign + value + "%";
                     return res;
+                case GearPropType.incMDD:
+                    res[0] = "魔法防御力";
+                    res[1] = sign + value;
+                    return res;
+                case GearPropType.incMDDr:
+                    res[0] = "魔法防御力";
+                    res[1] = sign + value + "%";
+                    return res;
+                case GearPropType.incACC:
+                    res[0] = "命中率";
+                    res[1] = sign + value;
+                    return res;
+                case GearPropType.incACCr:
+                    res[0] = "命中率";
+                    res[1] = sign + value + "%";
+                    return res;
+                case GearPropType.incEVA:
+                    res[0] = "回避率";
+                    res[1] = sign + value;
+                    return res;
+                case GearPropType.incEVAr:
+                    res[0] = "回避率";
+                    res[1] = sign + value + "%";
+                    return res;
                 case GearPropType.incSpeed:
                     res[0] = "移動速度";
                     res[1] = sign + value;
@@ -286,9 +318,17 @@ namespace WzComparerR2.CharaSim
                     res[0] = "ダメージ";
                     res[1] = sign + value + "%";
                     return res;
+                case GearPropType.incCRT:
+                    res[0] = "クリティカル率";
+                    res[1] = sign + value;
+                    return res;
                 case GearPropType.incCr:
                     res[0] = "クリティカル率";
                     res[1] = sign + value + "%";
+                    return res;
+                case GearPropType.incCRD:
+                    res[0] = "クリティカルダメージ";
+                    res[1] = sign + value;
                     return res;
                 case GearPropType.incCDr:
                     res[0] = "クリティカルダメージ";
@@ -303,12 +343,12 @@ namespace WzComparerR2.CharaSim
                     return res;
                 case GearPropType.incBDR:
                 case GearPropType.bdR:
-                    res[0] = "ﾎﾞｽﾓﾝｽﾀｰﾀﾞﾒｰｼﾞ";
+                    res[0] = "ボスモンスター攻撃時のダメージ";
                     res[1] = "+" + value + "%";
                     return res;
                 case GearPropType.incIMDR:
                 case GearPropType.imdR:
-                    res[0] = "ﾓﾝｽﾀｰ防御率無視";
+                    res[0] = "モンスター防御率無視";
                     res[1] = "+" + value + "%";
                     return res;
                 case GearPropType.limitBreak:
@@ -351,10 +391,10 @@ namespace WzComparerR2.CharaSim
                     res[0] = value == 0 ? null : "#$rﾜｰﾙﾄﾞ内の自分のｷｬﾗｸﾀｰ間で1回移動可能 (移動後交換不可)#";
                     return res;
                 case GearPropType.only:
-                    res[0] = value == 0 ? null : "#$r固有ｱｲﾃﾑ#";
+                    res[0] = value == 0 ? null : "#$r重複所持不可#";
                     return res;
                 case GearPropType.onlyEquip:
-                    res[0] = value == 0 ? null : "#$r固有装備アイテム#";
+                    res[0] = value == 0 ? null : "#$r重複装着不可#";
                     return res;
                 case GearPropType.equipTradeBlock:
                     res[0] = value == 0 ? null : "#$r装着すると交換不可#";
@@ -374,17 +414,26 @@ namespace WzComparerR2.CharaSim
                 case GearPropType.noLookChange:
                     res[0] = value == 0 ? null : "#$r神秘のカナトコ使用不可#";
                     return res;
+                case GearPropType.reissueBan:
+                    res[0] = value == 0 ? null : "#$r再発行不可#";
+                    return res;
+                case GearPropType.noPrism:
+                    res[0] = value == 0 ? null : "#$rプリズム使用不可#";
+                    return res;
                 case GearPropType.mintable:
                     res[0] = value == 0 ? null : "#$rミンティング可能#";
+                    return res;
+                case GearPropType.notMintable:
+                    res[0] = value == 0 ? null : "#$rミンティング不可#";
                     return res;
                 case GearPropType.tradeAvailable:
                     switch (value)
                     {
                         case 1:
-                            res[0] = "#$gカルマのはさみを使用すると1回交換可能になります#";
+                            res[0] = "#$gカルマのはさみ使用すると1回交換可能#";
                             return res;
                         case 2:
-                            res[0] = "#$gカルマのはさみを使用すると1回交換可能になります#";
+                            res[0] = "#$gカルマのはさみ使用すると1回交換可能#";
                             return res;
                         default: return res;
                     }
@@ -405,25 +454,27 @@ namespace WzComparerR2.CharaSim
                 //case GearPropType.cantRepair: return value == 0 ? null : "수리 불가";
 
                 case GearPropType.incAllStat_incMHP25:
-                    res[0] = "Allｽﾃｰﾀｽ  " + sign + value + ", 最大HP  " + sign + (value * 25);
+                    res[0] = "全ステータス  " + sign + value + ", 最大HP  " + sign + (value * 25);
                     return res;
                 case GearPropType.incAllStat_incMHP50_incMMP50:
-                    res[0] = "Allｽﾃｰﾀｽ  " + sign + value + ", 最大HP / 最大MP  " + sign + (value * 50);
+                    res[0] = "全ステータス  " + sign + value + ", 最大HP/最大MP  " + sign + (value * 50);
                     return res;
                 case GearPropType.incMHP_incMMP:
-                    res[0] = "最大HP / 最大MP  " + sign + value;
+                    res[0] = "最大HP/最大MP  " + sign + value;
                     return res;
                 case GearPropType.incMHPr_incMMPr:
-                    res[0] = "最大HP / 最大MP  " + sign + value + "%";
+                    res[0] = "最大HP/最大MP  " + sign + value + "%";
                     return res;
                 case GearPropType.incPAD_incMAD:
                 case GearPropType.incAD:
-                    res[0] = "攻撃力 / 魔力  " + sign + " " + value;
+                    res[0] = "攻撃力/魔力  " + sign + " " + value;
                     return res;
                 case GearPropType.incPDD_incMDD:
                     res[0] = "防御力  " + sign + value;
                     return res;
-
+                case GearPropType.incACC_incEVA: 
+                    res[0] = "命中/回避率 :" + sign + value;
+                    return res;
                 case GearPropType.Etuc:
                     res[0] = $"#$dエクセプショナル : なし# (最大{value}回)";
                     return res;
@@ -602,11 +653,14 @@ namespace WzComparerR2.CharaSim
                 case GearType.head_n:  return "スキン";
                 case GearType.face:
                 case GearType.face2:
+                case GearType.face3:
                 case GearType.face_n: return "顔";
                 case GearType.hair:
                 case GearType.hair2:
                 case GearType.hair3:
-                case GearType.hair_n: return "髮";
+                case GearType.hair4:
+                case GearType.hair_n:
+                case GearType.hair2_n: return "髮";
                 case GearType.faceAccessory: return "顔の飾り";
                 case GearType.eyeAccessory: return "目の飾り";
                 case GearType.earrings: return "イヤリング";
@@ -623,11 +677,11 @@ namespace WzComparerR2.CharaSim
                 case GearType.dragonTail: return "ドラゴンしっぽ飾り";
                 case GearType.glove: return "手袋";
                 case GearType.longcoat: return "服 (全身) ";
-                case GearType.machineEngine: return "メカニックエンジン";
-                case GearType.machineArms: return "メカニックアーム";
-                case GearType.machineLegs: return "メカニックレッグ";
-                case GearType.machineBody: return "メカニックフレーム";
-                case GearType.machineTransistors: return "メカニックトランジスター";
+                case GearType.machineEngine: return "エンジン";
+                case GearType.machineArms: return "アーム";
+                case GearType.machineLegs: return "レッグ";
+                case GearType.machineBody: return "フレーム";
+                case GearType.machineTransistors: return "トランジスター";
                 case GearType.pants: return "服 (下) ";
                 case GearType.ring: return "指輪";
                 case GearType.shield: return "盾";
@@ -660,9 +714,9 @@ namespace WzComparerR2.CharaSim
                 case GearType.knuckle: return "ナックル";
                 case GearType.gun: return "銃";
                 case GearType.android: return "アンドロイド";
-                case GearType.machineHeart: return "機械心臓部";
-                case GearType.pickaxe: return "採鉱工具";
-                case GearType.shovel: return "薬草採集工具";
+                case GearType.machineHeart: return "機械心臓";
+                case GearType.pickaxe: return "採鉱道具";
+                case GearType.shovel: return "薬草採集道具";
                 case GearType.pocket: return "ポケットアイテム";
                 case GearType.dualBow: return "デュアルボウガン";
                 case GearType.handCannon: return "ハンドキャノン";
@@ -756,8 +810,16 @@ namespace WzComparerR2.CharaSim
                 case GearType.celestialLight: return "セレスティアルライト";
                 case GearType.compass: return "コンパス";
 
-                case GearType.gram: return "グラム";
-                case GearType.keir: return "ケイア";
+                case GearType.astra: return "アストラ補助武器";
+
+                // case GearType.gram: return "グラム";
+                // case GearType.keir: return "ケイア";
+
+                case GearType.longSword: return "長剣";
+                case GearType.yeouiGem: return "如意宝珠";
+
+                case GearType.onmyoSen: return "陰陽扇";
+                case GearType.kannaReifu: return "霊符";
 
                 default: return null;
             }
@@ -800,8 +862,9 @@ namespace WzComparerR2.CharaSim
         /// </summary>
         /// <param Name="Type">表示装备类型的GearType。</param>
         /// <returns></returns>
-        public static string GetExtraJobReqString(GearType type)
+        public static string GetExtraJobReqString(GearType type, bool hasReqSpecJobs = false, Dictionary<int, AstraSubWeaponInfo> loadedAstraSubWeapons = null, int id = 0)
         {
+            string str = null;
             switch (type)
             {
                 //0xxx
@@ -823,9 +886,20 @@ namespace WzComparerR2.CharaSim
                 case GearType.cannonGunPowder2: return "キャノンシューター職業群着用可能";
                 case GearType.box:
                 case GearType.boxingClaw: return "ジェット着用可能";
+                case GearType.shield:
+                    if (!hasReqSpecJobs && GetAstraExtraJobReqString(loadedAstraSubWeapons, id, out str))
+                    {
+                        return str;
+                    }
+                    return null;
 
                 //1xxx
-                case GearType.cygnusGem: return "シグナス騎士団着用可能";
+                case GearType.cygnusGem:
+                    if (!hasReqSpecJobs && GetAstraExtraJobReqString(loadedAstraSubWeapons, id, out str))
+                    {
+                        return str;
+                    }    
+                    return "シグナス騎士団着用可能";
 
                 //2xxx
                 case GearType.aranPendulum: return GetExtraJobReqString(21);
@@ -861,7 +935,8 @@ namespace WzComparerR2.CharaSim
                 case GearType.katana:
                 case GearType.kodachi:
                 case GearType.kodachi2: return GetExtraJobReqString(41);
-                case GearType.fan: return "カンナ";
+                case GearType.fan:
+                case GearType.kannaReifu: return "カンナ";
 
                 //5xxx
                 case GearType.soulShield: return "ミハエル着用可能";
@@ -903,11 +978,14 @@ namespace WzComparerR2.CharaSim
                 case GearType.ornament: return GetExtraJobReqString(162);
 
                 //18xxx
-                case GearType.gram:
-                case GearType.keir: return GetExtraJobReqString(181);
+                // case GearType.gram:
+                // case GearType.keir: return GetExtraJobReqString(181);
 
                 case GearType.celestialLight:
                 case GearType.compass: return GetExtraJobReqString(182);
+
+                case GearType.longSword:
+                case GearType.yeouiGem: return GetExtraJobReqString(161);
                 default: return null;
             }
         }
@@ -945,14 +1023,128 @@ namespace WzComparerR2.CharaSim
                 case 152: return "イリウム着用可能";
                 case 154: return "カーリー着用可能";
                 case 155: return "アーク着用可能";
+                case 161: return "レン着用可能";
                 case 162: return "ララ着用可能";
                 case 164: return "虎影着用可能";
                 case 172: return "リン着用可能";
                 case 175: return "墨玄着用可能";
                 case 181: return "エリル着用可能";
                 case 182: return "シア着用可能";
+                case 183: return "アイエル着用可能";
 
                 default: return null;
+            }
+        }
+
+        public static string GetAstraWeaponType(int id)
+        {
+            int jobID = (id / 100) - 17200;
+            switch (jobID)
+            {
+                case 0: return GetGearTypeString(GearType.heroMedal);
+                case 1: return GetGearTypeString(GearType.rosario);
+                case 2: return GetGearTypeString(GearType.chain);
+                case 3: 
+                case 4: 
+                case 5: return GetGearTypeString(GearType.book1);
+                case 6: return GetGearTypeString(GearType.bowMasterFeather);
+                case 7: return GetGearTypeString(GearType.crossBowThimble);
+                case 8: return GetGearTypeString(GearType.relic);
+                case 9: return GetGearTypeString(GearType.nightLordPoutch);
+                case 10: return GetGearTypeString(GearType.shadowerSheath);
+                case 11: return GetGearTypeString(GearType.viperWristband);
+                case 12: return GetGearTypeString(GearType.captainSight);
+                case 13: return GetGearTypeString(GearType.cannonGunPowder);
+                case 14: 
+                case 15: 
+                case 16: 
+                case 17: 
+                case 18: return GetGearTypeString(GearType.cygnusGem);
+                case 19: return GetGearTypeString(GearType.aranPendulum);
+                case 20: return GetGearTypeString(GearType.evanPaper);
+                case 21: return GetGearTypeString(GearType.magicArrow);
+                case 22: return GetGearTypeString(GearType.card);
+                case 23: return GetGearTypeString(GearType.orb);
+                case 24: return GetGearTypeString(GearType.foxPearl);
+                case 25: 
+                case 26: return GetGearTypeString(GearType.demonShield);
+                case 27: return GetGearTypeString(GearType.battlemageBall);
+                case 28: return GetGearTypeString(GearType.wildHunterArrowHead);
+                case 29: return GetGearTypeString(GearType.mailin);
+                case 30: return GetGearTypeString(GearType.controller);
+                case 31: return GetGearTypeString(GearType.ExplosivePill);
+                case 32: return GetGearTypeString(GearType.soulShield);
+                case 33: return GetGearTypeString(GearType.novaMarrow);
+                case 34: return GetGearTypeString(GearType.weaponBelt);
+                case 35: return GetGearTypeString(GearType.transmitter);
+                case 36: return GetGearTypeString(GearType.soulBangle);
+                case 37: return "砂時計";
+                case 38: return GetGearTypeString(GearType.chess);
+                case 39: return GetGearTypeString(GearType.bracelet);
+                case 40: return GetGearTypeString(GearType.magicWing);
+                case 41: return GetGearTypeString(GearType.hexSeeker);
+                case 42: return GetGearTypeString(GearType.pathOfAbyss);
+                case 43: return GetGearTypeString(GearType.yeouiGem);
+                case 44: return GetGearTypeString(GearType.ornament);
+                case 45: return GetGearTypeString(GearType.fanTassel);
+
+                default: return GetGearTypeString(GearType.astra);
+            }
+        }
+
+        public static string GetAstraReqJob(int id)
+        {
+            int jobID = (id / 100) - 17200;
+            switch (jobID)
+            {
+                case 0: return GetExtraJobReqString(GearType.heroMedal);
+                case 1: return GetExtraJobReqString(GearType.rosario);
+                case 2: return GetExtraJobReqString(GearType.chain);
+                case 3: return GetExtraJobReqString(GearType.book1);
+                case 4: return GetExtraJobReqString(GearType.book2);
+                case 5: return GetExtraJobReqString(GearType.book3);
+                case 6: return GetExtraJobReqString(GearType.bowMasterFeather);
+                case 7: return GetExtraJobReqString(GearType.crossBowThimble);
+                case 8: return GetExtraJobReqString(GearType.relic);
+                case 9: return GetExtraJobReqString(GearType.nightLordPoutch);
+                case 10: return GetExtraJobReqString(GearType.shadowerSheath);
+                case 11: return GetExtraJobReqString(GearType.viperWristband);
+                case 12: return GetExtraJobReqString(GearType.captainSight);
+                case 13: return GetExtraJobReqString(GearType.cannonGunPowder);
+                case 14: return "ソウルマスター着用可能";
+                case 15: return "フレイムウィザード着用可能";
+                case 16: return "ウインドシューター着用可能";
+                case 17: return "ナイトウォーカー着用可能";
+                case 18: return "ストライカー着用可能";
+                case 19: return GetExtraJobReqString(GearType.aranPendulum);
+                case 20: return GetExtraJobReqString(GearType.evanPaper);
+                case 21: return GetExtraJobReqString(GearType.magicArrow);
+                case 22: return GetExtraJobReqString(GearType.card);
+                case 23: return GetExtraJobReqString(GearType.orb);
+                case 24: return GetExtraJobReqString(GearType.foxPearl);
+                case 25: return "デーモンスレイヤー着用可能";
+                case 26: return "デーモンアヴェンジャー着用可能";
+                case 27: return GetExtraJobReqString(GearType.battlemageBall);
+                case 28: return GetExtraJobReqString(GearType.wildHunterArrowHead);
+                case 29: return GetExtraJobReqString(GearType.mailin);
+                case 30: return GetExtraJobReqString(GearType.controller);
+                case 31: return GetExtraJobReqString(GearType.ExplosivePill);
+                case 32: return GetExtraJobReqString(GearType.soulShield);
+                case 33: return GetExtraJobReqString(GearType.novaMarrow);
+                case 34: return GetExtraJobReqString(GearType.weaponBelt);
+                case 35: return GetExtraJobReqString(GearType.transmitter);
+                case 36: return GetExtraJobReqString(GearType.soulBangle);
+                case 37: return GetExtraJobReqString(GearType.swordZB);
+                case 38: return GetExtraJobReqString(GearType.chess);
+                case 39: return GetExtraJobReqString(GearType.bracelet);
+                case 40: return GetExtraJobReqString(GearType.magicWing);
+                case 41: return GetExtraJobReqString(154);
+                case 42: return GetExtraJobReqString(GearType.pathOfAbyss);
+                case 43: return GetExtraJobReqString(GearType.yeouiGem);
+                case 44: return GetExtraJobReqString(GearType.ornament);
+                case 45: return GetExtraJobReqString(GearType.fanTassel);
+
+                default: return GetExtraJobReqString(GearType.astra);
             }
         }
 
@@ -973,22 +1165,58 @@ namespace WzComparerR2.CharaSim
             }
         }
 
-        public static string GetExtraJobReqString(IEnumerable<int> specJobs)
+        public static string GetExtraJobReqString(IEnumerable<int> specJobs, bool isMsnMode)
         {
             List<string> extraJobNames = new List<string>();
-            foreach (int specJob in specJobs)
+            if (isMsnMode)
             {
-                switch (specJob)
+                if (string.Join(",", specJobs) == "11,12,13,14,15,51")
                 {
-                    case 1: extraJobNames.AddRange(new[] { "ヒーロー", "パラデイン" }); break;
-                    case 2: extraJobNames.AddRange(new[] { "ｱｰｸﾒｲｼﾞ(氷･雷)", "ｱｰｸﾒｲｼﾞ(火･毒)", "ﾋﾞｼｮｯﾌﾟ" }); break;
-                    case 4: extraJobNames.Add("シャドー"); break;
-                    case 11: extraJobNames.Add("ソウルマスター"); break;
-                    case 12: extraJobNames.Add("\r\nﾌﾚｲﾑｳｨｻﾞｰﾄﾞ"); break;
-                    case 22: extraJobNames.Add("ｴｳﾞｧﾝ"); break;
-                    case 32: extraJobNames.Add("ﾊﾞﾄﾙﾒｲｼﾞ"); break;
-                    case 172: extraJobNames.Add("ﾘﾝ"); break;
-                    default: extraJobNames.Add(specJob.ToString()); break;
+                    return "シグナス騎士団職業";
+                }
+                else
+                {
+                    int classBranch = 0;
+                    int count = 0;
+                    foreach (int job in specJobs)
+                    {
+                        classBranch += job / 10;
+                        count++;
+                    }
+                    classBranch = classBranch / count;
+                    switch (classBranch)
+                    {
+                        case 0: return "冒険者職業";
+                        case 1: return "シグナス騎士団職業";
+                        case 2: return "英雄職業";
+                        case 3: return "レジスタンス職業";
+                        case 4: return "暁の陣職業";
+                        case 6: return "ノヴァ職業";
+                        case 12: return "アニメコラボ職業";
+                        case 15: return "レフ職業";
+                        case 16: return "アニマ職業";
+                        case 17: return "江湖職業";
+                        case 18: return "シャイン職業";
+
+                    }
+                }
+            }
+            else
+            {
+                foreach (int specJob in specJobs)
+                {
+                    switch (specJob)
+                    {
+                        case 1: extraJobNames.AddRange(new[] { "ヒーロー", "パラデイン" }); break;
+                        case 2: extraJobNames.AddRange(new[] { "アークメイジ(氷、雷)", "アークメイジ(火、毒)", "ビショップ" }); break;
+                        case 4: extraJobNames.Add("シャドー"); break;
+                        case 11: extraJobNames.Add("ソウルマスター"); break;
+                        case 12: extraJobNames.Add("フレイムウィザード"); break;
+                        case 22: extraJobNames.Add("エヴァン"); break;
+                        case 32: extraJobNames.Add("バトルメイジ"); break;
+                        case 172: extraJobNames.Add("リン"); break;
+                        default: extraJobNames.Add(specJob.ToString()); break;
+                    }
                 }
             }
             if (extraJobNames.Count == 0)
@@ -996,6 +1224,17 @@ namespace WzComparerR2.CharaSim
                 return null;
             }
             return string.Join("、", extraJobNames) + "着用可能";
+        }
+
+        public static bool GetAstraExtraJobReqString(Dictionary<int, AstraSubWeaponInfo> loadedAstraSubWeapons, int id, out string str)
+        {
+            str = null;
+            if (loadedAstraSubWeapons != null && loadedAstraSubWeapons.TryGetValue(id, out AstraSubWeaponInfo value))
+            {
+                str = $"{Regex.Replace(ItemStringHelper.GetJobName(value.Job), @"\s*\(\d{1,2}차\)$", "")} 착용 가능";
+                return true;
+            }
+            return false;
         }
 
         public static string GetItemPropString(ItemPropType propType, long value)
@@ -1029,6 +1268,8 @@ namespace WzComparerR2.CharaSim
                     return value == 0 ? "一般ペット(他の一般ペットと重複使用不可)" : "マルチペット(他のペットと最大3個重複使用可能)";
                 case ItemPropType.mintable:
                     return GetGearPropString(GearPropType.mintable, value);
+                case ItemPropType.notMintable:
+                    return GetGearPropString(GearPropType.notMintable, value);
                 default:
                     return null;
             }
@@ -1182,7 +1423,7 @@ namespace WzComparerR2.CharaSim
                 case 1110: return "ソウルマスター(2次)";
                 case 1111: return "ソウルマスター(3次)";
                 case 1112: return "ソウルマスター(4次)";
-                case 1114: return "ソウルマスター((6次)";
+                case 1114: return "ソウルマスター(6次)";
                 case 1200: return "フレイムウィザード(1次)";
                 case 1210: return "フレイムウィザード(2次)";
                 case 1211: return "フレイムウィザード(3次)";
@@ -1290,6 +1531,9 @@ namespace WzComparerR2.CharaSim
 
                 case 4001: return "ハヤト";
                 case 4002: return "カンナ";
+                case 4003:
+                case 4004:
+                case 4005: return "暁の陣";
                 case 4100: return "ハヤト(1次)";
                 case 4110: return "ハヤト(2次)";
                 case 4111: return "ハヤト(3次)";
@@ -1300,6 +1544,21 @@ namespace WzComparerR2.CharaSim
                 case 4211: return "カンナ(3次)";
                 case 4212: return "カンナ(4次)";
                 case 4214: return "カンナ(6次)";
+                case 4300: return "暁の陣弓使い(1次)";
+                case 4310: return "暁の陣弓使い(2次)";
+                case 4311: return "暁の陣弓使い(3次)";
+                case 4312: return "暁の陣弓使い(4次)";
+                case 4314: return "暁の陣弓使い(6次)";
+                case 4400: return "暁の陣盗賊(1次)";
+                case 4410: return "暁の陣盗賊(2次)";
+                case 4411: return "暁の陣盗賊(3次)";
+                case 4412: return "暁の陣盗賊(4次)";
+                case 4414: return "暁の陣盗賊(6次)";
+                case 4500: return "暁の陣海賊(1次)";
+                case 4510: return "暁の陣海賊(2次)";
+                case 4511: return "暁の陣海賊(3次)";
+                case 4512: return "暁の陣海賊(4次)";
+                case 4514: return "暁の陣海賊(6次)";
 
 
                 case 5000: return "ミハエル";
@@ -1314,6 +1573,7 @@ namespace WzComparerR2.CharaSim
                 case 6001: return "エンジェリックバスター";
                 case 6002: return "カデナ";
                 case 6003: return "カイン";
+                case 6004: return "ノヴァ";
                 case 6100: return "カイザー(1次)";
                 case 6110: return "カイザー(2次)";
                 case 6111: return "カイザー(3次)";
@@ -1324,6 +1584,11 @@ namespace WzComparerR2.CharaSim
                 case 6311: return "カイン(3次)";
                 case 6312: return "カイン(4次)";
                 case 6314: return "カイン(6次)";
+                case 6200: return "ノヴァ魔法使い(1次)";
+                case 6210: return "ノヴァ魔法使い(2次)"; 
+                case 6211: return "ノヴァ魔法使い(3次)";
+                case 6212: return "ノヴァ魔法使い(4次)";
+                case 6214: return "ノヴァ魔法使い(6次)";
                 case 6400: return "カデナ(1次)";
                 case 6410: return "カデナ(2次)";
                 case 6411: return "カデナ(3次)";
@@ -1364,6 +1629,9 @@ namespace WzComparerR2.CharaSim
                 case 12005:
                 case 12100: return "竈門炭治郎";
 
+                case 12006:
+                case 12200: return "サイタマ";
+
                 case 13000: return "ピンクビーン";
                 case 13001: return "イェティ";
                 case 13100: return "ピンクビーン";
@@ -1381,6 +1649,7 @@ namespace WzComparerR2.CharaSim
                 case 15001: return "アーク";
                 case 15002: return "アデル";
                 case 15003: return "カーリー";
+                case 15004: return "レフ";
                 case 15100: return "アデル(1次)";
                 case 15110: return "アデル(2次)";
                 case 15111: return "アデル(3次)";
@@ -1391,6 +1660,11 @@ namespace WzComparerR2.CharaSim
                 case 15211: return "イリウム(3次)";
                 case 15212: return "イリウム(4次)";
                 case 15214: return "イリウム(6次)";
+                case 15300: return "レフ弓使い(1次)";
+                case 15310: return "レフ弓使い(2次)";
+                case 15311: return "レフ弓使い(3次)";
+                case 15312: return "レフ弓使い(4次)";
+                case 15314: return "レフ弓使い(6次)";
                 case 15400: return "カーリー(1次)";
                 case 15410: return "カーリー(2次)";
                 case 15411: return "カーリー(3次)";
@@ -1402,9 +1676,11 @@ namespace WzComparerR2.CharaSim
                 case 15512: return "アーク(4次)";
                 case 15514: return "アーク(6次)";
 
-                case 16000: return "アニマ盗賊";
+                case 16000: return "虎影";
                 case 16001: return "ララ";
                 case 16002: return "レン";
+                case 16003:
+                case 16004: return "アニマ";
                 case 16100: return "レン(1次)";
                 case 16110: return "レン(2次)";
                 case 16111: return "レン(3次)";
@@ -1415,14 +1691,32 @@ namespace WzComparerR2.CharaSim
                 case 16211: return "ララ(3次)";
                 case 16212: return "ララ(4次)";
                 case 16214: return "ララ(6次)";
+                case 16300: return "アニマ弓使い(1次)";
+                case 16310: return "アニマ弓使い(2次)";
+                case 16311: return "アニマ弓使い(3次)";
+                case 16312: return "アニマ弓使い(4次)";
+                case 16314: return "アニマ弓使い(6次)";
                 case 16400: return "虎影(1次)";
                 case 16410: return "虎影(2次)";
                 case 16411: return "虎影(3次)";
                 case 16412: return "虎影(4次)";
                 case 16414: return "虎影(6次)";
+                case 16500: return "アニマ海賊(1次)";
+                case 16510: return "アニマ海賊(2次)";
+                case 16511: return "アニマ海賊(3次)";
+                case 16512: return "アニマ海賊(4次)";
+                case 16514: return "アニマ海賊(6次)";
 
                 case 17000: return "墨玄";
                 case 17001: return "リン";
+                case 17002:
+                case 17003:
+                case 17004: return "江湖";
+                case 17100: return "江湖戦士(1次)";
+                case 17110: return "江湖戦士(2次)";
+                case 17111: return "江湖戦士(3次)";
+                case 17112: return "江湖戦士(4次)";
+                case 17114: return "江湖戦士(6次)";
                 case 17200: return "リン(1次)";
                 case 17210: return "リン(2次)";
                 case 17211: return "リン(3次)";
@@ -1433,19 +1727,47 @@ namespace WzComparerR2.CharaSim
                 case 17511: return "墨玄(3次)";
                 case 17512: return "墨玄(4次)";
                 case 17514: return "墨玄(6次)";
+                case 17300: return "江湖弓使い(1次)";
+                case 17310: return "江湖弓使い(2次)";
+                case 17311: return "江湖弓使い(3次)";
+                case 17312: return "江湖弓使い(4次)";
+                case 17314: return "江湖弓使い(6次)";
+                case 17400: return "江湖盗賊(1次)";
+                case 17410: return "江湖盗賊(2次)";
+                case 17411: return "江湖盗賊(3次)";
+                case 17412: return "江湖盗賊(4次)";
+                case 17414: return "江湖盗賊(6次)";
 
                 case 18000: return "シア・アステル";
-                case 18001: return "エリルライト";
-                case 18100: return "エリルライト(1次)";
-                case 18110: return "エリルライト(2次)";
-                case 18111: return "エリルライト(3次)";
-                case 18112: return "エリルライト(4次)";
-                case 18114: return "エリルライト(6次)";
+                case 18001: return "エリル・ライト";
+                case 18002: return "アイエル";
+                case 18003:
+                case 18004: return "シャイン";
+                case 18100: return "エリル・ライト(1次)";
+                case 18110: return "エリル・ライト(2次)";
+                case 18111: return "エリル・ライト(3次)";
+                case 18112: return "エリル・ライト(4次)";
+                case 18114: return "エリル・ライト(6次)";
                 case 18200: return "シア・アステル(1次)";
                 case 18210: return "シア・アステル(2次)";
                 case 18211: return "シア・アステル(3次)";
                 case 18212: return "シア・アステル(4次)";
                 case 18214: return "シア・アステル(6次)";
+                case 18300: return "アイエル(1次)";
+                case 18310: return "アイエル(2次)";
+                case 18311: return "アイエル(3次)";
+                case 18312: return "アイエル(4次)";
+                case 18314: return "アイエル(6次)";
+                case 18400: return "シャイン盗賊(1次)";
+                case 18410: return "シャイン盗賊(2次)";
+                case 18411: return "シャイン盗賊(3次)";
+                case 18412: return "シャイン盗賊(4次)";
+                case 18414: return "シャイン盗賊(6次)";
+                case 18500: return "シャイン海賊(1次)";
+                case 18510: return "シャイン海賊(2次)";
+                case 18511: return "シャイン海賊(3次)";
+                case 18512: return "シャイン海賊(4次)";
+                case 18514: return "シャイン海賊(6次)";
 
                 case 40000: return "5次";
                 case 40001: return "5次(戦士)";
@@ -1462,34 +1784,255 @@ namespace WzComparerR2.CharaSim
             return null;
         }
 
-        public static string ToCJKNumberExpr(long value)
+        public static string GetFifthJobName(int skillCode, List<int> jobId)
         {
-            var sb = new StringBuilder(16);
+            string jobName = "";
+            switch (jobId.Count)
+            {
+                case 0:
+                    jobName = GetJobName(skillCode / 10000);
+                    break;
+                case 1:
+                    if (jobId[0] == 0)
+                    {
+                        jobName = GetJobName(skillCode / 10000);
+                    }
+                    else
+                    {
+                        jobName = GetJobName(jobId[0]);
+                        jobName = jobName.Contains("(4") ? jobName.Replace("(4", "(5") : jobName + "(5次)";
+                    }
+                    break;
+                default:
+                    bool isSameFaction = true;
+                    int faction = jobId[0] / 1000;
+                    if (faction == 5) faction = 1;
+                    foreach (int id in jobId.Skip(1))
+                    {
+                        if (id == 0) continue;
+                        isSameFaction = isSameFaction && (id / 1000 == faction);
+                    }
+                    if (isSameFaction)
+                    {
+                        switch (faction)
+                        {
+                            case 0: jobName = "5次(冒険者)"; break;
+                            case 1:
+                            case 5: jobName = "5次(シグナス騎士団)"; break;
+                            case 2: jobName = "5次(英雄)"; break;
+                            case 3: jobName = "5次(レジスタンス)"; break;
+                            case 4: jobName = "5次(暁の陣)"; break;
+                            case 6: jobName = "5次(ノヴァ)"; break;
+                            case 10: jobName = "5次(超越者)"; break;
+                            case 11: jobName = "5次(ドーンベール)"; break;
+                            case 12: jobName = "5次(アニメコラボ)"; break;
+                            case 13: jobName = "5次(モンスター)"; break;
+                            case 14: jobName = "5次(フレンドワールド)"; break;
+                            case 15: jobName = "5次(レフ)"; break;
+                            case 16: jobName = "5次(アニマ)"; break;
+                            case 17: jobName = "5次(江湖)"; break;
+                            case 18: jobName = "5次(シャイン)"; break;
+                        }
+                    }
+                    else
+                    {
+                        jobName = GetJobName(skillCode / 10000);
+                    }
+                    break;
+            }
+            return jobName;
+        }
+
+        public static string ToCJKNumberExpr(long value, bool detailedExpr = false)
+        {
+            var sb = new StringBuilder(32);
             bool firstPart = true;
             if (value < 0)
             {
                 sb.Append("-");
                 value = -value; // just ignore the exception -2147483648
             }
-            if (value >= 1_0000_0000)
+            if (detailedExpr)
             {
-                long part = value / 1_0000_0000;
-                sb.AppendFormat("{0}億", part); // Korean: 억, TradChinese+Japanese: 億, SimpChinese: 亿
-                value -= part * 1_0000_0000;
-                firstPart = false;
+                string[] smallUnits = { "", "十", "百", "千" }; // Korean: 십, 백, 천; Chinese+Japanese: 十, 百, 千
+                string[] bigUnits = { "", "万", "億", "兆", "京" }; // Korean: 만, 억, 조, 경; TradChinese: 萬, 億, 兆, 京; SimpChinese: 万, 亿, 兆, 京; Japanese: 万, 億, 兆, 京;
+
+                string digits = value.ToString();
+                int len = digits.Length;
+
+                bool blockHasValue = false;
+                int zeroCount = 0;
+
+                for (int i = 0; i < len; i++)
+                {
+                    int posFromRight = len - i - 1;
+                    int smallUnitIndex = posFromRight % 4;
+                    int bigUnitIndex = posFromRight / 4;
+
+                    char d = digits[i];
+
+                    if (d == '0')
+                    {
+                        zeroCount++;
+                    }
+                    else
+                    {
+                        if (zeroCount > 0 && zeroCount <= 3)
+                        {
+                            sb.Append('0');
+                        }
+
+                        zeroCount = 0;
+
+                        sb.Append(d);
+                        if (smallUnitIndex > 0)
+                            sb.Append(smallUnits[smallUnitIndex]);
+
+                        blockHasValue = true;
+                    }
+
+                    if (smallUnitIndex == 0)
+                    {
+                        if (blockHasValue && bigUnitIndex > 0 && bigUnitIndex < bigUnits.Length)
+                            sb.Append(bigUnits[bigUnitIndex]);
+
+                        blockHasValue = false;
+                        zeroCount = 0;
+                    }
+                }
             }
-            if (value >= 1_0000)
+            else
             {
-                long part = value / 1_0000;
-                sb.Append(firstPart ? null : " ");
-                sb.AppendFormat("{0}万", part); // Korean: 만, TradChinese: 萬, SimpChinese+Japanese: 万
-                value -= part * 1_0000;
-                firstPart = false;
+                if (value >= 1_0000_0000_0000_0000)
+                {
+                    long part = value / 1_0000_0000_0000_0000;
+                    sb.Append(firstPart ? null : " ");
+                    sb.AppendFormat("{0}京", part); // Korean: 경, Chinese+Japanese: 京; English: Q
+                    value -= part * 1_0000_0000_0000_0000;
+                    firstPart = false;
+                }
+                if (value >= 1_0000_0000_0000)
+                {
+                    long part = value / 1_0000_0000_0000;
+                    sb.Append(firstPart ? null : " ");
+                    sb.AppendFormat("{0}兆", part); // Korean: 조, Chinese+Japanese: 兆; English: T
+                    value -= part * 1_0000_0000_0000;
+                    firstPart = false;
+                }
+                if (value >= 1_0000_0000)
+                {
+                    long part = value / 1_0000_0000;
+                    sb.Append(firstPart ? null : " ");
+                    sb.AppendFormat("{0}億", part); // Korean: 억, TradChinese+Japanese: 億, SimpChinese: 亿
+                    value -= part * 1_0000_0000;
+                    firstPart = false;
+                }
+                if (value >= 1_0000)
+                {
+                    long part = value / 1_0000;
+                    sb.Append(firstPart ? null : " ");
+                    sb.AppendFormat("{0}万", part); // Korean: 만, TradChinese: 萬, SimpChinese+Japanese: 万
+                    value -= part * 1_0000;
+                    firstPart = false;
+                }
+                if (value > 0)
+                {
+                    sb.Append(firstPart ? null : " ");
+                    sb.AppendFormat("{0}", value);
+                }
             }
-            if (value > 0)
+
+            return sb.Length > 0 ? sb.ToString() : "0";
+        }
+
+        public static string ToThousandsNumberExpr(long value, bool isMsea = false)
+        {
+            var sb = new StringBuilder(32);
+            bool firstPart = true;
+            if (isMsea)
             {
-                sb.Append(firstPart ? null : " ");
-                sb.AppendFormat("{0}", value);
+                if (value < 0)
+                {
+                    sb.Append("-");
+                    value = -value; // just ignore the exception -2147483648
+                }
+                if (value >= 1_0000_0000_0000_0000)
+                {
+                    long part = value / 1_0000_0000_0000_0000;
+                    sb.Append(firstPart ? null : " ");
+                    sb.AppendFormat("{0}Q", part);
+                    value -= part * 1_0000_0000_0000_0000;
+                    firstPart = false;
+                }
+                if (value >= 1_000_000_000_000)
+                {
+                    long part = value / 1_000_000_000_000;
+                    sb.Append(firstPart ? null : " ");
+                    sb.AppendFormat("{0}T", part);
+                    value -= part * 1_000_000_000_000;
+                    firstPart = false;
+                }
+                if (value >= 1_000_000_000)
+                {
+                    long part = value / 1_000_000_000;
+                    sb.Append(firstPart ? null : " ");
+                    sb.AppendFormat("{0}B", part);
+                    value -= part * 1_000_000_000;
+                    firstPart = false;
+                }
+                if (value >= 1_000_000)
+                {
+                    long part = value / 1_000_000;
+                    sb.Append(firstPart ? null : " ");
+                    sb.AppendFormat("{0}M", part);
+                    value -= part * 1_000_000;
+                    firstPart = false;
+                }
+                if (value >= 1_000)
+                {
+                    long part = value / 1_000;
+                    sb.Append(firstPart ? null : " ");
+                    sb.AppendFormat("{0}K", part);
+                    value -= part * 1_000;
+                    firstPart = false;
+                }
+                if (value > 0)
+                {
+                    sb.Append(firstPart ? null : " ");
+                    sb.AppendFormat("{0}", value);
+                }
+            }
+            else
+            {
+                if (value < 0)
+                {
+                    sb.Append("-");
+                    value = -value; // just ignore the exception -2147483648
+                }
+                /* if (value >= 1_000_000_000_000) // For future proofing
+                {
+                    double part = Math.Round((double)value / 1_000_000_000_000, 1);
+                    sb.AppendFormat("{0}T", part);
+                } */
+                if (value >= 1_000_000_000)
+                {
+                    double part = Math.Round((double)value / 1_000_000_000, 1);
+                    sb.AppendFormat("{0}B", part);
+                }
+                else if (value >= 1_000_000)
+                {
+                    double part = Math.Round((double)value / 1_000_000, 1);
+                    sb.AppendFormat("{0}M", part);
+                }
+                else if (value >= 1_000)
+                {
+                    double part = Math.Round((double)value / 1_000, 1);
+                    sb.AppendFormat("{0}K", part);
+                }
+                else if (value > 0)
+                {
+                    sb.AppendFormat("{0}", value);
+                }
             }
 
             return sb.Length > 0 ? sb.ToString() : "0";

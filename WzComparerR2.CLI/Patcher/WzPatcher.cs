@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Buffers;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using System.IO.Compression;
 using System.Threading;
-using System.Threading.Tasks;
 using WzComparerR2.Patcher.Builder;
 using PartialStream = WzComparerR2.Patcher.Builder.PartialStream;
 
@@ -772,7 +769,8 @@ namespace WzComparerR2.Patcher
                         || (op.OperType != 1 && (op.Length + preLoadByteCount > msBuffer.Capacity)))
                     {
                         //排序预读原文件
-                        readFileOperList.Sort((left, right) => {
+                        readFileOperList.Sort((left, right) =>
+                        {
                             int cmp;
                             if ((cmp = string.Compare(left.FromFileName, right.FromFileName, StringComparison.OrdinalIgnoreCase)) != 0)
                                 return cmp;
@@ -1011,7 +1009,7 @@ namespace WzComparerR2.Patcher
         {
             if (expected != actual)
             {
-                if (fileName == "MapleStory.exe" || fileName == "MapleStoryT.exe") reason = "このクライアントに最新の「Minor Patch」をインストールしましたか? ";
+                if (fileName == "MapleStory.exe" || fileName == "MapleStoryT.exe" || fileName == "MapleResource.ini") reason = "このクライアントに最新の「Minor Patch」をインストールしましたか? ";
                 throw new Exception(string.Format("ファイル「{0}」のチェックサムが一致しません({1})。 (予想: 0x{2:x8}, 実際: 0x{3:x8})", fileName, reason, expected, actual));
             }
         }
