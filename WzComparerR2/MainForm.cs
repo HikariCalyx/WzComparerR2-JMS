@@ -3878,7 +3878,22 @@ namespace WzComparerR2
 
             StringResult sr = new StringResult();
             string altAutoDesc = null;
-            switch (wzf.Type)
+            var wzfType = wzf.Type; // temp workaround
+            // Clear previous record
+            tooltipQuickView.NodeName = string.Empty;
+            tooltipQuickView.Desc = string.Empty;
+            tooltipQuickView.Pdesc = string.Empty;
+            tooltipQuickView.AutoDesc = string.Empty;
+            tooltipQuickView.Hdesc = string.Empty;
+            tooltipQuickView.DescLeftAlign = string.Empty;
+            // temp workaround start
+            if (wzfType == Wz_Type.Unknown)
+            {
+                string[] path = selectedNode.FullPathToFile.Split('\\');
+                wzfType = ParseWzTypeManually(path[0]);
+            }
+            // temp workaround end
+            switch (wzfType)
             {
                 case Wz_Type.Character:
                     if (!selectedNode.FullPathToFile.Contains(".img")) return;
