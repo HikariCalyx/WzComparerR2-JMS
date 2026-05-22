@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using WzComparerR2.WzLib.Utilities;
 
 namespace WzComparerR2.WzLib.Compatibility
@@ -22,8 +21,9 @@ namespace WzComparerR2.WzLib.Compatibility
         private static readonly IWzPreReader[] readers = new IWzPreReader[]
         {
             new Pkg1PreReader(),
-            new Pkg2PreReader(WzFileFormat.Pkg2Kmst1196, isPkg2DirString: false),
-            new Pkg2PreReader(WzFileFormat.Pkg2Kmst1198, isPkg2DirString: true),
+            new Pkg2PreReader(WzFileFormat.Pkg2Kmst1196, false),
+            new Pkg2PreReader(WzFileFormat.Pkg2Kmst1198, true),
+            new Pkg2PreReader(WzFileFormat.Pkg2Kmst1201, true, true),
         };
 
         public static IReadOnlyList<IWzPreReader> All => readers;
@@ -112,20 +112,29 @@ namespace WzComparerR2.WzLib.Compatibility
 
     internal sealed class Pkg2PreReader : IWzPreReader
     {
-        public Pkg2PreReader(WzFileFormat format, bool isPkg2DirString)
+        public Pkg2PreReader(WzFileFormat format, bool isPkg2DirString = false, bool supportRandomHeader = false)
         {
             this.format = format;
             this.isPkg2DirString = isPkg2DirString;
+            this.supportRandomHeader = supportRandomHeader;
         }
+
+        
 
         private readonly WzFileFormat format;
         private readonly bool isPkg2DirString;
+        private readonly bool supportRandomHeader;
 
         public bool TryPreRead(Wz_File wzFile, out WzPreReadResult result)
         {
             result = null;
             if (!wzFile.Header.IsPkg2)
                 return false;
+
+            if ( wzFile.Header.HasCapabilities(Wz_Capabilities.Pkg2RandomHeader) && !this.supportRandomHeader)
+            {
+                return false;
+            }
 
             try
             {
@@ -194,7 +203,6 @@ namespace WzComparerR2.WzLib.Compatibility
             {
                 EncryptedEntryCount = encryptedEntryCount,
                 ActualEntryCount = temp.Count,
-                ActualImgCount = temp.Count(e => e.NodeType == 0x04),
             });
 
             int dirCount = 0;
@@ -303,6 +311,7 @@ namespace WzComparerR2.WzLib.Compatibility
         Pkg1,
         Pkg2Kmst1196,
         Pkg2Kmst1198,
+        Pkg2Kmst1201,
     }
 
     public enum WzStringEncoding
@@ -349,7 +358,6 @@ namespace WzComparerR2.WzLib.Compatibility
     {
         public int EncryptedEntryCount;
         public int ActualEntryCount;
-        public int ActualImgCount;
     }
 
     #endregion

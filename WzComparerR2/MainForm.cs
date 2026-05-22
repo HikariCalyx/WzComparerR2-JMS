@@ -3878,6 +3878,13 @@ namespace WzComparerR2
 
             StringResult sr = new StringResult();
             string altAutoDesc = null;
+            // Clear previous record
+            tooltipQuickView.NodeName = string.Empty;
+            tooltipQuickView.Desc = string.Empty;
+            tooltipQuickView.Pdesc = string.Empty;
+            tooltipQuickView.AutoDesc = string.Empty;
+            tooltipQuickView.Hdesc = string.Empty;
+            tooltipQuickView.DescLeftAlign = string.Empty;
             switch (wzf.Type)
             {
                 case Wz_Type.Character:
