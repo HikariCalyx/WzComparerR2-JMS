@@ -732,14 +732,14 @@ namespace WzComparerR2.CharaSim
                 case GearType.chakram: return "Chakram";
                 case GearType.hexSeeker: return "Hex Seeker";
 
-                case GearType.boxingCannon: return "Martial Brace";
-                case GearType.boxingSky: return "Brace Band";
+                case GearType.boxingCannon: return isMsea ? "Hand Cloth" : "Martial Brace";
+                case GearType.boxingSky: return isMsea ? "Knuckle" : "Brace Band";
 
                 case GearType.arcaneSymbol: return "Arcane Symbol";
                 case GearType.authenticSymbol: return isMsea ? "Authentic Symbol" : "Sacred Symbol";
                 case GearType.grandAuthenticSymbol: return isMsea ? "Authentic Symbol" : "Grand Sacred Symbol";
 
-                case GearType.jewel: return "宝玉";
+                case GearType.jewel: return isMsea ? "Jewel" : "宝玉";
 
                 case GearType.celestialLight: return "Celestial Light";
                 case GearType.compass: return "Compass";
