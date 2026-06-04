@@ -83,6 +83,18 @@ namespace WzComparerR2.Avatar.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap lwa
+        {
+            get
+            {
+                object obj = ResourceManager.GetObject("lwa", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap magnify
         {
             get

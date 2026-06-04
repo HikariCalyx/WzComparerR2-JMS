@@ -2046,6 +2046,17 @@ namespace WzComparerR2.Avatar.UI
             SaveGif(sender, e, chkBodyPlay.Checked, chkEmotionPlay.Checked, chkTamingPlay.Checked);
         }
 
+        private async void btnExportLwa_Click(object sender, EventArgs e)
+        {
+            string code = GetAllPartsTag();
+            var API = new OpenAPI.AvatarCodeEncoder();
+            string avatarCode = API.ConvertCsvToAvatarCode(code);
+            // Clipboard.SetText(avatarCode);
+            LWAForm frm = new LWAForm();
+            frm.avatarCode = avatarCode;
+            frm.ShowDialog(this);
+        }
+
         private async void btnAPI_Click(object sender, EventArgs e)
         {
 #if NET6_0_OR_GREATER
