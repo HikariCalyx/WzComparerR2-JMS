@@ -2070,181 +2070,116 @@ namespace WzComparerR2.Avatar.UI
             dlg.CharaName = characterName;
             dlg.selectedRegion = previousRegion;
 
+
+
             if (dlg.ShowDialog() == DialogResult.OK)
             {
                 characterName = dlg.CharaName;
                 previousRegion = dlg.selectedRegion;
-                string avatarCode;
+                string avatarCode = "";
+                string regionCode = "";
+                this.API = new NexonOpenAPI("-", "KMS");
                 switch (dlg.selectedRegion)
                 {
                     default:
                         ToastNotification.Show(this, $"Please select a region.", null, 3000, eToastGlowColor.Red, eToastPosition.TopCenter);
                         return;
-                    case 1: // KMS
-                        this.API = new NexonOpenAPI("-", "KMS");
+                    case 1: regionCode = "ChangseopMS"; break;
+                    case 2: regionCode = "ZipanguMS"; break;
+                    case 3: regionCode = "TerryMS_Continent"; break;
+                    case 4: regionCode = "InkwellMS_NA"; break;
+                    case 5: regionCode = "InkwellMS_EU"; break;
+                    case 6: regionCode = "TerryMS_Peninsula"; break;
+                    case 7: regionCode = "TerryMS_Island"; break;
+                    case 8: regionCode = "TunerMS"; break;
+                    case 9:
+                        avatarCode = dlg.CharaName;
                         try
                         {
-                            ToastNotification.Show(this, $"Fetching avatar, please wait...", null, 3000, eToastGlowColor.Green, eToastPosition.TopCenter);
-                            avatarCode = await this.API.GetAvatarCode(dlg.CharaName, "KMS");
-                            if (string.IsNullOrEmpty(avatarCode))
-                            {
-                                ToastNotification.Show(this, $"Unable to find character.", null, 3000, eToastGlowColor.Red, eToastPosition.TopCenter);
-                            }
-                            else
-                            {
-                                await Type3(avatarCode);
-                            }
+                            await Type3(avatarCode);
                         }
-                        catch (Exception ex)
+                        catch
                         {
-                            ToastNotification.Show(this, $"Warning: {ex.Message}", null, 3000, eToastGlowColor.Orange, eToastPosition.TopCenter);
-                        }
-                        break;
-                    case 2: // JMS
-                        this.API = new NexonOpenAPI("-", "KMS");
-                        try
-                        {
-                            ToastNotification.Show(this, $"Fetching avatar, please wait...", null, 3000, eToastGlowColor.Green, eToastPosition.TopCenter);
-                            avatarCode = await this.API.GetAvatarCode(dlg.CharaName, "JMS");
-                            if (string.IsNullOrEmpty(avatarCode))
-                            {
-                                ToastNotification.Show(this, $"Unable to find character.", null, 3000, eToastGlowColor.Red, eToastPosition.TopCenter);
-                            }
-                            else
-                            {
-                                await Type3(avatarCode);
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            ToastNotification.Show(this, $"Warning: {ex.Message}", null, 3000, eToastGlowColor.Orange, eToastPosition.TopCenter);
-                        }
-                        break;
-                    case 4: // GMS-NA
-                        this.API = new NexonOpenAPI("-", "KMS");
-                        try
-                        {
-                            ToastNotification.Show(this, $"Fetching avatar, please wait...", null, 3000, eToastGlowColor.Green, eToastPosition.TopCenter);
-                            avatarCode = await this.API.GetAvatarCode(dlg.CharaName, "GMS-NA");
-                            if (string.IsNullOrEmpty(avatarCode))
-                            {
-                                ToastNotification.Show(this, $"Unable to find character.", null, 3000, eToastGlowColor.Red, eToastPosition.TopCenter);
-                            }
-                            else
-                            {
-                                await Type3(avatarCode);
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            ToastNotification.Show(this, $"Warning: {ex.Message}", null, 3000, eToastGlowColor.Orange, eToastPosition.TopCenter);
-                        }
-                        break;
-                    case 5: // GMS-EU
-                        this.API = new NexonOpenAPI("-", "KMS");
-                        try
-                        {
-                            ToastNotification.Show(this, $"Fetching avatar, please wait...", null, 3000, eToastGlowColor.Green, eToastPosition.TopCenter);
-                            avatarCode = await this.API.GetAvatarCode(dlg.CharaName, "GMS-EU");
-                            if (string.IsNullOrEmpty(avatarCode))
-                            {
-                                ToastNotification.Show(this, $"Unable to find character.", null, 3000, eToastGlowColor.Red, eToastPosition.TopCenter);
-                            }
-                            else
-                            {
-                                await Type3(avatarCode);
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            ToastNotification.Show(this, $"Warning: {ex.Message}", null, 3000, eToastGlowColor.Orange, eToastPosition.TopCenter);
-                        }
-                        break;
-                    case 6: // MSEA
-                        this.API = new NexonOpenAPI("-", "KMS");
-                        try
-                        {
-                            ToastNotification.Show(this, $"Fetching avatar, please wait...", null, 3000, eToastGlowColor.Green, eToastPosition.TopCenter);
-                            avatarCode = await this.API.GetAvatarCode(dlg.CharaName, "MSEA");
-                            if (string.IsNullOrEmpty(avatarCode))
-                            {
-                                ToastNotification.Show(this, $"Unable to find character.", null, 3000, eToastGlowColor.Red, eToastPosition.TopCenter);
-                            }
-                            else
-                            {
-                                await Type3(avatarCode);
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            ToastNotification.Show(this, $"Warning: {ex.Message}", null, 3000, eToastGlowColor.Orange, eToastPosition.TopCenter);
-                        }
-                        break;
-                    case 7: // TMS
-                        this.API = new NexonOpenAPI("-", "KMS");
-                        try
-                        {
-                            ToastNotification.Show(this, $"Fetching avatar, please wait...", null, 3000, eToastGlowColor.Green, eToastPosition.TopCenter);
-                            avatarCode = await this.API.GetAvatarCode(dlg.CharaName, "TMS");
-                            if (string.IsNullOrEmpty(avatarCode))
-                            {
-                                ToastNotification.Show(this, $"Unable to find character.", null, 3000, eToastGlowColor.Red, eToastPosition.TopCenter);
-                            }
-                            else
-                            {
-                                await Type4(avatarCode);
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            ToastNotification.Show(this, $"Warning: {ex.Message}", null, 3000, eToastGlowColor.Orange, eToastPosition.TopCenter);
-                        }
-                        break;
-                    case 8: // MSN
-                        this.API = new NexonOpenAPI("-", "KMS");
-                        try
-                        {
-                            ToastNotification.Show(this, $"Fetching avatar, please wait...", null, 3000, eToastGlowColor.Green, eToastPosition.TopCenter);
-                            avatarCode = await this.API.GetAvatarCode(dlg.CharaName, "MSN");
-                            if (string.IsNullOrEmpty(avatarCode))
-                            {
-                                ToastNotification.Show(this, $"Unable to find character.", null, 3000, eToastGlowColor.Red, eToastPosition.TopCenter);
-                            }
-                            else
-                            {
-                                string[] decodedInfo = Encoding.UTF8.GetString(Convert.FromBase64String(avatarCode)).Split("a");
-                                List<int> msnCode = new List<int> {};
-                                int earType = Int32.Parse(decodedInfo[17]);
-                                msnCode.Add((Int32.Parse(decodedInfo[1]) + 2000));
-                                msnCode.Add((Int32.Parse(decodedInfo[1]) + 12000));
-                                foreach (string itemCode in decodedInfo.Skip(2))
-                                {
-                                    switch (itemCode.Length)
-                                    {
-                                        default:
-                                            break;
-                                        case 5:
-                                        case 7:
-                                            msnCode.Add(Int32.Parse(itemCode));
-                                            break;
-                                        case 8:
-                                            msnCode.Add(Int32.Parse(itemCode.Substring(0, 5)));
-                                            break;
 
-                                    }
-                                }
-                                msnCode.Sort();
-                                LoadCode(string.Join(",", msnCode), 0);
-                                this.cmbEar.SelectedIndex = earType;
-                            }
                         }
-                        catch (Exception ex)
+                        return;
+                    case 10:
+                        avatarCode = dlg.CharaName;
+                        try
                         {
-                            ToastNotification.Show(this, $"Warning: {ex.Message}", null, 3000, eToastGlowColor.Orange, eToastPosition.TopCenter);
+                            await Type4(avatarCode);
                         }
-                        break;
+                        catch
+                        {
+
+                        }
+                        return;
+                }
+                if (dlg.selectedRegion == 8)
+                {
+                    try
+                    {
+                        ToastNotification.Show(this, $"Fetching avatar, please wait...", null, 3000, eToastGlowColor.Green, eToastPosition.TopCenter);
+                        avatarCode = await this.API.GetAvatarCode(dlg.CharaName, "TunerMS");
+                        if (string.IsNullOrEmpty(avatarCode))
+                        {
+                            ToastNotification.Show(this, $"Unable to find character", null, 3000, eToastGlowColor.Orange, eToastPosition.TopCenter);
+                        }
+                        else
+                        {
+                            string[] decodedInfo = Encoding.UTF8.GetString(Convert.FromBase64String(avatarCode)).Split("a");
+                            List<int> msnCode = new List<int> { };
+                            int earType = Int32.Parse(decodedInfo[17]);
+                            msnCode.Add((Int32.Parse(decodedInfo[1]) + 2000));
+                            msnCode.Add((Int32.Parse(decodedInfo[1]) + 12000));
+                            foreach (string itemCode in decodedInfo.Skip(2))
+                            {
+                                switch (itemCode.Length)
+                                {
+                                    default:
+                                        break;
+                                    case 5:
+                                    case 7:
+                                        msnCode.Add(Int32.Parse(itemCode));
+                                        break;
+                                    case 8:
+                                        msnCode.Add(Int32.Parse(itemCode.Substring(0, 5)));
+                                        break;
+
+                                }
+                            }
+                            msnCode.Sort();
+                            LoadCode(string.Join(",", msnCode), 0);
+                            this.cmbEar.SelectedIndex = earType;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        ToastNotification.Show(this, $"Warning: {ex.Message}", null, 3000, eToastGlowColor.Orange, eToastPosition.TopCenter);
+                    }
+                }
+                else
+                {
+                    try
+                    {
+                        ToastNotification.Show(this, $"Fetching avatar, please wait...", null, 3000, eToastGlowColor.Green, eToastPosition.TopCenter);
+                        avatarCode = await this.API.GetAvatarCode(dlg.CharaName, regionCode);
+                        if (string.IsNullOrEmpty(avatarCode))
+                        {
+                            ToastNotification.Show(this, $"Unable to find character.", null, 3000, eToastGlowColor.Red, eToastPosition.TopCenter);
+                        }
+                        else
+                        {
+                            await Type3(avatarCode);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        ToastNotification.Show(this, $"Warning: {ex.Message}", null, 3000, eToastGlowColor.Orange, eToastPosition.TopCenter);
+                    }
                 }
             }
+
 
             async Task Type1(string ocid) // 외형 기준
             {
