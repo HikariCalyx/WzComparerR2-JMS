@@ -329,6 +329,10 @@ namespace WzComparerR2.CharaSim
         /// </summary>
         compass = 135287,
         /// <summary>
+        /// keir 135_88
+        /// </summary>
+        keir = 135288,
+        /// <summary>
         /// Wrist Band 135_90
         /// </summary>
         viperWristband = 135290,
@@ -461,9 +465,13 @@ namespace WzComparerR2.CharaSim
         /// </summary>
         thBlunt = 142,
         /// <summary>
-        /// Spear 143
+        /// Spear 1432
         /// </summary>
-        spear = 143,
+        spear = 1432,
+        /// <summary>
+        /// gram 1433
+        /// </summary>
+        gram = 1433,
         /// <summary>
         /// Polearm 144
         /// </summary>
