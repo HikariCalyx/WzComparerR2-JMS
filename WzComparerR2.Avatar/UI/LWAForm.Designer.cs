@@ -125,7 +125,6 @@ namespace WzComparerR2.Avatar.UI
             this.Controls.Add(this.btnGenerate);
             this.Controls.Add(this.btnSaveQR);
             this.DoubleBuffered = true;
-            this.Font = new System.Drawing.Font("MS PGothic", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.MaximizeBox = false;
             this.MaximumSize = new System.Drawing.Size(584, 356);
