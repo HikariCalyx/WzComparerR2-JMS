@@ -56,6 +56,7 @@ namespace WzComparerR2.Network
         private static readonly SemaphoreSlim semaphore = new SemaphoreSlim(1, 1);
 
         private JObject AIChatJson = null;
+        private string _aiChatLogPath = null;
 
         protected override void OnLoad()
         {
@@ -195,6 +196,7 @@ namespace WzComparerR2.Network
                             RefreshAISettings();
                             AIChatEnabled = true;
                             this.Client.AutoReconnect = false;
+                            StartNewAIChatSession();
                             sbAi.Append("AIチャット機能が有効になっています。無効にするまで他のユーザーとチャットすることはできません。");
                         }
                         else if (aiExtraParam == "off")
@@ -220,7 +222,7 @@ namespace WzComparerR2.Network
                         semaphore.Wait();
                         if (AIChatEnabled)
                         {
-                            AIChatJson = InitiateChatCompletion(selectedLM);
+                            StartNewAIChatSession();
                             sbNewMsg.AppendFormat("AIチャットが初期化されました。以前のチャットはAIに送信されません。");
                             Log.Info(sbNewMsg.ToString());
                         }
@@ -233,17 +235,18 @@ namespace WzComparerR2.Network
                         semaphore.Wait();
                         if (!string.IsNullOrEmpty(systemMessage))
                         {
-                            AIChatJson = InitiateChatCompletion(selectedLM);
+                            StartNewAIChatSession();
                             ((JArray)AIChatJson["messages"]).Add(new JObject(
                                 new JProperty("role", "system"),
                                 new JProperty("content", systemMessage)
                             ));
+                            SaveAIChatSession();
                             sbSysMsg.AppendFormat("AIへの現在のシステムメッセージは「{0}」です。AIチャットが初期化されました。", systemMessage);
                             Log.Info(sbSysMsg.ToString());
                         }
                         else
                         {
-                            AIChatJson = InitiateChatCompletion(selectedLM);
+                            StartNewAIChatSession();
                             sbSysMsg.AppendFormat("AIへの現在のシステムメッセージはクリアされます。AIチャットが初期化されました。");
                             Log.Info(sbSysMsg.ToString());
                         }
@@ -324,7 +327,7 @@ namespace WzComparerR2.Network
             if (!string.IsNullOrEmpty(Translator.OAITranslateBaseURL)) AIBaseURL = Translator.OAITranslateBaseURL;
             if (!string.IsNullOrEmpty(Translator.DefaultLanguageModel)) selectedLM = Translator.DefaultLanguageModel;
             if (!string.IsNullOrEmpty(Translator.DefaultTranslateAPIKey)) APIKeyJSON = Translator.DefaultTranslateAPIKey;
-            if (AIChatJson == null) AIChatJson = InitiateChatCompletion(selectedLM);
+            if (AIChatJson == null) StartNewAIChatSession();
         }
 
         private async void ChatToAI(string message)
@@ -339,6 +342,7 @@ namespace WzComparerR2.Network
                     new JProperty("role", "user"),
                     new JProperty("content", message)
                 ));
+                SaveAIChatSession();
                 var postData = AIChatJson;
                 if (ExtraParamEnabled)
                 {
@@ -396,6 +400,7 @@ namespace WzComparerR2.Network
                     new JProperty("role", "assistant"),
                     new JProperty("content", responseResult.ToString())
                 ));
+                SaveAIChatSession();
             }
             catch (Exception ex)
             {
@@ -419,6 +424,30 @@ namespace WzComparerR2.Network
                 new JProperty("messages", new JArray()),
                 new JProperty("stream", isStreamEnabled)
             );
+        }
+
+        private void StartNewAIChatSession()
+        {
+            string timestamp = DateTime.Now.ToString("yyyyMMdd-HHmmss");
+            string dir = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "aichat");
+            System.IO.Directory.CreateDirectory(dir);
+            _aiChatLogPath = System.IO.Path.Combine(dir, $"aichat_{timestamp}.json");
+            AIChatJson = InitiateChatCompletion(selectedLM);
+            SaveAIChatSession();
+        }
+
+        private void SaveAIChatSession()
+        {
+            if (_aiChatLogPath == null || AIChatJson == null) return;
+            try
+            {
+                var messages = AIChatJson["messages"] as JArray ?? new JArray();
+                System.IO.File.WriteAllText(_aiChatLogPath, messages.ToString(Newtonsoft.Json.Formatting.Indented), Encoding.UTF8);
+            }
+            catch (Exception ex)
+            {
+                Log.Error("AIチャットの保存に失敗しました: " + ex.Message);
+            }
         }
 
         private void RegisterAllHandlers()
