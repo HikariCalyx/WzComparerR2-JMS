@@ -744,8 +744,8 @@ namespace WzComparerR2.CharaSim
                 case GearType.celestialLight: return "Celestial Light";
                 case GearType.compass: return "Compass";
 
-                // case GearType.keir: return "Keir";
-                // case GearType.gram: return "Gram";
+                case GearType.keir: return "Keir";
+                case GearType.gram: return "Gram";
 
                 case GearType.longSword: return "Sword";
                 case GearType.yeouiGem: return "Imugi Gem";
@@ -1090,12 +1090,15 @@ namespace WzComparerR2.CharaSim
 
                 case GearType.chakram:
                 case GearType.hexSeeker: return GetExtraJobReqString(154, isMsea);
+                //18xxx
+                case GearType.gram:
+                case GearType.keir: return GetExtraJobReqString(181);
+
+                case GearType.celestialLight:
+                case GearType.compass: return GetExtraJobReqString(182);
 
                 case GearType.longSword:
                 case GearType.yeouiGem: return GetExtraJobReqString(161, isMsea);
-
-                case GearType.celestialLight:
-                case GearType.compass: return GetExtraJobReqString(182, isMsea);
                 default: return null;
             }
         }
@@ -1295,6 +1298,10 @@ namespace WzComparerR2.CharaSim
                 case 43: return GetExtraJobReqString(GearType.yeouiGem, isMsea);
                 case 44: return GetExtraJobReqString(GearType.ornament, isMsea);
                 case 45: return GetExtraJobReqString(GearType.fanTassel, isMsea);
+                case 50: return GetExtraJobReqString(GearType.kodachi, isMsea);
+                case 52: return GetExtraJobReqString(GearType.boxingSky, isMsea);
+                case 53: return GetExtraJobReqString(GearType.compass, isMsea);
+                case 54: return GetExtraJobReqString(GearType.keir, isMsea);
 
                 default: return GetExtraJobReqString(GearType.astra, isMsea);
             }
