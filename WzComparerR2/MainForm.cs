@@ -398,7 +398,7 @@ namespace WzComparerR2
                     if (updater.UpdateAvailable)
                     {
                         ToastNotification.Show(this, $"Update Available: {updater.LatestVersionString}", 5000, eToastPosition.TopCenter);
-                        var frmUpdater = new FrmUpdater(updater);
+                        var frmUpdater = new FrmUpdater(updater, styleManager1.ManagerStyle == eStyle.VisualStudio2012Dark);
                         frmUpdater.LoadConfig(config);
                         frmUpdater.ShowDialog(this);
                     }
@@ -5722,7 +5722,7 @@ namespace WzComparerR2
 
         private void buttonItemUpdate_Click(object sender, EventArgs e)
         {
-            var frm = new FrmUpdater();
+            var frm = new FrmUpdater(new Updater(), styleManager1.ManagerStyle == eStyle.VisualStudio2012Dark);
             frm.LoadConfig(WcR2Config.Default);
             frm.ShowDialog();
         }
