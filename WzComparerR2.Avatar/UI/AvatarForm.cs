@@ -2500,6 +2500,11 @@ namespace WzComparerR2.Avatar.UI
         private async void btnExportLwa_Click(object sender, EventArgs e)
         {
             string code = GetAllPartsTag();
+            if (!Regex.IsMatch(code, @"\d"))
+            {
+                ToastNotification.Show(this, $"エラー: ご利用前にアバターを作成してください。", null, 2000, eToastGlowColor.Red, eToastPosition.TopCenter);
+                return;
+            }
             var API = new OpenAPI.AvatarCodeEncoder();
             string avatarCode = API.ConvertCsvToAvatarCode(code);
             // Clipboard.SetText(avatarCode);
