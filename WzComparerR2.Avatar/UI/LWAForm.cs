@@ -70,7 +70,7 @@ namespace WzComparerR2.Avatar.UI
                 dlg.Title = "Save QR Code";
                 dlg.Filter = "PNG (*.png)|*.png";
                 dlg.CheckPathExists = true;
-                dlg.DefaultExt = "txt";
+                dlg.DefaultExt = "png";
 
                 if (dlg.ShowDialog() == DialogResult.OK)
                 {
