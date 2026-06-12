@@ -130,6 +130,10 @@ namespace WzComparerR2
                     using (Stream responseStream = await response.Content.ReadAsStreamAsync())
                     using (MemoryStream memoryStream = new MemoryStream())
                     {
+                        if (response.StatusCode == HttpStatusCode.NotFound)
+                        {
+                            throw new Exception("マニフェストデータが見つかりませんでした。削除された可能性があります。");
+                        }
                         responseStream.CopyTo(memoryStream);
                         byte[] compressedData = memoryStream.ToArray();
 
