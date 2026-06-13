@@ -169,7 +169,11 @@ namespace WzComparerR2.CharaSim
         /// </summary>
         longSword = 1215,
         /// <summary>
-        /// Sould SHooter 122
+        /// Carta 1216
+        /// </summary>
+        carta = 1216,
+        /// <summary>
+        /// /// Sould SHooter 122
         /// </summary>
         soulShooter = 122,
         /// <summary>
@@ -572,6 +576,10 @@ namespace WzComparerR2.CharaSim
         /// Grand Sacred Symbol 1714
         /// </summary>
         grandAuthenticSymbol = 1714,
+        /// <summary>
+        /// 마법깃펜 1726
+        /// </summary>
+        magicQuill = 1726,
         /// <summary>
         /// Jade 178
         /// </summary>

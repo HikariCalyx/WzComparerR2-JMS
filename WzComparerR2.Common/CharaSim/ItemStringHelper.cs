@@ -934,6 +934,9 @@ namespace WzComparerR2.CharaSim
                 case GearType.onmyoSen: return "Fan";
                 case GearType.kannaReifu: return "Talisman";
 
+                case GearType.carta: return "카르타";
+                case GearType.magicQuill: return "마법깃펜";
+
                 //case GearType.astra: return "Astra Sub Weapon";
                 default: return null;
             }
@@ -1113,6 +1116,8 @@ namespace WzComparerR2.CharaSim
 
                 case GearType.longSword:
                 case GearType.yeouiGem: return GetExtraJobReqString(161, isMsea);
+                case GearType.carta:
+                case GearType.magicQuill: return GetExtraJobReqString(192);
                 default: return null;
             }
         }
@@ -1155,6 +1160,7 @@ namespace WzComparerR2.CharaSim
                 case 172: return isMsea ? "Can be equipped by Lynn" : "Lynn only";
                 case 175: return isMsea ? "Can be equipped by Mo Xuan" : "Mo Xuan only";
                 case 182: return isMsea ? "Can be equipped by Sia Astelle" : "Sia Astelle only";
+                case 192: return isMsea ? "Can be equipped by Lethe" : "Lethe only";
                 default: return null;
             }
         }
@@ -1316,6 +1322,7 @@ namespace WzComparerR2.CharaSim
                         case 16: extraJobNames.Add("Anima class"); break;
                         case 17: extraJobNames.Add("Jianghu class"); break;
                         case 18: extraJobNames.Add("Shine class"); break;
+                        case 19: extraJobNames.Add("Demon class"); break;
                     }
                 }
             }
@@ -1845,6 +1852,13 @@ namespace WzComparerR2.CharaSim
                 case 18312: return "Iel(4)";
                 case 18314: return "Iel(6)";
 
+                case 19000: return "Lethe";
+                case 19200: return "Lethe(1)";
+                case 19210: return "Lethe(2)";
+                case 19211: return "Lethe(3)";
+                case 19212: return "Lethe(4)";
+                case 19214: return "Lethe(6)";
+
                 case 40000: return "5th";
                 case 40001: return "5th (Warrior)";
                 case 40002: return "5th (Magician)";
@@ -1907,6 +1921,7 @@ namespace WzComparerR2.CharaSim
                             case 16: jobName = "5th (Anima)"; break;
                             case 17: jobName = "5th (Jianghu)"; break;
                             case 18: jobName = "5th (Shine)"; break;
+                            case 19: jobName = "5th (Demon)"; break;
                         }
                     }
                     else
