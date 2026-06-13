@@ -1775,6 +1775,13 @@ namespace WzComparerR2.CharaSim
                 case 18512: return "シャイン海賊(4次)";
                 case 18514: return "シャイン海賊(6次)";
 
+                case 19000: return "レデ";
+                case 19200: return "レデ(1次)";
+                case 19210: return "レデ(2次)";
+                case 19211: return "レデ(3次)";
+                case 19212: return "レデ(4次)";
+                case 19214: return "レデ(6次)";
+
                 case 40000: return "5次";
                 case 40001: return "5次(戦士)";
                 case 40002: return "5次(魔法使い)";
