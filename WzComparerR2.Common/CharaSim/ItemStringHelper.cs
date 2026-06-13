@@ -821,6 +821,9 @@ namespace WzComparerR2.CharaSim
                 case GearType.onmyoSen: return "陰陽扇";
                 case GearType.kannaReifu: return "霊符";
 
+                case GearType.carta: return "カルタ";
+                case GearType.magicQuill: return "魔法の羽ペン";
+
                 default: return null;
             }
         }
@@ -975,6 +978,9 @@ namespace WzComparerR2.CharaSim
                 case GearType.boxingCannon:
                 case GearType.boxingSky: return GetExtraJobReqString(175);
 
+                case GearType.longSword:
+                case GearType.yeouiGem: return GetExtraJobReqString(161);
+
                 case GearType.ornament: return GetExtraJobReqString(162);
 
                 //18xxx
@@ -984,8 +990,8 @@ namespace WzComparerR2.CharaSim
                 case GearType.celestialLight:
                 case GearType.compass: return GetExtraJobReqString(182);
 
-                case GearType.longSword:
-                case GearType.yeouiGem: return GetExtraJobReqString(161);
+                case GearType.carta:
+                case GearType.magicQuill: return GetExtraJobReqString(192);
                 default: return null;
             }
         }
@@ -1031,6 +1037,7 @@ namespace WzComparerR2.CharaSim
                 case 181: return "エリル着用可能";
                 case 182: return "シア着用可能";
                 case 183: return "アイエル着用可能";
+                case 192: return "レデ着用可能";
 
                 default: return null;
             }
@@ -1203,6 +1210,7 @@ namespace WzComparerR2.CharaSim
                         case 16: return "アニマ職業";
                         case 17: return "江湖職業";
                         case 18: return "シャイン職業";
+                        case 19: return "魔族職業";
 
                     }
                 }
@@ -1845,7 +1853,7 @@ namespace WzComparerR2.CharaSim
                             case 16: jobName = "5次(アニマ)"; break;
                             case 17: jobName = "5次(江湖)"; break;
                             case 18: jobName = "5次(シャイン)"; break;
-                            case 19: jobName = "5次(デーモン)"; break;
+                            case 19: jobName = "5次(魔族)"; break;
                         }
                     }
                     else
