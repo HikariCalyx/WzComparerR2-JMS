@@ -1845,6 +1845,7 @@ namespace WzComparerR2.CharaSim
                             case 16: jobName = "5次(アニマ)"; break;
                             case 17: jobName = "5次(江湖)"; break;
                             case 18: jobName = "5次(シャイン)"; break;
+                            case 19: jobName = "5次(デーモン)"; break;
                         }
                     }
                     else
