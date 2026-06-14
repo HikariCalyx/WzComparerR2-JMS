@@ -824,11 +824,11 @@ namespace WzComparerR2.CharaSimControl
                     {
                         if (Translator.IsKoreanStringPresent(string.Join(", ", commandLev.Where(i => i.Value == l0).Select(i => i.Key).OrderBy(s => s))))
                         {
-                            GearGraphics.DrawString(g, $"#cLv. {10} 以上： {string.Join(", ", commandLev.Where(i => i.Value == l0).Select(i => i.Key).OrderBy(s => s))}#", GearGraphics.KMSItemDetailFont, item22ColorTable, descLeft, descRight, ref picH, LineHeight);
+                            GearGraphics.DrawString(g, $"#cLv. {l0} 以上： {string.Join(", ", commandLev.Where(i => i.Value == l0).Select(i => i.Key).OrderBy(s => s))}#", GearGraphics.KMSItemDetailFont, item22ColorTable, descLeft, descRight, ref picH, LineHeight);
                         }
                         else
                         {
-                            GearGraphics.DrawString(g, $"#cLv. {10} 以上： {string.Join(", ", commandLev.Where(i => i.Value == l0).Select(i => i.Key).OrderBy(s => s))}#", GearGraphics.ItemDetailFont, item22ColorTable, descLeft, descRight, ref picH, LineHeight);
+                            GearGraphics.DrawString(g, $"#cLv. {l0} 以上： {string.Join(", ", commandLev.Where(i => i.Value == l0).Select(i => i.Key).OrderBy(s => s))}#", GearGraphics.ItemDetailFont, item22ColorTable, descLeft, descRight, ref picH, LineHeight);
                         }
                     }
                     GearGraphics.DrawString(g, "#cTip. ペットのレベルが15になると特定の言葉を言わせることができます。ペットのセリフは他のキャラクターは見えません。#", GearGraphics.ItemDetailFont, item22ColorTable, descLeft, descRight, ref picH, LineHeight);
