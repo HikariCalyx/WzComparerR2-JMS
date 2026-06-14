@@ -16,7 +16,7 @@ namespace WzComparerR2
 
         public static string COMMON_ERROR = "エラー";
 
-        public static string FRMABOUT_VERSION = "[JMS] 日本語版 <font color=\"#808080\">Hikari Calyx</font>";
+        public static string FRMABOUT_VERSION = "[JMS] 日本語版</font> <font color=\"#808080\">Hikari Calyx</font>";
         public static string FRMABOUT_NO_AVAILABLE_PLUGINS = "利用可能なプラグインはありません。";
         public static string FRMABOUT_DESIGNER_TITLE = "プログラムについて";
         public static string FRMABOUT_DESIGNER_BTN_CLOSE = "閉じる";
