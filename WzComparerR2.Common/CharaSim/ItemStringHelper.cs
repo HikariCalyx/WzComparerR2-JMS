@@ -923,8 +923,8 @@ namespace WzComparerR2.CharaSim
                 case GearType.celestialLight: return "Celestial Light";
                 case GearType.compass: return "Compass";
 
-                // case GearType.keir: return "Keir";
-                // case GearType.gram: return "Gram";
+                case GearType.keir: return "Keir";
+                case GearType.gram: return "Gram";
 
                 case GearType.longSword: return isMsea ? "Longsword" : "Sword";
                 case GearType.yeouiGem: return isMsea ? "Sacred Orb" : "Imugi Gem";

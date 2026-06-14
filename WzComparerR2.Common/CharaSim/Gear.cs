@@ -19,6 +19,7 @@ namespace WzComparerR2.CharaSim
             Options = new Potential[3];
             AdditionalOptions = new Potential[3];
             Additions = new List<Addition>();
+            AuthenticDesc = "";
         }
         public GearGrade Grade { get; set; }
         public GearGrade AdditionGrade { get; set; }
@@ -56,6 +57,7 @@ namespace WzComparerR2.CharaSim
         public Dictionary<GearPropType, float> VariableStat { get; private set; }
         public Dictionary<GearPropType, int> AbilityTimeLimited { get; private set; }
         public List<int> ReqSpecJobs { get; private set; }
+        public string AuthenticDesc { get; private set; }
 
         /// <summary>
         /// 获取或设置装备的标准属性。
@@ -92,8 +94,18 @@ namespace WzComparerR2.CharaSim
             }
         }
 
-        public int GetMaxStar(bool isPostNEXTClient = false)
+        public int GetMaxStar(Dictionary<int, AstraSubWeaponInfo> loadedAstraSubWeapons, bool isPostNEXTClient = false)
         {
+            var astraIdx = GetAstraIndex(loadedAstraSubWeapons, this.ItemID);
+            switch (astraIdx)
+            {
+                case 0:
+                    return 15;
+                case 1:
+                    return 20;
+                case 2:
+                    return 30;
+            }
             if (!this.HasTuc)
             {
                 return 0;
@@ -125,6 +137,7 @@ namespace WzComparerR2.CharaSim
                     break;
                 }
             }
+
             if (data == null)
             {
                 return 0;
@@ -157,17 +170,13 @@ namespace WzComparerR2.CharaSim
 
         public void MakeTimeLimitedPropAvailable()
         {
-            if (AbilityTimeLimited.Count > 0 && !this.GetBooleanValue(GearPropType.abilityTimeLimited))
+            if (AbilityTimeLimited.Count > 0)
             {
-                int diff = 0;
                 foreach (var kv in AbilityTimeLimited)
                 {
-                    this.Props.TryGetValue(kv.Key, out int oldValue);
-                    this.Props[kv.Key] = oldValue + kv.Value;
-                    diff += kv.Value / Gear.GetPropTypeWeight(kv.Key);
+                    this.Props[kv.Key] = this.Props[kv.Key] + kv.Value;
                 }
                 this.Props[GearPropType.abilityTimeLimited] = 1;
-                this.diff += diff;
             }
         }
 
@@ -176,11 +185,10 @@ namespace WzComparerR2.CharaSim
             if (this.StandardProps != null)
             {
                 this.Props.Clear();
-                foreach (var kv in this.StandardProps)
+                foreach (var kv in AbilityTimeLimited)
                 {
                     this.Props[kv.Key] = kv.Value;
                 }
-                this.diff = 0;
             }
         }
 
@@ -296,6 +304,27 @@ namespace WzComparerR2.CharaSim
             }
         }
 
+        public static bool IsAstraSubWeapon(int gearID)
+        {
+            switch (gearID / 10000)
+            {
+                case 172:
+                    return true;
+
+                default:
+                    switch (gearID)
+                    {
+                        case 1342120:
+                        case 1342121:
+                        case 1342122:
+                        case 1342123:
+                            return true;
+                        default: return false;
+                    }
+
+            }
+        }
+
         public static bool IsEmblem(GearType type)
         {
             if (type == GearType.emblem || type == GearType.powerSource)
@@ -307,7 +336,7 @@ namespace WzComparerR2.CharaSim
 
         public static bool IsArmor(GearType type)
         {
-            switch(type)
+            switch (type)
             {
                 case GearType.cap:
                 case GearType.coat:
@@ -350,7 +379,7 @@ namespace WzComparerR2.CharaSim
                     return false;
             }
         }
-        
+
         public static bool IsTamingMob(GearType type)
         {
             if ((int)type >= 190 && (int)type < 200)
@@ -628,7 +657,7 @@ namespace WzComparerR2.CharaSim
             }
             if (code / 10000 == 119)
             {
-                switch(code / 100)
+                switch (code / 100)
                 {
                     case 11902:
                         return (GearType)(code / 10);
@@ -642,6 +671,7 @@ namespace WzComparerR2.CharaSim
                     case 1790:
                     case 1791:
                     case 1792:
+                    case 1793:
                         return (GearType)(code / 1000);
                     default:
                         return (GearType)(code / 100 * 10);
@@ -649,6 +679,18 @@ namespace WzComparerR2.CharaSim
             }
             return (GearType)(code / 10000);
         }
+
+        public static int GetAstraIndex(Dictionary<int, AstraSubWeaponInfo> loadedAstraSubWeapons, int id)
+        {
+            if (id / 10000 == 172)
+                return id % 10;
+
+            if (loadedAstraSubWeapons.TryGetValue(id, out AstraSubWeaponInfo value))
+                return value.Index;
+
+            return -1;
+        }
+
 
         public static int GetGender(int code)
         {
@@ -659,10 +701,12 @@ namespace WzComparerR2.CharaSim
                 case GearType.powerSource:
                 case GearType.bit:
                 case GearType.jewel:
+                case GearType.astra:
                     return 2;
                 case GearType.hair:
                 case GearType.hair2:
                 case GearType.hair3:
+                case GearType.hair4:
                 case GearType.face:
                 case GearType.face2:
                 case GearType.face3:
@@ -701,6 +745,7 @@ namespace WzComparerR2.CharaSim
                 case 3: // hair
                 case 4:
                 case 6:
+                case 7:
                     switch (check % 10)
                     {
                         case 0:
@@ -940,7 +985,7 @@ namespace WzComparerR2.CharaSim
                             break;
 
                         case "option": //附加潜能信息
-                            Wz_Node itemWz = findNode !=null? findNode("Item\\ItemOption.img"):null;
+                            Wz_Node itemWz = findNode != null ? findNode("Item\\ItemOption.img") : null;
                             if (itemWz == null)
                                 break;
                             int optIdx = 0;
@@ -1145,6 +1190,17 @@ namespace WzComparerR2.CharaSim
                             gear.LabelGradeTooltip = Convert.ToString(subNode.Value);
                             break;
 
+                        case "specificTarget_bdR":
+                        case "specificTarget_expR":
+                            foreach (Wz_Node specificTargetNode in subNode.Nodes)
+                            {
+                                switch (specificTargetNode.Text)
+                                {
+                                    case "desc": gear.AuthenticDesc = Convert.ToString(specificTargetNode.Value); break;
+                                }
+                            }
+                            break;
+
                         default:
                             {
                                 GearPropType type;
@@ -1152,7 +1208,15 @@ namespace WzComparerR2.CharaSim
                                 {
                                     try
                                     {
-                                        gear.Props.Add(type, Convert.ToInt32(subNode.Value));
+                                        if (gear.Props.ContainsKey(type))
+                                        {
+                                            // workaround for MSEA v236
+                                            gear.Props[type] = Convert.ToInt32(subNode.Value);
+                                        }
+                                        else
+                                        {
+                                            gear.Props.Add(type, Convert.ToInt32(subNode.Value));
+                                        }
                                     }
                                     finally
                                     {

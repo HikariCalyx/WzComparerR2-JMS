@@ -12,6 +12,7 @@ namespace WzComparerR2.CharaSim
         static CharaSimLoader()
         {
             LoadedSetItems = new Dictionary<int, SetItem>();
+            LoadedAstraSubWeapons = new Dictionary<int, AstraSubWeaponInfo>();
             LoadedExclusiveEquips = new Dictionary<int, ExclusiveEquip>();
             LoadedCommoditiesBySN = new Dictionary<int, Commodity>();
             LoadedCommoditiesByItemId = new Dictionary<int, Commodity>();
@@ -24,6 +25,7 @@ namespace WzComparerR2.CharaSim
         }
 
         public static Dictionary<int, SetItem> LoadedSetItems { get; private set; }
+        public static Dictionary<int, AstraSubWeaponInfo> LoadedAstraSubWeapons { get; private set; }
         public static Dictionary<int, ExclusiveEquip> LoadedExclusiveEquips { get; private set; }
         public static Dictionary<int, Commodity> LoadedCommoditiesBySN { get; private set; }
         public static Dictionary<int, Commodity> LoadedCommoditiesByItemId { get; private set; }
@@ -34,18 +36,18 @@ namespace WzComparerR2.CharaSim
         public static List<int> LoadedMintableFTItems { get; private set; }
         public static Dictionary<int, List<int>> LoadedPetEquipInfo { get; private set; }
 
-        public static void LoadSetItemsIfEmpty()
+        public static void LoadSetItemsIfEmpty(Wz_File sourceWzFile = null)
         {
             if (LoadedSetItems.Count == 0)
             {
-                LoadSetItems();
+                LoadSetItems(sourceWzFile);
             }
         }
 
-        public static void LoadSetItems()
+        public static void LoadSetItems(Wz_File sourceWzFile)
         {
             //搜索setItemInfo.img
-            Wz_Node etcWz = PluginManager.FindWz(Wz_Type.Etc, true);
+            Wz_Node etcWz = PluginManager.FindWz(Wz_Type.Etc, sourceWzFile, true);
             if (etcWz == null)
                 return;
             Wz_Node setItemNode = etcWz.FindNodeByPath("SetItemInfo.img", true);
@@ -53,7 +55,7 @@ namespace WzComparerR2.CharaSim
                 return;
 
             //搜索ItemOption.img
-            Wz_Node itemWz = PluginManager.FindWz(Wz_Type.Item, true);
+            Wz_Node itemWz = PluginManager.FindWz(Wz_Type.Item, sourceWzFile, true);
             if (itemWz == null)
                 return;
             Wz_Node optionNode = itemWz.FindNodeByPath("ItemOption.img", true);
@@ -70,6 +72,65 @@ namespace WzComparerR2.CharaSim
                     if (setItem != null)
                         LoadedSetItems[setItemIndex] = setItem;
                 }
+            }
+        }
+
+        public static void LoadAstraSubWeaponsIfEmpty(Wz_File sourceWzFile = null)
+        {
+            if (LoadedAstraSubWeapons.Count == 0)
+            {
+                LoadAstraSubWeapons(sourceWzFile);
+            }
+        }
+
+        public static void LoadAstraSubWeapons(Wz_File sourceWzFile)
+        {
+            //搜索setItemInfo.img
+            Wz_Node etcWz = PluginManager.FindWz(Wz_Type.Etc, sourceWzFile);
+            if (etcWz == null)
+                return;
+            Wz_Node astraNode = etcWz.FindNodeByPath("SubWeaponTransferData.img\\Job", true);
+            if (astraNode == null)
+                return;
+
+            LoadedAstraSubWeapons.Clear();
+            List<int> idSet = new List<int>();
+            Action<int> insert = (int jobID) =>
+            {
+                idSet.Sort();
+                for (int i = 0; i < idSet.Count; i++)
+                {
+                    LoadedAstraSubWeapons[idSet[i]] = new AstraSubWeaponInfo(idSet[i], i, jobID);
+                }
+                idSet.Clear();
+            };
+
+            foreach (var job in astraNode.Nodes)
+            {
+                if (!int.TryParse(job.Text, out var jobID))
+                    continue;
+
+                var targetNode = job.FindNodeByPath("target");
+                foreach (var target in targetNode?.Nodes ?? new Wz_Node.WzNodeCollection(null))
+                {
+                    if (int.TryParse(target.Text, out var id))
+                    {
+                        idSet.Add(id);
+                    }
+                    else
+                    {
+                        insert(jobID);
+                        foreach (var inner_target in target?.Nodes ?? new Wz_Node.WzNodeCollection(null))
+                        {
+                            if (int.TryParse(inner_target.Text, out var inner_id))
+                            {
+                                idSet.Add(inner_id);
+                            }
+                        }
+                        insert(jobID);
+                    }
+                }
+                insert(jobID);
             }
         }
 
@@ -203,17 +264,17 @@ namespace WzComparerR2.CharaSim
             return null;
         }
 
-        public static void LoadExclusiveEquipsIfEmpty()
+        public static void LoadExclusiveEquipsIfEmpty(Wz_File sourceWzFile = null)
         {
             if (LoadedExclusiveEquips.Count == 0)
             {
-                LoadExclusiveEquips();
+                LoadExclusiveEquips(sourceWzFile);
             }
         }
 
-        public static void LoadExclusiveEquips()
+        public static void LoadExclusiveEquips(Wz_File sourceWzFile)
         {
-            Wz_Node exclusiveNode = PluginManager.FindWz("Etc/ExclusiveEquip.img");
+            Wz_Node exclusiveNode = PluginManager.FindWz("Etc/ExclusiveEquip.img", sourceWzFile);
             if (exclusiveNode == null)
                 return;
 
@@ -230,15 +291,15 @@ namespace WzComparerR2.CharaSim
             }
         }
 
-        public static void LoadCommoditiesIfEmpty()
+        public static void LoadCommoditiesIfEmpty(Wz_File sourceWzFile = null, int slotIdx = 0)
         {
             if (LoadedCommoditiesBySN.Count == 0 && LoadedCommoditiesByItemId.Count == 0)
             {
-                LoadCommodities();
+                LoadCommodities(sourceWzFile, slotIdx);
             }
         }
 
-        public static void LoadCommodities()
+        public static void LoadCommodities(Wz_File sourceWzFile, int slotIdx = 0)
         {
             Wz_Node commodityNode = PluginManager.FindWz("Etc/Commodity.img");
             if (commodityNode == null)

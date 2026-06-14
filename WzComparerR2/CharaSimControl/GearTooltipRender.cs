@@ -338,7 +338,7 @@ namespace WzComparerR2.CharaSimControl
                 if (gear.Star > 0)
                 {
                     //g.DrawString("APPLIED" + gear.Star + "STAR ENHANCEMENT", GearGraphics.EquipDetailFont, GearGraphics.OrangeBrush, 8, picHeight);
-                    g.DrawString("Star Force:" + Gear.Star + "/" + gear.GetMaxStar() + "Stars Infused", GearGraphics.EquipDetailFont, GearGraphics.OrangeBrush, 8, picHeight);
+                    g.DrawString("Star Force:" + Gear.Star + "/" + gear.GetMaxStar(CharaSimLoader.LoadedAstraSubWeapons) + "Stars Infused", GearGraphics.EquipDetailFont, GearGraphics.OrangeBrush, 8, picHeight);
                     picHeight += 16;
                 }
                 picHeight += 2;
