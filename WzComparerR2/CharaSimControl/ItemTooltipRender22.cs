@@ -776,29 +776,36 @@ namespace WzComparerR2.CharaSimControl
             {
                 Wz_Node petDialog = PluginManager.FindWz("String\\PetDialog.img\\" + item.ItemID, this.SourceWzFile);
                 Dictionary<string, int> commandLev = new Dictionary<string, int>();
-                foreach (Wz_Node commandNode in PluginManager.FindWz("Item\\Pet\\" + item.ItemID + ".img\\interact", this.SourceWzFile).Nodes)
+                if (PluginManager.FindWz("Item\\Pet\\" + item.ItemID + ".img\\interact", this.SourceWzFile) != null)
                 {
-                    foreach (string command in petDialog?.Nodes[commandNode.Nodes["command"].GetValue<string>()].GetValueEx<string>(null)?.Split('|') ?? Enumerable.Empty<string>())
+                    foreach (Wz_Node commandNode in PluginManager.FindWz("Item\\Pet\\" + item.ItemID + ".img\\interact", this.SourceWzFile).Nodes)
                     {
-                        int l0;
-                        if (!commandLev.TryGetValue(command, out l0))
+                        if (commandNode.Nodes["command"] == null) continue;
+                        foreach (string command in petDialog?.Nodes[commandNode.Nodes["command"].GetValue<string>()].GetValueEx<string>(null)?.Split('|') ?? Enumerable.Empty<string>())
                         {
-                            commandLev.Add(command, commandNode.Nodes["l0"].GetValue<int>());
-                        }
-                        else
-                        {
-                            commandLev[command] = Math.Min(l0, commandNode.Nodes["l0"].GetValue<int>());
+                            int l0;
+                            if (!commandLev.TryGetValue(command, out l0))
+                            {
+                                commandLev.Add(command, commandNode.Nodes["l0"].GetValue<int>());
+                            }
+                            else
+                            {
+                                commandLev[command] = Math.Min(l0, commandNode.Nodes["l0"].GetValue<int>());
+                            }
                         }
                     }
                 }
 
-                GearGraphics.DrawString(g, "#c[Usable Command]#", GearGraphics.ItemDetailFont, item22ColorTable, descLeft, descRight, ref picH, LineHeight);
-                foreach (int l0 in commandLev.Values.OrderBy(i => i).Distinct())
+                if (commandLev.Count > 0)
                 {
-                    GearGraphics.DrawString(g, $"#cLv. {10} +: {string.Join(", ", commandLev.Where(i => i.Value == l0).Select(i => i.Key).OrderBy(s => s))}#", GearGraphics.ItemDetailFont, item22ColorTable, descLeft, descRight, ref picH, LineHeight);
+                    GearGraphics.DrawString(g, "#c[Usable Command]#", GearGraphics.ItemDetailFont, item22ColorTable, descLeft, descRight, ref picH, LineHeight);
+                    foreach (int l0 in commandLev.Values.OrderBy(i => i).Distinct())
+                    {
+                        GearGraphics.DrawString(g, $"#cLv. {l0} +: {string.Join(", ", commandLev.Where(i => i.Value == l0).Select(i => i.Key).OrderBy(s => s))}#", GearGraphics.ItemDetailFont, item22ColorTable, descLeft, descRight, ref picH, LineHeight);
+                    }
+                    GearGraphics.DrawString(g, "#cTip: You can control what your\n\r pet says once it reaches Lv. 15.#", GearGraphics.ItemDetailFont, item22ColorTable, descLeft, descRight, ref picH, LineHeight);
+                    GearGraphics.DrawString(g, "#cEx) /Pet [what to say]#", GearGraphics.ItemDetailFont, item22ColorTable, descLeft, descRight, ref picH, LineHeight);
                 }
-                GearGraphics.DrawString(g, "#cTip: You can control what your\n\r pet says once it reaches Lv. 15.#", GearGraphics.ItemDetailFont, item22ColorTable, descLeft, descRight, ref picH, LineHeight);
-                GearGraphics.DrawString(g, "#cEx) /Pet [what to say]#", GearGraphics.ItemDetailFont, item22ColorTable, descLeft, descRight, ref picH, LineHeight);
             }
 
             // 미리보기
