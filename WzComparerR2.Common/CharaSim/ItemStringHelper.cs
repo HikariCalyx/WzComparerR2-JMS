@@ -824,6 +824,8 @@ namespace WzComparerR2.CharaSim
                 case GearType.carta: return "カルタ";
                 case GearType.magicQuill: return "魔法の羽ペン";
 
+                case GearType.equipBag: return "装備バッグ";
+
                 default: return null;
             }
         }
