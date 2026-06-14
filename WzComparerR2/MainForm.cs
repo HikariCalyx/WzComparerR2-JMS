@@ -4986,7 +4986,7 @@ namespace WzComparerR2
 
         private void buttonItemAbout_Click(object sender, EventArgs e)
         {
-            new FrmAbout().ShowDialog();
+            new FrmAbout(styleManager1.ManagerStyle == eStyle.VisualStudio2012Dark).ShowDialog();
         }
 
         private void btnRootNode_Click(object sender, EventArgs e)
