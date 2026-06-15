@@ -689,7 +689,7 @@ namespace WzComparerR2.CharaSimControl
 
             //装备类型 - blank typeStr are for One-handed Weapon and Two-handed Weapon respectively
             bool isWeapon = Gear.IsWeapon(Gear.type);
-            string typeStr = ItemStringHelper.GetGearTypeString(Gear.type, MseaMode);
+            string typeStr = Gear.IsSymbol(Gear.type) ? null : Gear.IsAstraSubWeapon(Gear.ItemID) ? ItemStringHelper.GetAstraWeaponType(Gear.ItemID) : ItemStringHelper.GetGearTypeString(Gear.type, MseaMode);
             if (!string.IsNullOrEmpty(typeStr) && (int)Gear.type / 10 != 171)
             {
                 if (isWeapon)

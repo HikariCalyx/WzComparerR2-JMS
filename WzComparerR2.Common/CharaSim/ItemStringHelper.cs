@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace WzComparerR2.CharaSim
 {
@@ -400,11 +401,11 @@ namespace WzComparerR2.CharaSim
                 case GearPropType.abilityTimeLimited:
                     res[0] = value == 0 ? null : "Stats Duration";
                     return res;
-                case GearPropType.reissueBan:
-                    res[0] = value == 0 ? null : "#$rCannot be re-issued#";
-                    return res;
                 case GearPropType.noLookChange:
                     res[0] = value == 0 ? null : "#$rCannot use Medal Fusion Anvil#";
+                    return res;
+                case GearPropType.reissueBan:
+                    res[0] = value == 0 ? null : "#$rCannot be re-issued#";
                     return res;
                 case GearPropType.noPrism:
                     res[0] = value == 0 ? null : "#$rCannot use Prism#";
@@ -799,6 +800,7 @@ namespace WzComparerR2.CharaSim
                 case GearType.pants: return "Bottom";
                 case GearType.ring: return "Ring";
                 case GearType.shield: return "Shield";
+
                 case GearType.shoes: return "Shoes";
                 case GearType.shiningRod: return "Shining Rod";
                 case GearType.soulShooter: return "Soul Shooter";
@@ -932,7 +934,7 @@ namespace WzComparerR2.CharaSim
                 case GearType.onmyoSen: return "Fan";
                 case GearType.kannaReifu: return "Talisman";
 
-                case GearType.astra: return "Astra Sub Weapon";
+                //case GearType.astra: return "Astra Sub Weapon";
                 default: return null;
             }
         }
@@ -984,8 +986,9 @@ namespace WzComparerR2.CharaSim
         /// </summary>
         /// <param Name="Type">表示装备类型的GearType。</param>
         /// <returns></returns>
-        public static string GetExtraJobReqString(GearType type, bool isMsea = false)
+        public static string GetExtraJobReqString(GearType type, bool hasReqSpecJobs = false, Dictionary<int, AstraSubWeaponInfo> loadedAstraSubWeapons = null, int id = 0, bool isMsea = false)
         {
+            string str = null;
             switch (type)
             {
                 //0xxx
@@ -1007,9 +1010,20 @@ namespace WzComparerR2.CharaSim
                 case GearType.cannonGunPowder2: return "Cannoneer only";
                 case GearType.box:
                 case GearType.boxingClaw: return isMsea ? "Can be equipped by Zen" : "Jett only";
+                case GearType.shield:
+                    if (!hasReqSpecJobs && GetAstraExtraJobReqString(loadedAstraSubWeapons, id, out str))
+                    {
+                        return str;
+                    }
+                    return null;
 
                 //1xxx
-                case GearType.cygnusGem: return "Cygnus Knights only";
+                case GearType.cygnusGem:
+                    if (!hasReqSpecJobs && GetAstraExtraJobReqString(loadedAstraSubWeapons, id, out str))
+                    {
+                        return str;
+                    }
+                    return "Cygnus Knights only";
 
                 //2xxx
                 case GearType.aranPendulum: return GetExtraJobReqString(21, isMsea);
@@ -1145,6 +1159,126 @@ namespace WzComparerR2.CharaSim
             }
         }
 
+        public static string GetAstraWeaponType(int id, bool isMsea = false)
+        {
+            int jobID = (id / 100) - 17200;
+            switch (jobID)
+            {
+                case 0: return GetGearTypeString(GearType.heroMedal);
+                case 1: return GetGearTypeString(GearType.rosario);
+                case 2: return GetGearTypeString(GearType.chain);
+                case 3:
+                case 4:
+                case 5: return GetGearTypeString(GearType.book1);
+                case 6: return GetGearTypeString(GearType.bowMasterFeather);
+                case 7: return GetGearTypeString(GearType.crossBowThimble);
+                case 8: return GetGearTypeString(GearType.relic);
+                case 9: return GetGearTypeString(GearType.nightLordPoutch);
+                case 10: return GetGearTypeString(GearType.shadowerSheath);
+                case 11: return GetGearTypeString(GearType.viperWristband);
+                case 12: return GetGearTypeString(GearType.captainSight);
+                case 13: return GetGearTypeString(GearType.cannonGunPowder);
+                case 14:
+                case 15:
+                case 16:
+                case 17:
+                case 18: return GetGearTypeString(GearType.cygnusGem);
+                case 19: return GetGearTypeString(GearType.aranPendulum);
+                case 20: return GetGearTypeString(GearType.evanPaper);
+                case 21: return GetGearTypeString(GearType.magicArrow);
+                case 22: return GetGearTypeString(GearType.card);
+                case 23: return GetGearTypeString(GearType.orb);
+                case 24: return GetGearTypeString(GearType.foxPearl);
+                case 25:
+                case 26: return GetGearTypeString(GearType.demonShield);
+                case 27: return GetGearTypeString(GearType.battlemageBall);
+                case 28: return GetGearTypeString(GearType.wildHunterArrowHead);
+                case 29: return GetGearTypeString(GearType.mailin);
+                case 30: return GetGearTypeString(GearType.controller);
+                case 31: return GetGearTypeString(GearType.explosivePill);
+                case 32: return GetGearTypeString(GearType.soulShield);
+                case 33: return GetGearTypeString(GearType.novaMarrow);
+                case 34: return GetGearTypeString(GearType.weaponBelt);
+                case 35: return GetGearTypeString(GearType.transmitter);
+                case 36: return GetGearTypeString(GearType.soulBangle);
+                case 37: return "Hourglass";
+                case 38: return GetGearTypeString(GearType.chess);
+                case 39: return GetGearTypeString(GearType.bracelet);
+                case 40: return GetGearTypeString(GearType.magicWing);
+                case 41: return GetGearTypeString(GearType.hexSeeker);
+                case 42: return GetGearTypeString(GearType.pathOfAbyss);
+                case 43: return GetGearTypeString(GearType.yeouiGem);
+                case 44: return GetGearTypeString(GearType.ornament);
+                case 45: return GetGearTypeString(GearType.fanTassel);
+                case 50: return GetGearTypeString(GearType.kodachi);
+                case 52: return GetGearTypeString(GearType.boxingSky);
+                case 53: return GetGearTypeString(GearType.compass);
+                case 54: return GetGearTypeString(GearType.gram);
+
+                default: return GetGearTypeString(GearType.astra);
+            }
+        }
+
+        public static string GetAstraReqJob(int id, bool isMsea = false)
+        {
+            int jobID = (id / 100) - 17200;
+            switch (jobID)
+            {
+                case 0: return GetExtraJobReqString(GearType.heroMedal, isMsea);
+                case 1: return GetExtraJobReqString(GearType.rosario, isMsea);
+                case 2: return GetExtraJobReqString(GearType.chain, isMsea);
+                case 3: return GetExtraJobReqString(GearType.book1, isMsea);
+                case 4: return GetExtraJobReqString(GearType.book2, isMsea);
+                case 5: return GetExtraJobReqString(GearType.book3, isMsea);
+                case 6: return GetExtraJobReqString(GearType.bowMasterFeather, isMsea);
+                case 7: return GetExtraJobReqString(GearType.crossBowThimble, isMsea);
+                case 8: return GetExtraJobReqString(GearType.relic, isMsea);
+                case 9: return GetExtraJobReqString(GearType.nightLordPoutch, isMsea);
+                case 10: return GetExtraJobReqString(GearType.shadowerSheath, isMsea);
+                case 11: return GetExtraJobReqString(GearType.viperWristband, isMsea);
+                case 12: return GetExtraJobReqString(GearType.captainSight, isMsea);
+                case 13: return GetExtraJobReqString(GearType.cannonGunPowder, isMsea);
+                case 14: return isMsea ? "Can be equipped by Soul Master" : "Dawn Warrior only";
+                case 15: return isMsea ? "Can be equipped by Flame Wizard" : "Blaze Wizard only";
+                case 16: return isMsea ? "Can be equipped by Wind Breaker" : "Wind Archer only";
+                case 17: return isMsea ? "Can be equipped by Night Walker" : "Night Walker only";
+                case 18: return isMsea ? "Can be equipped by Striker" : "Thunder Breaker only";
+                case 19: return GetExtraJobReqString(GearType.aranPendulum, isMsea);
+                case 20: return GetExtraJobReqString(GearType.evanPaper, isMsea);
+                case 21: return GetExtraJobReqString(GearType.magicArrow, isMsea);
+                case 22: return GetExtraJobReqString(GearType.card, isMsea);
+                case 23: return GetExtraJobReqString(GearType.orb, isMsea);
+                case 24: return GetExtraJobReqString(GearType.foxPearl, isMsea);
+                case 25: return isMsea ? "Can be equipped by Demon Slayer" : "Demon Slayer only";
+                case 26: return isMsea ? "Can be equipped by Demon Avenger" : "Demon Avenger only";
+                case 27: return GetExtraJobReqString(GearType.battlemageBall, isMsea);
+                case 28: return GetExtraJobReqString(GearType.wildHunterArrowHead, isMsea);
+                case 29: return GetExtraJobReqString(GearType.mailin, isMsea);
+                case 30: return GetExtraJobReqString(GearType.controller, isMsea);
+                case 31: return GetExtraJobReqString(GearType.explosivePill, isMsea);
+                case 32: return GetExtraJobReqString(GearType.soulShield, isMsea);
+                case 33: return GetExtraJobReqString(GearType.novaMarrow, isMsea);
+                case 34: return GetExtraJobReqString(GearType.weaponBelt, isMsea);
+                case 35: return GetExtraJobReqString(GearType.transmitter, isMsea);
+                case 36: return GetExtraJobReqString(GearType.soulBangle, isMsea);
+                case 37: return GetExtraJobReqString(GearType.swordZB, isMsea);
+                case 38: return GetExtraJobReqString(GearType.chess, isMsea);
+                case 39: return GetExtraJobReqString(GearType.bracelet, isMsea);
+                case 40: return GetExtraJobReqString(GearType.magicWing, isMsea);
+                case 41: return GetExtraJobReqString(GearType.hexSeeker, isMsea);
+                case 42: return GetExtraJobReqString(GearType.pathOfAbyss, isMsea);
+                case 43: return GetExtraJobReqString(GearType.yeouiGem, isMsea);
+                case 44: return GetExtraJobReqString(GearType.ornament, isMsea);
+                case 45: return GetExtraJobReqString(GearType.fanTassel, isMsea);
+                case 50: return GetExtraJobReqString(GearType.kodachi, isMsea);
+                case 52: return GetExtraJobReqString(GearType.boxingSky, isMsea);
+                case 53: return GetExtraJobReqString(GearType.compass, isMsea);
+                case 54: return GetExtraJobReqString(GearType.keir, isMsea);
+
+                default: return GetExtraJobReqString(GearType.astra, isMsea);
+            }
+        }
+
         public static string GetExtraJobReqString(IEnumerable<int> specJobs, bool isMsnMode = false, bool isMsea = false)
         {
             return string.Format(isMsea ? "Can be equipped by {0}" : "{0} only", string.Join(", ", GetExtraJobReqStringList(specJobs, isMsnMode, isMsea)));
@@ -1210,6 +1344,17 @@ namespace WzComparerR2.CharaSim
             return extraJobNames;
         }
 
+        public static bool GetAstraExtraJobReqString(Dictionary<int, AstraSubWeaponInfo> loadedAstraSubWeapons, int id, out string str)
+        {
+            str = null;
+            if (loadedAstraSubWeapons != null && loadedAstraSubWeapons.TryGetValue(id, out AstraSubWeaponInfo value))
+            {
+                str = $"{Regex.Replace(ItemStringHelper.GetJobName(value.Job), @"\s*\(\d{1,2}차\)$", "")} 착용 가능";
+                return true;
+            }
+            return false;
+        }
+
         public static string GetItemPropString(ItemPropType propType, long value)
         {
             switch (propType)
@@ -1244,66 +1389,6 @@ namespace WzComparerR2.CharaSim
                     return GetGearPropString(GearPropType.notMintable, value);
                 default:
                     return null;
-            }
-        }
-
-        public static string GetAstraReqJob(int id, bool isMsea = false)
-        {
-            int jobID = (id / 100) - 17200;
-            switch (jobID)
-            {
-                case 0: return GetExtraJobReqString(GearType.heroMedal, isMsea);
-                case 1: return GetExtraJobReqString(GearType.rosario, isMsea);
-                case 2: return GetExtraJobReqString(GearType.chain, isMsea);
-                case 3: return GetExtraJobReqString(GearType.book1, isMsea);
-                case 4: return GetExtraJobReqString(GearType.book2, isMsea);
-                case 5: return GetExtraJobReqString(GearType.book3, isMsea);
-                case 6: return GetExtraJobReqString(GearType.bowMasterFeather, isMsea);
-                case 7: return GetExtraJobReqString(GearType.crossBowThimble, isMsea);
-                case 8: return GetExtraJobReqString(GearType.relic, isMsea);
-                case 9: return GetExtraJobReqString(GearType.nightLordPoutch, isMsea);
-                case 10: return GetExtraJobReqString(GearType.shadowerSheath, isMsea);
-                case 11: return GetExtraJobReqString(GearType.viperWristband, isMsea);
-                case 12: return GetExtraJobReqString(GearType.captainSight, isMsea);
-                case 13: return GetExtraJobReqString(GearType.cannonGunPowder, isMsea);
-                case 14: return isMsea ? "Can be equipped by Soul Master" : "Dawn Warrior only";
-                case 15: return isMsea ? "Can be equipped by Flame Wizard" : "Blaze Wizard only";
-                case 16: return isMsea ? "Can be equipped by Wind Breaker" : "Wind Archer only";
-                case 17: return isMsea ? "Can be equipped by Night Walker" : "Night Walker only";
-                case 18: return isMsea ? "Can be equipped by Striker" : "Thunder Breaker only";
-                case 19: return GetExtraJobReqString(GearType.aranPendulum, isMsea);
-                case 20: return GetExtraJobReqString(GearType.evanPaper, isMsea);
-                case 21: return GetExtraJobReqString(GearType.magicArrow, isMsea);
-                case 22: return GetExtraJobReqString(GearType.card, isMsea);
-                case 23: return GetExtraJobReqString(GearType.orb, isMsea);
-                case 24: return GetExtraJobReqString(GearType.foxPearl, isMsea);
-                case 25: return isMsea ? "Can be equipped by Demon Slayer" : "Demon Slayer only";
-                case 26: return isMsea ? "Can be equipped by Demon Avenger" : "Demon Avenger only";
-                case 27: return GetExtraJobReqString(GearType.battlemageBall, isMsea);
-                case 28: return GetExtraJobReqString(GearType.wildHunterArrowHead, isMsea);
-                case 29: return GetExtraJobReqString(GearType.mailin, isMsea);
-                case 30: return GetExtraJobReqString(GearType.controller, isMsea);
-                case 31: return GetExtraJobReqString(GearType.explosivePill, isMsea);
-                case 32: return GetExtraJobReqString(GearType.soulShield, isMsea);
-                case 33: return GetExtraJobReqString(GearType.novaMarrow, isMsea);
-                case 34: return GetExtraJobReqString(GearType.weaponBelt, isMsea);
-                case 35: return GetExtraJobReqString(GearType.transmitter, isMsea);
-                case 36: return GetExtraJobReqString(GearType.soulBangle, isMsea);
-                case 37: return GetExtraJobReqString(GearType.swordZB, isMsea);
-                case 38: return GetExtraJobReqString(GearType.chess, isMsea);
-                case 39: return GetExtraJobReqString(GearType.bracelet, isMsea);
-                case 40: return GetExtraJobReqString(GearType.magicWing, isMsea);
-                case 41: return GetExtraJobReqString(GearType.hexSeeker, isMsea);
-                case 42: return GetExtraJobReqString(GearType.pathOfAbyss, isMsea);
-                case 43: return GetExtraJobReqString(GearType.yeouiGem, isMsea);
-                case 44: return GetExtraJobReqString(GearType.ornament, isMsea);
-                case 45: return GetExtraJobReqString(GearType.fanTassel, isMsea);
-                case 50: return GetExtraJobReqString(GearType.kodachi, isMsea);
-                case 52: return GetExtraJobReqString(GearType.boxingSky, isMsea);
-                case 53: return GetExtraJobReqString(GearType.compass, isMsea);
-                case 54: return GetExtraJobReqString(GearType.keir, isMsea);
-
-                default: return GetExtraJobReqString(GearType.astra, isMsea);
             }
         }
 

@@ -534,6 +534,20 @@ namespace WzComparerR2.CharaSimControl
                     reqJobString = string.Join(", ", reqJobList);
                 }
             }
+
+            string extraReq = ItemStringHelper.GetExtraJobReqString(Gear.type);
+            if (extraReq == null && Gear.Props.TryGetValue(GearPropType.reqSpecJob, out value))
+            {
+                extraReq = ItemStringHelper.GetExtraJobReqString(value);
+            }
+            if (Gear.type == GearType.astra)
+            {
+                extraReq = ItemStringHelper.GetAstraReqJob(Gear.ItemID);
+            }
+            if (extraReq == null && Gear.ReqSpecJobs.Count > 0)
+            {
+                extraReq = ItemStringHelper.GetExtraJobReqString(Gear.ReqSpecJobs, isMsnClient);
+            }
             TextRenderer.DrawText(g, "Required Job", GearGraphics.EquipMDMoris9Font, new Point(15, picH), ((SolidBrush)GearGraphics.Equip22BrushGray).Color, TextFormatFlags.NoPadding);
             GearGraphics.DrawString(g, (string.IsNullOrEmpty(reqJobString) ? "Shared" : reqJobString).Replace("Can be equipped by ", "").Replace(" only", "").Trim(), GearGraphics.EquipMDMoris9Font, equip22ColorTable, 100, 308, ref picH, 16);
 
@@ -2307,6 +2321,15 @@ namespace WzComparerR2.CharaSimControl
             else if (Gear.IsSubWeapon(Gear.type) || Gear.type == GearType.shield)
             {
                 all_categories[0].Add("Sub Weapon");
+            }
+            else if (Gear.IsAstraSubWeapon(Gear.ItemID))
+            {
+                all_categories[0].Add("Astra Sub Weapon");
+                var astraType = ItemStringHelper.GetAstraWeaponType(Gear.ItemID);
+                if (!all_categories[1].Contains(astraType))
+                {
+                    all_categories[1].Add(astraType);
+                }
             }
             else if (Gear.IsEmblem(Gear.type))
             {
