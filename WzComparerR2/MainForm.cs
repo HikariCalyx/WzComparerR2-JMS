@@ -75,6 +75,10 @@ namespace WzComparerR2
         AdvTree lastSelectedTree;
         DefaultLevel skillDefaultLevel = DefaultLevel.Level0;
         int skillInterval = 32;
+        
+        // Debounce timer for property changes
+        System.Windows.Forms.Timer debounceTimer;
+        AfrmTooltip pendingRefreshForm;
 
         //compare
         Thread compareThread;
@@ -5157,6 +5161,10 @@ namespace WzComparerR2
             if (frm == null)
                 return;
 
+            // Prevent refresh operations while translation is in progress
+            if (labelItemStatus.Text == "翻訳中...")
+                return;
+
             bool doMove = true;
             Skill skill = frm.TargetItem as Skill;
             if (skill != null)
@@ -5166,32 +5174,32 @@ namespace WzComparerR2
                     case Keys.Oemplus:
                     case Keys.Add:
                         skill.Level += 1;
-                        frm.Refresh();
+                        SchedulePropertyRefresh(frm);
                         return;
 
                     case Keys.OemMinus:
                     case Keys.Subtract:
                         skill.Level -= 1;
-                        frm.Refresh();
+                        SchedulePropertyRefresh(frm);
                         return;
 
                     case Keys.OemOpenBrackets:
                         skill.Level -= this.skillInterval;
-                        frm.Refresh();
+                        SchedulePropertyRefresh(frm);
                         return;
                     case Keys.OemCloseBrackets:
                         skill.Level += this.skillInterval;
-                        frm.Refresh();
+                        SchedulePropertyRefresh(frm);
                         return;
 
                     case Keys.PageDown:
                         skill.PerJobIndex += 1;
-                        frm.Refresh();
+                        SchedulePropertyRefresh(frm);
                         return;
 
                     case Keys.PageUp:
                         skill.PerJobIndex -= 1;
-                        frm.Refresh();
+                        SchedulePropertyRefresh(frm);
                         return;
                 }
             }
@@ -5206,14 +5214,14 @@ namespace WzComparerR2
                         {
                             quest.State += 1;
                             doMove = false;
-                            frm.Refresh();
+                            SchedulePropertyRefresh(frm);
                             return;
                         }
                         break;
                     case Keys.Oemplus:
                     case Keys.Add:
                         quest.State += 1;
-                        frm.Refresh();
+                        SchedulePropertyRefresh(frm);
                         return;
 
                     case Keys.Left:
@@ -5221,14 +5229,14 @@ namespace WzComparerR2
                         {
                             quest.State -= 1;
                             doMove = false;
-                            frm.Refresh();
+                            SchedulePropertyRefresh(frm);
                             return;
                         }
                         break;
                     case Keys.OemMinus:
                     case Keys.Subtract:
                         quest.State -= 1;
-                        frm.Refresh();
+                        SchedulePropertyRefresh(frm);
                         return;
                 }
             }
@@ -5242,13 +5250,13 @@ namespace WzComparerR2
                     case Keys.Oemplus:
                     case Keys.Add:
                         npc.IllustIndex += 1;
-                        frm.Refresh();
+                        SchedulePropertyRefresh(frm);
                         return;
 
                     case Keys.OemMinus:
                     case Keys.Subtract:
                         npc.IllustIndex -= 1;
-                        frm.Refresh();
+                        SchedulePropertyRefresh(frm);
                         return;
                 }
             }
@@ -5261,13 +5269,13 @@ namespace WzComparerR2
                     case Keys.Oemplus:
                     case Keys.Add:
                         mob.MobGroupIndex += 1;
-                        frm.Refresh();
+                        SchedulePropertyRefresh(frm);
                         return;
 
                     case Keys.OemMinus:
                     case Keys.Subtract:
                         mob.MobGroupIndex -= 1;
-                        frm.Refresh();
+                        SchedulePropertyRefresh(frm);
                         return;
                 }
             }
@@ -5290,6 +5298,54 @@ namespace WzComparerR2
                     if (doMove) frm.Left += 1;
                     return;
             }
+        }
+
+        private void SchedulePropertyRefresh(AfrmTooltip frm)
+        {
+            // Store the pending form
+            pendingRefreshForm = frm;
+
+            // Display status based on target item type
+            string statusText = GetPropertyStatusText(frm.TargetItem);
+            labelItemStatus.Text = statusText;
+
+            // Stop existing timer if any
+            if (debounceTimer != null)
+            {
+                debounceTimer.Stop();
+                debounceTimer.Dispose();
+            }
+
+            // Create and start new debounce timer (3 seconds = 3000ms)
+            debounceTimer = new System.Windows.Forms.Timer();
+            debounceTimer.Interval = 1000;
+            debounceTimer.Tick += (s, e) =>
+            {
+                debounceTimer.Stop();
+                debounceTimer.Dispose();
+                debounceTimer = null;
+
+                // Execute the actual refresh
+                if (pendingRefreshForm != null)
+                {
+                    pendingRefreshForm.Refresh();
+                    labelItemStatus.Text = "";
+                }
+                pendingRefreshForm = null;
+            };
+            debounceTimer.Start();
+        }
+
+        private string GetPropertyStatusText(object targetItem)
+        {
+            return targetItem switch
+            {
+                Skill skill => $"スキルレベル：{skill.Level}" + ((skill.PerJobAttackInfo.Count > 0) ? $" | 職業：{ItemStringHelper.GetJobName(skill.PerJobAttackInfo.Keys.ToList()[skill.PerJobIndex]).Replace("4", "6")}" : ""),
+                Quest quest => $"クエスト：{quest.State}",
+                Npc npc => $"NPCイラスト：{npc.IllustIndex + 1} / {npc.Illustration2Bitmaps.Count}",
+                Mob mob => $"モンスター：{mob.MobGroupIndex + 1} / {mob.QuestCountGroupMobID.Count}",
+                _ => ""
+            };
         }
 
         private void afrm_VisibleChanged(object sender, EventArgs e)

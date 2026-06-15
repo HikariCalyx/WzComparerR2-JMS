@@ -144,9 +144,15 @@ namespace WzComparerR2.CharaSimControl
             set { showMenu = value; }
         }
 
-        public async override void Refresh()
+        public override void Refresh()
         {
-            this.PreRender();
+            this.BringToFront();
+            _ = RefreshAsync();
+        }
+
+        private async Task RefreshAsync()
+        {
+            await PreRender();
             if (Translator.IsTranslateEnabled)
             {
                 TranslateSemaphore.Wait();
@@ -161,7 +167,13 @@ namespace WzComparerR2.CharaSimControl
             }
         }
 
-        public async void QuickRefresh()
+        public void QuickRefresh()
+        {
+            this.BringToFront();
+            _ = QuickRefreshAsync();
+        }
+
+        private async Task QuickRefreshAsync()
         {
             if (this.Bitmap != null)
             {
@@ -174,7 +186,7 @@ namespace WzComparerR2.CharaSimControl
             }
         }
 
-        public async void PreRender()
+        public async Task PreRender()
         {
             AvatarBitmap = null;
             if (this.item == null)
