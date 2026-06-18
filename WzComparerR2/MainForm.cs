@@ -109,6 +109,10 @@ namespace WzComparerR2
             tooltipQuickView.KeyDown += new KeyEventHandler(afrm_KeyDown);
             tooltipQuickView.ShowID = true;
             tooltipQuickView.ShowMenu = true;
+            tooltipQuickView.OnStatusUpdate = (status) =>
+            {
+                labelItemStatus.Text = status;
+            };
 
             string[] images = new string[] { "dir", "mp3", "num", "png", "str", "uol", "vector", "img", "rawdata", "convex", "video" };
             foreach (string img in images)
@@ -2704,14 +2708,14 @@ namespace WzComparerR2
                 {
                     Directory.CreateDirectory(exportedFolder);
                 }
-                FrmWaiting WaitingForm = new FrmWaiting();
-                WaitingForm.UpdateMessage("Exporting...");
-                WaitingForm.Show(this);
+                labelItemStatus.Text = "Exporting...";
+                progressBarItem1.Value = 0;
+                progressBarItem1.Visible = true;
                 await Task.Run(() =>
                 {
-                    BatchExportSound(soundNode.GetValue<Wz_Image>().Node, exportedFolder, WaitingForm);
+                    BatchExportSound(soundNode.GetValue<Wz_Image>().Node, exportedFolder);
                 });
-                WaitingForm.Close();
+                progressBarItem1.Visible = false;
                 labelItemStatus.Text = "Exported: " + exportedFolder;
             }
             else
@@ -2729,9 +2733,9 @@ namespace WzComparerR2
                         {
                             Directory.CreateDirectory(exportedFolder);
                         }
-                        FrmWaiting WaitingForm = new FrmWaiting();
-                        WaitingForm.UpdateMessage("Exporting...");
-                        WaitingForm.Show(this);
+                        labelItemStatus.Text = "Exporting...";
+                        progressBarItem1.Value = 0;
+                        progressBarItem1.Visible = true;
                         await Task.Run(() =>
                         {
                             foreach (var img in soundNode.Nodes)
@@ -2747,25 +2751,28 @@ namespace WzComparerR2
                                     {
                                         Directory.CreateDirectory(Path.Combine(exportedFolder, img.Text));
                                     }
-                                    BatchExportSound(image.Node, Path.Combine(exportedFolder, img.Text), WaitingForm);
+                                    BatchExportSound(image.Node, Path.Combine(exportedFolder, img.Text));
                                 }
                             }
                         });
-                        WaitingForm.Close();
+                        progressBarItem1.Visible = false;
                         labelItemStatus.Text = "Exported: " + exportedFolder;
                     }
                 }
             }
         }
 
-        private void BatchExportSound(Wz_Node node, string path, FrmWaiting waiting)
+        private void BatchExportSound(Wz_Node node, string path)
         {
             foreach (Wz_Node child in node.Nodes)
             {
                 if (child.Value is Wz_Sound sound)
                 {
                     string soundName = child.Text;
-                    waiting.UpdateMessage($"Exporting: {soundName}");
+                    this.Invoke((System.Windows.Forms.MethodInvoker)(() =>
+                    {
+                        labelItemStatus.Text = $"Exporting...: {soundName}";
+                    }));
                     byte[] soundData = sound.ExtractSound();
                     if (soundData == null || soundData.Length <= 0)
                     {
@@ -2798,7 +2805,7 @@ namespace WzComparerR2
                     {
                         Directory.CreateDirectory(subDirPath);
                     }
-                    BatchExportSound(child, subDirPath, waiting);
+                    BatchExportSound(child, subDirPath);
                 }
             }
         }
@@ -4242,72 +4249,77 @@ namespace WzComparerR2
                     }
                     break;
             }
-            if (obj != null)
+            tooltipQuickView.TargetItem = obj;
+            tooltipQuickView.ImageFileName = fileName;
+            tooltipQuickView.Refresh();
+            tooltipQuickView.HideOnHover = false;
+            tooltipQuickView.Show();
+            if (Translator.IsTranslateEnabled) tooltipQuickView.QuickRefresh();
+
+            StringResult waSr = new StringResult();
+            StringResult mbSr = new StringResult();
+            StringBuilder npcQuoteSb = new StringBuilder();
+            if (tooltipQuickView.TargetItem != null)
             {
-                StringResult waSr = new StringResult();
-                StringResult mbSr = new StringResult();
-                StringBuilder npcQuoteSb = new StringBuilder();
-                if (tooltipQuickView.TargetItem != null)
+                switch (tooltipQuickView.TargetItem)
                 {
-                    switch (tooltipQuickView.TargetItem)
-                    {
-                        case Mob item:
-                            if (CharaSimConfig.Default.Misc.EnableWorldArchive)
+                    case Mob item:
+                        if (CharaSimConfig.Default.Misc.EnableWorldArchive)
+                        {
+                            if (stringLinker == null || !stringLinker.StringWorldArchiveMob.TryGetValue(item.ID, out waSr))
                             {
-                                if (stringLinker == null || !stringLinker.StringWorldArchiveMob.TryGetValue(item.ID, out waSr))
+                                waSr = new StringResult();
+                            }
+                        }
+                        if (CharaSimConfig.Default.Mob.EnableMonsterBook)
+                        {
+                            if (stringLinker == null || !stringLinker.StringMonsterBook.TryGetValue(item.ID, out mbSr))
+                            {
+                                mbSr = new StringResult();
+                            }
+                        }
+                        item.Dispose();
+                        break;
+                    case Npc item:
+                        if (CharaSimConfig.Default.Misc.EnableWorldArchive)
+                        {
+                            if (stringLinker == null || !stringLinker.StringWorldArchiveNpc.TryGetValue(item.ID, out waSr))
+                            {
+                                waSr = new StringResult();
+                            }
+                            if (CharaSimConfig.Default.Npc.ShowNpcQuotes)
+                            {
+                                NpcQuote quote = NpcQuote.CreateFromNode(PluginManager.FindWz($@"String\Npc.img\{item.ID}"), PluginManager.FindWz, stringLinker);
+                                if (quote != null)
                                 {
-                                    waSr = new StringResult();
+                                    foreach (var kvp in quote.NQuote)
+                                        npcQuoteSb.AppendLine($"n{kvp.Key}: {kvp.Value}");
+                                    foreach (var kvp in quote.FQuote)
+                                        npcQuoteSb.AppendLine($"f{kvp.Key}: {kvp.Value}");
+                                    foreach (var kvp in quote.WQuote)
+                                        npcQuoteSb.AppendLine($"w{kvp.Key}: {kvp.Value}");
+                                    foreach (var kvp in quote.DQuote)
+                                        npcQuoteSb.AppendLine($"d{kvp.Key}: {kvp.Value}");
+                                    foreach (var kvp in quote.SpecialQuote)
+                                        npcQuoteSb.AppendLine($"s{kvp.Key}: {kvp.Value}");
                                 }
                             }
-                            item.Dispose();
-                            break;
-                        case Npc item:
-                            if (CharaSimConfig.Default.Misc.EnableWorldArchive)
-                            {
-                                if (stringLinker == null || !stringLinker.StringWorldArchiveNpc.TryGetValue(item.ID, out waSr))
-                                {
-                                    waSr = new StringResult();
-                                }
-                                if (CharaSimConfig.Default.Npc.ShowNpcQuotes)
-                                {
-                                    NpcQuote quote = NpcQuote.CreateFromNode(PluginManager.FindWz($@"String\Npc.img\{item.ID}"), PluginManager.FindWz, stringLinker);
-                                    if (quote != null)
-                                    {
-                                        foreach (var kvp in quote.NQuote)
-                                            npcQuoteSb.AppendLine($"n{kvp.Key}: {kvp.Value}");
-                                        foreach (var kvp in quote.FQuote)
-                                            npcQuoteSb.AppendLine($"f{kvp.Key}: {kvp.Value}");
-                                        foreach (var kvp in quote.WQuote)
-                                            npcQuoteSb.AppendLine($"w{kvp.Key}: {kvp.Value}");
-                                        foreach (var kvp in quote.DQuote)
-                                            npcQuoteSb.AppendLine($"d{kvp.Key}: {kvp.Value}");
-                                        foreach (var kvp in quote.SpecialQuote)
-                                            npcQuoteSb.AppendLine($"s{kvp.Key}: {kvp.Value}");
-                                    }
-                                }
-                            }
-                            item.Dispose();
-                            break;
-                        case Quest item:
-                            item.Dispose();
-                            break;
-                    }
-                    if (wzf.Type is not Wz_Type.Quest)
-                    {
-                        tooltipQuickView.NodeName = sr.Name;
-                        tooltipQuickView.Desc = sr.Desc ?? mbSr.Desc;
-                        tooltipQuickView.Pdesc = sr.Pdesc ?? waSr.Desc;
-                        tooltipQuickView.AutoDesc = altAutoDesc ?? sr.AutoDesc ?? npcQuoteSb.ToString();
-                        tooltipQuickView.Hdesc = sr["h"];
-                        tooltipQuickView.DescLeftAlign = sr["desc_leftalign"];
-                    }
+                        }
+                        item.Dispose();
+                        break;
+                    case Quest item:
+                        item.Dispose();
+                        break;
                 }
-                tooltipQuickView.TargetItem = obj;
-                tooltipQuickView.ImageFileName = fileName;
-                tooltipQuickView.Refresh();
-                tooltipQuickView.HideOnHover = false;
-                tooltipQuickView.Show();
-                if (Translator.IsTranslateEnabled) tooltipQuickView.QuickRefresh();
+                if (wzf.Type is not Wz_Type.Quest)
+                {
+                    tooltipQuickView.NodeName = sr.Name;
+                    tooltipQuickView.Desc = sr.Desc ?? mbSr.Desc;
+                    tooltipQuickView.Pdesc = sr.Pdesc ?? waSr.Desc;
+                    tooltipQuickView.AutoDesc = altAutoDesc ?? sr.AutoDesc ?? npcQuoteSb.ToString();
+                    tooltipQuickView.Hdesc = sr["h"];
+                    tooltipQuickView.DescLeftAlign = sr["desc_leftalign"];
+                }
             }
         }
 
