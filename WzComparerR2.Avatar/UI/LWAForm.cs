@@ -17,7 +17,7 @@ namespace WzComparerR2.Avatar.UI
             InitializeComponent();
 #if NET6_0_OR_GREATER
             // https://learn.microsoft.com/en-us/dotnet/core/compatibility/fx-core#controldefaultfont-changed-to-segoe-ui-9pt
-            this.Font = new Font(new FontFamily("Microsoft Sans Serif"), 9f);
+            this.Font = new Font(new FontFamily("Microsoft Sans Serif"), 8f);
 #endif
         }
 
