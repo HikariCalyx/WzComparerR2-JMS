@@ -936,6 +936,8 @@ namespace WzComparerR2.CharaSim
 
                 case GearType.carta: return "카르타";
                 case GearType.magicQuill: return "마법깃펜";
+                
+                case GearType.equipBag: return "Equip Bag";
 
                 //case GearType.astra: return "Astra Sub Weapon";
                 default: return null;

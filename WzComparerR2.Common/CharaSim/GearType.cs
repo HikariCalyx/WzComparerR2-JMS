@@ -589,6 +589,10 @@ namespace WzComparerR2.CharaSim
         /// </summary>
         petEquip = 180,
         /// <summary>
+        /// equipBag 184
+        /// </summary>
+        equipBag = 184,
+        /// <summary>
         /// Tamed Monster 190
         /// </summary>
         taming = 190,
