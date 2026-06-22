@@ -169,7 +169,11 @@ namespace WzComparerR2.CharaSim
         /// </summary>
         longSword = 1215,
         /// <summary>
-        /// Sould SHooter 122
+        /// Carta 1216
+        /// </summary>
+        carta = 1216,
+        /// <summary>
+        /// /// Sould SHooter 122
         /// </summary>
         soulShooter = 122,
         /// <summary>
@@ -573,6 +577,10 @@ namespace WzComparerR2.CharaSim
         /// </summary>
         grandAuthenticSymbol = 1714,
         /// <summary>
+        /// 마법깃펜 1726
+        /// </summary>
+        magicQuill = 1726,
+        /// <summary>
         /// Jade 178
         /// </summary>
         jewel = 178,
@@ -580,6 +588,10 @@ namespace WzComparerR2.CharaSim
         /// Pet Equipment 180
         /// </summary>
         petEquip = 180,
+        /// <summary>
+        /// equipBag 184
+        /// </summary>
+        equipBag = 184,
         /// <summary>
         /// Tamed Monster 190
         /// </summary>

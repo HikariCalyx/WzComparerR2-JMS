@@ -4,22 +4,22 @@ using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
 using System.Drawing;
+using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
-using System.Net;
 using System.Windows.Forms;
 using DevComponents.DotNetBar;
 using DevComponents.Editors;
-using WzComparerR2.Config;
-using System.Security.Policy;
-using System.IO;
-using Spine;
 using Newtonsoft.Json.Linq;
+using WzComparerR2.Config;
 
 namespace WzComparerR2
 {
     public partial class FrmOptions : DevComponents.DotNetBar.Office2007Form
     {
+        private static readonly HttpClient _httpClient = new HttpClient { Timeout = TimeSpan.FromSeconds(15) };
+
         public FrmOptions()
         {
             InitializeComponent();
@@ -329,30 +329,23 @@ namespace WzComparerR2
         {
             ComboItem selectedItem = (ComboItem)cmbPreferredTranslateEngine.SelectedItem;
             string respText;
-            HttpWebRequest req;
-            string backendAddress;
-            if (string.IsNullOrEmpty(OpenAIBackend))
-            {
-                backendAddress = txtOpenAIBackend.WatermarkText;
-            }
-            else
-            {
-                backendAddress = OpenAIBackend;
-            }
+            string backendAddress = string.IsNullOrEmpty(OpenAIBackend) ? txtOpenAIBackend.WatermarkText : OpenAIBackend;
+
             switch ((int)selectedItem.Value)
             {
                 case 8:
                 case 9:
-                    req = WebRequest.Create(backendAddress + "/models") as HttpWebRequest;
-                    req.Timeout = 15000;
-                    if (!string.IsNullOrEmpty(NxSecretKey))
-                    {
-                        JObject reqHeaders = JObject.Parse(NxSecretKey);
-                        foreach (var property in reqHeaders.Properties()) req.Headers.Add(property.Name, property.Value.ToString());
-                    }
                     try
                     {
-                        string respJson = new StreamReader(req.GetResponse().GetResponseStream(), Encoding.UTF8).ReadToEnd();
+                        var requestMessage = new HttpRequestMessage(HttpMethod.Get, backendAddress + "/models");
+                        if (!string.IsNullOrEmpty(NxSecretKey))
+                        {
+                            JObject reqHeaders = JObject.Parse(NxSecretKey);
+                            foreach (var property in reqHeaders.Properties())
+                                requestMessage.Headers.TryAddWithoutValidation(property.Name, property.Value.ToString());
+                        }
+                        var response = _httpClient.SendAsync(requestMessage).Result;
+                        string respJson = response.Content.ReadAsStringAsync().Result;
                         JObject jsonResp = JObject.Parse(respJson);
                         JArray dataArray = (JArray)jsonResp["data"];
                         StringBuilder sb = new StringBuilder();
@@ -371,23 +364,15 @@ namespace WzComparerR2
                     }
                     break;
                 default:
-                    req = WebRequest.Create((cmbMozhiBackend.SelectedItem as ComboItem)?.Value + "/api/engines") as HttpWebRequest;
-                    req.Timeout = 15000;
                     try
                     {
-                        string respJson = new StreamReader(req.GetResponse().GetResponseStream(), Encoding.UTF8).ReadToEnd();
-                        if (respJson.Contains("All Engines"))
-                        {
-                            respText = "This Mozhi Server is valid.";
-                        }
-                        else
-                        {
-                            respText = "This Mozhi Server is invalid.";
-                        }
-                    }
-                    catch (WebException ex)
-                    {
-                        respText = "This Mozhi Server is invalid.";
+                        var requestMessage = new HttpRequestMessage(HttpMethod.Get,
+                            (cmbMozhiBackend.SelectedItem as ComboItem)?.Value + "/api/engines");
+                        var response = _httpClient.SendAsync(requestMessage).Result;
+                        string respJson = response.Content.ReadAsStringAsync().Result;
+                        respText = respJson.Contains("All Engines")
+                            ? "This Mozhi Server is valid."
+                            : "This Mozhi Server is invalid.";
                     }
                     catch (Exception ex)
                     {
