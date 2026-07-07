@@ -282,6 +282,10 @@ namespace WzComparerR2
                 MessageBoxEx.Show("このフォルダにインストールされているゲームにパッチを適用する権限がありません。\r\n\r\nWzComparerR2を管理者権限で実行してください。", "エラー", MessageBoxButtons.OK);
                 return;
             }
+            if (!this.ValidateKeepOldWzBeforePatch())
+            {
+                return;
+            }
             if (this.patcherSession != null)
             {
                 if (this.patcherSession.State == PatcherTaskState.WaitForContinue)
@@ -764,6 +768,74 @@ namespace WzComparerR2
             }
         }
 
+        private bool ValidateKeepOldWzBeforePatch()
+        {
+            if (!this.chkKeepOldWz.Checked)
+            {
+                return true;
+            }
+
+            string backupDir = Path.Combine(this.txtMSFolder.Text, "DataBk");
+            if (!Directory.Exists(backupDir))
+            {
+                return true;
+            }
+
+            bool hasAnyEntries;
+            try
+            {
+                hasAnyEntries = Directory.EnumerateFileSystemEntries(backupDir).Any();
+            }
+            catch (Exception ex)
+            {
+                MessageBoxEx.Show(this, "DataBk フォルダーの確認中にエラーが発生しました。\r\n" + ex.Message, "エラー", MessageBoxButtons.OK);
+                return false;
+            }
+
+            if (!hasAnyEntries)
+            {
+                return true;
+            }
+
+            bool hasOpenedFiles = _mainFormReference.openedWz
+                .SelectMany(openedWzStructure => openedWzStructure.wz_files)
+                .Any(wzFile => wzFile.FileStream.Name.StartsWith(backupDir, StringComparison.OrdinalIgnoreCase));
+            if (hasOpenedFiles)
+            {
+                MessageBoxEx.Show(this,
+                    "古いWZを維持モードが有効で、既存の DataBk フォルダーが見つかりました。\r\n" +
+                    "DataBk 内のファイルが開かれているため、処理を続行できません。\r\n" +
+                    "DataBk フォルダー内で開いているファイルを閉じてから、もう一度実行してください。",
+                    "確認", MessageBoxButtons.OK);
+                return false;
+            }
+
+            var result = MessageBoxEx.Show(this,
+                "古いWZを維持モードが有効で、既存の DataBk フォルダー(空ではない)が見つかりました。\r\n" +
+                "続行すると既存の DataBk フォルダーは自動的に削除されます。\r\n\r\n" +
+                "続行しますか?",
+                "確認",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Warning);
+            if (result != DialogResult.Yes)
+            {
+                return false;
+            }
+
+            try
+            {
+                RemoveReadOnlyAttributesRecursively(backupDir);
+                Directory.Delete(backupDir, true);
+            }
+            catch (Exception ex)
+            {
+                MessageBoxEx.Show(this, "既存の DataBk フォルダーの削除に失敗しました。\r\n" + ex.Message, "エラー", MessageBoxButtons.OK);
+                return false;
+            }
+
+            return true;
+        }
+
         private void PrepareKeepOldWz(PatcherSession session, Action<string> logFunc)
         {
             if (!session.KeepOldWz)
@@ -776,20 +848,20 @@ namespace WzComparerR2
 
             if (!Directory.Exists(dataDir))
             {
-                logFunc("KeepOldWz: Data フォルダーが見つからないため、スキップします。\r\n");
+                logFunc("古いWZを維持：Data フォルダーが見つからないため、スキップします。\r\n");
                 return;
             }
 
             if (Directory.Exists(backupDir))
             {
-                logFunc("KeepOldWz: 既存の DataBk フォルダーを削除しています...\r\n");
+                logFunc("古いWZを維持：既存の DataBk フォルダーを削除しています...\r\n");
                 RemoveReadOnlyAttributesRecursively(backupDir);
                 Directory.Delete(backupDir, true);
             }
 
-            logFunc("KeepOldWz: Data フォルダーを DataBk にリネームしています...\r\n");
+            logFunc("古いWZを維持：Data フォルダーを DataBk にリネームしています...\r\n");
             Directory.Move(dataDir, backupDir);
-            logFunc("KeepOldWz: 完了\r\n");
+            logFunc("古いWZを維持：完了\r\n");
         }
 
         private void RestoreMissingDataFilesFromBackup(PatcherSession session, IEnumerable<PatchPartContext> patchParts, Action<string> logFunc)
@@ -803,7 +875,7 @@ namespace WzComparerR2
             string backupDir = Path.Combine(session.MSFolder, "DataBk");
             if (!Directory.Exists(backupDir))
             {
-                logFunc("KeepOldWz: DataBk フォルダーが見つからないため、不足ファイルのコピーをスキップします。\r\n");
+                logFunc("古いWZを維持：DataBk フォルダーが見つからないため、不足ファイルのコピーをスキップします。\r\n");
                 return;
             }
 
@@ -865,7 +937,7 @@ namespace WzComparerR2
                 copiedCount++;
             }
 
-            logFunc($"KeepOldWz: DataBk から不足ファイルを {copiedCount} 件コピーしました。\r\n");
+            logFunc($"古いWZを維持：DataBk から不足ファイルを {copiedCount} 件コピーしました。\r\n");
         }
 
         private static void RemoveReadOnlyAttributesRecursively(string directoryPath)
