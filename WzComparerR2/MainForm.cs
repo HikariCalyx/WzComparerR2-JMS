@@ -3910,6 +3910,7 @@ namespace WzComparerR2
             string altAutoDesc = null;
             // Clear previous record
             tooltipQuickView.NodeName = string.Empty;
+            tooltipQuickView.NodeID = 0;
             tooltipQuickView.Desc = string.Empty;
             tooltipQuickView.Pdesc = string.Empty;
             tooltipQuickView.AutoDesc = string.Empty;
@@ -4253,7 +4254,7 @@ namespace WzComparerR2
             tooltipQuickView.ImageFileName = fileName;
             tooltipQuickView.Refresh();
             tooltipQuickView.HideOnHover = false;
-            tooltipQuickView.Show();
+            if (tooltipQuickView.TargetItem != null) tooltipQuickView.Show();
             if (Translator.IsTranslateEnabled) tooltipQuickView.QuickRefresh();
 
             StringResult waSr = new StringResult();
