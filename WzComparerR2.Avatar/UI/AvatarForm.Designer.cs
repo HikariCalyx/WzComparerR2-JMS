@@ -729,7 +729,7 @@ namespace WzComparerR2.Avatar.UI
             this.labelXCustomOrigin.Size = new System.Drawing.Size(60, 18);
             this.labelXCustomOrigin.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
             this.labelXCustomOrigin.TabIndex = 20;
-            this.labelXCustomOrigin.Text = "커스터마이징";
+            this.labelXCustomOrigin.Text = "カスタマイズ";
             // 
             // labelXCustomOriginX
             // 
