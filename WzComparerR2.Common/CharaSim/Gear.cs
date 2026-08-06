@@ -1361,6 +1361,15 @@ namespace WzComparerR2.CharaSim
                 gear.IconRaw = BitmapOrigin.CreateFromNode(findNode(@"Item\Install\0380.img\03801577\info\iconRaw"), findNode);
             }
 
+            if (gear.Icon.Bitmap == null)
+            {
+                gear.Icon = new BitmapOrigin(gear.IconRaw.Bitmap, gear.IconRaw.Origin);
+            }
+            else if (gear.IconRaw.Bitmap == null)
+            {
+                gear.IconRaw = new BitmapOrigin(gear.Icon.Bitmap, gear.Icon.Origin);
+            }
+
             /*
             if (gear.Props.TryGetValue(GearPropType.incCHUC, out value))
             {
