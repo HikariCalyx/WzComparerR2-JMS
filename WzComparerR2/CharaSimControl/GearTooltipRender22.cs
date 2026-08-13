@@ -979,7 +979,7 @@ namespace WzComparerR2.CharaSimControl
                 hasThirdContents = true;
                 hasOptionPart = true;
 
-                DateTime time = DateTime.Now.AddDays(7d);
+                DateTime time = DateTime.Now.AddDays((Gear.Props.TryGetValue(GearPropType.masterSpecial, out value) && value > 0) ? 190d : 7d);
                 var text = $"#$e{ItemStringHelper.GetGearPropString22(GearPropType.abilityTimeLimited, value)[0]}: {time.ToString("M/d/yyyy HH:mm")} UTC" +
                     $"{ItemStringHelper.GetGearPropString22(GearPropType.notExtend, value)[0]}#";
 
