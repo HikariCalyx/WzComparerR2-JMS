@@ -8,6 +8,8 @@ using System.Linq;
 using WzComparerR2.WzLib;
 using WzComparerR2.CharaSim;
 using System.Text.RegularExpressions;
+using System.Drawing.Drawing2D;
+using WzComparerR2.Rendering;
 
 namespace WzComparerR2.AvatarCommon
 {
@@ -2139,6 +2141,18 @@ namespace WzComparerR2.AvatarCommon
             resultBitmap.UnlockBits(resultData);
 
             return resultBitmap;
+        }
+
+        private void ApplyScale(Skin skin, float scale)
+        {
+            if (skin.Image.Bitmap == null || scale == 1f) return;
+
+            BitmapOrigin scaled = BitmapUtils.ResizeBitmap(skin.Image, scale);
+            if (scaled.Bitmap != null)
+            {
+                skin.Image.Bitmap.Dispose();
+                skin.Image = scaled;
+            }
         }
 
         private byte BlendColors(byte baseColor, float baseOpacity, byte mixColor, float mixOpacity)
