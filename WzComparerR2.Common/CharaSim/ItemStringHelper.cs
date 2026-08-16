@@ -82,7 +82,8 @@ namespace WzComparerR2.CharaSim
                 case GearPropType.incMMP: return "最大MP : " + sign + value;
                 case GearPropType.incMMPr: return "最大MP : " + sign + value + "%";
                 case GearPropType.incMDF: return "最大DF : " + sign + value;
-                case GearPropType.incPAD: return "攻撃力: " + sign + value;
+                case GearPropType.incPAD: 
+                case GearPropType.incWAT: return "攻撃力: " + sign + value;
                 case GearPropType.incPADr: return "攻撃力: " + sign + value + "%";
                 case GearPropType.incMAD: return "魔力: " + sign + value;
                 case GearPropType.incMADr: return "魔力: " + sign + value + "%";
@@ -99,8 +100,10 @@ namespace WzComparerR2.CharaSim
                 case GearPropType.incCraft: return "器用さ: " + sign + value;
                 case GearPropType.damR:
                 case GearPropType.incDAMr: return "ダメージ " + sign + value + "%";
-                case GearPropType.incCr: return "クリティカル率: " + sign + value + "%";
-                case GearPropType.incCDr: return "クリティカルダメージ: " + sign + value + "%";
+                case GearPropType.incCr: 
+                case GearPropType.incCRT: return "クリティカル率: " + sign + value + "%";
+                case GearPropType.incCDr: 
+                case GearPropType.incCRD: return "クリティカルダメージ: " + sign + value + "%";
                 case GearPropType.knockback: return "直接打撃の時" + value + "%の確率でノックバック";
                 //case GearPropType.incPVPDamage: return "Battle Mode ATT " + sign + " " + value;
                 case GearPropType.incPQEXPr: return "グループクエスト経験値 " + value + "% 追加";
@@ -158,8 +161,6 @@ namespace WzComparerR2.CharaSim
                 case GearPropType.incAD: return "攻撃力/魔力" + sign + value;
                 case GearPropType.incPDD_incMDD: return "防御力" + sign + value;
                 case GearPropType.incACC_incEVA: return "命中/回避率 :" + sign + value;
-                case GearPropType.incCRT: return "クリティカル率 :" + sign + value;
-                case GearPropType.incCRD: return "クリティカルダメージ: " + sign + value;
 
                 case GearPropType.incARC: return "ARC : " + sign + value;
                 case GearPropType.incAUT: return "AUT : " + sign + value;
