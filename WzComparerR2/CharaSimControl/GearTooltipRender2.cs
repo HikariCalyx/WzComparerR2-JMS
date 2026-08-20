@@ -1053,6 +1053,10 @@ namespace WzComparerR2.CharaSimControl
             }
             else if (hasTuc)
             {
+                if (CharaSimLoader.LoadedGmsTucBlacklistItems.Count > 0 && !CharaSimLoader.LoadedGmsTucBlacklistItems.Contains(Gear.ItemID))
+                {
+                    value += 1;
+                }
                 GearGraphics.DrawString(g, "アップグレード可能回数: " + value + (Gear.Cash ? "" : " #c(復旧可能：0)#"), GearGraphics.EquipDetailFont, orange3FontColorTable, 13, 248, ref picH, 15);
                 hasPart2 = true;
             }

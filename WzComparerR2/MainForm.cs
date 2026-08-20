@@ -4646,6 +4646,7 @@ namespace WzComparerR2
                     CharaSimLoader.LoadExclusiveEquipsIfEmpty();
                     CharaSimLoader.LoadCommoditiesIfEmpty();
                     CharaSimLoader.LoadMsnMintableItemListIfEmpty();
+                    CharaSimLoader.LoadGmsTucBlacklistItemsIfEmpty();
                     if (CharaSimConfig.Default.Misc.LocatePetEquip) CharaSimLoader.LoadPetEquipInfoIfEmpty();
                     if (characterNodePath.Contains("Familiar"))
                     {
