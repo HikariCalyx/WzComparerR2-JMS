@@ -1325,20 +1325,6 @@ namespace WzComparerR2.CharaSim
                 gear.Props[GearPropType.CuttableCount] = cuttableCountOverride.Value;
             }
 
-            /*
-
-            //检查道具默认的剪刀次数
-            string TUC_Blacklist_GL_Path = "Etc\\TUC_Blacklist_GL.img";
-            var tucCountIncreaseGL = findNode?.Invoke(TUC_Blacklist_GL_Path);
-            //var tucCountIncrease = findNode?.Invoke(@$"Etc\TUC_Blacklist_GL.img\ItemList\{gear.ItemID}")?.GetValueEx<int>();
-            //this.GetBooleanValue(GearPropType.onlyUpgrade)
-            if (tucCountIncreaseGL != null)
-            {
-                gear.Props[GearPropType.tuc] += 1;
-            }
-
-            */
-
             //备份标准属性
             gear.StandardProps = new Dictionary<GearPropType, int>(gear.Props);
 
