@@ -82,7 +82,8 @@ namespace WzComparerR2.CharaSim
                 case GearPropType.incMMP: return "MaxMP : " + sign + value;
                 case GearPropType.incMMPr: return "MaxMP : " + sign + value + "%";
                 case GearPropType.incMDF: return "MaxDF : " + sign + value;
-                case GearPropType.incPAD: return (isMsea ? "WEAPON ATTACK : " : "Attack Power: ") + sign + value;
+                case GearPropType.incPAD: 
+                case GearPropType.incWAT: return (isMsea ? "WEAPON ATTACK : " : "Attack Power: ") + sign + value;
                 case GearPropType.incPADr: return (isMsea ? "WEAPON ATTACK : " : "Attack Power: ") + sign + value + "%";
                 case GearPropType.incMAD: return (isMsea ? "MAGIC ATTACK : " : "Magic Attack: ") + sign + value;
                 case GearPropType.incMADr: return (isMsea ? "MAGIC ATTACK : " : "Magic Attack: ") + sign + value + "%";
@@ -99,7 +100,9 @@ namespace WzComparerR2.CharaSim
                 case GearPropType.incCraft: return "Diligence: " + sign + value;
                 case GearPropType.damR:
                 case GearPropType.incDAMr: return "Damage: " + sign + value + "%";
-                case GearPropType.incCr: return "Critical Rate: " + sign + value + "%";
+                case GearPropType.incCr: 
+                case GearPropType.incCRT: return "Critical Rate: " + sign + value + "%";
+                case GearPropType.incCRD: 
                 case GearPropType.incCDr: return "Critical Damage: " + sign + value + "%";
                 case GearPropType.knockback: return "Knockback Chance: " + value + "%";
                 //case GearPropType.incPVPDamage: return "Battle Mode ATT " + sign + " " + value;
@@ -158,8 +161,6 @@ namespace WzComparerR2.CharaSim
                 case GearPropType.incAD: return "Attack Power & Magic ATT: " + sign + value;
                 case GearPropType.incPDD_incMDD: return "Defense: " + sign + value;
                 case GearPropType.incACC_incEVA: return "ACC/AVO :" + sign + value;
-                case GearPropType.incCRT: return "Critical Rate :" + sign + value;
-                case GearPropType.incCRD: return "Critical Damage : " + sign + value;
 
                 case GearPropType.incARC: return "ARC : " + sign + value;
                 case GearPropType.incAUT: return (isMsea ? "AUT : " : "SAC : ") + sign + value;

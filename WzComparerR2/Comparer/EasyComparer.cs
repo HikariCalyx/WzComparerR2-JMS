@@ -294,6 +294,16 @@ namespace WzComparerR2.Comparer
                         }
                     }
                 }
+                if (OutputItemTooltip || OutputGearTooltip) // Check commodity differences
+                {
+                    CharaSimLoader.ClearAll();
+                    CharaSimLoader.LoadSetItemsIfEmpty(fileNew);
+                    CharaSimLoader.LoadAstraSubWeaponsIfEmpty(fileNew);
+                    CharaSimLoader.LoadExclusiveEquipsIfEmpty(fileNew);
+                    CharaSimLoader.LoadMsnMintableItemListIfEmpty(fileNew);
+                    CharaSimLoader.LoadGmsTucBlacklistItemsIfEmpty(fileNew);
+                    if (this.LocatePetEquip) CharaSimLoader.LoadPetEquipInfoIfEmpty(fileNew);
+                }
 
 
                 var dictNew = SplitVirtualNode(virtualNodeNew);

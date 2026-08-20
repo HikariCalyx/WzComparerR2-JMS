@@ -724,9 +724,24 @@ namespace WzComparerR2.CharaSim
                 case GearType.face2:
                 case GearType.face3:
                     return GetCosmeticGender(code) - 1;
+                case GearType.longcoat:
+                    return GetGenderBySpecifiedDigits(code / 1000 % 10, [0], [1, 6]);
             }
 
             return code / 1000 % 10;
+        }
+
+        private static int GetGenderBySpecifiedDigits(int digit, int[] male, int[] female)
+        {
+            if (male.Contains(digit))
+            {
+                return 0;
+            }
+            if (female.Contains(digit))
+            {
+                return 1;
+            }
+            return 2;
         }
 
         public static int GetCosmeticGender(int code)
@@ -1344,6 +1359,15 @@ namespace WzComparerR2.CharaSim
             {
                 gear.Icon = BitmapOrigin.CreateFromNode(findNode(@"Item\Install\0380.img\03801577\info\icon"), findNode);
                 gear.IconRaw = BitmapOrigin.CreateFromNode(findNode(@"Item\Install\0380.img\03801577\info\iconRaw"), findNode);
+            }
+
+            if (gear.Icon.Bitmap == null)
+            {
+                gear.Icon = new BitmapOrigin(gear.IconRaw.Bitmap, gear.IconRaw.Origin);
+            }
+            else if (gear.IconRaw.Bitmap == null)
+            {
+                gear.IconRaw = new BitmapOrigin(gear.Icon.Bitmap, gear.Icon.Origin);
             }
 
             /*

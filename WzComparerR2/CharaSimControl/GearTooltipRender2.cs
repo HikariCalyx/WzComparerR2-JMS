@@ -887,6 +887,10 @@ namespace WzComparerR2.CharaSimControl
                 {
                     { "c", GearGraphics.OrangeBrush3Color }
                 };
+                if (CharaSimLoader.LoadedGmsTucBlacklistItems.Count > 0 && !CharaSimLoader.LoadedGmsTucBlacklistItems.Contains(Gear.ItemID))
+                {
+                    value += 1;
+                }
                 GearGraphics.DrawString(g, (MseaMode ? "NUMBER OF UPGRADES AVAILABLE : +" : "Remaining Enhancements: ") + value + (Gear.Cash ? "" : (MseaMode ? "\n#c(Remaining Restoration Count: 0)#" : "\n#c(Available Recoveries: 0)#")), GearGraphics.EquipDetailFont, colorTable, 13, 244, ref picH, 15);
                 hasPart2 = true;
             }

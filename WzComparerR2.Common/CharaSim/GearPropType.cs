@@ -28,6 +28,7 @@ namespace WzComparerR2.CharaSim
         incMDF,
         incPAD_incMAD,
         incPAD,
+        incWAT,
         incMAD,
         incAD,
         incPDD_incMDD,
@@ -101,6 +102,7 @@ namespace WzComparerR2.CharaSim
         incPADlv,
         incMADlv,
         incCriticaldamage,
+        incCriticaldamageF,
 
         Option,
         OptionToMob,

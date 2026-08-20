@@ -21,6 +21,7 @@ namespace WzComparerR2.CharaSim
             LoadedMintableNFTItems = new List<int>();
             LoadedMintableSBTItems = new List<int>();
             LoadedMintableFTItems = new List<int>();
+            LoadedGmsTucBlacklistItems = new List<int>();
             LoadedPetEquipInfo = new Dictionary<int, List<int>>();
         }
 
@@ -35,6 +36,7 @@ namespace WzComparerR2.CharaSim
         public static List<int> LoadedMintableSBTItems { get; private set; }
         public static List<int> LoadedMintableFTItems { get; private set; }
         public static Dictionary<int, List<int>> LoadedPetEquipInfo { get; private set; }
+        public static List<int> LoadedGmsTucBlacklistItems { get; private set; }
 
         public static void LoadSetItemsIfEmpty(Wz_File sourceWzFile = null)
         {
@@ -184,6 +186,31 @@ namespace WzComparerR2.CharaSim
                 {
                     if (int.TryParse(i.Text, out int id))
                         LoadedMintableFTItems.Add(id);
+                }
+            }
+        }
+
+        public static void LoadGmsTucBlacklistItemsIfEmpty(Wz_File sourceWzFile = null)
+        {
+            if (LoadedGmsTucBlacklistItems.Count == 0)
+            {
+                LoadGmsTucBlacklistItems(sourceWzFile);
+            }
+        }
+
+        public static void LoadGmsTucBlacklistItems(Wz_File sourceWzFile)
+        {
+            Wz_Node etcWz = PluginManager.FindWz(Wz_Type.Etc, sourceWzFile);
+            if (etcWz == null)
+                return;
+            Wz_Node gmsTucBlacklistNode = etcWz.FindNodeByPath("TUC_Blacklist_GL.img\\ItemList", true);
+            if (gmsTucBlacklistNode == null)
+                return;
+            foreach (var i in gmsTucBlacklistNode.Nodes)
+            {
+                if (Int32.TryParse(i.Value.ToString(), out int gearID))
+                {
+                    LoadedGmsTucBlacklistItems.Add(gearID);
                 }
             }
         }
@@ -355,6 +382,7 @@ namespace WzComparerR2.CharaSim
             LoadedMintableSBTItems.Clear();
             LoadedMintableFTItems.Clear();
             LoadedPetEquipInfo.Clear();
+            LoadedGmsTucBlacklistItems.Clear();
         }
 
         public static int GetActionDelay(string actionName, Wz_Node wzNode = null)
