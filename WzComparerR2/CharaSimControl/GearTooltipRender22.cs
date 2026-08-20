@@ -1304,6 +1304,10 @@ namespace WzComparerR2.CharaSimControl
             int tuc = 0;
             bool enhanceable = Gear.GetBooleanValue(GearPropType.setExtraOption);
             Gear.Props.TryGetValue(GearPropType.tuc, out tuc);
+            if (CharaSimLoader.LoadedGmsTucBlacklistItems.Count > 0 && !CharaSimLoader.LoadedGmsTucBlacklistItems.Contains(Gear.ItemID))
+            {
+                tuc += 1;
+            }
             if (!Gear.Cash && Gear.IsEnhanceable(Gear.type) || enhanceable)
             {
                 hasThirdContents = true;
