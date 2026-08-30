@@ -2741,17 +2741,18 @@ namespace WzComparerR2.Avatar.UI
 
         private async void btnExportLwa_Click(object sender, EventArgs e)
         {
+#if !NET8_0_OR_GREATER
+            ToastNotification.Show(this, $"エラー: LWA機能は .NET 8.0 でのみ利用できます。", null, 2000, eToastGlowColor.Red, eToastPosition.TopCenter);
+            return;
+#endif
             string code = GetAllPartsTag();
             if (!Regex.IsMatch(code, @"\d"))
             {
                 ToastNotification.Show(this, $"エラー: ご利用前にアバターを作成してください。", null, 2000, eToastGlowColor.Red, eToastPosition.TopCenter);
                 return;
             }
-            var API = new OpenAPI.AvatarCodeEncoder();
-            string avatarCode = API.ConvertCsvToAvatarCode(code);
-            // Clipboard.SetText(avatarCode);
             LWAForm frm = new LWAForm();
-            frm.avatarCode = avatarCode;
+            frm.csvCode = code;
             frm.ShowDialog(this);
         }
 
