@@ -167,13 +167,10 @@ namespace WzComparerR2.DB2
             {
                 case "0":
                     return "Skill/000.img/skill/" + ID;
-                    break;
                 case "8":
                     return "Skill/" + (int.Parse(ID) / 100).ToString() + ".img/skill/" + ID;
-                    break;
                 default:
                     return "Skill/" + (int.Parse(ID) / 10000).ToString() + ".img/skill/" + ID;
-                    break;
             }
         }
         void LoadSkill()
@@ -572,55 +569,38 @@ namespace WzComparerR2.DB2
             {
                 case 0:
                     return "Item/Cash/" + LeftStr(ID, 4) + ".img/" + ID;
-                    break;
                 case 1:
                     return "Item/Consume/" + LeftStr(ID, 4) + ".img/" + ID;
-                    break;
                 case 2:
                     return "Character/Weapon/" + ID + ".img";
-                    break;
                 case 3:
                     return "Character/Cap/" + ID + ".img";
-                    break;
                 case 4:
                     return "Character/Coat/" + ID + ".img";
-                    break;
                 case 5:
                     return "Character/Longcoat/" + ID + ".img";
-                    break;
                 case 6:
                     return "Character/Pants/" + ID + ".img";
-                    break;
                 case 7:
                     return "Character/Shoes/" + ID + ".img";
-                    break;
                 case 8:
                     return "Character/Glove/" + ID + ".img";
-                    break;
                 case 9:
                     return "Character/Ring/" + ID + ".img";
-                    break;
                 case 10:
                     return "Character/Cape/" + ID + ".img";
-                    break;
                 case 11:
                     return "Character/Accessory/" + ID + ".img";
-                    break;
                 case 12:
                     return "Character/Shield/" + ID + ".img";
-                    break;
                 case 13:
                     return "Character/TamingMob/" + ID + ".img";
-                    break;
                 case 14:
                     return "Character/Hair/" + ID + ".img";
-                    break;
                 case 15:
                     return "Character/Face/" + ID + ".img";
-                    break;
                 case 17:
                     return "Mob/" + ID + ".img";
-                    break;
                 case 18:
                     string Left1 = LeftStr(ID, 1);
                     if (Left1 != "")
@@ -638,11 +618,9 @@ namespace WzComparerR2.DB2
                     break;
                 case 19:
                     return "Npc/" + ID + ".img";
-                    break;
 
                 case 20:
                     return "Item/Pet/" + ID + ".img";
-                    break;
                 case 21:
                     if (GetNode("Item/Install/03010.img") != null)
                     {
@@ -650,7 +628,6 @@ namespace WzComparerR2.DB2
                         {
                             case "03015":
                                 return "Item/Install/" + LeftStr(ID, 6) + ".img/" + ID;
-                                break;
                             case "03010":
                             case "03011":
                             case "03012":
@@ -660,48 +637,37 @@ namespace WzComparerR2.DB2
                             case "03017":
                             case "03018":
                                 return "Item/Install/" + LeftStr(ID, 5) + ".img/" + ID;
-                                break;
                             default:
                                 return "Item/Install/" + LeftStr(ID, 4) + ".img/" + ID;
-                                break;
                         }
                     }
                     else
                     {
                         return "Item/Install/" + LeftStr(ID, 4) + ".img/" + ID;
                     }
-                    break;
 
                 case 22:
                     return "Character/Android/" + ID + ".img";
-                    break;
                 case 23:
                     return "Character/Mechanic/" + ID + ".img";
-                    break;
 
                 case 24:
                     return "Character/PetEquip/" + ID + ".img";
-                    break;
 
                 case 25:
                     return "Character/Bits/" + ID + ".img";
-                    break;
 
                 case 26:
                     return "Character/MonsterBattle/" + ID + ".img";
-                    break;
 
                 case 27:
                     return "Character/Totem/" + ID + ".img";
-                    break;
                 case 29:
                 case 30:
                     return "Item/Consume/" + LeftStr(ID, 4) + ".img/" + ID;
-                    break;
 
                 case 31:
                     return "Item/Etc/" + LeftStr(ID, 4) + ".img/" + ID;
-                    break;
 
             }
 
