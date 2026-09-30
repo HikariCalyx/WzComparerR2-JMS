@@ -1212,6 +1212,16 @@ namespace WzComparerR2.MapRender
                             x = p.X;
                             y = p.Y;
                         }
+                        int? rx0 = null, rx1 = null;
+                        int xRangeIndex = Array.FindIndex(arguments, a => string.Equals(a, "-x", StringComparison.OrdinalIgnoreCase) || string.Equals(a, "--xrange", StringComparison.OrdinalIgnoreCase));
+                        if (xRangeIndex >= 0 && xRangeIndex + 2 < arguments.Length
+                            && int.TryParse(arguments[xRangeIndex + 1], out int rangeX0)
+                            && int.TryParse(arguments[xRangeIndex + 2], out int rangeX1)
+                            && rangeX0 < rangeX1)
+                        {
+                            rx0 = rangeX0;
+                            rx1 = rangeX1;
+                        }
                         StringResult sr;
                         string mobName = string.Empty;
                         if (this.StringLinker != null)
@@ -1219,7 +1229,7 @@ namespace WzComparerR2.MapRender
                             this.StringLinker.StringMob.TryGetValue(mobID, out sr);
                             mobName = sr?.Name ?? "(null)";
                         }
-                        if (this.mapData.SummonMob(mobID, x, y, 0, 0, -1, playRegenMotion: false))
+                        if (this.mapData.SummonMob(mobID, x, y, 0, 0, -1, rx0: rx0, rx1: rx1, playRegenMotion: false))
                         {
                             this.ui.ChatBox.AppendTextHelp($@"モンスターが召喚されました。{mobName}({mobID})");
                         }
@@ -1232,6 +1242,7 @@ namespace WzComparerR2.MapRender
                     {
                         this.ui.ChatBox.AppendTextHelp(@"/summon (mobID) マウス位置にmobIDモンスター召喚");
                         this.ui.ChatBox.AppendTextHelp(@"/summon (mobID) (x) (y) x, y 場所にmobIDモンスター召喚");
+                        this.ui.ChatBox.AppendTextHelp(@"[-x/--xrange] (rx0) (rx1) 移動可能範囲を指定");
                     }
                     break;
 
