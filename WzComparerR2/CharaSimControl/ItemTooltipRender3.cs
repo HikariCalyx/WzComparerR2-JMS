@@ -1233,6 +1233,11 @@ namespace WzComparerR2.CharaSimControl
                 {
                     tags.Add("#$rペットのスキルスクロールやペットの名前タグは使用不可#");
                 }
+
+                if (item.Props.TryGetValue(ItemPropType.noPetEquipCoupon, out value) && value > 0)
+                {
+                    tags.Add("#$rペット装備交換券使用不可#");
+                }
             }
 
             // pointCost
