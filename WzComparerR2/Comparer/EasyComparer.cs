@@ -1120,7 +1120,9 @@ namespace WzComparerR2.Comparer
                         Directory.CreateDirectory(Path.Combine(skillTooltipPath, categoryPath));
                     }
 
-                    string imageName = Path.Combine(skillTooltipPath, categoryPath, "スキル_" + skillID + "_" + skillName + "_" + skillType + ".png");
+                    string typePath = Path.Combine(skillTooltipPath, categoryPath, skillType);
+                    Directory.CreateDirectory(typePath);
+                    string imageName = Path.Combine(typePath, "スキル_" + skillID + "_" + skillName + ".png");
                     if (!File.Exists(imageName))
                     {
                         resultImage.Save(imageName, System.Drawing.Imaging.ImageFormat.Png);
@@ -1298,7 +1300,9 @@ namespace WzComparerR2.Comparer
                             Directory.CreateDirectory(Path.Combine(skillTooltipPath, categoryPath));
                         }
 
-                        string imageName = Path.Combine(skillTooltipPath, categoryPath, "スキル_" + skillID + "_" + skillName + "_" + skillType + ".png");
+                        string typePath = Path.Combine(skillTooltipPath, categoryPath, skillType);
+                        Directory.CreateDirectory(typePath);
+                        string imageName = Path.Combine(typePath, "スキル_" + skillID + "_" + skillName + ".png");
                         if (!File.Exists(imageName))
                         {
                             resultImage.Save(imageName, System.Drawing.Imaging.ImageFormat.Png);
@@ -1683,7 +1687,9 @@ namespace WzComparerR2.Comparer
                     int picH = ShowObjectID ? 13 : 1;
                     if (ShowChangeType && nullItemIdx != 0) GearGraphics.DrawPlainText(g, itemType, itemTypeFont, Color.FromArgb(255, 255, 255), 2, (int)Math.Ceiling(itemTypeTextInfo.Width) + 2, ref picH, 10);
 
-                    string imageName = Path.Combine(itemTooltipPath, categoryPath, "アイテム_" + itemID + "_" + ItemName + "_" + itemType + ".png");
+                    string typePath = Path.Combine(itemTooltipPath, categoryPath, itemType);
+                    Directory.CreateDirectory(typePath);
+                    string imageName = Path.Combine(typePath, "アイテム_" + itemID + "_" + ItemName + ".png");
                     if (!File.Exists(imageName))
                     {
                         resultImage.Save(imageName, System.Drawing.Imaging.ImageFormat.Png);
@@ -2017,7 +2023,9 @@ namespace WzComparerR2.Comparer
                     int picH = ShowObjectID ? 13 : 1;
                     if (ShowChangeType && nullItemIdx != 0) GearGraphics.DrawPlainText(g, itemType, itemTypeFont, Color.FromArgb(255, 255, 255), 2, (int)Math.Ceiling(itemTypeTextInfo.Width) + 2, ref picH, 10);
 
-                    string imageName = Path.Combine(itemTooltipPath, categoryPath, "アイテム_" + itemID + "_" + ItemName + "_" + itemType + ".png");
+                    string typePath = Path.Combine(itemTooltipPath, categoryPath, itemType);
+                    Directory.CreateDirectory(typePath);
+                    string imageName = Path.Combine(typePath, "アイテム_" + itemID + "_" + ItemName + ".png");
                     if (!File.Exists(imageName))
                     {
                         resultImage.Save(imageName, System.Drawing.Imaging.ImageFormat.Png);
@@ -2316,7 +2324,9 @@ namespace WzComparerR2.Comparer
                     int picH = ShowObjectID ? 13 : 1;
                     if (ShowChangeType && nullEqpIdx != 0) GearGraphics.DrawPlainText(g, gearType, gearTypeFont, Color.FromArgb(255, 255, 255), 2, (int)Math.Ceiling(gearTypeTextInfo.Width) + 2, ref picH, 10);
 
-                    string imageName = Path.Combine(gearTooltipPath, categoryPath, "装備_" + gearID + "_" + EqpName + "_" + gearType + ".png");
+                    string typePath = Path.Combine(gearTooltipPath, categoryPath, gearType);
+                    Directory.CreateDirectory(typePath);
+                    string imageName = Path.Combine(typePath, "装備_" + gearID + "_" + EqpName + ".png");
                     if (!File.Exists(imageName))
                     {
                         resultImage.Save(imageName, System.Drawing.Imaging.ImageFormat.Png);
@@ -2607,7 +2617,9 @@ namespace WzComparerR2.Comparer
                     int picH = ShowObjectID ? 13 : 1;
                     if (ShowChangeType && nullEqpIdx != 0) GearGraphics.DrawPlainText(g, gearType, gearTypeFont, Color.FromArgb(255, 255, 255), 2, (int)Math.Ceiling(gearTypeTextInfo.Width) + 2, ref picH, 10);
 
-                    string imageName = Path.Combine(gearTooltipPath, categoryPath, "装備_" + gearID + "_" + EqpName + "_" + gearType + ".png");
+                    string typePath = Path.Combine(gearTooltipPath, categoryPath, gearType);
+                    Directory.CreateDirectory(typePath);
+                    string imageName = Path.Combine(typePath, "装備_" + gearID + "_" + EqpName + ".png");
                     if (!File.Exists(imageName))
                     {
                         resultImage.Save(imageName, System.Drawing.Imaging.ImageFormat.Png);
@@ -2762,7 +2774,9 @@ namespace WzComparerR2.Comparer
                     int picH = ShowObjectID ? 13 : 1;
                     if (ShowChangeType && nullMapIdx != 0) GearGraphics.DrawPlainText(g, mapType, mapTypeFont, Color.FromArgb(255, 255, 255), 2, (int)Math.Ceiling(mapTypeTextInfo.Width) + 2, ref picH, 10);
 
-                    string imageName = Path.Combine(mapTooltipPath, "マップ_" + mapID + "_" + MapName + "_" + mapType + ".png");
+                    string typePath = Path.Combine(mapTooltipPath, mapType);
+                    Directory.CreateDirectory(typePath);
+                    string imageName = Path.Combine(typePath, "マップ_" + mapID + "_" + MapName + ".png");
                     if (!File.Exists(imageName))
                     {
                         resultImage.Save(imageName, System.Drawing.Imaging.ImageFormat.Png);
@@ -2937,7 +2951,9 @@ namespace WzComparerR2.Comparer
                     int picH = 1;
                     if (ShowChangeType && nullMobIdx != 0) GearGraphics.DrawPlainText(g, mobType, mobTypeFont, Color.FromArgb(255, 255, 255), 2, (int)Math.Ceiling(mobTypeTextInfo.Width) + 2, ref picH, 10);
 
-                    string imageName = Path.Combine(mobTooltipPath, "モンスター_" + mobID + "_" + MobName + "_" + mobType + ".png");
+                    string typePath = Path.Combine(mobTooltipPath, mobType);
+                    Directory.CreateDirectory(typePath);
+                    string imageName = Path.Combine(typePath, "モンスター_" + mobID + "_" + MobName + ".png");
                     if (!File.Exists(imageName))
                     {
                         resultImage.Save(imageName, System.Drawing.Imaging.ImageFormat.Png);
@@ -3097,7 +3113,9 @@ namespace WzComparerR2.Comparer
                     int picH = 1;
                     if (ShowChangeType && nullNpcIdx != 0) GearGraphics.DrawPlainText(g, npcType, npcTypeFont, Color.FromArgb(255, 255, 255), 2, (int)Math.Ceiling(npcTypeTextInfo.Width) + 2, ref picH, 10);
 
-                    string imageName = Path.Combine(npcTooltipPath, "Npc_" + npcID + "_" + NpcName + "_" + npcType + ".png");
+                    string typePath = Path.Combine(npcTooltipPath, npcType);
+                    Directory.CreateDirectory(typePath);
+                    string imageName = Path.Combine(typePath, "Npc_" + npcID + "_" + NpcName + ".png");
                     if (!File.Exists(imageName))
                     {
                         resultImage.Save(imageName, System.Drawing.Imaging.ImageFormat.Png);
@@ -3249,7 +3267,9 @@ namespace WzComparerR2.Comparer
                     int picH = ShowObjectID ? 13 : 1;
                     if (ShowChangeType && nullItemIdx != 0) GearGraphics.DrawPlainText(g, itemType, itemTypeFont, Color.FromArgb(255, 255, 255), 2, (int)Math.Ceiling(itemTypeTextInfo.Width) + 2, ref picH, 10);
 
-                    string imageName = Path.Combine(itemTooltipPath, "Item_" + itemID + "_" + ItemName + "_" + itemType + ".png");
+                    string typePath = Path.Combine(itemTooltipPath, itemType);
+                    Directory.CreateDirectory(typePath);
+                    string imageName = Path.Combine(typePath, "Item_" + itemID + "_" + ItemName + ".png");
                     if (!File.Exists(imageName))
                     {
                         resultImage.Save(imageName, System.Drawing.Imaging.ImageFormat.Png);
@@ -3409,7 +3429,9 @@ namespace WzComparerR2.Comparer
                     }
                     if (ShowChangeType && nullQuestIdx != 0) GearGraphics.DrawPlainText(g, questType, questTypeFont, Color.FromArgb(255, 255, 255), 2, (int)Math.Ceiling(questTypeTextInfo.Width) + 2, ref picH, 10);
 
-                    string imageName = Path.Combine(questTooltipPath, "クエスト_" + questID + "_" + QuestName + "_" + questType + ".png");
+                    string typePath = Path.Combine(questTooltipPath, questType);
+                    Directory.CreateDirectory(typePath);
+                    string imageName = Path.Combine(typePath, "クエスト_" + questID + "_" + QuestName + ".png");
                     if (!File.Exists(imageName))
                     {
                         resultImage.Save(imageName, System.Drawing.Imaging.ImageFormat.Png);
@@ -3819,7 +3841,9 @@ namespace WzComparerR2.Comparer
                     int picH = ShowObjectID ? 13 : 1;
                     if (ShowChangeType && nullAchievementIdx != 0) GearGraphics.DrawPlainText(g, achvType, achvTypeFont, Color.FromArgb(255, 255, 255), 2, (int)Math.Ceiling(achvTypeTextInfo.Width) + 2, ref picH, 10);
 
-                    string imageName = Path.Combine(achvTooltipPath, "業績_" + achvID + "_" + AchievementName + "_" + achvType + ".png");
+                    string typePath = Path.Combine(achvTooltipPath, achvType);
+                    Directory.CreateDirectory(typePath);
+                    string imageName = Path.Combine(typePath, "業績_" + achvID + "_" + AchievementName + ".png");
                     if (!File.Exists(imageName))
                     {
                         resultImage.Save(imageName, System.Drawing.Imaging.ImageFormat.Png);
