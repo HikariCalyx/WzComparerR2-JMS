@@ -5671,6 +5671,8 @@ namespace WzComparerR2
                     comparer.ShowNpcQuotes = CharaSimConfig.Default.Npc.ShowNpcQuotes;
                     comparer.EnableMonsterBook = CharaSimConfig.Default.Mob.EnableMonsterBook;
                     comparer.LocatePetEquip = CharaSimConfig.Default.Misc.LocatePetEquip;
+                    comparer.OutputChairAndRidingMount = chkOutputChairAndRidingMount.Checked;
+                    comparer.AvatarCode = GetEasyCompareAvatarCode();
                     comparer.StateInfoChanged += new EventHandler(comparer_StateInfoChanged);
                     comparer.StateDetailChanged += new EventHandler(comparer_StateDetailChanged);
                     comparer.ColorTable = new List<System.Drawing.Color>()
@@ -5728,6 +5730,8 @@ namespace WzComparerR2
                                     chkSkipKMSContent.Enabled = false;
                                     chkSkipGodChangseopDuplicatedNodes.Enabled = false;
                                     chkPostChangesToDiscord.Enabled = false;
+                                    chkOutputChairAndRidingMount.Enabled = false;
+                                    btnAvatarCode.Enabled = false;
                                     if (chkSkipKMSContent.Checked)
                                     {
                                         switch (MessageBoxEx.Show(this, "KMSコンテンツデータベースをダウンロードしますか?\r\n\r\n「No」を選択した場合は、KMSスキルのみをスキップします。", "WZ比較", MessageBoxButtons.YesNo))
@@ -5799,6 +5803,8 @@ namespace WzComparerR2
                         chkSkipKMSContent.Enabled = true;
                         chkSkipGodChangseopDuplicatedNodes.Enabled = true;
                         chkPostChangesToDiscord.Enabled = true;
+                        chkOutputChairAndRidingMount.Enabled = true;
+                        btnAvatarCode.Enabled = chkOutputChairAndRidingMount.Checked;
                         if (comparer.FailToExportNodes.Count > 0 || comparer.FailToExportTooltips.Count > 0)
                         {
                             string failData = Newtonsoft.Json.JsonConvert.SerializeObject(comparer.FailToExportNodes, Newtonsoft.Json.Formatting.Indented) + "\r\n" + Newtonsoft.Json.JsonConvert.SerializeObject(comparer.FailToExportTooltips, Newtonsoft.Json.Formatting.Indented);
@@ -5885,6 +5891,7 @@ namespace WzComparerR2
             chkOutputNpcTooltip.Checked = false;
             chkOutputQuestTooltip.Checked = false;
             chkOutputAchvTooltip.Checked = false;
+            chkOutputChairAndRidingMount.Checked = false;
             chkShowObjectID.Checked = true;
             chkShowChangeType.Checked = true;
             chkShowPrice.Checked = true;
@@ -5954,6 +5961,7 @@ namespace WzComparerR2
             chkOutputNpcTooltip.Checked = false;
             chkOutputQuestTooltip.Checked = false;
             chkOutputAchvTooltip.Checked = false;
+            chkOutputChairAndRidingMount.Checked = false;
             chkShowObjectID.Checked = true;
             chkShowChangeType.Checked = true;
             chkShowPrice.Checked = true;
@@ -5980,6 +5988,7 @@ namespace WzComparerR2
             chkOutputNpcTooltip.Checked = false;
             chkOutputQuestTooltip.Checked = false;
             chkOutputAchvTooltip.Checked = false;
+            chkOutputChairAndRidingMount.Checked = true;
             chkShowObjectID.Checked = true;
             chkShowChangeType.Checked = true;
             chkShowPrice.Checked = true;
@@ -6005,6 +6014,7 @@ namespace WzComparerR2
             chkOutputNpcTooltip.Checked = true;
             chkOutputQuestTooltip.Checked = true;
             chkOutputAchvTooltip.Checked = true;
+            chkOutputChairAndRidingMount.Checked = true;
             chkShowObjectID.Checked = true;
             chkShowChangeType.Checked = true;
             chkShowPrice.Checked = true;
@@ -6558,6 +6568,34 @@ namespace WzComparerR2
                     ConfigManager.Save();
                 }
             }
+        }
+
+        /// <summary>
+        /// Gets the avatar code used for the chair / riding mount output. Falls back to the default when unset.
+        /// </summary>
+        private string GetEasyCompareAvatarCode()
+        {
+            string code = WcR2Config.Default.EasyCompareAvatarCode;
+            return string.IsNullOrEmpty(code) ? EasyComparer.DefaultAvatarCode : code;
+        }
+
+        private void btnAvatarCode_Click(object sender, EventArgs e)
+        {
+            using (FrmAvatarCode frm = new FrmAvatarCode(styleManager1.ManagerStyle == eStyle.VisualStudio2012Dark))
+            {
+                frm.CodeText = GetEasyCompareAvatarCode();
+                if (frm.ShowDialog() == DialogResult.OK)
+                {
+                    ConfigManager.Reload();
+                    WcR2Config.Default.EasyCompareAvatarCode = frm.CodeText;
+                    ConfigManager.Save();
+                }
+            }
+        }
+
+        private void chkOutputChairAndRidingMount_CheckedChanged(object sender, EventArgs e)
+        {
+            btnAvatarCode.Enabled = chkOutputChairAndRidingMount.Checked;
         }
 
         private void btnExportSkillOption_Click(object sender, EventArgs e)
