@@ -9,12 +9,12 @@ using WzComparerR2.UnityLib.Unity;
 namespace WzComparerR2.UnityLib.Classic
 {
     /// <summary>
-    /// Unity 客戶端的基本資訊：名稱（PlayerSettings.productName）、版本
-    /// （PlayerSettings.bundleVersion）與引擎版本（AssetBundle 的 UnityFS header）。
+    /// Unity クライアントの基本情報: 名前（PlayerSettings.productName）、バージョン
+    /// （PlayerSettings.bundleVersion）とエンジンバージョン（AssetBundle の UnityFS header）。
     /// <para>
-    /// 資料來源依序為：<c>&lt;Client&gt;_Data/globalgamemanagers</c> 的 PlayerSettings、
-    /// <c>&lt;Client&gt;_Data/app.info</c>、以及 <c>StreamingAssets/aa/settings.json</c>
-    /// 內 Addressables 的 <c>catalog_&lt;version&gt;.hash</c>。任一來源缺少時對應欄位為 null。
+    /// データソースは次の順序です: <c>&lt;Client&gt;_Data/globalgamemanagers</c> の PlayerSettings、
+    /// <c>&lt;Client&gt;_Data/app.info</c>、および <c>StreamingAssets/aa/settings.json</c>
+    /// 中の Addressables の <c>catalog_&lt;version&gt;.hash</c>。いずれかのソースがない場合、対応するフィールドは null。
     /// </para>
     /// </summary>
     public sealed class UnityClientInfo
@@ -29,25 +29,25 @@ namespace WzComparerR2.UnityLib.Classic
         {
         }
 
-        /// <summary>開發商名稱（PlayerSettings.companyName）。</summary>
+        /// <summary>開発元名（PlayerSettings.companyName）。</summary>
         public string CompanyName { get; private set; }
 
-        /// <summary>客戶端名稱（PlayerSettings.productName）。</summary>
+        /// <summary>クライアント名（PlayerSettings.productName）。</summary>
         public string ProductName { get; private set; }
 
-        /// <summary>客戶端版本（PlayerSettings.bundleVersion）。</summary>
+        /// <summary>クライアントのバージョン（PlayerSettings.bundleVersion）。</summary>
         public string Version { get; private set; }
 
         /// <summary>
-        /// 引擎版本（AssetBundle 的 unityRevision，例如 <c>6000.3.11f1</c>）。
-        /// UnityFS header 的第一個字串只是格式佔位（<c>5.x.x</c>），真正版本在第二個字串。
+        /// エンジンバージョン（AssetBundle の unityRevision、例: <c>6000.3.11f1</c>）。
+        /// UnityFS header の 1 つ目の文字列は形式上のプレースホルダー（<c>5.x.x</c>）で、実際のバージョンは 2 つ目の文字列です。
         /// </summary>
         public string EngineVersion { get; private set; }
 
-        /// <summary>解析到的 <c>&lt;Client&gt;_Data</c> 目錄；找不到時為 null。</summary>
+        /// <summary>解析された <c>&lt;Client&gt;_Data</c> ディレクトリ。見つからない場合は null。</summary>
         public string DataFolder { get; private set; }
 
-        /// <summary>「名稱 版本」的顯示字串；兩者都沒有時為 null。</summary>
+        /// <summary>「名前 バージョン」の表示文字列。どちらもない場合は null。</summary>
         public string DisplayName
         {
             get
@@ -63,11 +63,11 @@ namespace WzComparerR2.UnityLib.Classic
         }
 
         /// <summary>
-        /// 從 bundle 目錄（<c>StreamingAssets/aa/StandaloneWindows64</c>）解析客戶端資訊。
-        /// 找不到的項目留 null，不會擲出例外。
+        /// bundle ディレクトリ（<c>StreamingAssets/aa/StandaloneWindows64</c>）からクライアント情報を解析します。
+        /// 見つからない項目は null のままで、例外は投げません。
         /// </summary>
-        /// <param name="bundleDirectory">bundle 所在目錄（用來往上找 <c>*_Data</c> 與 <c>aa/settings.json</c>）。</param>
-        /// <param name="engineVersion">引擎版本字串（<see cref="UnityFsBundle.UnityRevision"/>，可為 null）。</param>
+        /// <param name="bundleDirectory">bundle のあるディレクトリ（<c>*_Data</c> と <c>aa/settings.json</c> を上位に探すために使用）。</param>
+        /// <param name="engineVersion">エンジンのバージョン文字列（<see cref="UnityFsBundle.UnityRevision"/>、null 可）。</param>
         public static UnityClientInfo Resolve(string bundleDirectory, string engineVersion)
         {
             UnityClientInfo info = new UnityClientInfo();
@@ -88,7 +88,7 @@ namespace WzComparerR2.UnityLib.Classic
 
                 if (string.IsNullOrEmpty(info.Version))
                 {
-                    // Addressables 的 catalog 檔名帶有 Application.version，是未經猜測的字面值。
+                    // Addressables の catalog ファイル名には Application.version が含まれており、推測ではないリテラル値です。
                     info.Version = ReadAddressablesVersion(bundleDirectory);
                 }
                 if (string.IsNullOrEmpty(info.Version) && dataFolder != null)
@@ -98,13 +98,13 @@ namespace WzComparerR2.UnityLib.Classic
             }
             catch (Exception)
             {
-                // 資訊僅供顯示，任何解析失敗都不影響資料集載入。
+                // 情報は表示専用で、解析に失敗してもデータセットの読み込みには影響しません。
             }
 
             return info;
         }
 
-        /// <summary>開啟一個 bundle 檔讀取引擎版本後解析客戶端資訊。</summary>
+        /// <summary>bundle ファイルを 1 つ開いてエンジンバージョンを読み取り、クライアント情報を解析します。</summary>
         public static UnityClientInfo ResolveFromBundle(string bundlePath)
         {
             string engineVersion = null;
@@ -126,7 +126,7 @@ namespace WzComparerR2.UnityLib.Classic
             return Resolve(directory, engineVersion);
         }
 
-        /// <summary>從 <c>*_Data</c> 目錄往上找 bundle 目錄所屬的客戶端資料夾。</summary>
+        /// <summary><c>*_Data</c> ディレクトリから上位へ辿り、bundle ディレクトリが属するクライアントフォルダーを探します。</summary>
         private static string FindDataFolder(string bundleDirectory)
         {
             if (string.IsNullOrEmpty(bundleDirectory))
@@ -155,7 +155,7 @@ namespace WzComparerR2.UnityLib.Classic
             return null;
         }
 
-        /// <summary>讀 PlayerSettings（class 129）取 companyName / productName / bundleVersion。</summary>
+        /// <summary>PlayerSettings（class 129）を読んで companyName / productName / bundleVersion を取得します。</summary>
         private void ApplyPlayerSettings(string path)
         {
             if (!File.Exists(path))
@@ -185,7 +185,7 @@ namespace WzComparerR2.UnityLib.Classic
                 return;
             }
 
-            // PlayerSettings 序列化的前兩個字串固定是 companyName、productName。
+            // PlayerSettings で最初に現れる 2 つの文字列は companyName、productName です。
             if (strings.Count >= 2)
             {
                 this.CompanyName = strings[0];
@@ -229,8 +229,8 @@ namespace WzComparerR2.UnityLib.Classic
         }
 
         /// <summary>
-        /// bundleVersion 是 PlayerSettings 內一組版本字串中的最後一個（前面是
-        /// iPhone/Android 等平台各自的版本欄位），因此取「最完整」的版本字串。
+        /// bundleVersion は PlayerSettings 内の複数のバージョン文字列の最後（それ以前は
+        /// iPhone/Android など各プラットフォーム用のバージョンフィールド）なので、「最も完全な」バージョン文字列を採用します。
         /// </summary>
         private void ApplyVersionFromStrings(List<string> strings, int skip)
         {
@@ -267,7 +267,7 @@ namespace WzComparerR2.UnityLib.Classic
             return count;
         }
 
-        /// <summary>app.info：第一行公司名稱、第二行產品名稱（UTF-8）。</summary>
+        /// <summary>app.info: 1 行目が会社名、2 行目が製品名（UTF-8）。</summary>
         private void ApplyAppInfo(string path)
         {
             if (!File.Exists(path))
@@ -286,8 +286,8 @@ namespace WzComparerR2.UnityLib.Classic
         }
 
         /// <summary>
-        /// Addressables 的遠端 catalog 檔名是 <c>catalog_&lt;Application.version&gt;.hash</c>，
-        /// 因此可由 <c>aa/settings.json</c> 取得客戶端版本。
+        /// Addressables のリモート catalog ファイル名は <c>catalog_&lt;Application.version&gt;.hash</c> で、
+        /// そのため <c>aa/settings.json</c> からクライアントのバージョンを取得できます。
         /// </summary>
         private static string ReadAddressablesVersion(string bundleDirectory)
         {
@@ -310,7 +310,7 @@ namespace WzComparerR2.UnityLib.Classic
             return match.Success ? match.Groups[1].Value : null;
         }
 
-        /// <summary>讀出物件內所有「u32 長度 + 內容 + 4 bytes 對齊」的可列印字串。</summary>
+        /// <summary>オブジェクト内の「u32 長さ + 内容 + 4 bytes 整列」の印刷可能文字列をすべて読み出します。</summary>
         private static List<string> ReadAlignedStrings(byte[] data, int offset, int size)
         {
             List<string> strings = new List<string>();
@@ -328,7 +328,7 @@ namespace WzComparerR2.UnityLib.Classic
             return strings;
         }
 
-        /// <summary>嘗試在 <paramref name="pos"/> 讀一個長度前綴字串；成功時 <paramref name="next"/> 為對齊後的位置。</summary>
+        /// <summary><paramref name="pos"/> から長さプレフィックス付き文字列を読むことを試みます。成功時は <paramref name="next"/> が整列後の位置になります。</summary>
         private static bool TryReadString(byte[] data, int pos, int end, out string text, out int next)
         {
             text = null;

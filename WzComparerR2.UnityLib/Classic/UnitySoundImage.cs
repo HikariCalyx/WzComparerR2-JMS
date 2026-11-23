@@ -5,12 +5,12 @@ using WzComparerR2.WzLib;
 namespace WzComparerR2.UnityLib.Classic
 {
     /// <summary>
-    /// Unity 資料集的音效 img（<c>Sound/&lt;img&gt;</c>）以 WZ 的
-    /// <c>Sound/&lt;img&gt;.img</c> 形式呈現：內容是巢狀目錄 + <see cref="Wz_Sound"/> 葉節點，
-    /// 與傳統 WZ 的配置一致。
+    /// Unity データセットのサウンド img（<c>Sound/&lt;img&gt;</c>）を WZ の
+    /// <c>Sound/&lt;img&gt;.img</c> 形式で表現します: 内容はネストしたディレクトリ + <see cref="Wz_Sound"/> の葉ノードで、
+    /// 従来の WZ の配置と一致します。
     /// <para>
-    /// 音效資料（FSB5）在第一次取用時才轉封裝成 Ogg Vorbis，
-    /// 因此 <see cref="Wz_Sound.ExtractSound"/>、播放與匯出都能直接使用。
+    /// サウンドデータ（FSB5）は初回使用時に Ogg Vorbis へ再パッケージし、
+    /// そのため <see cref="Wz_Sound.ExtractSound"/>、再生、エクスポートでそのまま使用できます。
     /// </para>
     /// </summary>
     public sealed class UnitySoundImage : UnityAssetImage
@@ -20,7 +20,7 @@ namespace WzComparerR2.UnityLib.Classic
         {
         }
 
-        /// <summary>以 WZ 風格路徑查詢同一資料集內的節點（可含 <c>.img</c> 後綴）。</summary>
+        /// <summary>WZ 形式のパスで同じデータセット内のノードを検索します（<c>.img</c> 拡張子は任意）。</summary>
         public Wz_Node FindNode(string wzPath)
         {
             return this.Source.FindNode(wzPath);

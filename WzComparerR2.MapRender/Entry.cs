@@ -57,7 +57,7 @@ namespace WzComparerR2.MapRender
 
                 if (img != null && img.TryExtract())
                 {
-                    // Unity 資料集等非 WZ 來源的 img（WzFile == null）視同地圖 img，不需要提醒。
+                    // Unity データセットなど非 WZ ソースの img（WzFile == null）はマップ img とみなし、警告は不要です。
                     if (wzFile != null && wzFile.Type != Wz_Type.Map)
                     {
                         if (MessageBoxEx.Show("Map.wz から IMG ファイルを選択しませんでした。\r\n続行しますか？", "警告", MessageBoxButtons.OKCancel) != DialogResult.OK)

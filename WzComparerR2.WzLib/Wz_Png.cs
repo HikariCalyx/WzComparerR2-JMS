@@ -85,17 +85,17 @@ namespace WzComparerR2.WzLib
         public Wz_Image WzImage { get; set; }
 
         /// <summary>
-        /// 非 WZ 檔來源（例如 Unity 資產的 Canvas）的 PNG 位元組提供者。
-        /// 設定後 <see cref="ExtractPng(int)"/> 直接解碼這份 PNG，不再讀取 WZ 資料流。
+        /// 非 WZ ファイルソース（例: Unity アセットの Canvas）の PNG バイト列提供者。
+        /// 設定すると <see cref="ExtractPng(int)"/> は WZ データストリームを読まず、この PNG を直接デコードします。
         /// </summary>
         public Func<byte[]> PngDataProvider { get; set; }
 
         public int GetRawDataSize() => this.GetRawDataSizePerPage() * this.ActualPages;
 
         /// <summary>
-        /// 補上外部 PNG（<see cref="PngDataProvider"/>）的尺寸與資料長度。
-        /// 這些資訊只要讀取 PNG 標頭就能取得，不需要解碼整張圖；
-        /// WZ 來源的圖片本來就有這些值，呼叫此方法不會有作用。
+        /// 外部 PNG（<see cref="PngDataProvider"/>）のサイズとデータ長を補います。
+        /// これらの情報は PNG のヘッダーを読むだけで取得でき、画像全体をデコードする必要はありません。
+        /// WZ ソースの画像は元からこれらの値を持つため、このメソッドを呼んでも効果はありません。
         /// </summary>
         public void EnsureExternalPngInfo()
         {
@@ -176,7 +176,7 @@ namespace WzComparerR2.WzLib
         {
             if (this.WzImage == null)
             {
-                // 非 WZ 檔來源（例如 Unity canvas）沒有 WZ 資料流，改用 PngDataProvider。
+                // 非 WZ ファイルソース（例: Unity canvas）には WZ データストリームがないため、PngDataProvider を使用します。
                 throw new NotSupportedException("この画像は WZ ファイル由来ではないため、生データを読み取れません。");
             }
             DeflateStream zlib;

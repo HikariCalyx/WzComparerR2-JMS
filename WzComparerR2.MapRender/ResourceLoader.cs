@@ -510,8 +510,8 @@ namespace WzComparerR2.MapRender
         }
 
         /// <summary>
-        /// 取得節點圖片貼圖；缺少圖片（例如 Unity 資料集未收錄該 sprite）時以空貼圖代替，
-        /// 讓地圖仍能載入，而不是整個繪製流程失敗。
+        /// ノードの画像テクスチャを取得します。画像がない場合（例: Unity データセットに該当 sprite がない）は空のテクスチャで代用し、
+        /// マップを読み込めるようにし、描画処理全体が失敗しないようにします。
         /// </summary>
         private Texture2D LoadTexture(Wz_Png png, Wz_Node node, int fallbackWidth, int fallbackHeight)
         {

@@ -68,7 +68,7 @@ namespace WzComparerR2.AvatarCommon
 
         protected virtual void LoadInfo()
         {
-            // Unity 資料集的 img 名稱沒有 .img 後綴。
+            // Unity データセットの img 名には .img 拡張子がありません。
             var m = Regex.Match(Node.Text, @"^(\d+)(?:\.img)?$");
             if (!m.Success)
             {

@@ -4,23 +4,23 @@ using WzComparerR2.WzLib;
 namespace WzComparerR2.UnityLib.Classic
 {
     /// <summary>
-    /// Classic 資料集的目錄 → <see cref="Wz_Type"/> 對應。
+    /// Classic データセットのディレクトリ → <see cref="Wz_Type"/> の対応。
     /// <para>
-    /// Unity 用戶端沒有 WZ 檔，但許多既有功能只依 <c>Wz_File.Type</c> 判斷節點種類
-    /// （道具／裝備／地圖／任務工具提示等）。這裡把資產路徑的第一段目錄對應成
-    /// 傳統 WZ 的型別，讓那些功能也能處理 Classic 節點。
+    /// Unity クライアントには WZ ファイルがありませんが、既存機能の多くは <c>Wz_File.Type</c> だけでノード種別を判断します
+    /// （アイテム／装備／マップ／クエストの tooltip など）。ここではアセットパスの 1 セグメント目のディレクトリを
+    /// 従来の WZ の型を返すことで、それらの機能が Classic ノードも扱えるようにします。
     /// </para>
     /// <para>
-    /// 對應關係：<c>Character/*</c> → Character、<c>Item/*</c> → Item、<c>Mob/*</c> → Mob、
+    /// 対応関係: <c>Character/*</c> → Character、<c>Item/*</c> → Item、<c>Mob/*</c> → Mob、
     /// <c>Npc/*</c> → Npc、<c>Map/*</c> → Map、<c>Skill/*</c> → Skill、<c>Quest/*</c> → Quest、
-    /// <c>String/*</c> → String、<c>Sound/*</c> → Sound…以此類推。
+    /// <c>String/*</c> → String、<c>Sound/*</c> → Sound…という対応です。
     /// </para>
     /// </summary>
     public static class ClassicWzTypeMap
     {
         /// <summary>
-        /// 依資產路徑（如 <c>Character/Cap/01002000</c> 或 <c>Character\Cap\01002000</c>）
-        /// 或單一目錄名取得對應的 <see cref="Wz_Type"/>；無法對應時回 <see cref="Wz_Type.Unknown"/>。
+        /// アセットパス（例: <c>Character/Cap/01002000</c> または <c>Character\Cap\01002000</c>）
+        /// または単一のディレクトリ名から対応する <see cref="Wz_Type"/> を取得します。対応できない場合は <see cref="Wz_Type.Unknown"/> を返します。
         /// </summary>
         public static Wz_Type GetWzType(string assetPath)
         {
@@ -73,7 +73,7 @@ namespace WzComparerR2.UnityLib.Classic
         }
 
         /// <summary>
-        /// <see cref="GetWzType(string)"/> 的可空版本：無法對應時回 null（供外部型別解析器使用）。
+        /// <see cref="GetWzType(string)"/> の null 許容版: 対応できない場合は null を返します（外部型解決用）。
         /// </summary>
         public static Wz_Type? TryGetWzType(string assetPath)
         {

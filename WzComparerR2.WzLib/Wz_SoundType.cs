@@ -9,7 +9,7 @@ namespace WzComparerR2.WzLib
         Pcm,
         Binary,
 
-        /// <summary>Ogg Vorbis（Unity 資料集的 FSB5 轉封裝結果）。</summary>
+        /// <summary>Ogg Vorbis（Unity データセットの FSB5 を再パッケージした結果）。</summary>
         Ogg
     }
 }

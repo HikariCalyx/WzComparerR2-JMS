@@ -15,8 +15,8 @@ namespace WzComparerR2.Rendering
         }
 
         /// <summary>
-        /// 由 <see cref="IWzPngSource"/>（例如 Unity 資產的 Canvas 節點）建立貼圖。
-        /// 沒有圖片時回傳 null。
+        /// <see cref="IWzPngSource"/>（例: Unity アセットの Canvas ノード）からテクスチャを作成します。
+        /// 画像がない場合は null を返します。
         /// </summary>
         public static Texture2D ToTexture(this IWzPngSource pngSource, GraphicsDevice graphicsDevice)
         {
@@ -36,7 +36,7 @@ namespace WzComparerR2.Rendering
         {
             if (png.PngDataProvider != null)
             {
-                // 非 WZ 來源（Unity canvas）：直接解碼 PNG，不經過 WZ 的像素格式管線。
+                // 非 WZ ソース（Unity canvas）: WZ のピクセル形式パイプラインを通さず、PNG を直接デコードします。
                 using (var bitmap = png.ExtractPng(page))
                 {
                     return bitmap?.ToTexture(graphicsDevice);

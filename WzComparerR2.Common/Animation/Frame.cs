@@ -101,7 +101,7 @@ namespace WzComparerR2.Animation
             }
             else if (frameNode.Value is IWzPngSource pngSource)
             {
-                // Unity 資產的 Canvas 節點：圖片以 PNG 編碼提供，沒有 Wz_Png 可掛載。
+                // Unity アセットの Canvas ノード: 画像は PNG エンコードで提供され、Wz_Png を割り当てられません。
                 var frame = new Frame(loadTexture ? pngSource.ToTexture(graphicsDevice) : null);
                 return FillFrameFromNode(frame, frameNode);
             }
@@ -140,12 +140,12 @@ namespace WzComparerR2.Animation
 
             if (frame.Delay == 0)
             {
-                frame.Delay = 120;//给予默认delay
+                frame.Delay = 120;//既定の delay を与える
             }
             return frame;
         }
 
-        /// <summary>座標節點可能是 <see cref="Wz_Vector"/>，也可能是 int/float 陣列。</summary>
+        /// <summary>座標ノードは <see cref="Wz_Vector"/> の場合もあれば int/float 配列の場合もあります。</summary>
         private static Point ToPoint(object value)
         {
             if (value is Wz_Vector vector)

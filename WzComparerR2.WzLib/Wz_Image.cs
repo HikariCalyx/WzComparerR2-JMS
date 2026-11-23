@@ -28,11 +28,11 @@ namespace WzComparerR2.WzLib
         }
 
         /// <summary>
-        /// 建立不是來自 WZ 檔的 img（例如 Unity 資產）。內容由子類別提供，
-        /// <see cref="TryExtract(out Exception)"/> 必須由子類別覆寫。
+        /// WZ ファイル由来ではない img（例: Unity アセット）を作成します。内容はサブクラスが提供し、
+        /// <see cref="TryExtract(out Exception)"/> はサブクラスでオーバーライドする必要があります。
         /// </summary>
-        /// <param name="name">img 的邏輯名稱。</param>
-        /// <param name="nodeText">節點顯示名稱（傳統 WZ 為 <c>&lt;id&gt;.img</c>）。</param>
+        /// <param name="name">img の論理名。</param>
+        /// <param name="nodeText">ノードの表示名（従来の WZ では <c>&lt;id&gt;.img</c>）。</param>
         protected Wz_Image(string name, string nodeText)
         {
             this.Name = name;
@@ -249,7 +249,7 @@ namespace WzComparerR2.WzLib
         {
             if (this.WzFile == null)
             {
-                // 非 WZ 檔來源的 img（例如 Unity 資產）沒有資料流可讀。
+                // 非 WZ ファイルソースの img（例: Unity アセット）にはデータストリームがありません。
                 throw new NotSupportedException("この img は WZ ファイル由来ではないため、データストリームを開けません: " + this.Name);
             }
             if (this.stream == null)

@@ -7,19 +7,19 @@ using WzComparerR2.UnityLib.Unity;
 namespace WzComparerR2.UnityLib.Audio
 {
     /// <summary>
-    /// FSB5（FMOD Sound Bank，Vorbis codec）→ Ogg Vorbis 轉封裝。
+    /// FSB5（FMOD Sound Bank、Vorbis codec）→ Ogg Vorbis への再パッケージ。
     /// <para>
-    /// 遊戲的 AudioClip 聲音資料是 FMOD 自訂容器：Vorbis packet 去掉 Ogg 層，
-    /// 每包改以 u16(LE) 長度前綴，codebook（setup header）不隨檔案攜帶，
-    /// 只留一個 crc32 對到 FMOD 內建的固定 setup 組。
+    /// ゲームの AudioClip のサウンドデータは FMOD 独自コンテナです: Vorbis packet から Ogg 層を除去し、
+    /// 各パケットを u16(LE) の長さプレフィックスに変え、codebook（setup header）はファイルに含めず、
+    /// crc32 1 つだけを残し、FMOD 内蔵の固定 setup 群に対応付けます。
     /// </para>
     /// <para>
-    /// 重建方式（與參考實作 ClassicMS-MPST 的 <c>audio.rs</c> 相同）：
-    /// 由 sample header 的 VORBISDATA chunk 取 crc32，查內嵌 setup 表
-    /// （<c>Audio/vorbis_setups.bin</c>，13 組，源自 Fmod5Sharp 的
-    /// <c>vorbis_headers_converted.json</c>）；自造 info / comment / setup 三個 header packet；
-    /// 再把 u16 前綴的 Vorbis packet 依 block flag 累積 granule 位置打成 Ogg page。
-    /// 輸出可直接播放／匯出。
+    /// 再構築方法（参考実装 ClassicMS-MPST の <c>audio.rs</c> と同じ）:
+    /// sample header の VORBISDATA chunk から crc32 を取得し、埋め込み setup テーブルを引きます
+    /// （<c>Audio/vorbis_setups.bin</c>、13 組、Fmod5Sharp の
+    /// <c>vorbis_headers_converted.json</c> 由来）。info / comment / setup の 3 つの header packet を自前で組み立て、
+    /// さらに u16 プレフィックス付きの Vorbis packet を block flag に従って granule 位置を積み上げながら Ogg page にまとめます。
+    /// 出力はそのまま再生／エクスポートできます。
     /// </para>
     /// </summary>
     public static class Fsb5ToOgg
@@ -35,7 +35,7 @@ namespace WzComparerR2.UnityLib.Audio
 
         private static readonly byte[] ChannelCounts = { 1, 2, 6, 8 };
 
-        #region setup 表（crc32 → vorbis setup header）
+        #region setup テーブル（crc32 → vorbis setup header）
 
         private sealed class SetupEntry
         {
@@ -75,7 +75,7 @@ namespace WzComparerR2.UnityLib.Audio
                     int length = checked((int)ReadU32(bin, ref pos));
                     if (length < 0 || pos + length > bin.Length)
                     {
-                        throw new UnityException("內嵌 vorbis setup 表毀損");
+                        throw new UnityException("埋め込み vorbis setup テーブルが破損しています");
                     }
                     byte[] header = new byte[length];
                     Buffer.BlockCopy(bin, pos, header, 0, length);
@@ -95,7 +95,7 @@ namespace WzComparerR2.UnityLib.Audio
             {
                 if (stream == null)
                 {
-                    throw new UnityException("找不到內嵌的 vorbis setup 表");
+                    throw new UnityException("埋め込み vorbis setup テーブルが見つかりません");
                 }
                 using (MemoryStream buffer = new MemoryStream())
                 {
@@ -109,7 +109,7 @@ namespace WzComparerR2.UnityLib.Audio
         {
             if (pos + 4 > data.Length)
             {
-                throw new UnityException("內嵌 vorbis setup 表截斷");
+                throw new UnityException("埋め込み vorbis setup テーブルが途中で切れています");
             }
             uint value = (uint)(data[pos] | (data[pos + 1] << 8) | (data[pos + 2] << 16) | (data[pos + 3] << 24));
             pos += 4;
@@ -118,7 +118,7 @@ namespace WzComparerR2.UnityLib.Audio
 
         #endregion
 
-        #region 位元讀取器（vorbis 位元序：LSB first）
+        #region ビットリーダー（vorbis のビット順: LSB first）
 
         private sealed class BitReader
         {
@@ -144,7 +144,7 @@ namespace WzComparerR2.UnityLib.Audio
                     int index = this.position >> 3;
                     if (index >= this.data.Length)
                     {
-                        throw new UnityException("vorbis bit reader 越界");
+                        throw new UnityException("vorbis bit reader が範囲外です");
                     }
                     value |= ((this.data[index] >> (this.position & 7)) & 1) << i;
                     this.position++;
@@ -153,13 +153,13 @@ namespace WzComparerR2.UnityLib.Audio
             }
         }
 
-        /// <summary>由 setup header 解析每個 mode 的 block flag（0 = 短窗 256、1 = 長窗 2048）。</summary>
+        /// <summary>setup header から各 mode の block flag を解析します（0 = 短窓 256、1 = 長窓 2048）。</summary>
         private static int[] GetBlockFlags(byte[] setup, uint seekBit)
         {
             BitReader reader = new BitReader(setup);
             if (reader.Read(8) != 5)
             {
-                throw new UnityException("setup header 不是 packet type 5");
+                throw new UnityException("setup header が packet type 5 ではありません");
             }
             for (int i = 0; i < 6; i++)
             {
@@ -169,7 +169,7 @@ namespace WzComparerR2.UnityLib.Audio
             int modeCount = reader.Read(6) + 1;
             if (modeCount > 64)
             {
-                throw new UnityException("vorbis mode 數量異常: " + modeCount);
+                throw new UnityException("vorbis mode 数が異常です: " + modeCount);
             }
             int[] flags = new int[modeCount];
             for (int i = 0; i < modeCount; i++)
@@ -182,7 +182,7 @@ namespace WzComparerR2.UnityLib.Audio
             return flags;
         }
 
-        /// <summary>單一 vorbis packet 的 block size（非音訊 packet 回 0）。</summary>
+        /// <summary>単一 vorbis packet の block size（音声以外の packet では 0）。</summary>
         private static int GetPacketBlockSize(byte[] packet, int[] flags)
         {
             if (packet == null || packet.Length == 0)
@@ -209,7 +209,7 @@ namespace WzComparerR2.UnityLib.Audio
 
         #endregion
 
-        #region Ogg page 輸出
+        #region Ogg page 出力
 
         private static readonly uint[] OggCrcTable = CreateOggCrcTable();
 
@@ -238,7 +238,7 @@ namespace WzComparerR2.UnityLib.Audio
             return crc;
         }
 
-        /// <summary>組一個 Ogg page（多 packet，自動 lacing）。</summary>
+        /// <summary>Ogg page を 1 つ組み立てます（複数 packet、lacing 自動）。</summary>
         private static void PushPage(
             MemoryStream output, uint serial, uint sequence, ulong granule,
             IList<byte[]> packets, bool bos, bool eos)
@@ -271,7 +271,7 @@ namespace WzComparerR2.UnityLib.Audio
             WriteU64(page, ref pos, granule);
             WriteU32(page, ref pos, serial);
             WriteU32(page, ref pos, sequence);
-            WriteU32(page, ref pos, 0); // crc 占位
+            WriteU32(page, ref pos, 0); // crc プレースホルダー
             page[pos++] = (byte)segments.Count;
             foreach (byte segment in segments)
             {
@@ -304,7 +304,7 @@ namespace WzComparerR2.UnityLib.Audio
 
         #endregion
 
-        /// <summary>FSB5 是否為本轉換器支援的格式（Vorbis、單一 sample）。</summary>
+        /// <summary>FSB5 が本コンバーターの対応形式かどうか（Vorbis、単一 sample）。</summary>
         public static bool IsSupported(byte[] fsb)
         {
             if (fsb == null || fsb.Length < HeaderSize
@@ -317,16 +317,16 @@ namespace WzComparerR2.UnityLib.Audio
             return sampleCount == 1 && codec == CodecVorbis;
         }
 
-        /// <summary>把一整個 FSB5（單 sample、Vorbis codec）轉成可播放的 Ogg Vorbis。</summary>
+        /// <summary>FSB5 全体（単一 sample、Vorbis codec）を再生可能な Ogg Vorbis に変換します。</summary>
         public static byte[] ToOgg(byte[] fsb)
         {
             if (fsb == null || fsb.Length < HeaderSize)
             {
-                throw new UnityException("FSB5 資料太短");
+                throw new UnityException("FSB5 データが短すぎます");
             }
             if (fsb[0] != 'F' || fsb[1] != 'S' || fsb[2] != 'B' || fsb[3] != '5')
             {
-                throw new UnityException("不是 FSB5 格式");
+                throw new UnityException("FSB5 形式ではありません");
             }
 
             uint sampleCount = BitConverter.ToUInt32(fsb, 8);
@@ -337,25 +337,25 @@ namespace WzComparerR2.UnityLib.Audio
             if (sampleCount != 1)
             {
                 throw new UnityException(string.Format(
-                    "FSB5 預期單一 sample，實際 {0}", sampleCount));
+                    "FSB5 は単一 sample を想定していますが、実際は {0} です", sampleCount));
             }
             if (codec != CodecVorbis)
             {
                 throw new UnityException(string.Format(
-                    "不支援的 FSB5 codec: {0:x}（只支援 Vorbis {1:x}）", codec, CodecVorbis));
+                    "未対応の FSB5 codec: {0:x}（Vorbis {1:x} のみ対応）", codec, CodecVorbis));
             }
 
             int dataOffset = HeaderSize + sampleHeaderSize + nameSize;
             if (dataOffset + dataSize > fsb.Length)
             {
-                throw new UnityException("FSB5 data 區截斷");
+                throw new UnityException("FSB5 data 領域が途中で切れています");
             }
             if (sampleHeaderSize < 8)
             {
-                throw new UnityException("FSB5 sample header 過短");
+                throw new UnityException("FSB5 sample header が短すぎます");
             }
 
-            // u64 位元欄位：bit0 hasChunks | bits1-4 freqId | bits5-6 channels
+            // u64 ビットフィールド: bit0 hasChunks | bits1-4 freqId | bits5-6 channels
             // | bits7-33 dataOffset(×32) | bits34-63 sampleCount
             ulong meta = BitConverter.ToUInt64(fsb, HeaderSize);
             bool hasChunks = (meta & 1) != 0;
@@ -364,12 +364,12 @@ namespace WzComparerR2.UnityLib.Audio
             uint vorbisSampleCount = (uint)((meta >> 34) & 0x3FFFFFFF);
             if (frequencyId >= Frequencies.Length)
             {
-                throw new UnityException("FSB5 FrequencyId 越界: " + frequencyId);
+                throw new UnityException("FSB5 FrequencyId が範囲外です: " + frequencyId);
             }
             int frequency = (int)Frequencies[frequencyId];
             int channels = ChannelCounts[channelIndex];
 
-            // chunk 鏈找 VORBISDATA 的 setup crc32
+            // chunk チェーンから VORBISDATA の setup crc32 を探す
             uint? setupCrc = null;
             if (hasChunks)
             {
@@ -378,7 +378,7 @@ namespace WzComparerR2.UnityLib.Audio
                 {
                     if (p + 4 > HeaderSize + sampleHeaderSize)
                     {
-                        throw new UnityException("FSB5 chunk header 截斷");
+                        throw new UnityException("FSB5 chunk header が途中で切れています");
                     }
                     uint info = BitConverter.ToUInt32(fsb, p);
                     bool more = (info & 1) != 0;
@@ -397,18 +397,18 @@ namespace WzComparerR2.UnityLib.Audio
             }
             if (!setupCrc.HasValue)
             {
-                throw new UnityException("FSB5 sample header 缺少 VORBISDATA chunk");
+                throw new UnityException("FSB5 sample header に VORBISDATA chunk がありません");
             }
 
             SetupEntry setup;
             if (!GetSetups().TryGetValue(setupCrc.Value, out setup))
             {
                 throw new UnityException(string.Format(
-                    "未知的 vorbis setup crc32: {0:x8}", setupCrc.Value));
+                    "未知の vorbis setup crc32: {0:x8}", setupCrc.Value));
             }
             int[] blockFlags = GetBlockFlags(setup.Header, setup.SeekBit);
 
-            // u16 前綴切 packets（0 / 0xFFFF = 結束）
+            // u16 プレフィックスで packet を分割（0 / 0xFFFF = 終端）
             List<byte[]> packets = new List<byte[]>();
             int cursor = dataOffset;
             int dataEnd = dataOffset + dataSize;
@@ -431,7 +431,7 @@ namespace WzComparerR2.UnityLib.Audio
             }
             if (packets.Count == 0)
             {
-                throw new UnityException("FSB5 沒有任何 vorbis packet");
+                throw new UnityException("FSB5 に vorbis packet がありません");
             }
 
             byte[] infoPacket = new byte[30];
@@ -472,7 +472,7 @@ namespace WzComparerR2.UnityLib.Audio
                 PushPage(output, serial, 0, 0, new[] { infoPacket }, true, false);
                 PushPage(output, serial, 1, 0, new[] { commentPacket, setup.Header }, false, false);
 
-                // 音訊 pages：每頁 50 包，granule = (cur + prev) / 4 累積，封頂 sampleCount
+                // 音声 page: 1 ページ 50 packet、granule = (cur + prev) / 4 を累積し、sampleCount で上限を打つ
                 uint sequence = 2;
                 ulong granule = 0;
                 int previousBlockSize = 0;

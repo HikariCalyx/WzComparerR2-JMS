@@ -21,7 +21,7 @@ namespace WzComparerR2.Comparer
         public bool ResolvePngLink { get; set; }
 
         /// <summary>
-        /// 節點成對比較する直前に呼ばれるフック（進捗表示用）。
+        /// ノードを比較する直前に呼ばれるフック（進捗表示用）。
         /// 購読しない場合、比較処理の挙動は変わらない。
         /// </summary>
         public event Action<Wz_Node, Wz_Node> ComparingNode;

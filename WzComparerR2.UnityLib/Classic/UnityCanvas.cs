@@ -5,11 +5,11 @@ namespace WzComparerR2.UnityLib.Classic
 {
     /// <summary>
     /// 一個 WZ-like 的 Canvas 節點值：代表「某個 Unity 資產路徑上的圖片」，
-    /// PNG 於第一次使用時才解碼（等同傳統 WZ 的 <c>Wz_Png</c>）。
+    /// PNG は初回使用時にデコードされます（従来の WZ の <c>Wz_Png</c> に相当）。
     /// <para>
-    /// 繼承 <see cref="Wz_Png"/> 讓只認得 WZ 型別的既有程式（MapRender、預覽工具等）
-    /// 也能直接使用：圖片由 <see cref="Wz_Png.PngDataProvider"/> 提供，
-    /// <see cref="Wz_Png.ExtractPng(int)"/> 會解碼這份 PNG 而不讀 WZ 資料流。
+    /// <see cref="Wz_Png"/> を継承することで、WZ 型しか扱わない既存コード（MapRender、プレビューツールなど）
+    /// そのまま利用できます: 画像は <see cref="Wz_Png.PngDataProvider"/> が提供し、
+    /// <see cref="Wz_Png.ExtractPng(int)"/> は WZ データストリームを読まず、この PNG をデコードします。
     /// </para>
     /// </summary>
     public sealed class UnityCanvas : Wz_Png, IWzPngSource
@@ -51,7 +51,7 @@ namespace WzComparerR2.UnityLib.Classic
             {
                 if (this.png == null || this.pngGeneration != generation)
                 {
-                    // 語系切換後同一個 Canvas 可能對應到不同地域的圖，必須重新解碼。
+                    // ロケール切り替え後は同じ Canvas が別地域の画像に対応する場合があるため、再デコードが必要です。
                     this.png = this.source.GetImage(this.Path);
                     this.pngGeneration = generation;
                 }

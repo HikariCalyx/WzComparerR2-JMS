@@ -34,11 +34,11 @@ namespace WzComparerR2.CharaSim
         internal List<Dictionary<string, string>> levelCommon;
         internal Dictionary<string, string> common;
 
-        /// <summary>common 內的攻擊範圍（所有等級共用）。</summary>
+        /// <summary>common 内の攻撃範囲（すべてのレベルで共通）。</summary>
         private Point commonLT;
         private Point commonRB;
 
-        /// <summary>各等級的攻擊範圍（<c>level/&lt;n&gt;/lt</c>、<c>rb</c>）。</summary>
+        /// <summary>各レベルの攻撃範囲（<c>level/&lt;n&gt;/lt</c>、<c>rb</c>）。</summary>
         private Dictionary<int, Point> levelLT;
         private Dictionary<int, Point> levelRB;
 
@@ -130,8 +130,8 @@ namespace WzComparerR2.CharaSim
         public Dictionary<int, Dictionary<string, string>> PerJobAttackInfo { get; private set; }
 
         /// <summary>
-        /// 攻擊範圍左上角。等級專屬的 <c>level/&lt;n&gt;/lt</c> 優先，
-        /// 否則使用 <c>common/lt</c>。
+        /// 攻撃範囲の左上。レベル専用の <c>level/&lt;n&gt;/lt</c> を優先し、
+        /// それ以外の場合は <c>common/lt</c> を使用します。
         /// </summary>
         public Point LT
         {
@@ -140,8 +140,8 @@ namespace WzComparerR2.CharaSim
         }
 
         /// <summary>
-        /// 攻擊範圍右下角。等級專屬的 <c>level/&lt;n&gt;/rb</c> 優先，
-        /// 否則使用 <c>common/rb</c>。
+        /// 攻撃範囲の右下。レベル専用の <c>level/&lt;n&gt;/rb</c> を優先し、
+        /// それ以外の場合は <c>common/rb</c> を使用します。
         /// </summary>
         public Point RB
         {
@@ -149,7 +149,7 @@ namespace WzComparerR2.CharaSim
             set { this.commonRB = value; }
         }
 
-        /// <summary>取得指定等級的攻擊範圍（等級專屬優先，否則 common）。</summary>
+        /// <summary>指定レベルの攻撃範囲を取得します（レベル専用を優先し、なければ common）。</summary>
         public void GetAttackRange(int level, out Point lt, out Point rb)
         {
             lt = this.GetLevelPoint(this.levelLT, level) ?? this.commonLT;
@@ -157,8 +157,8 @@ namespace WzComparerR2.CharaSim
         }
 
         /// <summary>
-        /// 指定等級的攻擊範圍面積佔最高等級的百分比（保留 1 位小數）；
-        /// 缺少範圍資料時回傳 null。
+        /// 指定レベルの攻撃範囲面積が最高レベルの何パーセントか（小数第 1 位まで保持）。
+        /// 範囲データがない場合は null を返します。
         /// </summary>
         public double? GetRangeAreaPercent(int level)
         {
@@ -198,8 +198,8 @@ namespace WzComparerR2.CharaSim
                 return point;
             }
 
-            // 沒有剛好對應的等級（例如 Combat Orders 超過上限、或 Level 0）時，
-            // 取不超過目前等級的最高等級，再退回最低等級。
+            // ちょうど一致するレベルがない場合（Combat Orders で上限超過、または Level 0 など）は、
+            // 現在のレベルを超えない最大のレベルを選び、それもなければ最低レベルに戻します。
             int best = 0;
             int lowest = int.MaxValue;
             foreach (int key in points.Keys)
@@ -221,8 +221,8 @@ namespace WzComparerR2.CharaSim
         }
 
         /// <summary>
-        /// 記錄某等級的攻擊範圍（<c>level/&lt;n&gt;/lt</c>、<c>rb</c>）。
-        /// 值可能是 vector（type 14）或 2 個數值的組合（type 8）。
+        /// あるレベルの攻撃範囲を記録します（<c>level/&lt;n&gt;/lt</c>、<c>rb</c>）。
+        /// 値は vector（type 14）または 2 つの数値の組み合わせ（type 8）の場合があります。
         /// </summary>
         private bool SetLevelPoint(int level, string name, object value)
         {
@@ -245,7 +245,7 @@ namespace WzComparerR2.CharaSim
             }
         }
 
-        /// <summary>把節點值解讀成座標點（vector 或 2 個數值的組合）。</summary>
+        /// <summary>ノード値を座標点として解釈します（vector または 2 つの数値の組み合わせ）。</summary>
         private static bool TryGetPoint(object value, out Point point)
         {
             switch (value)
@@ -282,7 +282,7 @@ namespace WzComparerR2.CharaSim
         public static Skill CreateFromNode(Wz_Node node, GlobalFindNodeFunction findNode, GlobalFindNodeFunction2 findNode2, Wz_File wzf = null)
         {
             if (node == null) return null;
-            // 節點型別由 WZ 檔或外部型別解析器（Unity 資料集目錄）判斷。
+            // ノード種別は WZ ファイルまたは外部型解決（Unity データセットのディレクトリ）で判定します。
             if (node.GetNodeWzType() is Wz_Type wzType
                 && wzType != Wz_Type.Skill && wzType != Wz_Type.Etc) return null;
 
@@ -474,14 +474,14 @@ namespace WzComparerR2.CharaSim
                                 {
                                     continue;
                                 }
-                                // Classic 客戶端把攻擊範圍放在各等級底下（level/<n>/lt、rb）。
+                                // Classic クライアントでは攻撃範囲が各レベル配下（level/<n>/lt、rb）に置かれています。
                                 if (skill.SetLevelPoint(i, commonNode.Text, commonNode.Value))
                                 {
                                     continue;
                                 }
                                 if (commonNode.Value is Wz_Vector)
                                 {
-                                    continue; // 其他 vector 屬性維持原有行為（不進 levelCommon）
+                                    continue; // その他の vector 属性は従来どおり（levelCommon に入れない）
                                 }
                                 levelInfo[commonNode.Text] = commonNode.Value.ToString();
                             }

@@ -12,12 +12,12 @@ namespace WzComparerR2.Comparer
     public partial class EasyComparer
     {
         /// <summary>
-        /// Unity 資產資料集之間的比較。兩邊都會先整理成「類 WZ」目錄樹
-        /// （<see cref="ClassicWzBridge.CreateCatalogNode(ClassicWzSource, bool, bool)"/>），
-        /// 再依 <see cref="Wz_Type"/> 分頁輸出，結果格式與 WZ 比較一致。
+        /// Unity アセットデータセット同士の比較。両側をまず「WZ 風」のディレクトリツリーに整理し、
+        /// （<see cref="ClassicWzBridge.CreateCatalogNode(ClassicWzSource, bool, bool)"/>）、
+        /// さらに <see cref="Wz_Type"/> ごとにページ出力し、結果の形式は WZ 比較と一致します。
         /// </summary>
-        /// <param name="labelNew">新版本的顯示名稱（例如 <c>冒険島懐旧服 1.1.2</c>）。</param>
-        /// <param name="labelOld">舊版本的顯示名稱。</param>
+        /// <param name="labelNew">新しいバージョンの表示名（例: <c>冒険島懐旧服 1.1.2</c>）。</param>
+        /// <param name="labelOld">古いバージョンの表示名。</param>
         public void EasyCompareUnity(
             string labelNew, ClassicWzSource sourceNew,
             string labelOld, ClassicWzSource sourceOld,
@@ -157,9 +157,9 @@ namespace WzComparerR2.Comparer
                 : CombineUnityPath(this.unityEntryPath, relative);
         }
 
-        #region 節點走訪與差異判定
+        #region ノード走査と差分判定
 
-        /// <summary>依目錄名配對兩邊型別下的頂層目錄。</summary>
+        /// <summary>ディレクトリ名で両側の型ごとのトップディレクトリを対応付けます。</summary>
         private static IEnumerable<UnityDirectoryPair> MatchUnityDirectories(
             Dictionary<string, Wz_Node> dirsNew, Dictionary<string, Wz_Node> dirsOld)
         {
@@ -189,7 +189,7 @@ namespace WzComparerR2.Comparer
             }
         }
 
-        /// <summary>把 <paramref name="root"/> 的頂層目錄依 <see cref="Wz_Type"/> 分類。</summary>
+        /// <summary><paramref name="root"/> のトップディレクトリを <see cref="Wz_Type"/> ごとに分類します。</summary>
         private static Dictionary<Wz_Type, Dictionary<string, Wz_Node>> BuildUnityTypeIndex(Wz_Node root)
         {
             Dictionary<Wz_Type, Dictionary<string, Wz_Node>> index =
@@ -311,7 +311,7 @@ namespace WzComparerR2.Comparer
             });
         }
 
-        /// <summary>把整棵子樹的葉節點加入差異清單（用於只有單邊存在的資產）。</summary>
+        /// <summary>サブツリー全体の葉ノードを差分一覧に追加します（片側にしか存在しないアセット用）。</summary>
         private void AddUnityEntryTree(
             UnityCompareSide side, Wz_Node node, string path,
             DifferenceType type, List<UnityCompareEntry> entries)
@@ -337,7 +337,7 @@ namespace WzComparerR2.Comparer
             });
         }
 
-        /// <summary>判斷單一資產的內容是否有差異。</summary>
+        /// <summary>単一アセットの内容に差分があるか判定します。</summary>
         private UnityEntryChange CompareUnityEntry(
             UnityCompareSide sideNew, Wz_Node nodeNew,
             UnityCompareSide sideOld, Wz_Node nodeOld)
@@ -352,7 +352,7 @@ namespace WzComparerR2.Comparer
                 bool hasContentOld = HasUnityContent(contentOld, imageOld, nodeOld);
                 if (!hasContentNew && !hasContentOld)
                 {
-                    // sprite canvas 之類沒有子節點的資產：直接比對值。
+                    // sprite canvas など子ノードを持たないアセット: 値を直接比較します。
                     return this.Comparer.CompareData(nodeNew.Value, nodeOld.Value)
                         ? UnityEntryChange.None
                         : UnityEntryChange.Value;
@@ -383,14 +383,14 @@ namespace WzComparerR2.Comparer
         {
             if (entry.Value is Wz_Image)
             {
-                // img 展開失敗（content 為 null）時視同無內容，交由值比較處理。
+                // img の展開に失敗した場合（content が null）は内容なしとみなし、値の比較で処理します。
                 return content != null;
             }
             return content != null && content.Nodes.Count > 0;
         }
 
         /// <summary>
-        /// 內容比較：最初の差異が見つかった時点で打ち切る。
+        /// 内容比較: 最初の差異が見つかった時点で打ち切ります。
         /// 比較中のノードパスを表示するため、比較フックを一時的に購読する。
         /// </summary>
         private bool CompareUnityContent(Wz_Node contentNew, Wz_Node contentOld)
@@ -413,8 +413,8 @@ namespace WzComparerR2.Comparer
         }
 
         /// <summary>
-        /// 取得資產內容的節點容器：img（WZJS／音效）直接展開，文字資產解析成節點，
-        /// 其餘資產回傳空容器。
+        /// アセット内容のノードコンテナを取得します: img（WZJS／サウンド）はそのまま展開し、テキストアセットはノードとして解析し、
+        /// それ以外のアセットは空のコンテナを返します。
         /// </summary>
         private static Wz_Node BuildUnityContent(
             UnityCompareSide side, Wz_Node entry, out Wz_Image image, out bool ownedByUs)
@@ -441,7 +441,7 @@ namespace WzComparerR2.Comparer
                     }
                     catch (Exception)
                     {
-                        // 無法解析的資產視為無內容，差異改由值比較判斷。
+                        // 解析できないアセットは内容なしとみなし、差分は値の比較で判定します。
                         holder.Nodes.Clear();
                     }
                 }
@@ -462,7 +462,7 @@ namespace WzComparerR2.Comparer
             }
         }
 
-        /// <summary>把目錄路徑與節點名組成 WZ 風格路徑，img 會補上 <c>.img</c>。</summary>
+        /// <summary>ディレクトリパスとノード名から WZ 形式のパスを組み立てます（img には <c>.img</c> を付加）。</summary>
         private static string GetUnityDisplayPath(string directoryPath, string nodeName, Wz_Node node)
         {
             string path = CombineUnityPath(directoryPath, nodeName);
@@ -480,7 +480,7 @@ namespace WzComparerR2.Comparer
 
         #endregion
 
-        #region HTML 輸出
+        #region HTML 出力
 
         private void OutputUnityFile(
             string labelNew, string labelOld, Wz_Type type,
@@ -657,7 +657,7 @@ namespace WzComparerR2.Comparer
             sw.WriteLine("</table>");
         }
 
-        /// <summary>產生單一資產在詳細表格中的資料列。</summary>
+        /// <summary>単一アセットの詳細テーブル用の行を生成します。</summary>
         private List<UnityCompareRow> BuildUnityRows(UnityCompareEntry entry, string outputDir)
         {
             List<UnityCompareRow> rows = new List<UnityCompareRow>();
@@ -799,7 +799,7 @@ namespace WzComparerR2.Comparer
 
         #endregion
 
-        #region 內部型別
+        #region 内部型
 
         private enum UnityEntryChange
         {
@@ -819,7 +819,7 @@ namespace WzComparerR2.Comparer
             public ClassicWzSource Source { get; private set; }
             public Wz_Node Root { get; private set; }
 
-            /// <summary>由節點在類 WZ 目錄樹中的位置還原 catalog 的資產索引鍵。</summary>
+            /// <summary>WZ 風ディレクトリツリー内の位置から catalog のアセット索引キーを復元します。</summary>
             public string GetImageKey(Wz_Node node)
             {
                 List<string> segments = new List<string>();

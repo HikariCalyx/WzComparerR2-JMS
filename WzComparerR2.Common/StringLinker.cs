@@ -1050,8 +1050,8 @@ namespace WzComparerR2.Common
 
         private string GetDefaultString(Wz_Node node, string searchNodeText)
         {
-            // Classic 客戶端的字串表鍵名是首字母大寫（Name / Desc / H），
-            // 先找完全符合的鍵，找不到再不分大小寫比對。
+            // Classic クライアントの文字列テーブルのキーは先頭が大文字（Name / Desc / H）なので、
+            // まず完全一致のキーを探し、見つからなければ大文字小文字を無視して照合します。
             Wz_Node child = node.FindNodeByPath(searchNodeText);
             if (child == null)
             {

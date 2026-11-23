@@ -77,7 +77,7 @@ namespace WzComparerR2
             public ClassicWzSource Source { get; }
             public Wz_Node RootNode { get; }
 
-            /// <summary>advTree1 中對應 <see cref="RootNode"/> 的節點。</summary>
+            /// <summary>advTree1 内で <see cref="RootNode"/> に対応するノード。</summary>
             public Node TreeNode { get; set; }
 
             /// <summary>String/Etc/Quest 資產整理成的類 WZ 節點，供 StringLinker 使用。</summary>
@@ -99,7 +99,7 @@ namespace WzComparerR2
         DefaultLevel skillDefaultLevel = DefaultLevel.Level0;
         int skillInterval = 32;
 
-        /// <summary>前一次開啟 Unity 資料集時選擇的地域コード。多地域資料集再次開啟時作為預設值。</summary>
+        /// <summary>前回 Unity データセットを開いたときに選択した地域コード。多地域のデータセットを再度開くときの既定値として使用します。</summary>
         string lastUnityLocale;
 
         //compare
@@ -543,7 +543,7 @@ namespace WzComparerR2
 
             if (fullPath == null || fullPath.Length <= 1)
             {
-                if (e.WzType != Wz_Type.Unknown) //返回wzFile
+                if (e.WzType != Wz_Type.Unknown) //wzFile を返す
                 {
                     if (preSearch.Count > 0)
                     {
@@ -578,11 +578,11 @@ namespace WzComparerR2
                     return;
                 }
             }
-            //寻找失败：改查 Unity 資料集（沒有 .img 後綴、目錄配置不同）
+            // 検索失敗: Unity データセットを検索します（.img 拡張子なし、ディレクトリ構成も異なる）
             e.WzNode = this.FindUnityNodeByPath(e.FullPath);
         }
 
-        /// <summary>Unity 資料集內對應 <paramref name="wzType"/> 的根節點（Base 代表整個資料集）。</summary>
+        /// <summary>Unity データセット内で <paramref name="wzType"/> に対応するルートノード（Base はデータセット全体）。</summary>
         private Wz_Node FindUnityTypeNode(Wz_Type wzType)
         {
             if (this.openedUnitySources == null || this.openedUnitySources.Count == 0)
@@ -594,7 +594,7 @@ namespace WzComparerR2
                 Wz_Node root = document.RootNode;
                 if (wzType == Wz_Type.Base)
                 {
-                    // Unity 資料集沒有 Base.wz；開啟中即視為可用。
+                    // Unity データセットには Base.wz がありません。開いていれば利用可能とみなします。
                     return root;
                 }
                 foreach (Wz_Node child in root.Nodes)
@@ -1714,8 +1714,8 @@ namespace WzComparerR2
                 unitySource = ClassicWzSource.Open(assetFolderPath);
                 int bundleCount = unitySource.Catalog.Bundles.Count;
 
-                // 多地域資料集：讓使用者選擇偏好的地域コード（字串表與圖集的語系）。
-                // openUnityFolder 執行於背景執行緒，對話方塊必須回到 UI 執行緒顯示。
+                // 多地域のデータセット: 優先する地域コード（文字列テーブルと画像アトラスのロケール）を選択させます。
+                // openUnityFolder はバックグラウンドスレッドで実行されるため、ダイアログは UI スレッドに戻して表示する必要があります。
                 if (unitySource.Locales.Count > 1)
                 {
                     string selectedLocale = null;
@@ -2047,7 +2047,7 @@ namespace WzComparerR2
                 QueryPerformance.Start();
                 try
                 {
-                    // 內容（WZJS 樹／音效清單）在第一次選取時才建立，UnityAssetImage 會保留結果。
+                    // 内容（WZJS ツリー／サウンド一覧）は初回選択時に構築し、UnityAssetImage が結果を保持します。
                     Node imageNode = createNode(unityImage.AsWzNode());
                     advTree2.Nodes.Add(imageNode);
                     imageNode.Expand();
@@ -2606,7 +2606,7 @@ namespace WzComparerR2
             return null;
         }
 
-        /// <summary>字串結果所屬的分類；Unity 資產的節點名稱沒有 <c>.img</c> 後綴。</summary>
+        /// <summary>文字列結果の分類。Unity アセットのノード名には <c>.img</c> 拡張子がありません。</summary>
         private enum UnityStringCategory
         {
             None,
@@ -2620,8 +2620,8 @@ namespace WzComparerR2
         }
 
         /// <summary>
-        /// 字串搜尋結果在 Unity 資料集內找對應節點：先選取 img（advTree1），
-        /// 再選取 img 內的節點（advTree2）。
+        /// 文字列検索結果から Unity データセット内の対応ノードを探します: まず img を選択し（advTree1）、
+        /// 続いて img 内のノードを選択します（advTree2）。
         /// </summary>
         private bool TryFindUnityStringNode(string id, string stringNodePath)
         {
@@ -2654,7 +2654,7 @@ namespace WzComparerR2
                     }
                 }
 
-                // 保底：WZ 的分類目錄／補零方式可能與資產樹不同，改以 id 數值掃描分類目錄。
+                // 保険: WZ の分類ディレクトリやゼロ埋め方法はアセットツリーと異なる場合があるため、id の数値で分類ディレクトリを走査します。
                 string imageKey = catalog.FindImageKeyByNumericName(rootDirectory, entryId);
                 if (imageKey != null && this.SelectUnityNode(document, imageKey))
                 {
@@ -2665,8 +2665,8 @@ namespace WzComparerR2
         }
 
         /// <summary>
-        /// 依字串節點路徑（如 <c>Eqp.img\100\0\01002000</c>）判斷分類；
-        /// Unity 的字串表節點名稱帶 <c>.img</c>，資產樹則不帶，兩種寫法都接受。
+        /// 文字列ノードのパス（例: <c>Eqp.img\100\0\01002000</c>）で分類を判定します。
+        /// Unity の文字列テーブルのノード名は <c>.img</c> 付き、アセットツリーはなしですが、どちらの書き方も受け付けます。
         /// </summary>
         private static UnityStringCategory GetUnityStringCategory(string stringNodePath)
         {
@@ -2762,7 +2762,7 @@ namespace WzComparerR2
             }
         }
 
-        /// <summary>選取 Unity 資料集內的路徑：先在 advTree1 選 img，再於 advTree2 選其中的節點。</summary>
+        /// <summary>Unity データセット内のパスを選択します: まず advTree1 で img を選び、次に advTree2 でその中のノードを選びます。</summary>
         private bool SelectUnityNode(UnityAssetDocument document, string nodePath)
         {
             string imageKey, innerPath;
@@ -2816,7 +2816,7 @@ namespace WzComparerR2
                         next = child;
                         break;
                     }
-                    // id 節點的補零位數可能不同（02000000 / 2000000）。
+                    // id ノードのゼロ埋め桁数が異なる場合があります（02000000 / 2000000）。
                     long childNumber;
                     if (segmentIsNumber && long.TryParse(child.Text, out childNumber)
                         && childNumber == segmentNumber)
@@ -5352,8 +5352,8 @@ namespace WzComparerR2
 
             if (IsUnityNode(selectedNode))
             {
-                // Unity 資產（音效 img／JSON／sprite／目錄）には Wz_File が無い。
-                // 對應する tooltip が無い場合は現状維持。
+                // Unity アセット（サウンド img／JSON／sprite／ディレクトリ）には Wz_File がありません。
+                // 対応する tooltip がない場合は現状を維持します。
                 return;
             }
 
@@ -5363,7 +5363,7 @@ namespace WzComparerR2
                 if (this.openedWz == null || this.openedWz.Count == 0)
                 {
                     // Unity データセットのノード（Wz_File を持たない）や、
-                    // 比較で切り離された內容ノード。ツールチップ未対応の場合は現状維持。
+                    // 比較で切り離された内容ノード。ツールチップ未対応の場合は現状を維持します。
                     return;
                 }
                 labelItemStatus.Text = "ノードが属するWZファイルが見つかりません。";
@@ -5808,17 +5808,17 @@ namespace WzComparerR2
         }
 
         /// <summary>
-        /// 往上找出節點所屬的 Unity WZJS img；非 Unity 節點回傳 null。
+        /// 上位へ辿ってノードが属する Unity WZJS img を求めます。Unity 以外のノードでは null。
         /// </summary>
         private static UnityWzImage FindUnityWzImage(Wz_Node node)
         {
-           // img 內の節點は入れ子の Wz_ImageNode（Value は null）の下にあるため、
+           // img 内のノードは入れ子の Wz_ImageNode（Value は null）の下にあるため、
            // Value だけでなく GetNodeWzImage（Wz_ImageNode.Image を見る）でも判定する。
            return node == null ? null : node.GetNodeWzImage() as UnityWzImage;
         }
 
         /// <summary>
-        /// Unity 資料集由来の節點かどうか（Wz_File を持たないため、WZ のエラー表示を避ける）。
+        /// Unity データセット由来のノードかどうか（Wz_File を持たないため、WZ のエラー表示を避けます）。
         /// </summary>
         private bool IsUnityNode(Wz_Node node)
         {
@@ -5838,7 +5838,7 @@ namespace WzComparerR2
                }
            }
 
-           // 目錄節點：根節點が開いている Unity 資料集と一致するか。
+           // ディレクトリノード: ルートノードが開いている Unity データセットと一致するか。
            if (this.openedUnitySources == null || this.openedUnitySources.Count == 0)
            {
                return false;
@@ -5859,8 +5859,8 @@ namespace WzComparerR2
         }
 
         /// <summary>
-        /// 選取節點が img 內容樹の「img 直下」にある場合、その第一層節點を返す。
-        /// img 本身や內容樹の外側を選んだ場合は null。
+        /// 選択ノードが img 内容ツリーの「img 直下」にある場合、その第 1 階層ノードを返します。
+        /// img 自体や内容ツリーの外側を選んだ場合は null。
         /// </summary>
         private static Wz_Node GetUnityImageChildNode(Wz_Node node, Wz_Node imageContent)
         {
@@ -5882,47 +5882,47 @@ namespace WzComparerR2
         }
 
         /// <summary>
-        /// Unity 資產的快速預覽，支援道具（Item）、裝備（Character）、怪物（Mob）
-        /// 與 NPC（Npc）分類。
+        /// Unity アセットのクイックプレビュー。アイテム（Item）、装備（Character）、モブ（Mob）
+        /// と NPC（Npc）の分類。
         /// <para>
-        /// Classic 的 Item 資產像傳統 WZ 一樣分組：群組 img 是
-        /// <c>Item/Consume/0200</c>，道具本身則是 img 內的子節點
-        /// <c>0200/02000000</c>。因此要往上找到「父節點是群組 img」的節點，
-        /// 而不是直接用 img 根。
+        /// Classic の Item アセットは従来の WZ と同じくグループ化されています: グループ img は
+        /// <c>Item/Consume/0200</c> で、アイテム自体は img 内の子ノードです
+        /// <c>0200/02000000</c>。そのため「親ノードがグループ img」のノードまで遡り、
+        /// img のルートを直接使うのではなく、
         /// </para>
         /// <para>
-        /// 裝備 / 怪物 / NPC 都是一個 id 一個 img（如 <c>Character/Cap/01002000</c>、
-        /// <c>Mob/0100100</c>、<c>Npc/1010100</c>），選到該 img 即顯示 tooltip。
+        /// 装備 / モブ / NPC はすべて 1 id 1 img です（例: <c>Character/Cap/01002000</c>、
+        /// <c>Mob/0100100</c>、<c>Npc/1010100</c>）。その img を選ぶと tooltip を表示します。
         /// </para>
-        /// <para>其他分類待補；無法顯示時直接返回，保留目前的 tooltip。</para>
+        /// <para>その他の分類は未対応です。表示できない場合は何もせず、現在の tooltip を維持します。</para>
         /// </summary>
         private void quickViewUnity(Wz_Node selectedNode, UnityWzImage unityImage)
         {
             UnityStringCategory category = GetUnityImageCategory(unityImage.Name);
             if (category == UnityStringCategory.None)
             {
-                // 尚未支援的分類，保留目前的 tooltip。
+                // 未対応の分類では現在の tooltip を維持します。
                 return;
             }
 
             if (category == UnityStringCategory.Skill)
             {
-                // 技能是 img 內的 skill/<id> 節點（如 Skill/100/skill/1001002）。
+                // スキルは img 内の skill/<id> ノードです（例: Skill/100/skill/1001002）。
                 this.quickViewUnitySkill(selectedNode);
                 return;
             }
 
             if (category == UnityStringCategory.Quest)
             {
-                // 任務是 Quest/QuestInfo img 內的 <id> 節點。
+                // クエストは Quest/QuestInfo img 内の <id> ノードです。
                 this.quickViewUnityQuest(selectedNode, unityImage);
                 return;
             }
 
             if (category != UnityStringCategory.Item)
             {
-                // img 本身就是該對象；img 內の節點を選んだ場合も同じ tooltip を出す（WZ と同じ挙動）。
-                // advTree1 的節點是目錄索引（不含子樹），tooltip 需要展開後的 WZJS 內容。
+                // img 自体がそのオブジェクトです。img 内のノードを選んだ場合も同じ tooltip を表示します（WZ と同じ挙動）。
+                // advTree1 のノードはディレクトリ索引（サブツリーなし）なので、tooltip には展開後の WZJS 内容が必要です。
                 Wz_Node imageNode;
                 try
                 {
@@ -5952,8 +5952,8 @@ namespace WzComparerR2
                 return;
             }
 
-            // 道具有兩種形狀：群組 img（Item/Consume/0200，道具是 img 內的子節點）與
-            // 一 id 一 img（Item/Pet/5002584，img 本身就是道具）。
+            // アイテムには 2 つの形があります: グループ img（Item/Consume/0200、アイテムは img 内の子ノード）と
+            // 1 id 1 img（Item/Pet/5002584、img 自体がアイテム）。
             Wz_Node itemNode;
             if (selectedNode.Value is UnityWzImage && IsUnityPerItemImageKey(unityImage.Name))
             {
@@ -5969,7 +5969,7 @@ namespace WzComparerR2
             }
             else
             {
-                // 道具節點 = img 內容樹の直下にある <itemId> 節點。
+                // アイテムノード = img 内容ツリー直下の <itemId> ノード。
                 Wz_Node imageContent;
                 try
                 {
@@ -5985,7 +5985,7 @@ namespace WzComparerR2
                 int itemId;
                 if (itemNode == null || !int.TryParse(itemNode.Text, out itemId))
                 {
-                    // 選到群組 img 或目錄本身，沒有具體道具可顯示。
+                    // グループ img やディレクトリ自体を選択した場合は表示できるアイテムがありません。
                     return;
                 }
             }
@@ -6026,8 +6026,8 @@ namespace WzComparerR2
         }
 
         /// <summary>
-        /// 判斷 Item 的 img 是否「一個 id 一個 img」（<c>Item/Pet/5002584</c>）。
-        /// 群組 img（<c>Item/Consume/0200</c>）的末段是 4 碼群組編號，不是道具 id。
+        /// Item の img が「1 id 1 img」（<c>Item/Pet/5002584</c>）かどうかを判定します。
+        /// グループ img（<c>Item/Consume/0200</c>）の末尾は 4 桁のグループ番号で、アイテム id ではありません。
         /// </summary>
         private static bool IsUnityPerItemImageKey(string imageName)
         {
@@ -6046,9 +6046,9 @@ namespace WzComparerR2
         }
 
         /// <summary>
-        /// 判斷 img 索引鍵屬於哪個分類（供 tooltip 使用）：
-        /// <c>Item/&lt;分類&gt;/&lt;群組&gt;</c>、<c>Character/&lt;分類&gt;/&lt;8 碼 id&gt;</c>、
-        /// <c>Mob/…/&lt;7 碼 id&gt;</c>、<c>Npc/&lt;7 碼 id&gt;</c>。
+        /// img 索引キーがどの分類に属するかを判定します（tooltip 用）:
+        /// <c>Item/&lt;分類&gt;/&lt;グループ&gt;</c>、<c>Character/&lt;分類&gt;/&lt;8 桁 id&gt;</c>、
+        /// <c>Mob/…/&lt;7 桁 id&gt;</c>、<c>Npc/&lt;7 桁 id&gt;</c>。
         /// </summary>
         private static UnityStringCategory GetUnityImageCategory(string imageName)
         {
@@ -6066,10 +6066,10 @@ namespace WzComparerR2
             switch (keyParts[0])
             {
                 case "Item":
-                    // 群組 img（Item/Consume/0200），道具是 img 內的子節點。
+                    // グループ img（Item/Consume/0200）では、アイテムが img 内の子ノードです。
                     return keyParts.Length >= 3 ? UnityStringCategory.Item : UnityStringCategory.None;
                 case "Character":
-                    // 一個 id 一個 img；Familiar 另有專用 tooltip。
+                    // 1 id 1 img。Familiar は専用の tooltip があります。
                     return keyParts.Length == 3
                         && !string.Equals(keyParts[1], "Familiar", StringComparison.Ordinal)
                         && int.TryParse(keyParts[2], out id)
@@ -6081,16 +6081,16 @@ namespace WzComparerR2
                     return int.TryParse(keyParts[keyParts.Length - 1], out id)
                         ? UnityStringCategory.Npc : UnityStringCategory.None;
                 case "Skill":
-                    // 技能 img 是 Skill/<職業>，技能本身是 img 內的 skill/<id> 節點。
+                    // スキル img は Skill/<職業> で、スキル自体は img 内の skill/<id> ノードです。
                     return UnityStringCategory.Skill;
                 case "Map":
-                    // 地圖 img 是 Map/Map/Map<首位數字>/<9 碼 id>。
+                    // マップ img は Map/Map/Map<先頭桁>/<9 桁 id> です。
                     return keyParts.Length >= 4
                         && keyParts[keyParts.Length - 1].Length == 9
                         && int.TryParse(keyParts[keyParts.Length - 1], out id)
                         ? UnityStringCategory.Map : UnityStringCategory.None;
                 case "Quest":
-                    // 任務 img 是 Quest/QuestInfo，任務本身是 img 內的 <id> 節點。
+                    // クエスト img は Quest/QuestInfo で、クエスト自体は img 内の <id> ノードです。
                     return keyParts.Length == 2
                         && string.Equals(keyParts[1], "QuestInfo", StringComparison.OrdinalIgnoreCase)
                         ? UnityStringCategory.Quest : UnityStringCategory.None;
@@ -6099,7 +6099,7 @@ namespace WzComparerR2
             }
         }
 
-        /// <summary>以字串表內容補上 tooltip 的標題與說明欄位。</summary>
+        /// <summary>文字列テーブルの内容で tooltip のタイトルと説明欄を補います。</summary>
         private void applyUnityStringToTooltip(StringResult sr, StringResult monsterBook, StringResult worldArchive)
         {
             tooltipQuickView.NodeName = sr.Name;
@@ -6110,7 +6110,7 @@ namespace WzComparerR2
             tooltipQuickView.DescLeftAlign = sr["desc_leftalign"];
         }
 
-        /// <summary>清除上一個 Unity tooltip 的內容。</summary>
+        /// <summary>直前の Unity tooltip の内容をクリアします。</summary>
         private void resetUnityTooltip()
         {
             tooltipQuickView.TargetItem = null;
@@ -6134,7 +6134,7 @@ namespace WzComparerR2
         }
 
         /// <summary>
-        /// Unity 裝備（<c>Character/&lt;分類&gt;/&lt;8 碼 id&gt;</c>）的快速預覽。
+        /// Unity 装備（<c>Character/&lt;分類&gt;/&lt;8 桁 id&gt;</c>）のクイックプレビュー。
         /// </summary>
         private void quickViewUnityGear(Wz_Node imageNode)
         {
@@ -6178,7 +6178,7 @@ namespace WzComparerR2
                 "eqp_" + gear.ItemID + "_" + RemoveInvalidFileNameChars(sr?.Name ?? "item") + ".png");
         }
 
-        /// <summary>Unity 怪物（<c>Mob/&lt;7 碼 id&gt;</c>）的快速預覽。</summary>
+        /// <summary>Unity モブ（<c>Mob/&lt;7 桁 id&gt;</c>）のクイックプレビュー。</summary>
         private void quickViewUnityMob(Wz_Node imageNode)
         {
             if (!this.stringLinker.HasValues)
@@ -6229,7 +6229,7 @@ namespace WzComparerR2
                 mob, "mob_" + mob.ID + "_" + RemoveInvalidFileNameChars(sr.Name) + ".png");
         }
 
-        /// <summary>Unity NPC（<c>Npc/&lt;7 碼 id&gt;</c>）的快速預覽。</summary>
+        /// <summary>Unity NPC（<c>Npc/&lt;7 桁 id&gt;</c>）のクイックプレビュー。</summary>
         private void quickViewUnityNpc(Wz_Node imageNode)
         {
             if (!this.stringLinker.HasValues)
@@ -6277,7 +6277,7 @@ namespace WzComparerR2
         }
 
         /// <summary>
-        /// Unity 資料集節點對應的 <see cref="Wz_Type"/>（目錄 → 型別）；非 Unity 節點回 null。
+        /// Unity データセットのノードに対応する <see cref="Wz_Type"/>（ディレクトリ → 型）。Unity 以外のノードでは null。
         /// </summary>
         private Wz_Type? ResolveUnityWzType(Wz_Node node)
         {
@@ -6286,7 +6286,7 @@ namespace WzComparerR2
                 return null;
             }
 
-            // img 展開樹內的節點：以所屬 img 的索引鍵（Character/Cap/01002000）判斷。
+            // img 展開ツリー内のノード: 所属 img の索引キー（Character/Cap/01002000）で判定します。
             for (Wz_Node cursor = node; cursor != null; cursor = cursor.ParentNode)
             {
                 if (cursor.Value is UnityAssetImage image)
@@ -6299,7 +6299,7 @@ namespace WzComparerR2
                 }
             }
 
-            // 目錄索引樹：以資料集根節點下一層的目錄名稱判斷。
+            // ディレクトリ索引ツリー: データセットのルート直下のディレクトリ名で判定します。
             if (this.openedUnitySources == null || this.openedUnitySources.Count == 0)
             {
                 return null;
@@ -6326,7 +6326,7 @@ namespace WzComparerR2
         }
 
         /// <summary>
-        /// Unity 資產 img 節點的內容根節點（WZ 的 <see cref="Wz_Image"/> 對應物）。
+        /// Unity アセット img ノードの内容ルートノード（WZ の <see cref="Wz_Image"/> に相当）。
         /// </summary>
         private Wz_Node ResolveUnityImageNode(Wz_Node node)
         {
@@ -6345,7 +6345,7 @@ namespace WzComparerR2
         }
 
         /// <summary>
-        /// 以 WZ 風格路徑在已開啟的 Unity 資料集內找節點（WZ 查不到時的備援）。
+        /// 開いている Unity データセット内を WZ 形式のパスで検索します（WZ で見つからない場合の代替）。
         /// </summary>
         private Wz_Node FindUnityNodeByPath(string wzPath)        {
             if (this.openedUnitySources == null || this.openedUnitySources.Count == 0
@@ -6370,13 +6370,13 @@ namespace WzComparerR2
                 }
                 catch (Exception ex) when (ex is UnityException || ex is ClassicAssetException || ex is WzjsException)
                 {
-                    // 單一資產解碼失敗不影響其他資料集。
+                    // 単一アセットのデコード失敗は他のデータセットに影響しません。
                 }
             }
             return null;
         }
 
-        /// <summary>img 內容節點補上層節點鏈，讓 WZ 風格的路徑判斷可用。</summary>
+        /// <summary>img 内容ノードに上位ノードチェーンを補い、WZ 形式のパス判定を可能にします。</summary>
         private static Wz_Node RootUnityNode(Wz_Node node)
         {
             if (node == null)
@@ -6393,8 +6393,8 @@ namespace WzComparerR2
         }
 
         /// <summary>
-        /// 從 Unity 目錄索引樹逐段走訪（名稱容許缺少 <c>.img</c>），
-        /// 遇到 img 節點就展開內容後繼續。
+        /// Unity ディレクトリ索引ツリーを 1 セグメントずつ辿ります（名前は <c>.img</c> の欠落を許容）。
+        /// img ノードに遭遇したら内容を展開してから続行します。
         /// </summary>
         private static Wz_Node FindUnityNodeBySegments(Wz_Node root, string wzPath)
         {
@@ -6437,12 +6437,12 @@ namespace WzComparerR2
             return null;
         }
 
-        /// <summary>Unity 角色動作 img 的索引鍵（各動作的影格延遲來源）。</summary>
+        /// <summary>Unity キャラクターアクション img の索引キー（各アクションのフレーム遅延の取得元）。</summary>
         private const string UnityCharacterImageKey = "Character/00002000";
 
         /// <summary>
-        /// Unity 資產的動作延遲：<c>Character/00002000/&lt;action&gt;/&lt;frame&gt;/delay</c>
-        /// 的絕對值加總；沒有對應資料時回傳 null（讓 tooltip 顯示 0）。
+        /// Unity アセットのアクション遅延: <c>Character/00002000/&lt;action&gt;/&lt;frame&gt;/delay</c>
+        /// 絶対値を加算します。対応するデータがない場合は null を返します（tooltip には 0 が表示されます）。
         /// </summary>
         private int? ResolveUnityActionDelay(string actionName)
         {
@@ -6471,7 +6471,7 @@ namespace WzComparerR2
         }
 
         /// <summary>
-        /// Unity 地圖（<c>Map/Map/Map&lt;N&gt;/&lt;9 碼 id&gt;</c>）的快速預覽（含 miniMap 縮圖）。
+        /// Unity マップ（<c>Map/Map/Map&lt;N&gt;/&lt;9 桁 id&gt;</c>）のクイックプレビュー（miniMap のサムネイルを含む）。
         /// </summary>
         private void quickViewUnityMap(Wz_Node imageNode, UnityWzImage unityImage)
         {
@@ -6484,8 +6484,8 @@ namespace WzComparerR2
             StringResult sr = null;
             try
             {
-                // Map.CreateFromNode 以 WZ 風格路徑查 link / NPC / 怪物等關聯節點，
-                // 這裡先查 Unity 資料集，找不到才退回 WZ。
+                // Map.CreateFromNode は WZ 形式のパスで link / NPC / モブなどの関連ノードを検索するため、
+                // まず Unity データセットを検索し、見つからない場合のみ WZ にフォールバックします。
                 GlobalFindNodeFunction finder = path =>
                     unityImage.FindNode(path) ?? PluginManager.FindWz(path);
                 map = Map.CreateFromNode(imageNode, finder);
@@ -6515,12 +6515,12 @@ namespace WzComparerR2
         }
 
         /// <summary>
-        /// Unity 任務（<c>Quest/QuestInfo/&lt;id&gt;</c>）的快速預覽。
+        /// Unity クエスト（<c>Quest/QuestInfo/&lt;id&gt;</c>）のクイックプレビュー。
         /// <para>
-        /// Classic 把任務資料拆成 <c>Quest/QuestInfo</c>、<c>Quest/Check</c>、
-        /// <c>Quest/Act</c>、<c>Quest/Say</c> 四個 img，文字放在
-        /// <c>String/&lt;locale&gt;/QuestData</c>。這裡把它們組成傳統 WZ 的
-        /// <c>Quest/QuestInfo.img/&lt;id&gt;</c> 形狀後交給 <see cref="Quest.CreateFromNode"/>。
+        /// Classic ではクエストデータが <c>Quest/QuestInfo</c>、<c>Quest/Check</c>、
+        /// <c>Quest/Act</c>、<c>Quest/Say</c> の 4 つの img に分割され、テキストは
+        /// <c>String/&lt;locale&gt;/QuestData</c>。ここで従来の WZ の形に組み直します。
+        /// <c>Quest/QuestInfo.img/&lt;id&gt;</c> の形に整えたうえで <see cref="Quest.CreateFromNode"/> に渡します。
         /// </para>
         /// </summary>
         private void quickViewUnityQuest(Wz_Node selectedNode, UnityWzImage unityImage)
@@ -6546,7 +6546,7 @@ namespace WzComparerR2
             int questId;
             if (questIdNode == null || !int.TryParse(questIdNode.Text, out questId))
             {
-                // 選到 QuestInfo img 本身時沒有任務可顯示。
+                // QuestInfo img 自体を選択した場合は表示できるクエストがありません。
                 return;
             }
 
@@ -6604,18 +6604,18 @@ namespace WzComparerR2
         }
 
         /// <summary>
-        /// 把 Classic 拆開的任務資產組成 WZ 形狀的 img 節點：
-        /// <c>&lt;id&gt;/QuestInfo</c>（QuestInfo img）與 <c>&lt;id&gt;/Check</c>（Check img）。
+        /// Classic で分割されたクエストアセットを WZ 形式の img ノードに組み立てます:
+        /// <c>&lt;id&gt;/QuestInfo</c>（QuestInfo img）と <c>&lt;id&gt;/Check</c>（Check img）。
         /// </summary>
         private Wz_Node BuildUnityQuestImage(Wz_Node questInfoNode, int questId, UnityWzImage unityImage)
         {
             Wz_Node img = new Wz_Node(questId.ToString());
 
-            // QuestInfo/訊息：先帶入資料集內的欄位，再以字串表覆寫（字串表才是顯示文字）。
+            // QuestInfo/メッセージ: まずデータセット内のフィールドを設定し、文字列テーブルで上書きします（表示テキストは文字列テーブルが正）。
             Wz_Node info = img.Nodes.Add("QuestInfo");
             CopyWzNodeChildren(questInfoNode, info);
 
-            // 資料集內的 name 可能只是佔位節點（值為空），先移除避免顯示成字面上的 "name"。
+            // データセット内の name はプレースホルダーノード（値が空）の場合があるため、先に除去して文字通りの "name" が表示されないようにします。
             RemoveChildByName(info, "name");
 
             Wz_Node check = unityImage.FindNode("Quest/Check/" + questId);
@@ -6631,8 +6631,8 @@ namespace WzComparerR2
         }
 
         /// <summary>
-        /// 以 <c>String/&lt;locale&gt;/QuestData/&lt;id&gt;</c> 補上任務的顯示文字
-        /// （name → name、Info/&lt;n&gt; → 0/1/2、demandSummary/rewardSummary）；回傳任務名稱。
+        /// <c>String/&lt;locale&gt;/QuestData/&lt;id&gt;</c> でクエストの表示テキストを補います
+        /// （name → name、Info/&lt;n&gt; → 0/1/2、demandSummary/rewardSummary）。クエスト名を返します。
         /// </summary>
         private string ApplyQuestStrings(Wz_Node info, int questId, UnityWzImage unityImage)
         {
@@ -6675,7 +6675,7 @@ namespace WzComparerR2
                 int stage;
                 if (int.TryParse(node.Text, out stage))
                 {
-                    // 階段說明 → WZ 的 QuestInfo/0、1、2…
+                    // 段階説明 → WZ の QuestInfo/0、1、2…
                     SetOrAddChildValue(info, stage.ToString(), value);
                     continue;
                 }
@@ -6692,7 +6692,7 @@ namespace WzComparerR2
             return name;
         }
 
-        /// <summary>以名稱尋找子節點（先精確比對，再不分大小寫）。</summary>
+        /// <summary>名前で子ノードを検索します（まず完全一致、次に大文字小文字を無視）。</summary>
         private static Wz_Node FindChildByName(Wz_Node parent, string name)
         {
             if (parent == null || name == null)
@@ -6714,7 +6714,7 @@ namespace WzComparerR2
             return null;
         }
 
-        /// <summary>移除指定名稱的子節點（不分大小寫）。</summary>
+        /// <summary>指定名の子ノードを削除します（大文字小文字を無視）。</summary>
         private static void RemoveChildByName(Wz_Node parent, string name)
         {
             List<Wz_Node> keep = new List<Wz_Node>();
@@ -6741,7 +6741,7 @@ namespace WzComparerR2
             }
         }
 
-        /// <summary>把來源節點的子樹複製到目標節點底下（不共用父子關係）。</summary>
+        /// <summary>コピー元ノードのサブツリーをコピー先ノード配下に複製します（親子関係は共有しません）。</summary>
         private static void CopyWzNodeChildren(Wz_Node source, Wz_Node target)
         {
             foreach (Wz_Node child in source.Nodes)
@@ -6758,7 +6758,7 @@ namespace WzComparerR2
             return clone;
         }
 
-        /// <summary>設定子節點字串值；節點不存在時新增，值為 null 時不變更。</summary>
+        /// <summary>子ノードの文字列値を設定します。ノードがなければ追加し、値が null なら変更しません。</summary>
         private static void SetOrAddChildValue(Wz_Node parent, string name, string value)
         {
             if (value == null)
@@ -6773,7 +6773,7 @@ namespace WzComparerR2
             child.Value = value;
         }
 
-        /// <summary>判斷節點是否為 Unity 技能節點（img 內的 <c>skill/&lt;id&gt;</c>）。</summary>
+        /// <summary>ノードが Unity のスキルノード（img 内の <c>skill/&lt;id&gt;</c>）か判定します。</summary>
         private static bool IsUnitySkillNode(Wz_Node node)
         {
            return node != null
@@ -6782,7 +6782,7 @@ namespace WzComparerR2
                && node.ParentNode.GetNodeWzImage() is UnityWzImage;
         }
 
-        /// <summary>選取節點から最寄りの <c>skill/&lt;id&gt;</c> 節點を探す。</summary>
+        /// <summary>選択ノードから最寄りの <c>skill/&lt;id&gt;</c> ノードを探します。</summary>
         private static Wz_Node FindUnitySkillNode(Wz_Node node)
         {
            for (Wz_Node cursor = node; cursor != null; cursor = cursor.ParentNode)
@@ -6796,12 +6796,12 @@ namespace WzComparerR2
         }
 
         /// <summary>
-        /// Unity 技能（<c>Skill/&lt;職業&gt;</c> img 內的 <c>skill/&lt;id&gt;</c> 節點）的快速預覽。
+        /// Unity スキル（<c>Skill/&lt;職業&gt;</c> img 内の <c>skill/&lt;id&gt;</c> ノード）のクイックプレビュー。
         /// </summary>
         private void quickViewUnitySkill(Wz_Node selectedNode)
         {
-            // 對應 WZ 的 Skill.wz\<職業>.img\skill\<id>。img 內の子節點を選んだ場合も
-            // 最寄りの skill/<id> 節點で tooltip を出す。
+            // WZ の Skill.wz\<職業>.img\skill\<id> に対応します。img 内の子ノードを選んだ場合も
+            // 最寄りの skill/<id> ノードで tooltip を表示します。
             Wz_Node skillNode = FindUnitySkillNode(selectedNode);
             if (skillNode == null)
             {

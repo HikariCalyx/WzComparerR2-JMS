@@ -65,8 +65,8 @@ namespace WzComparerR2.CharaSim
         }
 
         /// <summary>
-        /// <c>#rb</c>：以「該等級攻擊範圍面積 ÷ 最高等級攻擊範圍面積 × 100」計算，
-        /// 四捨五入到小數 1 位。
+        /// <c>#rb</c>: 「そのレベルの攻撃範囲面積 ÷ 最高レベルの攻撃範囲面積 × 100」で計算し、
+        /// 小数第 1 位に四捨五入します。
         /// </summary>
         private static bool TryGetRangePercent(Skill skill, string propertyName, int level,
             out ResolvedSkillProperty value)

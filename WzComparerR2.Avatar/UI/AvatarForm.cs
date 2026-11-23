@@ -3892,7 +3892,7 @@ namespace WzComparerR2.Avatar.UI
             return null;
         }
 
-        /// <summary>名稱比對容許缺少 <c>.img</c> 後綴（Unity 資料集沒有這個後綴）。</summary>
+        /// <summary>名前の照合では <c>.img</c> 拡張子の欠落を許容します（Unity データセットにはこの拡張子がありません）。</summary>
         private static bool IsImgNodeName(string nodeName, string name)
         {
             return string.Equals(nodeName, name, StringComparison.OrdinalIgnoreCase)

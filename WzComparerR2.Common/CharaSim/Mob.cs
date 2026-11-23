@@ -120,7 +120,7 @@ namespace WzComparerR2.CharaSim
         public static Mob CreateFromNode(Wz_Node node, GlobalFindNodeFunction findNode)
         {
             int mobID;
-            // Unity 資產的 img 節點名稱沒有 .img 後綴（如 Mob/0100100）。
+            // Unity アセットの img ノード名には .img 拡張子がありません（例: Mob/0100100）。
             Match m = Regex.Match(node.Text, @"^(\d{7})(?:\.img)?$");
             if (!(m.Success && Int32.TryParse(m.Result("$1"), out mobID)))
             {

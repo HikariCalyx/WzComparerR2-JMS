@@ -54,19 +54,19 @@ namespace WzComparerR2.UnityLib.Classic
             string inner;
             if (!this.Catalog.TrySplitImagePrefix(path, out imageKey, out inner))
             {
-                throw new ClassicAssetException("路徑不存在或無法解析: " + path);
+                throw new ClassicAssetException("パスが存在しないか解析できません: " + path);
             }
             UnityEntryLocation location;
             if (!this.Catalog.Entries.TryGetValue(imageKey, out location))
             {
-                throw new ClassicAssetException("路徑不存在或無法解析: " + imageKey);
+                throw new ClassicAssetException("パスが存在しないか解析できません: " + imageKey);
             }
 
             if (location.ClassId == UnityClassIds.TextAsset)
             {
                 if (inner.Length > 0)
                 {
-                    throw new ClassicAssetException("路徑不存在或無法解析: " + path);
+                    throw new ClassicAssetException("パスが存在しないか解析できません: " + path);
                 }
                 byte[] text = this.ReadTextAsset(imageKey).Script;
                 string textPath = AppendExtension(Path.Combine(outRoot, SafeRelativePath(path)), "json");
@@ -79,12 +79,12 @@ namespace WzComparerR2.UnityLib.Classic
             {
                 if (inner.Length > 0)
                 {
-                    throw new ClassicAssetException("路徑不存在或無法解析: " + path);
+                    throw new ClassicAssetException("パスが存在しないか解析できません: " + path);
                 }
                 byte[] png = this.GetImage(imageKey);
                 if (png == null)
                 {
-                    throw new ClassicAssetException(path + " 沒有可匯出的圖片");
+                    throw new ClassicAssetException(path + " にエクスポート可能な画像がありません");
                 }
                 string pngPath = AppendExtension(Path.Combine(outRoot, SafeRelativePath(path)), "png");
                 EnsureParentDirectory(pngPath);
@@ -96,7 +96,7 @@ namespace WzComparerR2.UnityLib.Classic
             WzjsNode node = inner.Length == 0 ? root : root.Find(inner);
             if (node == null)
             {
-                throw new ClassicAssetException("路徑不存在或無法解析: " + path);
+                throw new ClassicAssetException("パスが存在しないか解析できません: " + path);
             }
 
             string safePath = SafeRelativePath(path);
@@ -136,7 +136,7 @@ namespace WzComparerR2.UnityLib.Classic
                 byte[] png = this.GetImage(path);
                 if (png == null)
                 {
-                    throw new ClassicAssetException(path + " 沒有可匯出的圖片");
+                    throw new ClassicAssetException(path + " にエクスポート可能な画像がありません");
                 }
                 File.WriteAllBytes(outputPath, png);
                 return new ClassicFileExportResult(outputPath, 1);
@@ -146,12 +146,12 @@ namespace WzComparerR2.UnityLib.Classic
             string inner;
             if (!this.Catalog.TrySplitImagePrefix(path, out imageKey, out inner))
             {
-                throw new ClassicAssetException("路徑不存在或無法解析: " + path);
+                throw new ClassicAssetException("パスが存在しないか解析できません: " + path);
             }
             UnityEntryLocation location;
             if (!this.Catalog.Entries.TryGetValue(imageKey, out location))
             {
-                throw new ClassicAssetException("路徑不存在或無法解析: " + imageKey);
+                throw new ClassicAssetException("パスが存在しないか解析できません: " + imageKey);
             }
 
             if (location.ClassId == UnityClassIds.TextAsset)
@@ -170,7 +170,7 @@ namespace WzComparerR2.UnityLib.Classic
                 }
                 else
                 {
-                    throw new ClassicAssetException("不支援的匯出格式: " + format);
+                    throw new ClassicAssetException("未対応のエクスポート形式: " + format);
                 }
                 File.WriteAllBytes(outputPath, Encoding.UTF8.GetBytes(output));
                 return new ClassicFileExportResult(outputPath, 1);
@@ -180,7 +180,7 @@ namespace WzComparerR2.UnityLib.Classic
             {
                 if (inner.Length > 0)
                 {
-                    throw new ClassicAssetException("路徑不存在或無法解析: " + path);
+                    throw new ClassicAssetException("パスが存在しないか解析できません: " + path);
                 }
                 string output;
                 if (string.Equals(format, "json", StringComparison.OrdinalIgnoreCase))
@@ -194,7 +194,7 @@ namespace WzComparerR2.UnityLib.Classic
                 }
                 else
                 {
-                    throw new ClassicAssetException("不支援的匯出格式: " + format);
+                    throw new ClassicAssetException("未対応のエクスポート形式: " + format);
                 }
                 File.WriteAllBytes(outputPath, Encoding.UTF8.GetBytes(output));
                 return new ClassicFileExportResult(outputPath, 1);
@@ -204,7 +204,7 @@ namespace WzComparerR2.UnityLib.Classic
             WzjsNode node = inner.Length == 0 ? root : root.Find(inner);
             if (node == null)
             {
-                throw new ClassicAssetException("路徑不存在或無法解析: " + path);
+                throw new ClassicAssetException("パスが存在しないか解析できません: " + path);
             }
 
             int nodes = 0;
@@ -219,7 +219,7 @@ namespace WzComparerR2.UnityLib.Classic
             }
             else
             {
-                throw new ClassicAssetException("不支援的匯出格式: " + format);
+                throw new ClassicAssetException("未対応のエクスポート形式: " + format);
             }
             File.WriteAllBytes(outputPath, Encoding.UTF8.GetBytes(content));
             return new ClassicFileExportResult(outputPath, nodes);

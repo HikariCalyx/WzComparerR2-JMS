@@ -57,7 +57,7 @@ namespace WzComparerR2.CharaSim
         public static Quest CreateFromNode(Wz_Node node, GlobalFindNodeFunction findNode, GlobalFindNodeFunction2 findNode2, Wz_File wzf = null, int? fromInfoNode = null)
         {
             if (node == null) return null;
-            // 節點型別由 WZ 檔或外部型別解析器（Unity 資料集目錄）判斷。
+            // ノード種別は WZ ファイルまたは外部型解決（Unity データセットのディレクトリ）で判定します。
             if (node.GetNodeWzType() is Wz_Type wzType && wzType != Wz_Type.Quest) return null;
 
             int questID = -1;
@@ -67,7 +67,7 @@ namespace WzComparerR2.CharaSim
             }
             else
             {
-                // Unity 資產的 img 節點名稱沒有 .img 後綴（如 Quest/QuestInfo/1234）。
+                // Unity アセットの img ノード名には .img 拡張子がありません（例: Quest/QuestInfo/1234）。
                 Match m = Regex.Match(node.Text, @"^(\d+)(?:\.img)?$");
                 if (!(m.Success && Int32.TryParse(m.Result("$1"), out questID)))
                 {

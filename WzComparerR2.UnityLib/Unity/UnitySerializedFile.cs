@@ -176,8 +176,8 @@ namespace WzComparerR2.UnityLib.Unity
                 reader.Skip(16); // oldTypeHash
                 if (enableTypeTree)
                 {
-                    // 舊版用戶端（如最早期的 Classic beta）保留完整 type tree；
-                    // 內容本專案用不到，只需正確跳過。
+                    // 旧版クライアント（ごく初期の Classic beta など）は完全な type tree を保持しています。
+                    // 内容は本プロジェクトでは使用しないため、正しくスキップするだけで十分です。
                     SkipTypeTree(reader, version);
                 }
                 file.types.Add(new UnitySerializedType(classId, isStripped, scriptTypeIndex));
@@ -264,7 +264,7 @@ namespace WzComparerR2.UnityLib.Unity
         }
 
         /// <summary>
-        /// 跳過一個 type tree blob（SerializedFile v13+ 的佈局）：
+        /// type tree blob を 1 つスキップします（SerializedFile v13+ のレイアウト）:
         /// nodeCount u32 | stringBufferSize u32 | nodes[nodeCount × 32] | stringBuffer |
         /// (v21+) refTypes[refCount × 12]。
         /// </summary>
@@ -276,18 +276,18 @@ namespace WzComparerR2.UnityLib.Unity
             int nodeCount = reader.I32();
             if (nodeCount < 0 || nodeCount > MaxTypeTreeNodes)
             {
-                throw new UnityException("type tree node 數量異常: " + nodeCount);
+                throw new UnityException("type tree node 数が異常です: " + nodeCount);
             }
             int stringBufferSize = reader.I32();
             if (stringBufferSize < 0)
             {
-                throw new UnityException("type tree 字串緩衝區大小異常: " + stringBufferSize);
+                throw new UnityException("type tree 文字列バッファーサイズが異常です: " + stringBufferSize);
             }
             long blobSize = (long)nodeCount * TypeTreeNodeSize + stringBufferSize;
             if (blobSize > reader.Remaining)
             {
                 throw new UnityException(string.Format(
-                    "type tree 超出 metadata 剩餘空間: {0} > {1}", blobSize, reader.Remaining));
+                    "type tree が metadata の残り領域を超えています: {0} > {1}", blobSize, reader.Remaining));
             }
             reader.Skip((int)blobSize);
 
@@ -296,12 +296,12 @@ namespace WzComparerR2.UnityLib.Unity
                 int refCount = reader.I32();
                 if (refCount < 0 || refCount > MaxTableEntries)
                 {
-                    throw new UnityException("type tree refType 數量異常: " + refCount);
+                    throw new UnityException("type tree refType 数が異常です: " + refCount);
                 }
                 long refBytes = (long)refCount * 12;
                 if (refBytes > reader.Remaining)
                 {
-                    throw new UnityException("type tree refType 超出 metadata 剩餘空間");
+                    throw new UnityException("type tree refType が metadata の残り領域を超えています");
                 }
                 reader.Skip((int)refBytes);
             }

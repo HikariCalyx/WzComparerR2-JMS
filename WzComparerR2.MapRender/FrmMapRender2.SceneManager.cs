@@ -243,7 +243,7 @@ namespace WzComparerR2.MapRender
                     var bgm = resLoader.Load<Music>(bgmNode);
                     if (bgm == null)
                     {
-                        // Unity 資料集等沒有 Wz_Sound（FSB5 未解碼）的來源。
+                        // Unity データセットなど Wz_Sound を持たない（FSB5 未デコードの）ソースです。
                         return null;
                     }
                     bgm.IsLoop = true;

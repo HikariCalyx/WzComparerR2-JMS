@@ -8,11 +8,11 @@ using WzComparerR2.UnityLib.Unity;
 namespace WzComparerR2.Comparer
 {
     /// <summary>
-    /// Unity 資產節點（<see cref="WzComparerR2.WzLib.Wz_Node"/> 形式）專用的節點比對器。
+    /// Unity アセットノード（<see cref="WzComparerR2.WzLib.Wz_Node"/> 形式）専用のノード比較器。
     /// <para>
-    /// Unity 的圖片／文字資產沒有傳統 WZ 的大小與校驗碼，因此改以實際內容判斷差異：
-    /// <see cref="UnityCanvas"/> 比較 PNG 內容，<see cref="UnityJsonAsset"/> 比較原文，
-    /// 陣列值（例如 <c>origin</c> 的兩元素座標）逐項比較。
+    /// Unity の画像／テキストアセットには従来の WZ のようなサイズやチェックサムがないため、実際の内容で差分を判定します:
+    /// <see cref="UnityCanvas"/> は PNG の内容を、<see cref="UnityJsonAsset"/> は原文を比較し、
+    /// 配列値（例: <c>origin</c> の 2 要素座標）は項目ごとに比較します。
     /// </para>
     /// </summary>
     public class UnityFileComparer : WzFileComparer
@@ -123,7 +123,7 @@ namespace WzComparerR2.Comparer
             }
             catch (Exception)
             {
-                // 無法解碼時退回比較 PNG 內容，避免整份比較中斷。
+                // デコードできない場合は PNG 内容の比較に切り替え、比較全体が中断しないようにします。
                 byte[] dataNew = canvasNew.GetPng();
                 byte[] dataOld = canvasOld.GetPng();
                 return dataNew == null ? dataOld == null : BytesEqual(dataNew, dataOld);

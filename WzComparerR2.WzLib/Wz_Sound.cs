@@ -24,26 +24,26 @@ namespace WzComparerR2.WzLib
         private Wz_Image wz_i;
 
         /// <summary>
-        /// 非 WZ 檔來源（例如 Unity 資料集的 AudioClip）的聲音資料提供者。
-        /// 設定後聲音資料改由此取得，<see cref="DataLength"/> 也跟著實際長度。
+        /// 非 WZ ファイルソース（例: Unity データセットの AudioClip）のサウンドデータ提供者。
+        /// 設定するとサウンドデータをここから取得し、<see cref="DataLength"/> も実際の長さになります。
         /// </summary>
         public Func<byte[]> DataProvider { get; set; }
 
-        /// <summary>非 WZ 來源的頻道數（WZ 來源為 null）。</summary>
+        /// <summary>非 WZ ソースのチャンネル数（WZ ソースでは null）。</summary>
         public int? ExternalChannels { get; set; }
 
-        /// <summary>非 WZ 來源的取樣率（WZ 來源為 null）。</summary>
+        /// <summary>非 WZ ソースのサンプリングレート（WZ ソースでは null）。</summary>
         public int? ExternalFrequency { get; set; }
 
-        /// <summary>非 WZ 來源的長度（毫秒；WZ 來源為 null）。</summary>
+        /// <summary>非 WZ ソースの長さ（ミリ秒。WZ ソースでは null）。</summary>
         public int? ExternalMs { get; set; }
 
-        /// <summary>非 WZ 來源的聲音格式；設定後不再由資料內容猜測。</summary>
+        /// <summary>非 WZ ソースのサウンド形式。設定するとデータ内容からの推測を行いません。</summary>
         public Wz_SoundType? ExternalSoundType { get; set; }
 
         private byte[] providerCache;
 
-        /// <summary>取得（並快取）外部來源的聲音資料。</summary>
+        /// <summary>外部ソースのサウンドデータを取得します（キャッシュあり）。</summary>
         private byte[] GetProviderData()
         {
             Func<byte[]> provider = this.DataProvider;
@@ -247,7 +247,7 @@ namespace WzComparerR2.WzLib
                 byte[] data = this.GetProviderData();
                 if (data == null)
                 {
-                    throw new InvalidOperationException("外部音訊資料不存在");
+                    throw new InvalidOperationException("外部音声データが存在しません");
                 }
                 if (buffer.Length - offset < data.Length)
                 {
@@ -276,7 +276,7 @@ namespace WzComparerR2.WzLib
                 byte[] data = this.GetProviderData();
                 if (data == null)
                 {
-                    throw new InvalidOperationException("外部音訊資料不存在");
+                    throw new InvalidOperationException("外部音声データが存在しません");
                 }
                 if (span.Length < data.Length)
                 {

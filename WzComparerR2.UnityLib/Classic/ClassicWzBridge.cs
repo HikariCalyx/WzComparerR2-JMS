@@ -8,11 +8,11 @@ using WzComparerR2.WzLib;
 namespace WzComparerR2.UnityLib.Classic
 {
     /// <summary>
-    /// 非 WZ 檔來源（Unity 資產）的 img 基底：繼承 <see cref="Wz_Image"/> 讓只認得
-    /// <c>Wz_Image</c> 的既有程式（例如 MapRender）可以直接取用。
+    /// 非 WZ ファイルソース（Unity アセット）の img 基底クラス: <see cref="Wz_Image"/> を継承して、WZ 型しか扱わない
+    /// <c>Wz_Image</c> しか扱わない既存コード（MapRender など）からそのまま利用できます。
     /// <para>
-    /// <see cref="Wz_Image.TryExtract(out Exception)"/> 會即時把資產內容轉成 WZ 節點
-    /// （<see cref="Wz_Image.Node"/>），節點顯示名稱沿用 <c>&lt;名稱&gt;.img</c> 的傳統慣例。
+    /// <see cref="Wz_Image.TryExtract(out Exception)"/> はアセット内容をその場で WZ ノードに変換します
+    /// （<see cref="Wz_Image.Node"/>）。ノード表示名は <c>&lt;名前&gt;.img</c> の従来の慣例に従います。
     /// </para>
     /// </summary>
     public abstract class UnityAssetImage : Wz_Image
@@ -36,25 +36,25 @@ namespace WzComparerR2.UnityLib.Classic
             this.Source = source;
         }
 
-        /// <summary>img 邏輯路徑，如 <c>Character/00002000</c>、<c>Sound/Bgm00</c>。</summary>
+        /// <summary>img の論理パス（例: <c>Character/00002000</c>、<c>Sound/Bgm00</c>）。</summary>
         public string ImageKey
         {
             get { return this.Name; }
         }
 
-        /// <summary>所屬資料集。</summary>
+        /// <summary>所属データセット。</summary>
         public ClassicWzSource Source { get; private set; }
 
-        /// <summary>把資產內容填入 <see cref="Wz_Image.Node"/>（只會被呼叫一次）。</summary>
+        /// <summary>アセット内容を <see cref="Wz_Image.Node"/> に格納します（1 回だけ呼ばれます）。</summary>
         protected abstract void PopulateContent();
 
-        /// <summary>內容是否已展開（供比較工具判斷是否需要自行釋放）。</summary>
+        /// <summary>内容が既に展開済みか（比較ツールが自分で解放すべきかの判断用）。</summary>
         public bool IsExtracted
         {
             get { return this.extracted; }
         }
 
-        /// <summary>把資產內容展開成 WZ 節點（可重複呼叫）。</summary>
+        /// <summary>アセット内容を WZ ノードとして展開します（複数回呼び出し可能）。</summary>
         public override bool TryExtract(out Exception e)
         {
             try
@@ -87,7 +87,7 @@ namespace WzComparerR2.UnityLib.Classic
             }
         }
 
-        /// <summary>以 WZ 節點樹形式取得內容（首次呼叫時轉換並快取）。</summary>
+        /// <summary>WZ ノードツリーとして内容を取得します（初回呼び出し時に変換してキャッシュ）。</summary>
         public Wz_Node AsWzNode()
         {
             this.EnsureExtracted();
@@ -95,8 +95,8 @@ namespace WzComparerR2.UnityLib.Classic
         }
 
         /// <summary>
-        /// 釋放已展開的內容（比較工具會在每次比對後呼叫）；下次 <see cref="TryExtract(out Exception)"/>
-        /// 會重新由資產轉換一次。資產本身仍保有資料，因此可重複展開。
+        /// 展開済みの内容を解放します（比較ツールが毎回の比較後に呼び出します）。次に <see cref="TryExtract(out Exception)"/> を呼ぶと
+        /// 次回はアセットから再度変換します。アセット自体はデータを保持しているため、繰り返し展開できます。
         /// </summary>
         public override void Unextract()
         {
@@ -112,9 +112,9 @@ namespace WzComparerR2.UnityLib.Classic
         }
 
         /// <summary>
-        /// 內容根節點，並在必要時補上與目錄同名的上層節點鏈
-        /// （例如 <c>Character\Weapon\01442000\...</c>），讓
-        /// <see cref="Wz_Node.FullPathToFile"/> 之類的路徑判斷可沿用 WZ 邏輯。
+        /// 内容ルートノード。必要に応じてディレクトリと同名の上位ノードチェーンを補います
+        /// （例: <c>Character\Weapon\01442000\...</c>）に補うことで、
+        /// <see cref="Wz_Node.FullPathToFile"/> などのパス判定を WZ のロジックのまま利用できます。
         /// </summary>
         public Wz_Node GetRootedNode()
         {
@@ -138,9 +138,9 @@ namespace WzComparerR2.UnityLib.Classic
         }
 
         /// <summary>
-        /// 為內容節點建立與傳統 WZ 相同的上層鏈：目錄節點 + 一個同名 <c>&lt;img&gt;.img</c> 節點
-        /// （內容節點掛在它底下），讓 <see cref="Wz_Node.FullPathToFile"/> 能組出
-        /// <c>Sound\Bgm00.img\FloralLife</c> 這種路徑。
+        /// 内容ノードに従来の WZ と同じ上位チェーンを作成します: ディレクトリノード + 同名の <c>&lt;img&gt;.img</c> ノード
+        /// （内容ノードはその配下に付きます）。これにより <see cref="Wz_Node.FullPathToFile"/> が
+        /// <c>Sound\Bgm00.img\FloralLife</c> のようなパスになります。
         /// </summary>
         private static Wz_Node CreateRootedTree(Wz_Node content, string imageKey)
         {
@@ -174,10 +174,10 @@ namespace WzComparerR2.UnityLib.Classic
     }
 
     /// <summary>
-    /// 以傳統 WZ 的 <see cref="Wz_Node"/> 形式表示一個 WZJS img。
+    /// 従来の WZ の <see cref="Wz_Node"/> 形式で 1 つの WZJS img を表します。
     /// <para>
-    /// Canvas 值為 <see cref="UnityCanvas"/>，它同時是 <see cref="Wz_Png"/>，
-    /// 需要圖片時才解碼。
+    /// Canvas 値は <see cref="UnityCanvas"/> で、同時に <see cref="Wz_Png"/> でもあり、
+    /// 画像が必要になった時点でデコードします。
     /// </para>
     /// </summary>
     public sealed class UnityWzImage : UnityAssetImage
@@ -199,7 +199,7 @@ namespace WzComparerR2.UnityLib.Classic
             return this.Source.GetImage(path);
         }
 
-        /// <summary>以 WZ 風格路徑查詢同一資料集內的節點（可含 <c>.img</c> 後綴）。</summary>
+        /// <summary>WZ 形式のパスで同じデータセット内のノードを検索します（<c>.img</c> 拡張子は任意）。</summary>
         public Wz_Node FindNode(string wzPath)
         {
             return this.Source.FindNode(wzPath);
@@ -310,7 +310,7 @@ namespace WzComparerR2.UnityLib.Classic
                     case UnityClassIds.AudioClip:
                         if (source.Catalog.IsSoundImage(entry.Key))
                         {
-                            // WZ 的音效是 img（Sound/Bgm00.img）底下的節點，這裡以同樣形狀呈現。
+                            // WZ のサウンドは img（Sound/Bgm00.img）配下のノードなので、同じ形で表現します。
                             current.Value = source.GetSoundImage(entry.Key);
                         }
                         else
@@ -347,7 +347,7 @@ namespace WzComparerR2.UnityLib.Classic
                         break;
 
                     case UnityClassIds.Sprite:
-                        // spriteset（SpriteSet/<region>/UI/…）的單一 sprite：解碼時才依語系取圖。
+                        // spriteset（SpriteSet/<region>/UI/…）の単一 sprite: デコード時にロケールに応じて画像を取得します。
                         current.Value = new UnityCanvas(source, entry.Key);
                         break;
                 }
@@ -401,8 +401,8 @@ namespace WzComparerR2.UnityLib.Classic
         }
 
         /// <summary>
-        /// 動作影格延遲總和（各影格 <c>delay</c> 的絕對值相加）；
-        /// null 或沒有 delay 時回 0。
+        /// アクションフレーム遅延の合計（各フレームの <c>delay</c> の絶対値を加算）。
+        /// null または delay がない場合は 0 を返します。
         /// </summary>
         public static int SumActionDelay(Wz_Node actionNode)
         {

@@ -3,16 +3,16 @@ using System;
 namespace WzComparerR2.WzLib
 {
     /// <summary>
-    /// 以 PNG 編碼資料提供圖片的節點值。
+    /// PNG エンコードデータで画像を提供するノード値。
     /// <para>
-    /// 傳統 WZ 的圖片是 <see cref="Wz_Png"/>（像素存放在 Wz 檔案資料流中）；
-    /// 其他來源（例如 Unity 資產的 Canvas 節點）只要實作這個介面，
-    /// 就能沿用既有的圖片解碼與 tooltip 流程。
+    /// 従来の WZ の画像は <see cref="Wz_Png"/>（ピクセルは Wz ファイルのデータストリーム内）で、
+    /// その他のソース（例: Unity アセットの Canvas ノード）はこのインターフェイスを実装するだけで、
+    /// 既存の画像デコードと tooltip の流れをそのまま利用できます。
     /// </para>
     /// </summary>
     public interface IWzPngSource
     {
-        /// <summary>取得 PNG 編碼的位元組；沒有圖片時回傳 null。</summary>
+        /// <summary>PNG エンコードされたバイト列を取得します。画像がない場合は null。</summary>
         byte[] GetPngData();
     }
 }

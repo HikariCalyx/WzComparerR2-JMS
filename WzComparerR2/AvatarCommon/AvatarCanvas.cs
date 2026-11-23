@@ -113,15 +113,15 @@ namespace WzComparerR2.AvatarCommon
                 return LoadZ(zMapNode);
             }
 
-            // Unity 資料集沒有 Base/zmap.img：使用與 zmap 相同順序的內建圖層表。
+            // Unity データセットには Base/zmap.img がありません: zmap と同じ順序の組み込みレイヤーテーブルを使用します。
             this.ZMap.Clear();
             this.ZMap.AddRange(DefaultZMap);
             return true;
         }
 
         /// <summary>
-        /// zmap 的圖層順序（index 0 最上層，越後面越底層）。
-        /// 取自傳統客戶端 Base.wz/zmap.img，供沒有 zmap 的資料集（Unity 資產）使用。
+        /// zmap のレイヤー順（index 0 が最前面、後ろほど背面）。
+        /// 従来クライアントの Base.wz/zmap.img から取得し、zmap を持たないデータセット（Unity アセット）向けに提供します。
         /// </summary>
         private static readonly string[] DefaultZMap =
         {

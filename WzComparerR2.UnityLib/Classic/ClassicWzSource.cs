@@ -143,7 +143,7 @@ namespace WzComparerR2.UnityLib.Classic
         /// <summary>資料集內偵測到的語系代碼（TW/CN/JP/KR…），偏好順序在前。</summary>
         public IReadOnlyList<string> Locales { get; private set; }
 
-        /// <summary>客戶端資訊（名稱／版本／引擎版本）；無法解析時各欄位為 null。</summary>
+        /// <summary>クライアント情報（名前／バージョン／エンジンバージョン）。解析できない場合は各フィールドが null。</summary>
         public UnityClientInfo ClientInfo { get; private set; }
 
         /// <summary>目前作用中的語系代碼（字串／Etc 資產路徑的第二段）。</summary>
@@ -169,8 +169,8 @@ namespace WzComparerR2.UnityLib.Classic
         }
 
         /// <summary>
-        /// 語系切換次數。節點層級的快取（例如 <see cref="UnityCanvas"/> 已解碼的 PNG）
-        /// 以此判斷是否需要重新解碼。
+        /// ロケール切り替え回数。ノード単位のキャッシュ（例: <see cref="UnityCanvas"/> がデコード済みの PNG）は
+        /// これにより再デコードが必要かどうかを判断します。
         /// </summary>
         public long LocaleGeneration
         {
@@ -277,14 +277,14 @@ namespace WzComparerR2.UnityLib.Classic
             string inner;
             if (!this.Catalog.TrySplitImagePrefix(path, out imageKey, out inner))
             {
-                throw new ClassicAssetException("路徑不存在或無法解析: " + path);
+                throw new ClassicAssetException("パスが存在しないか解析できません: " + path);
             }
             if (this.IsSpriteEntry(imageKey))
             {
-                // spriteset 的 sprite 等同 WZ 的 canvas：葉節點，沒有子節點。
+                // spriteset の sprite は WZ の canvas に相当します: 葉ノードで子ノードはありません。
                 if (inner.Length > 0)
                 {
-                    throw new ClassicAssetException("路徑不存在或無法解析: " + path);
+                    throw new ClassicAssetException("パスが存在しないか解析できません: " + path);
                 }
                 return output;
             }
@@ -294,7 +294,7 @@ namespace WzComparerR2.UnityLib.Classic
                 WzLib.Wz_Node soundNode = soundImage == null ? null : this.FindSoundNode(soundImage.AsWzNode(), inner);
                 if (soundNode == null)
                 {
-                    throw new ClassicAssetException("路徑不存在或無法解析: " + path);
+                    throw new ClassicAssetException("パスが存在しないか解析できません: " + path);
                 }
                 string soundBase = inner.Length == 0 ? imageKey : imageKey + "/" + inner;
                 foreach (WzLib.Wz_Node child in soundNode.Nodes)
@@ -318,7 +318,7 @@ namespace WzComparerR2.UnityLib.Classic
                 : root.Find(inner);
             if (node == null)
             {
-                throw new ClassicAssetException("路徑不存在或無法解析: " + path);
+                throw new ClassicAssetException("パスが存在しないか解析できません: " + path);
             }
             string basePath = inner.Length == 0 ? imageKey : imageKey + "/" + inner;
 
@@ -340,19 +340,19 @@ namespace WzComparerR2.UnityLib.Classic
             string inner;
             if (!this.Catalog.TrySplitImagePrefix(path, out imageKey, out inner))
             {
-                throw new ClassicAssetException("路徑不存在或無法解析: " + path);
+                throw new ClassicAssetException("パスが存在しないか解析できません: " + path);
             }
             UnityEntryLocation location;
             if (!this.Catalog.Entries.TryGetValue(imageKey, out location))
             {
-                throw new ClassicAssetException("路徑不存在或無法解析: " + imageKey);
+                throw new ClassicAssetException("パスが存在しないか解析できません: " + imageKey);
             }
 
             if (location.ClassId == UnityClassIds.TextAsset)
             {
                 if (inner.Length > 0)
                 {
-                    throw new ClassicAssetException("路徑不存在或無法解析: " + path);
+                    throw new ClassicAssetException("パスが存在しないか解析できません: " + path);
                 }
                 UnityTextAsset textAsset = this.ReadTextAsset(imageKey);
                 return new ClassicNodeDetail(
@@ -362,13 +362,13 @@ namespace WzComparerR2.UnityLib.Classic
 
             if (location.ClassId == UnityClassIds.AudioClip)
             {
-                // 音效 img：inner 走 WZ 節點樹（Sound/Bgm00/FloralLife）。
+                // サウンド img: inner は WZ ノードツリーを辿ります（Sound/Bgm00/FloralLife）。
                 if (this.Catalog.IsSoundImage(imageKey))
                 {
                     WzLib.Wz_Node soundNode = this.FindSoundNode(this.GetSoundImage(imageKey).AsWzNode(), inner);
                     if (soundNode == null)
                     {
-                        throw new ClassicAssetException("路徑不存在或無法解析: " + path);
+                        throw new ClassicAssetException("パスが存在しないか解析できません: " + path);
                     }
                     List<ClassicNodeChild> soundChildren = new List<ClassicNodeChild>(soundNode.Nodes.Count);
                     foreach (WzLib.Wz_Node child in soundNode.Nodes)
@@ -381,7 +381,7 @@ namespace WzComparerR2.UnityLib.Classic
 
                 if (inner.Length > 0)
                 {
-                    throw new ClassicAssetException("路徑不存在或無法解析: " + path);
+                    throw new ClassicAssetException("パスが存在しないか解析できません: " + path);
                 }
                 UnityAudioClipInfo clip = this.GetAudioClip(imageKey);
                 return new ClassicNodeDetail(
@@ -391,10 +391,10 @@ namespace WzComparerR2.UnityLib.Classic
 
             if (location.ClassId == UnityClassIds.Sprite)
             {
-                // spriteset 的 sprite 等同 WZ 的 canvas 節點。
+                // spriteset の sprite は WZ の canvas ノードに相当します。
                 if (inner.Length > 0)
                 {
-                    throw new ClassicAssetException("路徑不存在或無法解析: " + path);
+                    throw new ClassicAssetException("パスが存在しないか解析できません: " + path);
                 }
                 return new ClassicNodeDetail(
                     path, GetLeafName(imageKey), WzjsImage.TypeCanvas, WzjsValue.Canvas, null,
@@ -405,7 +405,7 @@ namespace WzComparerR2.UnityLib.Classic
             WzjsNode node = inner.Length == 0 ? root : root.Find(inner);
             if (node == null)
             {
-                throw new ClassicAssetException("路徑不存在或無法解析: " + path);
+                throw new ClassicAssetException("パスが存在しないか解析できません: " + path);
             }
             List<ClassicNodeChild> children = new List<ClassicNodeChild>(node.Children.Count);
             foreach (WzjsNode child in node.Children)
@@ -423,23 +423,23 @@ namespace WzComparerR2.UnityLib.Classic
             string inner;
             if (!this.Catalog.TrySplitImagePrefix(path, out imageKey, out inner) || inner.Length > 0)
             {
-                throw new ClassicAssetException("路徑不存在或無法解析: " + path);
+                throw new ClassicAssetException("パスが存在しないか解析できません: " + path);
             }
 
             UnityEntryLocation location;
             if (this.Catalog.IsSoundImage(imageKey))
             {
-                // 音效 img：取其中第一個音效的 AudioClip（img 本身沒有實體物件）。
+                // サウンド img: 最初のサウンドの AudioClip を使用します（img 自体には実体オブジェクトがありません）。
                 IReadOnlyList<string> keys = this.Catalog.GetSoundKeys(imageKey);
                 if (keys.Count == 0 || !this.Catalog.SoundEntries.TryGetValue(keys[0], out location))
                 {
-                    throw new ClassicAssetException("路徑不存在或無法解析: " + imageKey);
+                    throw new ClassicAssetException("パスが存在しないか解析できません: " + imageKey);
                 }
             }
             else if (!this.Catalog.SoundEntries.TryGetValue(imageKey, out location)
                 && !this.Catalog.Entries.TryGetValue(imageKey, out location))
             {
-                throw new ClassicAssetException("路徑不存在或無法解析: " + imageKey);
+                throw new ClassicAssetException("パスが存在しないか解析できません: " + imageKey);
             }
 
             byte[] data = this.ReadEntry(location);
@@ -447,8 +447,8 @@ namespace WzComparerR2.UnityLib.Classic
         }
 
         /// <summary>
-        /// 取得音效資料（Ogg Vorbis）。Unity 的 AudioClip 內部是 FSB5，
-        /// 這裡轉封裝成可播放／匯出的 Ogg；結果會快取。
+        /// サウンドデータ（Ogg Vorbis）を取得します。Unity の AudioClip の内部は FSB5 なので、
+        /// ここでは再生／エクスポート可能な Ogg に再パッケージします。結果はキャッシュされます。
         /// </summary>
         public byte[] GetSoundData(string soundKey)
         {
@@ -473,7 +473,7 @@ namespace WzComparerR2.UnityLib.Classic
                     this.soundCache[soundKey] = ogg;
                     this.soundCacheOrder.Add(soundKey);
                     this.soundCacheBytes += ogg.Length;
-                    // 音效動輒數百 KB：只保留最近用到的，避免長時間瀏覽後累積過多記憶體。
+                    // サウンドは数百 KB になるため、最近使用したものだけを保持し、長時間の閲覧でメモリが増え続けないようにします。
                     while (this.soundCacheBytes > SoundCacheByteLimit && this.soundCacheOrder.Count > 1)
                     {
                         string evict = this.soundCacheOrder[0];
@@ -495,7 +495,7 @@ namespace WzComparerR2.UnityLib.Classic
             UnityEntryLocation location;
             if (!this.Catalog.SoundEntries.TryGetValue(soundKey, out location))
             {
-                throw new ClassicAssetException("找不到音效: " + soundKey);
+                throw new ClassicAssetException("サウンドが見つかりません: " + soundKey);
             }
 
             byte[] data = this.ReadEntry(location);
@@ -505,24 +505,24 @@ namespace WzComparerR2.UnityLib.Classic
             if (resourceNode < 0)
             {
                 throw new UnityException(string.Format(
-                    "音效 {0} 的資源 node 不存在: {1}", soundKey, clip.ResourceNode));
+                    "サウンド {0} の resource node が存在しません: {1}", soundKey, clip.ResourceNode));
             }
             if (clip.ResourceSize <= 0 || clip.ResourceSize > int.MaxValue)
             {
-                throw new UnityException("音效資源大小異常: " + clip.ResourceSize);
+                throw new UnityException("サウンドリソースのサイズが異常です: " + clip.ResourceSize);
             }
             byte[] fsb = bundle.ReadNodeRange(
                 resourceNode, (long)clip.ResourceOffset, (int)clip.ResourceSize);
             return Fsb5ToOgg.ToOgg(fsb);
         }
 
-        /// <summary>建立對應某個音效路徑的 <see cref="WzLib.Wz_Sound"/>。</summary>
+        /// <summary>あるサウンドパスに対応する <see cref="WzLib.Wz_Sound"/> を作成します。</summary>
         public WzLib.Wz_Sound CreateSound(string soundKey)
         {
             UnityEntryLocation location;
             if (!this.Catalog.SoundEntries.TryGetValue(soundKey, out location))
             {
-                throw new ClassicAssetException("找不到音效: " + soundKey);
+                throw new ClassicAssetException("サウンドが見つかりません: " + soundKey);
             }
 
             UnityAudioClipInfo clip = UnityObjectParsers.ParseAudioClip(this.ReadEntry(location), true);
@@ -538,7 +538,7 @@ namespace WzComparerR2.UnityLib.Classic
             };
         }
 
-        /// <summary>取得（並快取）音效 img。</summary>
+        /// <summary>サウンド img を取得します（キャッシュあり）。</summary>
         public UnitySoundImage GetSoundImage(string imageKey)
         {
             if (string.IsNullOrEmpty(imageKey))
@@ -578,7 +578,7 @@ namespace WzComparerR2.UnityLib.Classic
             UnityEntryLocation location;
             if (!this.Catalog.Entries.TryGetValue(imageKey, out location))
             {
-                throw new ClassicAssetException("路徑不存在或無法解析: " + imageKey);
+                throw new ClassicAssetException("パスが存在しないか解析できません: " + imageKey);
             }
             byte[] data = this.ReadEntry(location);
             return UnityObjectParsers.ParseTextAsset(data, true);
@@ -617,7 +617,7 @@ namespace WzComparerR2.UnityLib.Classic
             UnityEntryLocation location;
             if (!this.Catalog.Entries.TryGetValue(imageKey, out location))
             {
-                throw new ClassicAssetException("路徑不存在或無法解析: " + imageKey);
+                throw new ClassicAssetException("パスが存在しないか解析できません: " + imageKey);
             }
             if (location.ClassId != UnityClassIds.MonoBehaviour)
             {
@@ -655,8 +655,8 @@ namespace WzComparerR2.UnityLib.Classic
         }
 
         /// <summary>
-        /// 動作影格延遲總和：<c>&lt;imgKey&gt;/&lt;actionName&gt;/&lt;frame&gt;/delay</c>
-        /// 的絕對值加總；查無 img 或動作時回傳 null。
+        /// アクションフレーム遅延の合計: <c>&lt;imgKey&gt;/&lt;actionName&gt;/&lt;frame&gt;/delay</c>
+        /// 絶対値を加算します。img やアクションが見つからない場合は null を返します。
         /// </summary>
         public int? GetActionDelay(string imageKey, string actionName)
         {
@@ -680,7 +680,7 @@ namespace WzComparerR2.UnityLib.Classic
         }
 
         /// <summary>
-        /// 取得 img 的 <see cref="UnityWzImage"/>（內部快取；非 WZJS img 回 null）。
+        /// img の <see cref="UnityWzImage"/> を取得します（内部キャッシュ。WZJS img 以外は null）。
         /// </summary>
         public UnityWzImage GetWzImage(string imageKey)
         {
@@ -717,7 +717,7 @@ namespace WzComparerR2.UnityLib.Classic
             return image;
         }
 
-        /// <summary>該 catalog 索引鍵是否為 spriteset 的單一 sprite。</summary>
+        /// <summary>その catalog 索引キーが spriteset の単一 sprite かどうか。</summary>
         private bool IsSpriteEntry(string key)
         {
             UnityEntryLocation location;
@@ -739,8 +739,8 @@ namespace WzComparerR2.UnityLib.Classic
         }
 
         /// <summary>
-        /// 以 WZ 風格路徑查詢節點（可含 <c>.img</c> 後綴、可用 <c>\</c> 分隔），
-        /// 例如 <c>Map\Map\Map0\100000000.img\miniMap</c>；查無回 null。
+        /// WZ 形式のパスでノードを検索します（<c>.img</c> 拡張子や <c>\</c> 区切りも可）。
+        /// 例: <c>Map\Map\Map0\100000000.img\miniMap</c>。見つからない場合は null。
         /// </summary>
         public WzLib.Wz_Node FindNode(string wzPath)
         {
@@ -753,13 +753,13 @@ namespace WzComparerR2.UnityLib.Classic
             string imageKey, inner;
             if (!this.Catalog.TrySplitImagePrefix(normalized, out imageKey, out inner))
             {
-                // 目錄配置與 WZ 不同（如 Character/<id>、Item/<type>/<group>/<id>）：
-                // 改以 id 產生 catalog 路徑候選。
+                // ディレクトリ構成が WZ と異なるため（例: Character/<id>、Item/<type>/<group>/<id>）:
+                // 代わりに id から catalog のパス候補を生成します。
                 return this.FindNodeByCandidates(normalized);
             }
             if (this.IsSpriteEntry(imageKey))
             {
-                // spriteset 的單一 sprite：節點值為 UnityCanvas，解碼時才依語系取圖。
+                // spriteset の単一 sprite: ノード値は UnityCanvas で、デコード時にロケールに応じて画像を取得します。
                 if (!string.IsNullOrEmpty(inner))
                 {
                     return null;
@@ -802,8 +802,8 @@ namespace WzComparerR2.UnityLib.Classic
         }
 
         /// <summary>
-        /// img 內容節點補上與目錄同名的上層節點鏈，讓 <c>FullPathToFile</c> 之類的
-        /// WZ 路徑判斷（例如 MapRender 的資源快取鍵）可沿用 WZ 邏輯。
+        /// img 内容ノードに、ディレクトリと同名の上位ノードチェーンを補い、<c>FullPathToFile</c> などの
+        /// WZ 形式のパス判定（例: MapRender のリソースキャッシュキー）を WZ のロジックのまま利用できます。
         /// </summary>
         private static WzLib.Wz_Node RootAssetNode(WzLib.Wz_Node node, UnityAssetImage image)
         {
@@ -811,7 +811,7 @@ namespace WzComparerR2.UnityLib.Classic
             {
                 return node;
             }
-            image.GetRootedNode(); // 冪等：已補上層鏈時直接回傳
+            image.GetRootedNode(); // 冪等: 上位チェーンが補済みならそのまま返る
             return node;
         }
 
@@ -838,8 +838,8 @@ namespace WzComparerR2.UnityLib.Classic
         }
 
         /// <summary>
-        /// 以路徑末段（道具／裝備／技能…的 id）產生 catalog 路徑候選再查找，
-        /// 用於 WZ 與 Unity 目錄配置不同的情況。
+        /// パスの末尾（アイテム／装備／スキル…の id）から catalog のパス候補を生成してから検索します。
+        /// WZ と Unity でディレクトリ構成が異なる場合に使用します。
         /// </summary>
         private WzLib.Wz_Node FindNodeByCandidates(string normalized)
         {
@@ -860,7 +860,7 @@ namespace WzComparerR2.UnityLib.Classic
             {
                 case "Item":
                     candidates.AddRange(this.Catalog.GetItemPathCandidates(id));
-                    candidates.AddRange(this.Catalog.GetEquipPathCandidates(id)); // 裝備在 Character，但少數呼叫端會組出 Item 路徑
+                    candidates.AddRange(this.Catalog.GetEquipPathCandidates(id)); // 装備は Character にあるが、一部の呼び出し側は Item パスを組み立てる
                     break;
                 case "Character":
                     candidates.AddRange(this.Catalog.GetEquipPathCandidates(id));
@@ -915,7 +915,7 @@ namespace WzComparerR2.UnityLib.Classic
             return null;
         }
 
-        /// <summary>把 WZ 風格路徑正規化成 catalog 索引鍵風格（去 <c>.img</c>、統一斜線）。</summary>
+        /// <summary>WZ 形式のパスを catalog 索引キー形式に正規化します（<c>.img</c> を除去し、スラッシュを統一）。</summary>
         private static string NormalizeWzPath(string wzPath)
         {
             if (string.IsNullOrEmpty(wzPath))
@@ -948,7 +948,7 @@ namespace WzComparerR2.UnityLib.Classic
                 return found;
             }
 
-            // id 節點的補零位數可能不同（02000000 / 2000000）。
+            // id ノードのゼロ埋め桁数が異なる場合があります（02000000 / 2000000）。
             long number;
             bool nameIsNumber = long.TryParse(name, out number);
             foreach (WzLib.Wz_Node child in parent.Nodes)

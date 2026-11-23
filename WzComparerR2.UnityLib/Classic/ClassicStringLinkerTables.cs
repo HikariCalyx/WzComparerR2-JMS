@@ -12,9 +12,9 @@ namespace WzComparerR2.UnityLib.Classic
     /// 直接使用。
     /// <para>
     /// 傳統 WZ 的 <c>String.wz/Skill.img</c> 對應這裡的 <c>String/&lt;region&gt;/Skill</c>；
-    /// Classic 把 Cash / Consume / Eqp / Etc / Ins / Pet 併成單一
-    /// <c>String/&lt;region&gt;/Item</c>（id → name/desc），因此依 id 前綴再拆回
-    /// Eqp / Consume / Ins / Etc / Pet / Cash 等 img。
+    /// Classic では Cash / Consume / Eqp / Etc / Ins / Pet が単一の
+    /// <c>String/&lt;region&gt;/Item</c>（id → name/desc）なので、id のプレフィックスで各 img に分割し直します。
+    /// Eqp / Consume / Ins / Etc / Pet / Cash などの img です。
     /// </para>
     /// </summary>
     public sealed class ClassicStringLinkerTables
@@ -144,8 +144,8 @@ namespace WzComparerR2.UnityLib.Classic
         }
 
         /// <summary>
-        /// <c>String/&lt;region&gt;/Item</c> 是 Cash / Consume / Eqp / Etc / Ins / Pet
-        /// 合併的單一 id 表；依 id 前綴還原成各 <c>*.img</c>。
+        /// <c>String/&lt;region&gt;/Item</c> は Cash / Consume / Eqp / Etc / Ins / Pet
+        /// 統合された単一 id テーブル。id プレフィックスで各 <c>*.img</c> に復元します。
         /// </summary>
         private static void BuildItemCategories(
             Wz_Node root, Dictionary<string, Wz_Node> categories,
@@ -178,12 +178,12 @@ namespace WzComparerR2.UnityLib.Classic
                 Wz_Node imgNode = GetOrCreateCategory(root, categories, category);
                 if (string.Equals(category, "Eqp", StringComparison.Ordinal))
                 {
-                    // Eqp.img 需要「分類 / 子分類 / id」三層。
+                    // Eqp.img は「分類 / サブ分類 / id」の 3 階層が必要です。
                     AddEqpEntry(imgNode, itemNode, id);
                 }
                 else if (string.Equals(category, "Etc", StringComparison.Ordinal))
                 {
-                    // Etc.img 需要「Etc / id」兩層。
+                    // Etc.img は「Etc / id」の 2 階層が必要です。
                     GetOrAddChild(imgNode, "Etc").Nodes.Add(itemNode);
                 }
                 else
@@ -194,7 +194,7 @@ namespace WzComparerR2.UnityLib.Classic
         }
 
         /// <summary>
-        /// 依道具 id 前綴判斷它在傳統 String.wz 屬於哪個 img。
+        /// アイテム id のプレフィックスから、従来の String.wz でどの img に属するかを判定します。
         /// 0xxxxxx~1xxxxxx = Eqp、2xxxxxx = Consume、3xxxxxx = Ins、4xxxxxx = Etc、
         /// 500xxxx = Pet、501xxxx 以上 = Cash。
         /// </summary>

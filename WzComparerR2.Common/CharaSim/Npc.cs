@@ -64,7 +64,7 @@ namespace WzComparerR2.CharaSim
         {
             if (node == null) return null;
             int npcID;
-            // Unity 資產的 img 節點名稱沒有 .img 後綴（如 Npc/1010100）。
+            // Unity アセットの img ノード名には .img 拡張子がありません（例: Npc/1010100）。
             Match m = Regex.Match(node.Text, @"^(\d{7})(?:\.img)?$");
             if (!(m.Success && Int32.TryParse(m.Result("$1"), out npcID)))
             {

@@ -81,8 +81,8 @@ namespace WzComparerR2.UnityLib.Classic
         }
 
         /// <summary>
-        /// 解析（或從快取取）spritesheet 索引資料。同一個 spritesheet 通常包含大量 sprite，
-        /// 每個 canvas 都重新解析會讓批次處理變得非常慢。
+        /// spritesheet 索引データを解析します（キャッシュがあればそれを使用）。1 つの spritesheet には通常大量の sprite が含まれるため、
+        /// canvas ごとに再解析するとバッチ処理が非常に遅くなります。
         /// </summary>
         private T GetParsedSheet<T>(UnityEntryLocation location, Func<byte[], T> parser) where T : class
         {
@@ -103,7 +103,7 @@ namespace WzComparerR2.UnityLib.Classic
             UnityMonoBehaviourInfo mono = UnityObjectParsers.ParseMonoBehaviour(payload, true);
             if (mono.HeaderLength > payload.Length)
             {
-                throw new UnityException("SpriteSheet MonoBehaviour header 越界");
+                throw new UnityException("SpriteSheet MonoBehaviour header が範囲外です");
             }
             T parsed = parser(Slice(payload, mono.HeaderLength));
 
@@ -122,8 +122,8 @@ namespace WzComparerR2.UnityLib.Classic
         }
 
         /// <summary>
-        /// 解碼（或從快取取）atlas 頁的 RGBA 像素。同一頁通常會被多個 canvas 共用，
-        /// 沒有快取時每個 canvas 都要重新解碼整頁，批次處理（例如比較工具）會非常慢。
+        /// atlas ページの RGBA ピクセルをデコードします（キャッシュがあればそれを使用）。同じページは複数の canvas で共有されるため、
+        /// キャッシュがないと canvas ごとにページ全体を再デコードするため、バッチ処理（例: 比較ツール）が非常に遅くなります。
         /// </summary>
         private byte[] GetAtlasPixels(UnityEntryLocation location, UnityTexture2DInfo texture, byte[] data)
         {
@@ -239,7 +239,7 @@ namespace WzComparerR2.UnityLib.Classic
         private byte[] GetImageUncached(string path)
         {
             // spriteset 素材（TW/UI/...、Common/UI/...）：不在 catalog.Entries，
-            // 用 SetAssets 的鍵做「地域前綴 + 前綴比對」；語系優先，其次 Common。
+            // SetAssets のキーで「地域プレフィックス + 前方一致」を行います。ロケール優先、次に Common。
             foreach (SetAssetLookup lookup in this.GetSetAssetLookups(path))
             {
                 Dictionary<string, UnitySetSpriteEntry> asset;
@@ -296,8 +296,8 @@ namespace WzComparerR2.UnityLib.Classic
                 {
                     continue;
                 }
-                // 地域變體（如 Map/Back/blueCave2 的 CN）只收錄該地域改動過的 sprite；
-                // 其餘節點要回退到 COMMON 的索引。
+                // 地域バリエーション（例: Map/Back/blueCave2 の CN）にはその地域で変更された sprite のみが含まれるため、
+                // それ以外のノードは COMMON の索引にフォールバックします。
                 UnitySheetEntry fallback = null;
                 UnitySheetEntry common;
                 if (variants.TryGetValue("COMMON", out common) && !ReferenceEquals(common, entry))
@@ -320,7 +320,7 @@ namespace WzComparerR2.UnityLib.Classic
             return null;
         }
 
-        /// <summary>spriteset 的一組查詢：(asset 索引鍵, sprite 名稱)。</summary>
+        /// <summary>spriteset の 1 回分の検索条件: (asset 索引キー, sprite 名)。</summary>
         private struct SetAssetLookup
         {
             public SetAssetLookup(string key, string inner)
@@ -334,8 +334,8 @@ namespace WzComparerR2.UnityLib.Classic
         }
 
         /// <summary>
-        /// 列出 spriteset 的候選索引鍵：先試路徑本身（已含 <c>Common/…</c>、<c>TW/…</c> 前綴），
-        /// 再依「目前語系 → Common」補上前綴。地域前綴不跨語系回退，避免顯示錯誤地域的圖。
+        /// spriteset の候補索引キーを列挙します: まずパス自体を試し（<c>Common/…</c>、<c>TW/…</c> プレフィックス込み）、
+        /// 続いて「現在のロケール → Common」の順でプレフィックスを補います。地域プレフィックスは別ロケールへフォールバックせず、誤った地域の画像表示を防ぎます。
         /// </summary>
         private List<SetAssetLookup> GetSetAssetLookups(string path)
         {
@@ -405,16 +405,16 @@ namespace WzComparerR2.UnityLib.Classic
             byte[] image = this.RenderSheetEntry(entry, sheetKey, imageKey, inner, perImage);
             if (image == null && fallback != null && inner.Length > 0)
             {
-                // 地域變體只收錄該地域改動過的 sprite：缺少的節點改從 COMMON 變體取圖。
+                // 地域バリエーションにはその地域で変更された sprite のみが含まれるため、不足するノードは COMMON バリエーションから画像を取得します。
                 image = this.RenderSheetEntry(fallback, sheetKey, imageKey, inner, perImage);
             }
-            // 圖集中沒有這個節點的 sprite 時回 null（資料集本身缺少該圖，不是錯誤）。
+            // アトラスにこのノードの sprite がない場合は null を返します（データセット側に画像がないだけで、エラーではありません）。
             return image;
         }
 
         /// <summary>
-        /// 節點路徑的 frame 候選。WZJS 樹可能出現 <c>…/CN/0</c> 這種地域標記子樹，
-        /// 但圖集的節點鍵不含地域段；另外部分節點是單一影格的目錄（<c>…/3</c> ↔ <c>…/3/0</c>）。
+        /// ノードパスのフレーム候補。WZJS ツリーには <c>…/CN/0</c> のような地域マーカーのサブツリーが現れることがあり、
+        /// ただしアトラスのノードキーには地域セグメントが含まれません。また一部のノードは単一フレームのディレクトリです（<c>…/3</c> ↔ <c>…/3/0</c>）。
         /// </summary>
         private static List<string> GetFrameInnerCandidates(string inner)
         {
@@ -432,7 +432,7 @@ namespace WzComparerR2.UnityLib.Classic
                 candidates.Add(inner.Substring(0, inner.Length - 2));
             }
 
-            // 加入去掉地域段（CN/TW/KR/JP/COMMON）的變體。
+            // 地域セグメント（CN/TW/KR/JP/COMMON）を除いたバリエーションも追加します。
             int count = candidates.Count;
             for (int i = 0; i < count; i++)
             {
@@ -475,7 +475,7 @@ namespace WzComparerR2.UnityLib.Classic
                 || string.Equals(segment, "COMMON", StringComparison.OrdinalIgnoreCase);
         }
 
-        /// <summary>以單一圖集變體輸出 PNG；該變體沒有對應 frame 時回 null。</summary>
+        /// <summary>単一のアトラスバリエーションで PNG を出力します。対応する frame がない場合は null。</summary>
         private byte[] RenderSheetEntry(
             UnitySheetEntry entry, string sheetKey, string imageKey, string inner, bool perImage)
         {
@@ -587,7 +587,7 @@ namespace WzComparerR2.UnityLib.Classic
                     throw new UnityException("spritesheet 無 atlas 頁");
                 }
                 AtlasPage page = pages[0];
-                // 快取中的像素不可就地翻轉，複製一份再處理。
+                // キャッシュ内のピクセルは直接反転できないため、コピーしてから処理します。
                 byte[] pixels = (byte[])page.Rgba.Clone();
                 UnityTexture.FlipVertical(pixels, page.Width, page.Height);
                 return UnityTexture.ToPng(page.Width, page.Height, pixels);

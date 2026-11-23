@@ -385,7 +385,7 @@ namespace WzComparerR2.CharaSim
         }
 
         /// <summary>
-        /// WZ 以外的動作延遲來源（例如 Unity 資產）；找不到資料時回傳 null。
+        /// WZ 以外のアクション遅延ソース（例: Unity アセット）。データがない場合は null を返します。
         /// </summary>
         public static Func<string, int?> ActionDelayResolver { get; set; }
 

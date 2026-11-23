@@ -93,7 +93,7 @@ namespace WzComparerR2
             }
             else if (node.Value is IWzPngSource pngSource)
             {
-                // Unity 資產等以 PNG 編碼提供的圖片來源。
+                // Unity アセットなど PNG エンコードで提供される画像ソース。
                 byte[] pngData = pngSource.GetPngData();
                 if (pngData != null && pngData.Length > 0)
                 {

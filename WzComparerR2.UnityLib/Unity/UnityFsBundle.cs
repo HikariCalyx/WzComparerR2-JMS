@@ -86,10 +86,10 @@ namespace WzComparerR2.UnityLib.Unity
             get { return this.nodes; }
         }
 
-        /// <summary>build 這個 bundle 的 Unity 引擎版本（UnityFS header 的 unityVersion）。</summary>
+        /// <summary>この bundle をビルドした Unity エンジンのバージョン（UnityFS header の unityVersion）。</summary>
         public string UnityVersion { get; private set; }
 
-        /// <summary>build 這個 bundle 的 Unity 修訂版號（UnityFS header 的 unityRevision）。</summary>
+        /// <summary>この bundle をビルドした Unity のリビジョン（UnityFS header の unityRevision）。</summary>
         public string UnityRevision { get; private set; }
 
         /// <summary>解壓後資料區的總大小。</summary>

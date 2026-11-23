@@ -85,16 +85,16 @@ namespace WzComparerR2.UnityLib.Classic
         public UnityImageIndex Image { get; private set; }
 
         /// <summary>
-        /// 音效路徑（如 <c>Sound/Bgm00/FloralLife</c>）→ AudioClip 位置。
-        /// 這些條目不會放進 <see cref="Entries"/>：WZ 的音效是 img 底下的節點，
-        /// 由 <see cref="SoundKeysByImage"/> 組成 img 內容。
+        /// サウンドパス（例: <c>Sound/Bgm00/FloralLife</c>）→ AudioClip の位置。
+        /// これらの項目は <see cref="Entries"/> には入れません: WZ のサウンドは img 配下のノードであり、
+        /// <see cref="SoundKeysByImage"/> から img 内容を構成します。
         /// </summary>
         public SortedDictionary<string, UnityEntryLocation> SoundEntries { get; private set; }
 
-        /// <summary>音效 img（如 <c>Sound/Bgm00</c>）→ 其下的音效路徑。</summary>
+        /// <summary>サウンド img（例: <c>Sound/Bgm00</c>）→ その配下のサウンドパス。</summary>
         public SortedDictionary<string, List<string>> SoundKeysByImage { get; private set; }
 
-        /// <summary>由 <see cref="RebuildSpritesetEntries"/> 補上的索引鍵（換語系時可整批撤銷）。</summary>
+        /// <summary><see cref="RebuildSpritesetEntries"/> で追加された索引キー（ロケール切り替え時にまとめて取り消せます）。</summary>
         private readonly HashSet<string> spritesetEntryKeys;
 
         /// <summary>掃描目錄下所有 .bundle，用每個 AssetBundle 物件的 m_Container 建索引。</summary>
@@ -139,9 +139,9 @@ namespace WzComparerR2.UnityLib.Classic
         }
 
         /// <summary>
-        /// 把音效條目整理成 WZ 的 img 形狀：<c>Sound/&lt;img&gt;/&lt;子目錄…&gt;/&lt;名稱&gt;</c>
-        /// 收進 <see cref="SoundEntries"/>，並在 <see cref="Entries"/> 只留下 img 本身
-        /// （<c>Sound/&lt;img&gt;</c>），讓樹上出現「Sound &gt; Bgm00 &gt; FloralLife」而不是把每個音效都攤在根目錄。
+        /// サウンドのエントリーを WZ の img 形式に整理します: <c>Sound/&lt;img&gt;/&lt;サブディレクトリ…&gt;/&lt;名前&gt;</c>
+        /// <see cref="SoundEntries"/> に格納し、<see cref="Entries"/> には img 自体だけを残します
+        /// （<c>Sound/&lt;img&gt;</c>）にまとめ、ツリー上で「Sound &gt; Bgm00 &gt; FloralLife」と表示されるようにし、すべてのサウンドがルート直下に並ばないようにします。
         /// </summary>
         private void GroupSoundEntries()
         {
@@ -160,7 +160,7 @@ namespace WzComparerR2.UnityLib.Classic
                 int secondSlash = firstSlash < 0 ? -1 : entry.Key.IndexOf('/', firstSlash + 1);
                 if (secondSlash <= firstSlash + 1 || secondSlash == entry.Key.Length - 1)
                 {
-                    continue; // 形狀不符（例如 Sound/<name>）：維持原樣
+                    continue; // 形状が合わない場合（例: Sound/<name>）: そのまま維持
                 }
 
                 string imageKey = entry.Key.Substring(0, secondSlash);
@@ -185,13 +185,13 @@ namespace WzComparerR2.UnityLib.Classic
             }
         }
 
-        /// <summary>該索引鍵是否為音效 img（如 <c>Sound/Bgm00</c>）。</summary>
+        /// <summary>その索引キーがサウンド img（例: <c>Sound/Bgm00</c>）かどうか。</summary>
         public bool IsSoundImage(string key)
         {
             return key != null && this.SoundKeysByImage.ContainsKey(key);
         }
 
-        /// <summary>音效 img 底下的音效路徑（如 <c>Sound/Bgm00/FloralLife</c>），已排序。</summary>
+        /// <summary>サウンド img 配下のサウンドパス（例: <c>Sound/Bgm00/FloralLife</c>）。ソート済み。</summary>
         public IReadOnlyList<string> GetSoundKeys(string imageKey)
         {
             List<string> keys;
@@ -203,14 +203,14 @@ namespace WzComparerR2.UnityLib.Classic
         }
 
         /// <summary>
-        /// 重建 spriteset 索引：只收錄 <paramref name="locale"/> 與 <c>Common</c> 提供的路徑。
+        /// spriteset 索引を再構築します: <paramref name="locale"/> と <c>Common</c> で提供されるパスのみを収録します。
         /// <para>
-        /// spriteset（<c>SpriteSet/&lt;region&gt;/UI/…</c>）不是 WZJS/JSON 資產，原本不會出現在索引裡，
-        /// 導致 <c>UI/UIWindow</c>、<c>UI/Login</c> 這類只以 spriteset 提供的目錄在樹上整個消失。
-        /// 與傳統 WZ 一致，這裡只索引目前地域實際存在的節點：其他地域獨有的資產
-        /// （例如只在 TW/KR 提供的 <c>UI/Login/GameLogo</c>）不會出現在樹上。
+        /// spriteset（<c>SpriteSet/&lt;region&gt;/UI/…</c>）は WZJS/JSON アセットではないため、本来は索引に現れず、
+        /// <c>UI/UIWindow</c>、<c>UI/Login</c> のように spriteset だけで提供されるディレクトリがツリーから丸ごと消えていました。
+        /// 従来の WZ と同じく、ここでは現在の地域に実際に存在するノードだけを索引します: 他地域だけに存在するアセット
+        /// （例: TW/KR のみ提供される <c>UI/Login/GameLogo</c>）はツリーに現れません。
         /// </para>
-        /// <para>Value 由 <see cref="UnityCanvas"/> 於渲染時依語系解析。</para>
+        /// <para>Value はレンダリング時に <see cref="UnityCanvas"/> がロケールに応じて解決します。</para>
         /// </summary>
         public void RebuildSpritesetEntries(string locale)
         {
@@ -249,7 +249,7 @@ namespace WzComparerR2.UnityLib.Classic
                         : logicalPath + "/" + sprite.Key;
                     if (this.Entries.ContainsKey(path) && !this.spritesetEntryKeys.Contains(path))
                     {
-                        continue; // WZJS / JSON 資產優先
+                        continue; // WZJS / JSON アセットを優先
                     }
                     this.Entries[path] = sprite.Value.SpriteLocation;
                     this.spritesetEntryKeys.Add(path);
@@ -322,8 +322,8 @@ namespace WzComparerR2.UnityLib.Classic
         }
 
         /// <summary>
-        /// 依道具 id 推出 <c>Item</c> 目錄下可能的路徑，依優先順序排列；路徑最後一段是
-        /// img，之後的段落是 img 內的節點（與參考實作的 item_path_candidates 一致）。
+        /// アイテム id から <c>Item</c> ディレクトリ配下の候補パスを優先順に並べます。パスの末尾は
+        /// img、それ以降のセグメントは img 内のノードです（参考実装の item_path_candidates と一致）。
         /// </summary>
         public List<string> GetItemPathCandidates(int itemId)
         {
@@ -346,7 +346,7 @@ namespace WzComparerR2.UnityLib.Classic
                     candidates.Add("Item/Etc/" + group + "/" + id);
                     break;
                 case 5:
-                    // 寵物是一個 id 一個 img；其餘 5 開頭道具落在 Cash 分區 img。
+                    // ペットは 1 id 1 img、それ以外の 5 で始まるアイテムは Cash 区分の img に入ります。
                     string pet = "Item/Pet/" + itemId.ToString(CultureInfo.InvariantCulture);
                     if (this.Entries.ContainsKey(pet))
                     {
@@ -355,7 +355,7 @@ namespace WzComparerR2.UnityLib.Classic
                     candidates.Add("Item/Cash/" + group + "/" + id);
                     break;
                 case 9:
-                    // 套裝組、欄位擴充等：Special img 內的節點是 7 碼 id。
+                    // セットアイテムやインベントリ拡張など: Special img 内のノードは 7 桁 id です。
                     candidates.Add("Item/Special/0"
                         + (itemId / 10000).ToString(CultureInfo.InvariantCulture)
                         + "/" + itemId.ToString("D7", CultureInfo.InvariantCulture));
@@ -365,7 +365,7 @@ namespace WzComparerR2.UnityLib.Classic
         }
 
         /// <summary>
-        /// 依裝備 id 推出 <c>Character</c> 目錄下可能的路徑，依優先順序排列。
+        /// 装備 id から <c>Character</c> ディレクトリ配下の候補パスを優先順に並べます。
         /// </summary>
         public List<string> GetEquipPathCandidates(int itemId)
         {
@@ -384,8 +384,8 @@ namespace WzComparerR2.UnityLib.Classic
         }
 
         /// <summary>
-        /// 依怪物 id 推出 <c>Mob</c> 目錄下可能的路徑，依優先順序排列
-        /// （對應傳統 WZ 的 <c>Mob/&lt;id&gt;.img</c> 與特殊分類）。
+        /// モブ id から <c>Mob</c> ディレクトリ配下の候補パスを優先順に並べます
+        /// （従来の WZ の <c>Mob/&lt;id&gt;.img</c> や特殊分類に対応）。
         /// </summary>
         public List<string> GetMobPathCandidates(int mobId)
         {
@@ -407,7 +407,7 @@ namespace WzComparerR2.UnityLib.Classic
             return candidates;
         }
 
-        /// <summary>依 NPC id 推出 <c>Npc</c> 目錄下的路徑。</summary>
+        /// <summary>NPC id から <c>Npc</c> ディレクトリ配下のパスを導きます。</summary>
         public List<string> GetNpcPathCandidates(int npcId)
         {
             List<string> candidates = new List<string>();
@@ -420,8 +420,8 @@ namespace WzComparerR2.UnityLib.Classic
         }
 
         /// <summary>
-        /// 依技能 id 推出 <c>Skill</c> 目錄下的路徑：
-        /// img 是職業（<c>Skill/&lt;id/10000&gt;</c>），技能本身是 img 內的
+        /// スキル id から <c>Skill</c> ディレクトリ配下のパスを導きます:
+        /// img は職業（<c>Skill/&lt;id/10000&gt;</c>）で、スキル自体は img 内の
         /// <c>skill/&lt;id&gt;</c>。
         /// </summary>
         public List<string> GetSkillPathCandidates(int skillId)
@@ -437,8 +437,8 @@ namespace WzComparerR2.UnityLib.Classic
         }
 
         /// <summary>
-        /// 依地圖 id 推出 <c>Map</c> 目錄下的路徑：
-        /// <c>Map/Map/Map&lt;首位數字&gt;/&lt;9 碼 id&gt;</c>（與 WZ 的 <c>Map/Map/MapN/&lt;id&gt;.img</c> 對應）。
+        /// マップ id から <c>Map</c> ディレクトリ配下のパスを導きます:
+        /// <c>Map/Map/Map&lt;先頭桁&gt;/&lt;9 桁 id&gt;</c>（WZ の <c>Map/Map/MapN/&lt;id&gt;.img</c> に対応）。
         /// </summary>
         public List<string> GetMapPathCandidates(int mapId)
         {
@@ -453,8 +453,8 @@ namespace WzComparerR2.UnityLib.Classic
         }
 
         /// <summary>
-        /// 依任務 id 推出 <c>Quest</c> 目錄下的路徑：
-        /// <c>Quest/QuestInfo/&lt;id&gt;</c>（對應 WZ 的 <c>Quest/QuestInfo.img/&lt;id&gt;</c>）。
+        /// クエスト id から <c>Quest</c> ディレクトリ配下のパスを導きます:
+        /// <c>Quest/QuestInfo/&lt;id&gt;</c>（WZ の <c>Quest/QuestInfo.img/&lt;id&gt;</c> に対応）。
         /// </summary>
         public List<string> GetQuestPathCandidates(int questId)
         {
@@ -468,8 +468,8 @@ namespace WzComparerR2.UnityLib.Classic
         }
 
         /// <summary>
-        /// 在指定目錄（含下一層子目錄）內找出「節點名數值等於 <paramref name="id"/>」的 img 索引鍵，
-        /// 忽略補零差異；找不到回 null。用於 WZ 分類目錄與資產樹目錄不一致的情況。
+        /// 指定ディレクトリ（1 階層下のサブディレクトリを含む）内で「ノード名の数値が <paramref name="id"/> と等しい」img 索引キーを探し、
+        /// ゼロ埋めの違いは無視します。見つからない場合は null。WZ の分類ディレクトリとアセットツリーのディレクトリが一致しない場合に使用します。
         /// </summary>
         public string FindImageKeyByNumericName(string directory, int id)
         {
@@ -488,7 +488,7 @@ namespace WzComparerR2.UnityLib.Classic
                 int slash = rest.LastIndexOf('/');
                 if (slash >= 0 && rest.IndexOf('/') != slash)
                 {
-                    continue; // 超過兩層不視為分類 img
+                    continue; // 3 階層以上は分類 img とみなさない
                 }
                 string leaf = slash < 0 ? rest : rest.Substring(slash + 1);
                 long value;

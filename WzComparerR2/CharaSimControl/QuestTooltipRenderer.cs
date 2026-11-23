@@ -35,11 +35,11 @@ namespace WzComparerR2.CharaSimControl
         private static readonly Regex RegexTrimNewLinesAtEnd = new Regex(@"(\r\n)?$", RegexOptions.Compiled);
 
         /// <summary>
-        /// WZ 以外的節點來源（例如 Unity 資產）；WZ 查不到時才會呼叫，回傳 null 表示沒有。
+        /// WZ 以外のノードソース（例: Unity アセット）。WZ で見つからない場合のみ呼び出され、null は該当なしを意味します。
         /// </summary>
         public static GlobalFindNodeFunction ExternalNodeResolver { get; set; }
 
-        /// <summary>節點查找：先查 WZ，找不到再問外部來源。</summary>
+        /// <summary>ノード検索: まず WZ を検索し、見つからなければ外部ソースに問い合わせます。</summary>
         private static Wz_Node ResolveNode(string path, Wz_File sourceWzFile = null)
         {
             Wz_Node node = PluginManager.FindWz(path, sourceWzFile);
@@ -837,7 +837,7 @@ namespace WzComparerR2.CharaSimControl
                     }
                 }
 
-                // Unity 資產沒有 Character.wz 根節點，改以 Character/<分類>/<id> 查找。
+                // Unity アセットには Character.wz のルートノードがないため、Character/<分類>/<id> で検索します。
                 return ResolveNode($@"Character\{nodePath}", this.SourceWzFile);
             }
             return null;

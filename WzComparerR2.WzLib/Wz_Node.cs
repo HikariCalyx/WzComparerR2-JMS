@@ -528,19 +528,19 @@ namespace WzComparerR2.WzLib
     public static class Wz_NodeExtension
     {
         /// <summary>
-        /// 非 WZ 檔來源（例如 Unity 資料集）的型別解析器；回傳 null 表示該節點不屬於外部來源。
+        /// 非 WZ ファイルソース（例: Unity データセット）の型解決処理。null を返すとそのノードは外部ソースに属しません。
         /// </summary>
         public static Func<Wz_Node, Wz_Type?> ExternalTypeResolver { get; set; }
 
         /// <summary>
-        /// 非 WZ 檔來源的 img 內容展開器：傳入 img 節點，回傳其內容根節點
-        /// （例如 Unity 資產的 <c>UnityWzImage</c>）。找不到時回傳 null。
+        /// 非 WZ ファイルソースの img 内容展開処理: img ノードを渡すと、その内容ルートノードを返します
+        /// （例: Unity アセットの <c>UnityWzImage</c>）。見つからない場合は null を返します。
         /// </summary>
         public static Func<Wz_Node, Wz_Node> ExternalImageResolver { get; set; }
 
         /// <summary>
-        /// 取得 img 節點的內容根節點：傳統 WZ 走 <see cref="Wz_Image"/> 解壓縮，
-        /// 其他來源（例如 Unity 資料集）交給 <see cref="ExternalImageResolver"/>。
+        /// img ノードの内容ルートノードを取得します: 従来の WZ は <see cref="Wz_Image"/> を展開し、
+        /// その他のソース（例: Unity データセット）は <see cref="ExternalImageResolver"/> に委ねます。
         /// </summary>
         public static Wz_Node GetImageContentNode(this Wz_Node imageNode)
         {
@@ -553,8 +553,8 @@ namespace WzComparerR2.WzLib
             {
                 if (image.WzFile == null)
                 {
-                    // 非 WZ 檔來源（例如 Unity 資產）：交由外部解析器補上層節點鏈，
-                    // 讓 FullPathToFile 之類的路徑判斷可沿用 WZ 邏輯。
+                    // 非 WZ ファイルソース（例: Unity アセット）: 外部リゾルバーで上位ノードチェーンを補い、
+                    // FullPathToFile などのパス判定を WZ のロジックのまま使えるようにします。
                     Func<Wz_Node, Wz_Node> externalResolver = ExternalImageResolver;
                     Wz_Node external = externalResolver?.Invoke(imageNode);
                     if (external != null)
@@ -569,8 +569,8 @@ namespace WzComparerR2.WzLib
         }
 
         /// <summary>
-        /// 取得節點所屬的 WZ 型別：先找所屬的 <see cref="Wz_File"/>，
-        /// 找不到再詢問 <see cref="ExternalTypeResolver"/>（例如 Unity 資料集）。
+        /// ノードが属する WZ 型を取得します: まず所属する <see cref="Wz_File"/> を探し、
+        /// 見つからない場合は <see cref="ExternalTypeResolver"/>（例: Unity データセット）に問い合わせます。
         /// </summary>
         public static Wz_Type? GetNodeWzType(this Wz_Node node)
         {

@@ -64,8 +64,8 @@ namespace WzComparerR2.UnityLib.Images
         public Dictionary<string, Dictionary<string, UnitySetSpriteEntry>> SetAssets { get; private set; }
 
         /// <summary>
-        /// spriteset 鍵的第一段（地域代碼，如 <c>Common</c>、<c>CN</c>、<c>TW</c>）；
-        /// 對應 WZ 資產的 <c>SpriteSet/&lt;region&gt;/…</c> 目錄。
+        /// spriteset キーの 1 セグメント目（地域コード、例: <c>Common</c>、<c>CN</c>、<c>TW</c>）。
+        /// WZ アセットの <c>SpriteSet/&lt;region&gt;/…</c> ディレクトリに対応します。
         /// </summary>
         public HashSet<string> SetPrefixes { get; private set; }
 
@@ -77,8 +77,8 @@ namespace WzComparerR2.UnityLib.Images
             UnitySerializedFile serializedFile, IReadOnlyList<UnityContainerEntry> container,
             Dictionary<long, UnityObjectInfo> objectsByPathId)
         {
-            // 早期 beta 的 bundle 名稱是 spritesheetgroup_*/spritesetgroup_*（Addressables
-            // 群組前綴），因此不能只看檔名前綴，改以 container 路徑判斷。
+            // 初期 beta の bundle 名は spritesheetgroup_*/spritesetgroup_*（Addressables
+            // グループプレフィックス）ため、ファイル名の前方一致だけでは判断できず、container のパスで判定します。
             bool isSheet = bundleStem.StartsWith("spritesheet", StringComparison.Ordinal)
                 || ContainsPathPrefix(container, SheetPrefix);
             bool isSet = bundleStem.StartsWith("spriteset", StringComparison.Ordinal)
@@ -114,7 +114,7 @@ namespace WzComparerR2.UnityLib.Images
             }
         }
 
-        /// <summary>container 內是否有路徑以前綴開頭（不分大小寫；索引鍵為小寫）。</summary>
+        /// <summary>container 内に前方一致するパスがあるか（大文字小文字を無視、索引キーは小文字）。</summary>
         private static bool ContainsPathPrefix(
             IReadOnlyList<UnityContainerEntry> container, string prefix)
         {
@@ -130,7 +130,7 @@ namespace WzComparerR2.UnityLib.Images
             return false;
         }
 
-        /// <summary>優先使用目前語系，再使用共用圖集；仍找不到時取任一份，避免選錯地域導致圖片全數消失。</summary>
+        /// <summary>現在のロケールを優先し、次に共通アトラスを使用します。それでも見つからない場合はいずれかを使用し、地域選択の誤りで画像がすべて消えるのを防ぎます。</summary>
         public static UnitySheetEntry SelectLocalized(
             Dictionary<string, UnitySheetEntry> variants, string locale)
         {
