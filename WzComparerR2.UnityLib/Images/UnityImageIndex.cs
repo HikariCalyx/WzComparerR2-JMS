@@ -427,71 +427,105 @@ namespace WzComparerR2.UnityLib.Images
                 return ParseBarePPtrs(payload);
             }
 
-            uint declaredLength = U32At(payload, 4);
-            bool named = declaredLength > 0 && declaredLength < 512;
-            if (named)
+            if (IsNamedEntries(payload))
             {
-                long end = 8L + declaredLength;
-                if (end > payload.Length)
+                // 名前付きエントリは PPtr に fileID を持たない古い配置と、
+                // (fileID i32, pathID i64) を持つ新しい配置（例: 2.0.6 の Map/MapHelper/mark）があります。
+                // 先に新しい配置で読み、件数が合わなければ古い配置へフォールバックします。
+                List<KeyValuePair<string, long>> withFileId = ParseNamedEntries(payload, count, true);
+                if (withFileId.Count == count)
                 {
-                    named = false;
+                    return withFileId;
                 }
-                else
-                {
-                    for (int i = 8; i < end; i++)
-                    {
-                        byte c = payload[i];
-                        if (!((c >= 0x21 && c <= 0x7E) || c == 0x20))
-                        {
-                            named = false;
-                            break;
-                        }
-                    }
-                }
+                List<KeyValuePair<string, long>> withoutFileId = ParseNamedEntries(payload, count, false);
+                return withoutFileId.Count > withFileId.Count ? withoutFileId : withFileId;
             }
 
             int position = 4;
             for (uint i = 0; i < count; i++)
             {
-                if (named)
+                // PPtr: fileID i32 + pathID i64
+                if (position > payload.Length - 12)
                 {
-                    if (position > payload.Length - 4)
+                    break;
+                }
+                int fileId = I32At(payload, position);
+                if (fileId != 0)
+                {
+                    break;
+                }
+                long pathId = I64At(payload, position + 4);
+                position += 12;
+                output.Add(new KeyValuePair<string, long>(string.Empty, pathId));
+            }
+            return output;
+        }
+
+        /// <summary>payload が「名前長 + 名前」形式のエントリかどうか。</summary>
+        private static bool IsNamedEntries(byte[] payload)
+        {
+            uint declaredLength = U32At(payload, 4);
+            if (declaredLength == 0 || declaredLength >= 512)
+            {
+                return false;
+            }
+            long end = 8L + declaredLength;
+            if (end > payload.Length)
+            {
+                return false;
+            }
+            for (int i = 8; i < end; i++)
+            {
+                byte c = payload[i];
+                if (!((c >= 0x21 && c <= 0x7E) || c == 0x20))
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        /// <summary>
+        /// 名前付きエントリを読みます。<paramref name="includeFileId"/> は PPtr の前に fileID (i32) を挟む配置かどうか。
+        /// </summary>
+        private static List<KeyValuePair<string, long>> ParseNamedEntries(byte[] payload, uint count, bool includeFileId)
+        {
+            List<KeyValuePair<string, long>> output = new List<KeyValuePair<string, long>>();
+            int stride = includeFileId ? 12 : 8;
+            int position = 4;
+            for (uint i = 0; i < count; i++)
+            {
+                if (position > payload.Length - 4)
+                {
+                    break;
+                }
+                int length = (int)U32At(payload, position);
+                position += 4;
+                if (length < 0 || position > payload.Length - length)
+                {
+                    break;
+                }
+                string name = System.Text.Encoding.UTF8.GetString(payload, position, length);
+                position = (position + length + 3) & ~3;
+                if (position > payload.Length - stride)
+                {
+                    break;
+                }
+                if (includeFileId)
+                {
+                    if (I32At(payload, position) != 0)
                     {
                         break;
                     }
-                    int length = (int)U32At(payload, position);
                     position += 4;
-                    if (length < 0 || position > payload.Length - length)
-                    {
-                        break;
-                    }
-                    string name = System.Text.Encoding.UTF8.GetString(payload, position, length);
-                    position += length;
-                    position = (position + 3) & ~3;
-                    if (position > payload.Length - 8)
-                    {
-                        break;
-                    }
-                    long pathId = I64At(payload, position);
-                    position += 8;
-                    output.Add(new KeyValuePair<string, long>(name, pathId));
                 }
-                else
+                long pathId = I64At(payload, position);
+                position += 8;
+                if (pathId == 0)
                 {
-                    // PPtr: fileID i32 + pathID i64
-                    if (position > payload.Length - 12)
-                    {
-                        break;
-                    }
-                    int fileId = I32At(payload, position);
-                    if (fileId != 0)
-                    {
-                        break;
-                    }
-                    long pathId = I64At(payload, position + 4);
-                    position += 12;
-                    output.Add(new KeyValuePair<string, long>(string.Empty, pathId));
+                    break;
                 }
+                output.Add(new KeyValuePair<string, long>(name, pathId));
             }
             return output;
         }
