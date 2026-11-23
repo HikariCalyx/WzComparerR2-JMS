@@ -888,35 +888,56 @@ namespace WzComparerR2.UnityLib.Classic
         /// </summary>
         private WzLib.Wz_Node FindDirectoryImageNode(string normalized)
         {
+            string directoryPath = this.GetWzImagedDirectoryPath(normalized);
+            if (directoryPath == null)
+            {
+                return null;
+            }
+            UnityDirectoryImage image = this.GetDirectoryImage(directoryPath);
+            if (image == null)
+            {
+                return null;
+            }
+            WzLib.Wz_Node node = image.AsWzNode();
+            if (normalized.Length > directoryPath.Length)
+            {
+                foreach (string segment in normalized.Substring(directoryPath.Length + 1).Split('/'))
+                {
+                    if (segment.Length == 0)
+                    {
+                        continue;
+                    }
+                    node = FindChildByName(node, segment);
+                    if (node == null)
+                    {
+                        return null;
+                    }
+                }
+            }
+            return RootAssetNode(node, image);
+        }
+
+        /// <summary>
+        /// <paramref name="normalized"/> が属する「img として扱うディレクトリ」を返します（該当なしは null）。
+        /// </summary>
+        private string GetWzImagedDirectoryPath(string normalized)
+        {
             foreach (string directoryPath in ClassicWzBridge.WzImagedDirectories)
             {
-                if (!string.Equals(normalized, directoryPath, StringComparison.Ordinal)
-                    && !normalized.StartsWith(directoryPath + "/", StringComparison.Ordinal))
+                if (string.Equals(normalized, directoryPath, StringComparison.Ordinal)
+                    || normalized.StartsWith(directoryPath + "/", StringComparison.Ordinal))
+                {
+                    return directoryPath;
+                }
+            }
+            foreach (string parentPath in ClassicWzBridge.WzImagedDirectoryParents)
+            {
+                if (!normalized.StartsWith(parentPath + "/", StringComparison.Ordinal))
                 {
                     continue;
                 }
-                UnityDirectoryImage image = this.GetDirectoryImage(directoryPath);
-                if (image == null)
-                {
-                    return null;
-                }
-                WzLib.Wz_Node node = image.AsWzNode();
-                if (normalized.Length > directoryPath.Length)
-                {
-                    foreach (string segment in normalized.Substring(directoryPath.Length + 1).Split('/'))
-                    {
-                        if (segment.Length == 0)
-                        {
-                            continue;
-                        }
-                        node = FindChildByName(node, segment);
-                        if (node == null)
-                        {
-                            return null;
-                        }
-                    }
-                }
-                return RootAssetNode(node, image);
+                int slash = normalized.IndexOf('/', parentPath.Length + 1);
+                return slash < 0 ? normalized : normalized.Substring(0, slash);
             }
             return null;
         }
