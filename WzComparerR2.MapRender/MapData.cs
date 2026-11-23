@@ -878,6 +878,16 @@ namespace WzComparerR2.MapRender
             }
         }
 
+        /// <summary>
+        /// ポータル種別（<c>pt</c>）に対応する画像名を返します。範囲外の種別（新しいクライアントの拡張値）でも
+        /// 例外にせず既定の <c>sp</c> として扱います。
+        /// </summary>
+        private static string GetPortalTypeName(int portalType)
+        {
+            string[] typeNames = PortalItem.PortalTypes;
+            return portalType >= 0 && portalType < typeNames.Length ? typeNames[portalType] : typeNames[0];
+        }
+
         private void PreloadResource(ResourceLoader resLoader, PortalItem portal)
         {
             string path;
@@ -885,7 +895,7 @@ namespace WzComparerR2.MapRender
             var view = new PortalItem.ItemView();
             //加载editor
             {
-                var typeName = PortalItem.PortalTypes[portal.Type];
+                var typeName = GetPortalTypeName(portal.Type);
                 path = $@"Map\MapHelper.img\portal\editor\{typeName}";
                 var aniData = resLoader.LoadAnimationData(path);
                 if (aniData != null)
@@ -902,7 +912,7 @@ namespace WzComparerR2.MapRender
                     case 7:
                         typeName = PortalItem.PortalTypes[2]; break;
                     default:
-                        typeName = PortalItem.PortalTypes[portal.Type]; break;
+                        typeName = GetPortalTypeName(portal.Type); break;
                 }
 
                 switch (portal.Image)
@@ -941,6 +951,9 @@ namespace WzComparerR2.MapRender
                     }
                 }
             }
+
+            // Classic（Unity）データセットには MapHelper.img/portal の画像が含まれていません。
+            // その場合は描画側（GetMeshPortal）が代替マーカーを表示します。
 
             portal.View = view;
         }
