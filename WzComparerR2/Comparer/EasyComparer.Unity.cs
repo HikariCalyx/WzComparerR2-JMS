@@ -4,7 +4,12 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
+using WzComparerR2.CharaSim;
+using WzComparerR2.Common;
+using WzComparerR2.PluginBase;
 using WzComparerR2.UnityLib.Classic;
+using WzComparerR2.UnityLib.Unity;
+using WzComparerR2.UnityLib.Wzjs;
 using WzComparerR2.WzLib;
 
 namespace WzComparerR2.Comparer
@@ -58,42 +63,67 @@ namespace WzComparerR2.Comparer
                 .OrderBy(type => type.ToString(), StringComparer.Ordinal)
                 .ToList();
 
-            foreach (Wz_Type type in typeList)
+            // ツールチップ出力では Wz_File の代わりに、比較対象のデータセットを解決先として指定します。
+            this.WzNewOld[0] = sideNew.Root;
+            this.WzNewOld[1] = sideOld.Root;
+            BeginUnityTooltipResolve(sideNew, sideOld);
+            try
             {
-                bool selected;
-                if (this.selectedNodes != null
-                    && this.selectedNodes.TryGetValue(type.ToString(), out selected)
-                    && !selected)
+                this.InitializeUnityTooltipSources();
+
+                for (int typeIndex = 0; typeIndex < typeList.Count; typeIndex++)
                 {
-                    continue;
+                    Wz_Type type = typeList[typeIndex];
+                    bool selected;
+                    if (this.selectedNodes != null
+                        && this.selectedNodes.TryGetValue(type.ToString(), out selected)
+                        && !selected)
+                    {
+                        continue;
+                    }
+
+                    // 型別ごとの走査は時間がかかるため、こまめに進捗を出す。
+                    this.unityCompareCount = 0;
+                    this.unityCompareNotify = 0;
+                    StateDetail = string.Format("{0} を比較しています... ({1}/{2})", type, typeIndex + 1, typeList.Count);
+
+                    Dictionary<string, Wz_Node> dirsNew, dirsOld;
+                    indexNew.TryGetValue(type, out dirsNew);
+                    indexOld.TryGetValue(type, out dirsOld);
+
+                    List<UnityCompareEntry> entries = new List<UnityCompareEntry>();
+                    foreach (UnityDirectoryPair pair in MatchUnityDirectories(dirsNew, dirsOld))
+                    {
+                        if (pair.NodeNew != null && pair.NodeOld != null)
+                        {
+                            CompareUnityDirectory(sideNew, pair.NodeNew, sideOld, pair.NodeOld, pair.Name, entries);
+                        }
+                        else if (pair.NodeNew != null)
+                        {
+                            AddUnityEntryTree(sideNew, pair.NodeNew, pair.Name, DifferenceType.Append, entries);
+                        }
+                        else
+                        {
+                            AddUnityEntryTree(sideOld, pair.NodeOld, pair.Name, DifferenceType.Remove, entries);
+                        }
+                    }
+
+                    OutputUnityFile(labelNew, labelOld, type, entries, outputDir, index);
                 }
 
-                // 型別ごとの走査は時間がかかるため、こまめに進捗を出す。
-                this.unityCompareCount = 0;
-                this.unityCompareNotify = 0;
-
-                Dictionary<string, Wz_Node> dirsNew, dirsOld;
-                indexNew.TryGetValue(type, out dirsNew);
-                indexOld.TryGetValue(type, out dirsOld);
-
-                List<UnityCompareEntry> entries = new List<UnityCompareEntry>();
-                foreach (UnityDirectoryPair pair in MatchUnityDirectories(dirsNew, dirsOld))
+                // 収集した id からツールチップ画像を出力します（WZ 比較と同じファイル構成）。
+                StateDetail = "変更点をツールチップ画像に出力しています...";
+                this.SaveTooltips("String", outputDir);
+                this.SaveTooltips("Quest", outputDir);
+            }
+            finally
+            {
+                EndUnityTooltipResolve();
+                if (this.AnyTooltipOutput)
                 {
-                    if (pair.NodeNew != null && pair.NodeOld != null)
-                    {
-                        CompareUnityDirectory(sideNew, pair.NodeNew, sideOld, pair.NodeOld, pair.Name, entries);
-                    }
-                    else if (pair.NodeNew != null)
-                    {
-                        AddUnityEntryTree(sideNew, pair.NodeNew, pair.Name, DifferenceType.Append, entries);
-                    }
-                    else
-                    {
-                        AddUnityEntryTree(sideOld, pair.NodeOld, pair.Name, DifferenceType.Remove, entries);
-                    }
+                    // 比較用に読み込んだ補助データは破棄し、ノード閲覧時に開いているデータセットから読み直させます。
+                    CharaSimLoader.ClearAll();
                 }
-
-                OutputUnityFile(labelNew, labelOld, type, entries, outputDir, index);
             }
 
             StateInfo = "比較完了";
@@ -273,7 +303,7 @@ namespace WzComparerR2.Comparer
                 return;
             }
 
-            string displayPath = GetUnityDisplayPath(path, nodeNew.Text, nodeNew);
+            string displayPath = GetUnityDisplayPath(path, nodeNew);
             UnityEntryChange change;
             this.unityEntryPath = displayPath;
             try
@@ -333,7 +363,7 @@ namespace WzComparerR2.Comparer
                 SideOld = type == DifferenceType.Remove ? side : null,
                 NodeNew = type == DifferenceType.Remove ? null : node,
                 NodeOld = type == DifferenceType.Remove ? node : null,
-                DisplayPath = GetUnityDisplayPath(path, node.Text, node),
+                DisplayPath = GetUnityDisplayPath(path, node),
             });
         }
 
@@ -342,6 +372,13 @@ namespace WzComparerR2.Comparer
             UnityCompareSide sideNew, Wz_Node nodeNew,
             UnityCompareSide sideOld, Wz_Node nodeOld)
         {
+            // アセットの生データが同一なら、展開せずに「変更なし」と判定します。
+            // 似たバージョン同士の比較ではほとんどのアセットが該当し、JSON／WZJS の解析を丸ごと省略できます。
+            if (UnityEntryPayloadEquals(sideNew, nodeNew, sideOld, nodeOld))
+            {
+                return UnityEntryChange.None;
+            }
+
             Wz_Image imageNew, imageOld;
             bool ownedNew, ownedOld;
             Wz_Node contentNew = BuildUnityContent(sideNew, nodeNew, out imageNew, out ownedNew);
@@ -376,6 +413,80 @@ namespace WzComparerR2.Comparer
                 {
                     imageOld.Unextract();
                 }
+            }
+        }
+
+        /// <summary>
+        /// 両側のアセットの生データ（bundle 内のシリアライズ済みバイト列）が同一かどうかを判定します。
+        /// 内容の展開が必要なアセットのみ対象で、同一なら展開後のノードも同一とみなせます。
+        /// </summary>
+        private static bool UnityEntryPayloadEquals(
+            UnityCompareSide sideNew, Wz_Node nodeNew,
+            UnityCompareSide sideOld, Wz_Node nodeOld)
+        {
+            if (nodeNew == null || nodeOld == null
+                || !IsUnityContentAsset(nodeNew.Value) || !IsUnityContentAsset(nodeOld.Value))
+            {
+                return false;
+            }
+            string keyNew = sideNew.GetImageKey(nodeNew);
+            string keyOld = sideOld.GetImageKey(nodeOld);
+            if (keyNew == null || keyOld == null)
+            {
+                return false;
+            }
+            byte[] payloadNew = ReadUnityEntryPayload(sideNew.Source, keyNew);
+            if (payloadNew == null)
+            {
+                return false;
+            }
+            byte[] payloadOld = ReadUnityEntryPayload(sideOld.Source, keyOld);
+            if (payloadOld == null || payloadNew.Length != payloadOld.Length)
+            {
+                return false;
+            }
+            int length = payloadNew.Length;
+            int offset = 0;
+            for (; offset + sizeof(long) <= length; offset += sizeof(long))
+            {
+                if (BitConverter.ToInt64(payloadNew, offset) != BitConverter.ToInt64(payloadOld, offset))
+                {
+                    return false;
+                }
+            }
+            for (; offset < length; offset++)
+            {
+                if (payloadNew[offset] != payloadOld[offset])
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        /// <summary>
+        /// 生データ（bundle 内のシリアライズ済みバイト列）だけで内容が確定するアセットかどうか。
+        /// sprite（<see cref="UnityCanvas"/>）は画素データを別アセットから解決するため対象外です。
+        /// </summary>
+        private static bool IsUnityContentAsset(object value)
+        {
+            return value is Wz_Image || value is UnityJsonAsset;
+        }
+
+        private static byte[] ReadUnityEntryPayload(ClassicWzSource source, string imageKey)
+        {
+            if (source == null || !source.Catalog.Entries.TryGetValue(imageKey, out var location))
+            {
+                return null;
+            }
+            try
+            {
+                return source.ReadEntry(location);
+            }
+            catch (Exception)
+            {
+                // 読み出せないアセットは通常の比較にまわします。
+                return null;
             }
         }
 
@@ -463,9 +574,8 @@ namespace WzComparerR2.Comparer
         }
 
         /// <summary>ディレクトリパスとノード名から WZ 形式のパスを組み立てます（img には <c>.img</c> を付加）。</summary>
-        private static string GetUnityDisplayPath(string directoryPath, string nodeName, Wz_Node node)
+        private static string GetUnityDisplayPath(string path, Wz_Node node)
         {
-            string path = CombineUnityPath(directoryPath, nodeName);
             return node != null && node.Value is Wz_Image ? path + ".img" : path;
         }
 
@@ -640,6 +750,7 @@ namespace WzComparerR2.Comparer
                 int rowIndex = GetUnityDiffIndex(row.DifferenceType);
                 StateInfo = string.Format("{0}/{1} {2}: {3}", entryIndex, entryTotal, diffLabel,
                     row.Path ?? entry.DisplayPath);
+                this.CollectUnityTooltipIDs(row.Path ?? entry.DisplayPath);
                 sb.AppendFormat("<tr class=\"r{0}\">", rowIndex);
                 sb.AppendFormat("<td>{0}</td>", row.Path == null ? " " : EncodeUnityHtml(row.Path));
                 sb.AppendFormat("<td>{0}</td>", OutputNodeValue(row.Path, row.NodeOld, 1, outputDir) ?? " ");
@@ -796,6 +907,565 @@ namespace WzComparerR2.Comparer
         {
             return string.IsNullOrEmpty(text) ? " " : WebUtility.HtmlEncode(text);
         }
+
+        #endregion
+
+        #region ツールチップ出力
+
+        // Unity データセットは Wz_File を持たないため、ツールチップ出力中の解決先（PluginManager.FindWz）を
+        // 比較対象のデータセットへ固定します。
+        private static UnityCompareSide unityResolveSideNew;
+        private static UnityCompareSide unityResolveSideOld;
+        private static int unityResolveSlot = -1;
+        private static bool unityResolveHandlerInstalled;
+
+        /// <summary>
+        /// ツールチップを出力するか（いずれかの種類が有効か）。
+        /// </summary>
+        private bool AnyTooltipOutput
+        {
+            get
+            {
+                return this.OutputSkillTooltip || this.OutputItemTooltip || this.OutputGearTooltip
+                    || this.OutputMapTooltip || this.OutputMobTooltip || this.OutputNpcTooltip
+                    || this.OutputCashTooltip || this.OutputQuestTooltip || this.OutputAchvTooltip;
+            }
+        }
+
+        /// <summary>
+        /// 解決先を比較対象 <paramref name="i"/>（0 = 新、1 = 旧）に切り替えます。Unity 比較以外では何もしません。
+        /// </summary>
+        private void SetUnityResolveSlot(int i)
+        {
+            if (unityResolveSideNew == null && unityResolveSideOld == null)
+            {
+                return;
+            }
+            unityResolveSlot = i;
+        }
+
+        private static void BeginUnityTooltipResolve(UnityCompareSide sideNew, UnityCompareSide sideOld)
+        {
+            unityResolveSideNew = sideNew;
+            unityResolveSideOld = sideOld;
+            unityResolveSlot = -1;
+            if (!unityResolveHandlerInstalled)
+            {
+                // WZ 比較用のハンドラーより後に登録されるため、Unity 側の解決結果が優先されます。
+                PluginManager.WzFileFinding += UnityResolveWzFinding;
+                unityResolveHandlerInstalled = true;
+            }
+        }
+
+        private static void EndUnityTooltipResolve()
+        {
+            unityResolveSlot = -1;
+            unityResolveSideNew = null;
+            unityResolveSideOld = null;
+        }
+
+        /// <summary>
+        /// Unity クライアント比較中に解決先として優先するデータセット。比較していない場合は null。
+        /// WZ 比較用の <see cref="PluginManager.FindWz(string)"/> を通らない検索（ツールチップ側の
+        /// 外部リゾルバーなど）も、このデータセットだけを参照します。
+        /// </summary>
+        public static ClassicWzSource PreferredUnitySource
+        {
+            get
+            {
+                UnityCompareSide side = unityResolveSlot == 0 ? unityResolveSideNew
+                    : unityResolveSlot == 1 ? unityResolveSideOld
+                    : null;
+                return side?.Source;
+            }
+        }
+
+        /// <summary>
+        /// 比較対象のデータセットからノードを解決します。別バージョンの Unity クライアントや WZ の内容が
+        /// 混ざらないよう、常に結果を上書きします。
+        /// </summary>
+        private static void UnityResolveWzFinding(object sender, FindWzEventArgs e)
+        {
+            UnityCompareSide side = unityResolveSlot == 0 ? unityResolveSideNew
+                : unityResolveSlot == 1 ? unityResolveSideOld
+                : null;
+            if (side == null)
+            {
+                return;
+            }
+
+            e.WzFile = null;
+            e.WzNode = null;
+            if (!string.IsNullOrEmpty(e.FullPath))
+            {
+                e.WzNode = FindUnitySideNode(side, e.FullPath);
+            }
+            else if (e.WzType != Wz_Type.Unknown)
+            {
+                e.WzNode = FindUnitySideTypeNode(side, e.WzType);
+            }
+        }
+
+        private static Wz_Node FindUnitySideNode(UnityCompareSide side, string wzPath)
+        {
+            try
+            {
+                return side.Source.FindNode(wzPath);
+            }
+            catch (Exception ex) when (ex is UnityException || ex is ClassicAssetException || ex is WzjsException)
+            {
+                return null;
+            }
+        }
+
+        private static ClassicWzSource GetUnityCompareSource(int i)
+        {
+            UnityCompareSide side = i == 0 ? unityResolveSideNew : unityResolveSideOld;
+            return side?.Source;
+        }
+
+        private static Wz_Node FindUnitySideTypeNode(UnityCompareSide side, Wz_Type type)
+        {
+            Wz_Node root = side?.Root;
+            if (root == null)
+            {
+                return null;
+            }
+            if (type == Wz_Type.Base)
+            {
+                // Unity データセットに Base.wz はありません。
+                return root;
+            }
+            foreach (Wz_Node child in root.Nodes)
+            {
+                if (string.Equals(child.Text, type.ToString(), StringComparison.OrdinalIgnoreCase))
+                {
+                    return child;
+                }
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// Unity 比較中なら、比較対象の文字列テーブル（String/&lt;region&gt;/&lt;category&gt;）で
+        /// <paramref name="linker"/> を初期化します。
+        /// </summary>
+        private bool TryLoadUnityStringLinker(int i, StringLinker linker)
+        {
+            ClassicWzSource source = GetUnityCompareSource(i);
+            if (source == null)
+            {
+                return false;
+            }
+            try
+            {
+                ClassicStringLinkerTables tables = source.StringTables;
+                if (tables == null || !tables.HasValues)
+                {
+                    return false;
+                }
+                linker.Clear();
+                linker.Load(tables.StringNode, tables.ItemNode, tables.EtcNode, tables.QuestNode);
+                return true;
+            }
+            catch (Exception ex) when (ex is UnityException || ex is ClassicAssetException || ex is WzjsException)
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// ツールチップ生成に使う補助データ（セットアイテム、ポイントアイテムなど）を比較対象から読み込みます。
+        /// </summary>
+        private void InitializeUnityTooltipSources()
+        {
+            if (!this.AnyTooltipOutput)
+            {
+                return;
+            }
+
+            StateDetail = "ツールチップ用の補助データを読み込んでいます...";
+            CharaSimLoader.ClearAll();
+            SetUnityResolveSlot(0);
+            CharaSimLoader.LoadSetItemsIfEmpty();
+            CharaSimLoader.LoadAstraSubWeaponsIfEmpty();
+            CharaSimLoader.LoadExclusiveEquipsIfEmpty();
+            CharaSimLoader.LoadMsnMintableItemListIfEmpty();
+            CharaSimLoader.LoadGmsTucBlacklistItemsIfEmpty();
+            if (this.LocatePetEquip)
+            {
+                CharaSimLoader.LoadPetEquipInfoIfEmpty();
+            }
+
+            if (this.OutputItemTooltip || this.OutputGearTooltip)
+            {
+                SetUnityResolveSlot(1);
+                CharaSimLoader.LoadCommodities(null, slotIdx: 1);
+                SetUnityResolveSlot(0);
+                CharaSimLoader.LoadCommodities(null, slotIdx: 0);
+                CompareCommodities();
+            }
+        }
+
+        /// <summary>
+        /// 差分パス（例: <c>Item\Consume\0200\02000000.img\info\price</c>）から、ツールチップを出力する
+        /// アイテムやマップの id を収集します。WZ 比較の <c>Get*ID</c> に相当します。
+        /// </summary>
+        private void CollectUnityTooltipIDs(string path)
+        {
+            if (string.IsNullOrEmpty(path) || !this.AnyTooltipOutput)
+            {
+                return;
+            }
+            string[] segments = path.Replace('/', '\\').Split(new[] { '\\' }, StringSplitOptions.RemoveEmptyEntries);
+            if (segments.Length < 2)
+            {
+                return;
+            }
+
+            switch (segments[0])
+            {
+                case "Item":
+                    this.CollectUnityItemPath(segments);
+                    break;
+                case "Character":
+                    this.CollectUnityGearPath(segments);
+                    break;
+                case "Mob":
+                    this.CollectUnitySimpleID(segments, this.OutputMobTooltip, this.OutputMobTooltipIDs, 7);
+                    break;
+                case "Npc":
+                    this.CollectUnitySimpleID(segments, this.OutputNpcTooltip, this.OutputNpcTooltipIDs, 7);
+                    break;
+                case "Map":
+                    if (segments.Length >= 4
+                        && string.Equals(segments[1], "Map", StringComparison.Ordinal)
+                        && segments[2].StartsWith("Map", StringComparison.Ordinal))
+                    {
+                        this.AddUnityMapID(segments[3]);
+                    }
+                    break;
+                case "Skill":
+                    this.CollectUnitySkillPath(segments);
+                    break;
+                case "Quest":
+                    if (this.OutputQuestTooltip && segments.Length >= 3)
+                    {
+                        this.AddUnityQuestID(segments[2]);
+                    }
+                    break;
+                case "String":
+                    this.CollectUnityStringPath(segments);
+                    break;
+            }
+        }
+
+        /// <summary><c>Item\&lt;区分&gt;\&lt;分類&gt;\&lt;id&gt;...</c> からアイテム id を求めます。</summary>
+        private void CollectUnityItemPath(string[] segments)
+        {
+            string category = segments[1];
+            string id = FindUnityNumericID(segments, 2, 7);
+            if (id == null)
+            {
+                return;
+            }
+
+            switch (category)
+            {
+                case "Special":
+                    // WZ の Item\Special.img\<分類>.img\<id>（ポイントアイテムの構成）に相当します。
+                    this.AddUnityCashID(id.TrimStart('0'));
+                    break;
+                case "Consume":
+                case "Install":
+                case "Etc":
+                case "Cash":
+                case "Pet":
+                    this.AddUnityItemID(id);
+                    break;
+            }
+        }
+
+        /// <summary><c>Character\&lt;分類&gt;\&lt;id&gt;...</c> から装備 id を求めます。</summary>
+        private void CollectUnityGearPath(string[] segments)
+        {
+            if (!this.OutputGearTooltip || segments.Length < 3)
+            {
+                return;
+            }
+            if (Array.IndexOf(UnityEquipDirectories, segments[1]) < 0)
+            {
+                return;
+            }
+            string id = NormalizeUnityID(segments[2], 8);
+            if (id == null)
+            {
+                return;
+            }
+            if (!this.OutputGearTooltipIDs.Contains(id))
+            {
+                this.OutputGearTooltipIDs.Add(id);
+            }
+            AddUnityDiffTag(GetUnityDiffTags(this.DiffGearTags, id), segments[segments.Length - 1]);
+        }
+
+        /// <summary><c>Mob\&lt;id&gt;...</c> などの 1 階層 id から id を求めます。</summary>
+        private void CollectUnitySimpleID(string[] segments, bool enabled, HashSet<string> ids, int digitCount)
+        {
+            if (!enabled || segments.Length < 2)
+            {
+                return;
+            }
+            string id = FindUnityNumericID(segments, 1, digitCount);
+            if (id == null)
+            {
+                return;
+            }
+            if (!ids.Contains(id))
+            {
+                ids.Add(id);
+            }
+        }
+
+        /// <summary><c>Skill\&lt;職業&gt;\skill\&lt;id&gt;...</c> からスキル id を求めます。</summary>
+        private void CollectUnitySkillPath(string[] segments)
+        {
+            if (!this.OutputSkillTooltip)
+            {
+                return;
+            }
+            string id = FindUnityNumericID(segments, 1, 7);
+            if (id == null)
+            {
+                return;
+            }
+            // WZ 比較と同じく、ツールチップ側はゼロ埋めなしの id で扱います。
+            this.AddUnitySkillID(id.TrimStart('0'), segments[segments.Length - 1]);
+        }
+
+        /// <summary>
+        /// <c>String\&lt;region&gt;\&lt;category.img&gt;\&lt;id&gt;...</c> から、名前だけが変更された
+        /// アイテムなどの id を求めます。
+        /// </summary>
+        private void CollectUnityStringPath(string[] segments)
+        {
+            if (segments.Length < 4)
+            {
+                return;
+            }
+            string category = StripUnityImgSuffix(segments[2]);
+            // 表ごとに id の桁数が違います（スキルは 3〜7 桁、マップは 9 桁）。
+            int minLength = category == "Skill" ? 3 : category == "Map" ? 9 : 7;
+            string id = FindUnityNumericID(segments, 3, minLength);
+            if (id == null)
+            {
+                return;
+            }
+            string tag = segments[segments.Length - 1];
+
+            switch (category)
+            {
+                case "Item":
+                    // Classic では Item / Eqp / Consume などが 1 つの表なので、id の範囲で振り分けます。
+                    string paddedID = id.PadLeft(8, '0');
+                    if (paddedID.StartsWith("01", StringComparison.Ordinal))
+                    {
+                        this.AddUnityGearID(id, tag);
+                    }
+                    else if (paddedID.StartsWith("09", StringComparison.Ordinal))
+                    {
+                        // 09xxxxxx はポイントアイテム（WZ の Item\Special.img）。
+                        this.AddUnityCashID(id.TrimStart('0'));
+                    }
+                    else
+                    {
+                        this.AddUnityItemID(id);
+                    }
+                    break;
+                case "Eqp":
+                case "Gear":
+                    this.AddUnityGearID(id, tag);
+                    break;
+                case "Consume":
+                case "Ins":
+                case "Etc":
+                case "Cash":
+                case "Pet":
+                    this.AddUnityItemID(id);
+                    break;
+                case "Skill":
+                    this.AddUnitySkillID(id.TrimStart('0'), tag);
+                    break;
+                case "Map":
+                    this.AddUnityMapID(id);
+                    break;
+                case "Mob":
+                case "MonsterBook":
+                    if (this.OutputMobTooltip && !this.OutputMobTooltipIDs.Contains(id))
+                    {
+                        this.OutputMobTooltipIDs.Add(id);
+                    }
+                    break;
+                case "Npc":
+                    if (this.OutputNpcTooltip && !this.OutputNpcTooltipIDs.Contains(id))
+                    {
+                        this.OutputNpcTooltipIDs.Add(id);
+                    }
+                    break;
+            }
+        }
+
+        private void AddUnityItemID(string id)
+        {
+            if (!this.OutputItemTooltip || id == null)
+            {
+                return;
+            }
+            // ペットは 7 桁、それ以外のアイテムは 8 桁の id で扱います（WZ 比較と同じ）。
+            if (!id.StartsWith("500", StringComparison.Ordinal))
+            {
+                id = id.PadLeft(8, '0');
+            }
+            if (!this.OutputItemTooltipIDs.Contains(id))
+            {
+                this.OutputItemTooltipIDs.Add(id);
+                this.DiffItemTags[id] = new List<string>();
+            }
+        }
+
+        private void AddUnityGearID(string id, string tag)
+        {
+            if (!this.OutputGearTooltip || id == null)
+            {
+                return;
+            }
+            if (!this.OutputGearTooltipIDs.Contains(id))
+            {
+                this.OutputGearTooltipIDs.Add(id);
+            }
+            // ポイントアイテムの価格比較など、id だけが先に登録される場合があります。
+            AddUnityDiffTag(GetUnityDiffTags(this.DiffGearTags, id), tag);
+        }
+
+        private void AddUnityCashID(string id)
+        {
+            if (!this.OutputCashTooltip || string.IsNullOrEmpty(id))
+            {
+                return;
+            }
+            if (!this.OutputCashTooltipIDs.Contains(id))
+            {
+                this.OutputCashTooltipIDs.Add(id);
+                this.DiffCashTags[id] = new List<string>();
+            }
+        }
+
+        private void AddUnityMapID(string id)
+        {
+            if (!this.OutputMapTooltip)
+            {
+                return;
+            }
+            string mapID = NormalizeUnityID(id, 9);
+            if (mapID == null || this.OutputMapTooltipIDs.Contains(mapID))
+            {
+                return;
+            }
+            this.OutputMapTooltipIDs.Add(mapID);
+            this.DiffMapTags[mapID] = new List<string>();
+        }
+
+        private void AddUnityQuestID(string id)
+        {
+            string questID = NormalizeUnityID(id, 1);
+            if (questID == null || this.OutputQuestTooltipIDs.Contains(questID))
+            {
+                return;
+            }
+            this.OutputQuestTooltipIDs.Add(questID);
+        }
+
+        private void AddUnitySkillID(string id, string tag)
+        {
+            if (!this.OutputSkillTooltip || string.IsNullOrEmpty(id))
+            {
+                return;
+            }
+            if (!this.OutputSkillTooltipIDs.Contains(id))
+            {
+                this.OutputSkillTooltipIDs.Add(id);
+            }
+            AddUnityDiffTag(GetUnityDiffTags(this.DiffSkillTags, id), tag);
+        }
+
+        /// <summary>id に対応するタグ一覧を取得します（未登録なら作成）。</summary>
+        private static List<string> GetUnityDiffTags(Dictionary<string, List<string>> tags, string id)
+        {
+            List<string> list;
+            if (!tags.TryGetValue(id, out list))
+            {
+                list = new List<string>();
+                tags[id] = list;
+            }
+            return list;
+        }
+
+        private static void AddUnityDiffTag(List<string> tags, string tag)
+        {
+            if (tags == null || string.IsNullOrEmpty(tag) || tags.Contains(tag))
+            {
+                return;
+            }
+            tags.Add(tag);
+        }
+
+        private static string FindUnityNumericID(string[] segments, int startIndex, int minLength)
+        {
+            for (int i = startIndex; i < segments.Length; i++)
+            {
+                string id = NormalizeUnityID(segments[i], minLength);
+                if (id != null)
+                {
+                    return id;
+                }
+            }
+            return null;
+        }
+
+        /// <summary>ノード名が <paramref name="minLength"/> 桁以上の数字なら、その文字列を返します。</summary>
+        private static string NormalizeUnityID(string name, int minLength)
+        {
+            string text = StripUnityImgSuffix(name);
+            if (string.IsNullOrEmpty(text) || text.Length < Math.Max(minLength, 1))
+            {
+                return null;
+            }
+            for (int i = 0; i < text.Length; i++)
+            {
+                if (!char.IsDigit(text[i]))
+                {
+                    return null;
+                }
+            }
+            return text;
+        }
+
+        private static string StripUnityImgSuffix(string name)
+        {
+            if (name != null && name.EndsWith(".img", StringComparison.OrdinalIgnoreCase))
+            {
+                return name.Substring(0, name.Length - 4);
+            }
+            return name;
+        }
+
+        /// <summary>装備ツールチップの対象になる <c>Character</c> 配下の分類名。</summary>
+        private static readonly string[] UnityEquipDirectories =
+        {
+            "Accessory", "Cap", "Coat", "Longcoat", "Pants", "Shoes", "Glove", "Shield", "Cape", "Ring",
+            "Totem", "Weapon", "Mechanic", "Android", "Bits", "ArcaneForce", "AuthenticForce", "Jewel",
+            "NT_Beauty", "EquipBag", "PetEquip", "Dragon", "TamingMob", "Face", "Hair",
+        };
 
         #endregion
 

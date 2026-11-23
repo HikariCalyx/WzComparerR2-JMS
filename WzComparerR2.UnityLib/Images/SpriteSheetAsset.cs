@@ -56,6 +56,12 @@ namespace WzComparerR2.UnityLib.Images
             return false;
         }
 
+        /// <summary>索引に登録されている全スプライト名（別名を含む）。</summary>
+        public IEnumerable<string> EnumerateNames()
+        {
+            return this.paths.Keys;
+        }
+
         public static SpriteSheetAsset Parse(byte[] payload)
         {
             if (payload == null)

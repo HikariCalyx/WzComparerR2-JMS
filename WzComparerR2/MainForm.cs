@@ -6617,31 +6617,52 @@ namespace WzComparerR2
         /// <summary>
         /// 開いている Unity データセット内を WZ 形式のパスで検索します（WZ で見つからない場合の代替）。
         /// </summary>
-        private Wz_Node FindUnityNodeByPath(string wzPath)        {
+        private Wz_Node FindUnityNodeByPath(string wzPath)
+        {
             if (this.openedUnitySources == null || this.openedUnitySources.Count == 0
                 || string.IsNullOrEmpty(wzPath))
             {
                 return null;
             }
+
+            // Unity クライアント比較中は、比較対象のデータセットだけを参照します（新旧の内容を混ぜない）。
+            ClassicWzSource preferredSource = Comparer.EasyComparer.PreferredUnitySource;
+            if (preferredSource != null)
+            {
+                UnityAssetDocument preferredDoc = this.openedUnitySources.Values
+                    .FirstOrDefault(doc => doc.Source == preferredSource);
+                return preferredDoc == null ? null : FindUnityNodeInDocument(preferredDoc, wzPath);
+            }
+
             foreach (UnityAssetDocument document in this.openedUnitySources.Values)
             {
-                try
+                Wz_Node node = FindUnityNodeInDocument(document, wzPath);
+                if (node != null)
                 {
-                    Wz_Node node = document.Source.FindNode(wzPath);
-                    if (node != null)
-                    {
-                        return RootUnityNode(node);
-                    }
-                    node = FindUnityNodeBySegments(document.RootNode, wzPath);
-                    if (node != null)
-                    {
-                        return RootUnityNode(node);
-                    }
+                    return node;
                 }
-                catch (Exception ex) when (ex is UnityException || ex is ClassicAssetException || ex is WzjsException)
+            }
+            return null;
+        }
+
+        private static Wz_Node FindUnityNodeInDocument(UnityAssetDocument document, string wzPath)
+        {
+            try
+            {
+                Wz_Node node = document.Source.FindNode(wzPath);
+                if (node != null)
                 {
-                    // 単一アセットのデコード失敗は他のデータセットに影響しません。
+                    return RootUnityNode(node);
                 }
+                node = FindUnityNodeBySegments(document.RootNode, wzPath);
+                if (node != null)
+                {
+                    return RootUnityNode(node);
+                }
+            }
+            catch (Exception ex) when (ex is UnityException || ex is ClassicAssetException || ex is WzjsException)
+            {
+                // 単一アセットのデコード失敗は他の検索に影響しません。
             }
             return null;
         }
@@ -7662,16 +7683,8 @@ namespace WzComparerR2
                     comparer.AvatarCode = GetEasyCompareAvatarCode();
                     if (compareUnity)
                     {
-                        // Unity クライアントにはツールチップ生成に必要な WZ 構成が無いため、ノード比較のみを行う。
-                        comparer.OutputSkillTooltip = false;
-                        comparer.OutputItemTooltip = false;
-                        comparer.OutputGearTooltip = false;
-                        comparer.OutputMapTooltip = false;
-                        comparer.OutputMobTooltip = false;
-                        comparer.OutputNpcTooltip = false;
-                        comparer.OutputCashTooltip = false;
-                        comparer.OutputQuestTooltip = false;
-                        comparer.OutputAchvTooltip = false;
+                        // Unity クライアントには WZ の Base.wz が無いため、WZ 前提のオプションだけを無効化します。
+                        // ツールチップ出力は Unity データセットの構造から生成します。
                         comparer.SkipKMSContent = false;
                         comparer.SkipGodChangseopDuplicatedNodes = false;
                         comparer.OutputChairAndRidingMount = false;
