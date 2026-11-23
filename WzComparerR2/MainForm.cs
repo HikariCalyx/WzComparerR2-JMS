@@ -1757,6 +1757,7 @@ namespace WzComparerR2
                 }
                 string loadedLocale = unitySource.Locale;
                 int entryCount = unitySource.Catalog.Entries.Count;
+                string unitySourceRootPath = unitySource.Catalog.RootPath;
                 UnityClientInfo clientInfo = unitySource.ClientInfo;
 
                 // String/<region>/<category> 整理成 String.wz 的節點形狀；失敗不阻擋資料集開啟。
@@ -1795,8 +1796,20 @@ namespace WzComparerR2
                     clientText = (clientText == null ? null : clientText + "、")
                         + "Unity " + clientInfo.EngineVersion;
                 }
+                // 選択したフォルダーと実際の bundle フォルダーが違う場合（aa 直下やクライアント直下を選んだ場合）は明示します。
+                string bundleFolderText = null;
+                string resolvedBundleFolder = unitySourceRootPath;
+                if (!string.IsNullOrEmpty(resolvedBundleFolder)
+                    && !string.Equals(
+                        System.IO.Path.GetFullPath(resolvedBundleFolder).TrimEnd('\\'),
+                        System.IO.Path.GetFullPath(assetFolderPath).TrimEnd('\\'),
+                        StringComparison.OrdinalIgnoreCase))
+                {
+                    bundleFolderText = System.IO.Path.GetFileName(resolvedBundleFolder);
+                }
                 labelItemStatus.Text = $"Unityアセットフォルダーを開きました。 時間が経過した：{sw.ElapsedMilliseconds}ミリ秒、"
                     + $"{entryCount} エントリ、{bundleCount} バンドル、地域: {loadedLocale}"
+                    + (bundleFolderText == null ? null : "、bundle: " + bundleFolderText)
                     + (string.IsNullOrEmpty(clientText) ? null : "、クライアント: " + clientText)
                     + (stringTableError == null ? null : "、文字列テーブル読込失敗: " + stringTableError);
             }

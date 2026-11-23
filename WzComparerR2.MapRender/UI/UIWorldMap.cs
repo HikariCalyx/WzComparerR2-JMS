@@ -341,7 +341,12 @@ namespace WzComparerR2.MapRender.UI
                             {
                                 foreach (var subNode in mapNoNode.Nodes)
                                 {
-                                    spot.MapNo.Add(subNode.GetValue<int>());
+                                    // 数値でないノード（Classic データの空ノードなど）は無視して読み込みを継続します。
+                                    int? mapNo = subNode.GetValueEx<int?>(null);
+                                    if (mapNo != null)
+                                    {
+                                        spot.MapNo.Add(mapNo.Value);
+                                    }
                                 }
                             }
                             worldMapInfo.MapList.Add(spot);
@@ -354,8 +359,14 @@ namespace WzComparerR2.MapRender.UI
                     {
                         foreach (var mapLinkNode in node.Nodes)
                         {
+                            int linkIndex;
+                            if (!int.TryParse(mapLinkNode.Text, out linkIndex))
+                            {
+                                continue;
+                            }
+
                             var link = new MapLink();
-                            link.Index = int.Parse(mapLinkNode.Text);
+                            link.Index = linkIndex;
                             link.Tooltip = mapLinkNode.Nodes["toolTip"].GetValueEx<string>(null);
                             link.Desc = mapLinkNode.Nodes["desc"].GetValueEx<string>(null);
                             var linkNode = mapLinkNode.Nodes["link"];
@@ -560,14 +571,22 @@ namespace WzComparerR2.MapRender.UI
         private TextureItem LoadTextureItem(Wz_Node node, bool loadHitMap = false)
         {
             var item = new TextureItem();
-            var linkNode = node.GetLinkedSourceNode(PluginBase.PluginManager.FindWz);
-            item.Texture = UIHelper.LoadTexture(linkNode);
-            item.Z = node.Nodes["z"].GetValueEx<int>(0);
-            var origin = node.Nodes["origin"]?.GetValueEx<Wz_Vector>(null);
-            item.Origin = origin.ToPointF();
-            if (item.Texture != null && loadHitMap)
+            try
             {
-                item.HitMap = UIHelper.CreateHitMap(item.Texture.GetNativeTexture() as Microsoft.Xna.Framework.Graphics.Texture2D);
+                var linkNode = node.GetLinkedSourceNode(PluginBase.PluginManager.FindWz);
+                item.Texture = UIHelper.LoadTexture(linkNode);
+                item.Z = node.Nodes["z"].GetValueEx<int>(0);
+                var origin = node.Nodes["origin"]?.GetValueEx<Wz_Vector>(null);
+                item.Origin = origin.ToPointF();
+                if (item.Texture != null && loadHitMap)
+                {
+                    item.HitMap = UIHelper.CreateHitMap(item.Texture.GetNativeTexture() as Microsoft.Xna.Framework.Graphics.Texture2D);
+                }
+            }
+            catch (Exception ex)
+            {
+                // 画像 1 枚の失敗でワールドマップ全体の読み込みを止めないようにします。
+                PluginBase.PluginManager.LogError("MapRender", ex, "ワールドマップの画像を読み込めませんでした: " + node?.FullPathToFile);
             }
             return item;
         }

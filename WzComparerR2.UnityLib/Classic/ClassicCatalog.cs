@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Linq;
+using System.Text.RegularExpressions;
 using WzComparerR2.UnityLib.Images;
 using WzComparerR2.UnityLib.Unity;
 
@@ -98,6 +100,10 @@ namespace WzComparerR2.UnityLib.Classic
         private readonly HashSet<string> spritesetEntryKeys;
 
         /// <summary>掃描目錄下所有 .bundle，用每個 AssetBundle 物件的 m_Container 建索引。</summary>
+        /// <param name="rootDirectory">
+        /// bundle のあるディレクトリ。bundle ディレクトリ自体、StreamingAssets/aa、クライアントフォルダーの
+        /// いずれを指定しても自動的に解決します。
+        /// </param>
         public static ClassicCatalog Build(string rootDirectory)
         {
             if (rootDirectory == null)
@@ -106,11 +112,13 @@ namespace WzComparerR2.UnityLib.Classic
             }
             if (!Directory.Exists(rootDirectory))
             {
-                throw new DirectoryNotFoundException("資料集目錄不存在: " + rootDirectory);
+                throw new DirectoryNotFoundException("資料集ディレクトリが存在しません: " + rootDirectory);
             }
 
+            string bundleDirectory = ResolveBundleDirectory(rootDirectory);
+
             List<string> files = new List<string>();
-            foreach (string path in Directory.GetFiles(rootDirectory))
+            foreach (string path in Directory.GetFiles(bundleDirectory))
             {
                 if (string.Equals(Path.GetExtension(path), ".bundle", StringComparison.OrdinalIgnoreCase))
                 {
@@ -119,7 +127,7 @@ namespace WzComparerR2.UnityLib.Classic
             }
             files.Sort(StringComparer.Ordinal);
 
-            ClassicCatalog catalog = new ClassicCatalog(rootDirectory);
+            ClassicCatalog catalog = new ClassicCatalog(bundleDirectory);
             foreach (string path in files)
             {
                 FileInfo info = new FileInfo(path);
@@ -136,6 +144,96 @@ namespace WzComparerR2.UnityLib.Classic
             }
             catalog.GroupSoundEntries();
             return catalog;
+        }
+
+        /// <summary>
+        /// .bundle が実際に入っているディレクトリを特定します。
+        /// Addressables 1.x のローカル配置は <c>&lt;aa&gt;/StandaloneWindows64</c>、
+        /// 2.x のリモートカタログ配置は <c>&lt;aa&gt;/w</c> になるため、
+        /// クライアント直下・<see cref="System.IO.Path"/> の <c>StreamingAssets/aa</c>・
+        /// その配下のいずれを選んでも開けるようにします。
+        /// </summary>
+        public static string ResolveBundleDirectory(string rootDirectory)
+        {
+            if (rootDirectory == null)
+            {
+                throw new ArgumentNullException(nameof(rootDirectory));
+            }
+            if (HasBundles(rootDirectory))
+            {
+                return rootDirectory;
+            }
+
+            List<string> candidates = new List<string>();
+            string aaDirectory = Path.Combine(rootDirectory, "StreamingAssets", "aa");
+            string buildTarget = ReadBuildTarget(Path.Combine(aaDirectory, "settings.json"));
+
+            // Addressables の 2 つの配置（リモートカタログ w / ローカル StandaloneWindows64）。
+            candidates.Add(Path.Combine(aaDirectory, "w"));
+            if (buildTarget != null)
+            {
+                candidates.Add(Path.Combine(aaDirectory, buildTarget));
+                candidates.Add(Path.Combine(rootDirectory, buildTarget));
+            }
+            candidates.Add(Path.Combine(aaDirectory, "StandaloneWindows64"));
+            candidates.Add(Path.Combine(rootDirectory, "w"));
+            candidates.Add(Path.Combine(rootDirectory, "StandaloneWindows64"));
+
+            // aa 直下・クライアント直下のサブディレクトリも順に確認します。
+            candidates.AddRange(SafeGetDirectories(aaDirectory));
+            candidates.AddRange(SafeGetDirectories(rootDirectory));
+            candidates.Add(aaDirectory);
+
+            foreach (string candidate in candidates)
+            {
+                if (Directory.Exists(candidate) && HasBundles(candidate))
+                {
+                    return candidate;
+                }
+            }
+
+            throw new ClassicAssetException(
+                "AssetBundle (.bundle) が見つかりません: " + rootDirectory + "\r\n"
+                + "クライアントの StreamingAssets/aa フォルダー、または bundle が入っているサブフォルダーを選択してください。");
+        }
+
+        private static bool HasBundles(string directory)
+        {
+            return Directory.Exists(directory)
+                && Directory.GetFiles(directory, "*.bundle").Length > 0;
+        }
+
+        private static IEnumerable<string> SafeGetDirectories(string directory)
+        {
+            try
+            {
+                return Directory.Exists(directory)
+                    ? Directory.GetDirectories(directory)
+                    : Enumerable.Empty<string>();
+            }
+            catch (IOException)
+            {
+                return Enumerable.Empty<string>();
+            }
+        }
+
+        /// <summary>aa/settings.json からビルドターゲット名（例: <c>StandaloneWindows64</c>）を読みます。</summary>
+        private static string ReadBuildTarget(string settingsPath)
+        {
+            try
+            {
+                if (!File.Exists(settingsPath))
+                {
+                    return null;
+                }
+                string text = File.ReadAllText(settingsPath);
+                Match match = Regex.Match(text, "\"m_BuildTarget\"\\s*:\\s*\"([^\"]+)\"", RegexOptions.CultureInvariant);
+                return match.Success ? match.Groups[1].Value : null;
+            }
+            catch (IOException)
+            {
+                return null;
+            }
         }
 
         /// <summary>

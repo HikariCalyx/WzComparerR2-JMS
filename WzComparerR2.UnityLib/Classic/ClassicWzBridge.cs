@@ -60,6 +60,10 @@ namespace WzComparerR2.UnityLib.Classic
             try
             {
                 this.EnsureExtracted();
+                // WZ の img と同じく、内容ノードからディレクトリと img ノードへ辿れるようにします。
+                // これをしないと FullPathToFile が "WorldMap.img\BaseImg\0" のようにディレクトリ名を
+                // 含まないパスになり、PluginManager.FindWz によるリソース検索が解決できません。
+                this.GetRootedNode();
                 e = null;
                 return true;
             }
