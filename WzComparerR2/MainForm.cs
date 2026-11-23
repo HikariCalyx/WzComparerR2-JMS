@@ -1360,11 +1360,18 @@ namespace WzComparerR2
 
                 using (var bmp = frame.Png.ExtractPng(page))
                 {
+                    if (bmp == null)
+                    {
+                        // 画像を持たない canvas（例: データセットに該 sprite がない）は保存できません。
+                        labelItemStatus.Text = "画像の保存に失敗しました。";
+                        return;
+                    }
                     bmp.Save(pngFileName, System.Drawing.Imaging.ImageFormat.Png);
                 }
                 labelItemStatus.Text = "保存された画像: " + pngFileName;
             }
-            else if ((pictureBoxEx1.ShowOverlayAni || !string.IsNullOrEmpty(captureTime)) && frame.Texture != null) // 애니메이션 중첩
+            else if (frame.Texture != null
+                && (pictureBoxEx1.ShowOverlayAni || !string.IsNullOrEmpty(captureTime) || frame.Png == null)) // 애니메이션 중첩（または Wz_Png を持たない画像）
             {
                 var config = ImageHandlerConfig.Default;
                 string pngFileName = string.IsNullOrEmpty(captureTime) ? pictureBoxEx1.PictureName + ".png" : $"{pictureBoxEx1.PictureName}_{captureTime}.png";
@@ -2275,8 +2282,10 @@ namespace WzComparerR2
                         byte[] canvasPng = unityCanvas.GetPng();
                         if (canvasPng != null)
                         {
+                            unityCanvas.EnsureExternalPngInfo();
                             pictureBoxEx1.PictureName = GetSelectedNodeImageName();
-                            pictureBoxEx1.ShowImage(canvasPng);
+                            // Wz_Png として表示する: 保存時に元の PNG をそのまま書き出せるようにするため。
+                            pictureBoxEx1.ShowImage(unityCanvas);
                             this.cmbItemAniNames.Items.Clear();
                             if (this.pictureBoxEx1.IsPaused)
                             {
@@ -2284,6 +2293,7 @@ namespace WzComparerR2
                             }
                             advTree3.PathSeparator = ".";
                             textBoxX1.Text = "データ長:  " + canvasPng.Length + " バイト\r\n" +
+                                "サイズ:  " + unityCanvas.Width + "*" + unityCanvas.Height + "\r\n" +
                                 "パス:  " + unityCanvas.Path;
                         }
                         else
