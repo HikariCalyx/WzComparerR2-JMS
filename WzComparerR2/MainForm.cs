@@ -2175,7 +2175,8 @@ namespace WzComparerR2
                 try
                 {
                     // 内容（WZJS ツリー／サウンド一覧）は初回選択時に構築し、UnityAssetImage が結果を保持します。
-                    Node imageNode = createNode(unityImage.AsWzNode());
+                    // 上位ノードチェーンを補い、プラグイン（アバター等）が WZ と同じ型判定・パス判定を使えるようにします。
+                    Node imageNode = createNode(unityImage.GetRootedNode());
                     advTree2.Nodes.Add(imageNode);
                     imageNode.Expand();
                     QueryPerformance.End();
@@ -2237,7 +2238,8 @@ namespace WzComparerR2
                 try
                 {
                     // JSON 於第一次選取時才解析，UnityJsonAsset 會保留結果。
-                    Node jsonNode = createNode(jsonAsset.AsWzNode());
+                    // 上位ノードチェーンを補い、プラグインが WZ と同じ型判定・パス判定を使えるようにします。
+                    Node jsonNode = createNode(jsonAsset.GetRootedNode());
                     advTree2.Nodes.Add(jsonNode);
                     jsonNode.Expand();
                     QueryPerformance.End();
@@ -6202,7 +6204,7 @@ namespace WzComparerR2
                 Wz_Node imageNode;
                 try
                 {
-                    imageNode = unityImage.AsWzNode();
+                    imageNode = unityImage.GetRootedNode();
                 }
                 catch (Exception ex)
                 {
@@ -6235,7 +6237,7 @@ namespace WzComparerR2
             {
                 try
                 {
-                    itemNode = unityImage.AsWzNode();
+                    itemNode = unityImage.GetRootedNode();
                 }
                 catch (Exception ex)
                 {
@@ -6249,7 +6251,7 @@ namespace WzComparerR2
                 Wz_Node imageContent;
                 try
                 {
-                    imageContent = unityImage.AsWzNode();
+                    imageContent = unityImage.GetRootedNode();
                 }
                 catch (Exception ex)
                 {
@@ -6849,7 +6851,7 @@ namespace WzComparerR2
             {
                 try
                 {
-                    questIdNode = GetUnityImageChildNode(selectedNode, unityImage.AsWzNode());
+                    questIdNode = GetUnityImageChildNode(selectedNode, unityImage.GetRootedNode());
                 }
                 catch (Exception ex)
                 {
@@ -7708,10 +7710,9 @@ namespace WzComparerR2
                     if (compareUnity)
                     {
                         // Unity クライアントには WZ の Base.wz が無いため、WZ 前提のオプションだけを無効化します。
-                        // ツールチップ出力は Unity データセットの構造から生成します。
+                        // ツールチップ出力・椅子のアバター例は Unity データセットの構造から生成します。
                         comparer.SkipKMSContent = false;
                         comparer.SkipGodChangseopDuplicatedNodes = false;
-                        comparer.OutputChairAndRidingMount = false;
                     }
                     comparer.StateInfoChanged += new EventHandler(comparer_StateInfoChanged);
                     comparer.StateDetailChanged += new EventHandler(comparer_StateDetailChanged);
