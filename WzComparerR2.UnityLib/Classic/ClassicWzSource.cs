@@ -828,11 +828,9 @@ namespace WzComparerR2.UnityLib.Classic
                 return null;
             }
 
-            WzLib.Wz_Node node = this.FindNodeCore(normalized);
-            if (node == null)
-            {
-                node = this.FindStringTableNode(normalized);
-            }
+           WzLib.Wz_Node node = this.FindNodeCore(normalized)
+               ?? this.FindStringTableNode(normalized)
+               ?? this.FindScriptStringNode(normalized);
             if (node == null)
             {
                 // 索引ツリーのノードはルート名（クライアント名）を先頭に含むパスを返すため、
@@ -841,10 +839,52 @@ namespace WzComparerR2.UnityLib.Classic
                 if (slash > 0)
                 {
                     string stripped = normalized.Substring(slash + 1);
-                    node = this.FindNodeCore(stripped) ?? this.FindStringTableNode(stripped);
+                   node = this.FindNodeCore(stripped)
+                       ?? this.FindStringTableNode(stripped)
+                       ?? this.FindScriptStringNode(stripped);
                 }
             }
             return node;
+        }
+
+        /// <summary>
+        /// クライアントのスクリプト文字列（<c>String/&lt;region&gt;/StringTable/SID_...</c>）を、
+        /// 地域コードを省略したパス（<c>String/StringTable/SID_...</c>）でも解決します。
+        /// 現在のロケールを優先し、見つからなければ他のロケールを試します。該当なしは null。
+        /// </summary>
+        private WzLib.Wz_Node FindScriptStringNode(string normalized)
+        {
+           string[] segments = normalized.Split('/');
+           if (segments.Length != 3
+               || !string.Equals(segments[0], "String", StringComparison.OrdinalIgnoreCase)
+               || !string.Equals(segments[1], "StringTable", StringComparison.OrdinalIgnoreCase))
+           {
+               return null;
+           }
+
+           string key = segments[2];
+           WzLib.Wz_Node node = this.FindNodeCore($"{segments[0]}/{this.locale}/{segments[1]}/{key}");
+           if (node != null)
+           {
+               return node;
+           }
+           if (this.Locales == null)
+           {
+               return null;
+           }
+           foreach (string locale in this.Locales)
+           {
+               if (string.Equals(locale, this.locale, StringComparison.Ordinal))
+               {
+                   continue;
+               }
+               node = this.FindNodeCore($"{segments[0]}/{locale}/{segments[1]}/{key}");
+               if (node != null)
+               {
+                   return node;
+               }
+           }
+           return null;
         }
 
         /// <summary>

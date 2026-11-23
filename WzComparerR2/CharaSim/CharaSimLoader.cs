@@ -389,6 +389,51 @@ namespace WzComparerR2.CharaSim
         /// </summary>
         public static Func<string, int?> ActionDelayResolver { get; set; }
 
+        /// <summary>
+        /// クライアントのスクリプト文字列キー（例: <c>SID_EXCLUSIVE_EQUIP_ADMIN_INFO</c>）を
+        /// <c>String/&lt;region&gt;/StringTable</c> から解決します。キー形式でない文字列や未解決の場合は null。
+        /// </summary>
+        public static string ResolveScriptString(string key)
+        {
+            if (!IsScriptStringKey(key))
+            {
+                return null;
+            }
+            Wz_Node node = PluginManager.FindWz("String/StringTable/" + key);
+            string text = node == null ? null : node.Value as string;
+            return string.IsNullOrEmpty(text) ? null : text;
+        }
+
+        /// <summary>空白や記号を含まない <c>AAA_BBB</c> 形式のキーかどうか。</summary>
+        private static bool IsScriptStringKey(string key)
+        {
+            if (string.IsNullOrEmpty(key) || key.Length > 128)
+            {
+                return false;
+            }
+            bool hasUnderscore = false;
+            bool hasLetter = false;
+            foreach (char c in key)
+            {
+                if (c == '_')
+                {
+                    hasUnderscore = true;
+                }
+                else if (c >= '0' && c <= '9')
+                {
+                }
+                else if ((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z'))
+                {
+                    hasLetter = true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            return hasUnderscore && hasLetter;
+        }
+
         public static int GetActionDelay(string actionName, Wz_Node wzNode = null)
         {
             if (string.IsNullOrEmpty(actionName))

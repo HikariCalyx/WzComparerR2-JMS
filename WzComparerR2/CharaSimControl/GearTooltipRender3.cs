@@ -2350,15 +2350,20 @@ namespace WzComparerR2.CharaSimControl
                         string exclusiveEquip;
                         if (!string.IsNullOrEmpty(kv.Value.Info))
                         {
-                            var itemGroup = kv.Value.Info;
-                            var delStr = "は重複着用できません。";
-                            if (kv.Value.Info.Contains(delStr))
+                            // Classic World（Unity クライアント）の info はスクリプト文字列キーのことがあります。
+                            var itemGroup = CharaSimLoader.ResolveScriptString(kv.Value.Info);
+                            if (itemGroup == null)
                             {
-                                itemGroup = itemGroup.Replace(delStr, "");
-                            }
-                            else if (!itemGroup.EndsWith(".") && !itemGroup.EndsWith("。"))
-                            {
-                                itemGroup += "アイテム";
+                                itemGroup = kv.Value.Info;
+                                var delStr = "は重複着用できません。";
+                                if (kv.Value.Info.Contains(delStr))
+                                {
+                                    itemGroup = itemGroup.Replace(delStr, "");
+                                }
+                                else if (!itemGroup.EndsWith(".") && !itemGroup.EndsWith("。"))
+                                {
+                                    itemGroup += "アイテム";
+                                }
                             }
                             exclusiveEquip = $"#$rアイテムグループ内の重複装着不可# ({itemGroup})";
                         }

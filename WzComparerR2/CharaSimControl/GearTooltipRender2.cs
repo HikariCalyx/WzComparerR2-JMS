@@ -1560,13 +1560,15 @@ namespace WzComparerR2.CharaSimControl
                     string exclusiveEquip;
                     if (!string.IsNullOrEmpty(kv.Value.Info))
                     {
-                        if (kv.Value.Info.EndsWith("。") || kv.Value.Info.EndsWith("."))
+                        // Classic World（Unity クライアント）の info はスクリプト文字列キーのことがあります。
+                        string infoText = CharaSimLoader.ResolveScriptString(kv.Value.Info) ?? kv.Value.Info;
+                        if (infoText.EndsWith("。") || infoText.EndsWith("."))
                         {
-                            exclusiveEquip = "#c" + kv.Value.Info + "#";
+                            exclusiveEquip = "#c" + infoText + "#";
                         }
                         else
                         {
-                            exclusiveEquip = "#c" + kv.Value.Info + "は重複着用できません。#";
+                            exclusiveEquip = "#c" + infoText + "は重複着用できません。#";
                         }
                     }
                     else
