@@ -80,5 +80,17 @@ namespace WzComparerR2.UnityLib.Classic
             Wz_Type type = GetWzType(assetPath);
             return type == Wz_Type.Unknown ? (Wz_Type?)null : type;
         }
+
+        /// <summary>
+        /// <see cref="GetWzType(string)"/> と同じですが、従来の WZ に対応する型が無いディレクトリ
+        /// （例: <c>CashShopPreviewNew</c>、<c>Feature</c>、<c>GlobalMarketPreview</c>、<c>MapLogin</c>、
+        /// <c>MonsterBook</c>、<c>StandardPDD</c>）を <see cref="Wz_Type.Base"/> として扱います。
+        /// ルートディレクトリを型ごとにまとめる用途（比較ページの分類など）で使用します。
+        /// </summary>
+        public static Wz_Type GetWzTypeOrBase(string assetPath)
+        {
+            Wz_Type type = GetWzType(assetPath);
+            return type == Wz_Type.Unknown ? Wz_Type.Base : type;
+        }
     }
 }

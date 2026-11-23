@@ -96,7 +96,8 @@ namespace WzComparerR2.Comparer
                     {
                         if (pair.NodeNew != null && pair.NodeOld != null)
                         {
-                            CompareUnityDirectory(sideNew, pair.NodeNew, sideOld, pair.NodeOld, pair.Name, entries);
+                            // 単一アセットのルート（MonsterBook など）にも対応するため、階層を判定して比較します。
+                            CompareUnityNode(sideNew, pair.NodeNew, sideOld, pair.NodeOld, pair.Name, entries);
                         }
                         else if (pair.NodeNew != null)
                         {
@@ -219,18 +220,17 @@ namespace WzComparerR2.Comparer
             }
         }
 
-        /// <summary><paramref name="root"/> のトップディレクトリを <see cref="Wz_Type"/> ごとに分類します。</summary>
+        /// <summary>
+        /// <paramref name="root"/> のトップディレクトリを <see cref="Wz_Type"/> ごとに分類します。
+        /// 従来の WZ に対応する型が無いディレクトリ（<c>MonsterBook</c> など）は <see cref="Wz_Type.Base"/> として扱います。
+        /// </summary>
         private static Dictionary<Wz_Type, Dictionary<string, Wz_Node>> BuildUnityTypeIndex(Wz_Node root)
         {
             Dictionary<Wz_Type, Dictionary<string, Wz_Node>> index =
                 new Dictionary<Wz_Type, Dictionary<string, Wz_Node>>();
             foreach (Wz_Node child in root.Nodes)
             {
-                Wz_Type type = ClassicWzTypeMap.GetWzType(child.Text);
-                if (type == Wz_Type.Unknown)
-                {
-                    continue;
-                }
+                Wz_Type type = ClassicWzTypeMap.GetWzTypeOrBase(child.Text);
 
                 Dictionary<string, Wz_Node> dirs;
                 if (!index.TryGetValue(type, out dirs))
