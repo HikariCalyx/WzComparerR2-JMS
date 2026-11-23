@@ -120,6 +120,9 @@ namespace WzComparerR2.UnityLib.Classic
         private long soundCacheBytes;
         private const long SoundCacheByteLimit = 32L * 1024 * 1024;
         private readonly UnityImageRenderer renderer;
+        private readonly object stringTablesLock = new object();
+        private ClassicStringLinkerTables stringTables;
+        private bool stringTablesUnavailable;
         private string locale;
         private long localeGeneration;
 
@@ -165,6 +168,36 @@ namespace WzComparerR2.UnityLib.Classic
                 this.renderer.Locale = value;
                 this.renderer.ClearCache();
                 this.Catalog.RebuildSpritesetEntries(value);
+                lock (this.stringTablesLock)
+                {
+                    // 文字列テーブルはロケール依存のため作り直します。
+                    this.stringTables = null;
+                    this.stringTablesUnavailable = false;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Unity の <c>String/&lt;region&gt;/*</c> を WZ 形式（<c>String/Consume.img</c> など）に整理した
+        /// 文字列テーブルです。初回アクセス時に構築し、ロケール変更時に破棄します。
+        /// </summary>
+        public ClassicStringLinkerTables StringTables
+        {
+            get
+            {
+                ClassicStringLinkerTables tables = this.stringTables;
+                if (tables != null)
+                {
+                    return tables;
+                }
+                lock (this.stringTablesLock)
+                {
+                    if (this.stringTables == null)
+                    {
+                        this.stringTables = ClassicStringLinkerTables.Build(this);
+                    }
+                    return this.stringTables;
+                }
             }
         }
 
@@ -798,12 +831,82 @@ namespace WzComparerR2.UnityLib.Classic
             WzLib.Wz_Node node = this.FindNodeCore(normalized);
             if (node == null)
             {
+                node = this.FindStringTableNode(normalized);
+            }
+            if (node == null)
+            {
                 // 索引ツリーのノードはルート名（クライアント名）を先頭に含むパスを返すため、
                 // その 1 セグメントを落としても検索します。
                 int slash = normalized.IndexOf('/');
                 if (slash > 0)
                 {
-                    node = this.FindNodeCore(normalized.Substring(slash + 1));
+                    string stripped = normalized.Substring(slash + 1);
+                    node = this.FindNodeCore(stripped) ?? this.FindStringTableNode(stripped);
+                }
+            }
+            return node;
+        }
+
+        /// <summary>
+        /// WZ の <c>String.wz</c> / <c>Etc.wz</c> / <c>Quest.wz</c> に相当するパスを、
+        /// Unity の文字列テーブル（<see cref="StringTables"/>）から解決します。見つからない場合は null。
+        /// </summary>
+        private WzLib.Wz_Node FindStringTableNode(string normalized)
+        {
+            string[] segments = normalized.Split('/');
+            if (segments.Length < 2)
+            {
+                return null;
+            }
+
+            ClassicStringLinkerTables tables;
+            if (this.stringTablesUnavailable)
+            {
+                return null;
+            }
+            try
+            {
+                tables = this.StringTables;
+            }
+            catch (Exception ex) when (ex is UnityException || ex is ClassicAssetException || ex is WzjsException)
+            {
+                // 文字列テーブルが読めないデータセットでは、以降も諦めます。
+                this.stringTablesUnavailable = true;
+                return null;
+            }
+            if (tables == null)
+            {
+                return null;
+            }
+
+            WzLib.Wz_Node node;
+            switch (segments[0])
+            {
+                case "String":
+                    node = tables.StringNode;
+                    break;
+                case "Etc":
+                    node = tables.EtcNode;
+                    break;
+                case "Quest":
+                    node = tables.QuestNode;
+                    break;
+                default:
+                    return null;
+            }
+            if (node == null)
+            {
+                return null;
+            }
+
+            for (int i = 1; i < segments.Length; i++)
+            {
+                // テーブルの末端ノードは WZ と同じく "<名前>.img" です。
+                string name = segments[i];
+                node = FindChildByName(node, name) ?? FindChildByName(node, name + ".img");
+                if (node == null)
+                {
+                    return null;
                 }
             }
             return node;

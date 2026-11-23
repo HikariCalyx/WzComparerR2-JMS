@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using WzComparerR2.UnityLib.Unity;
+using WzComparerR2.UnityLib.Wzjs;
 using WzComparerR2.WzLib;
 
 namespace WzComparerR2.UnityLib.Classic
@@ -77,6 +79,7 @@ namespace WzComparerR2.UnityLib.Classic
             Wz_Node root = new Wz_Node("String");
             Dictionary<string, Wz_Node> categories =
                 new Dictionary<string, Wz_Node>(StringComparer.Ordinal);
+            Dictionary<int, string> equipTypes = BuildEquipTypeMap(source);
 
             string prefix = "String/" + locale + "/";
             foreach (KeyValuePair<string, UnityEntryLocation> entry in source.Catalog.Entries)
@@ -123,8 +126,8 @@ namespace WzComparerR2.UnityLib.Classic
                 }
             }
 
-            BuildItemCategories(root, categories, source, prefix);
-            BuildEqpImage(root, categories, source, prefix);
+            BuildItemCategories(root, categories, source, prefix, equipTypes);
+            BuildEqpImage(root, categories, source, prefix, equipTypes);
             BuildMapImage(root, categories, source, prefix);
             return root;
         }
@@ -138,9 +141,28 @@ namespace WzComparerR2.UnityLib.Classic
                 return;
             }
             Wz_Node node = new Wz_Node(WithImgSuffix(category));
-            ClassicWzBridge.AppendEntryContents(node, source, key);
-            root.Nodes.Add(node);
+            if (TryAppendEntryContents(node, source, key))
+            {
+                root.Nodes.Add(node);
+            }
             categories[category] = node;
+        }
+
+        /// <summary>
+        /// 1 つの資産の解読失敗で文字列テーブル全体が失われないように、例外を握って続行します。
+        /// </summary>
+        private static bool TryAppendEntryContents(Wz_Node target, ClassicWzSource source, string key)
+        {
+            try
+            {
+                ClassicWzBridge.AppendEntryContents(target, source, key);
+                return true;
+            }
+            catch (Exception ex) when (ex is UnityException || ex is ClassicAssetException || ex is WzjsException)
+            {
+                target.Nodes.Clear();
+                return false;
+            }
         }
 
         /// <summary>
@@ -149,7 +171,7 @@ namespace WzComparerR2.UnityLib.Classic
         /// </summary>
         private static void BuildItemCategories(
             Wz_Node root, Dictionary<string, Wz_Node> categories,
-            ClassicWzSource source, string prefix)
+            ClassicWzSource source, string prefix, Dictionary<int, string> equipTypes)
         {
             string itemKey = prefix + "Item";
             if (!source.Catalog.Entries.ContainsKey(itemKey))
@@ -158,7 +180,7 @@ namespace WzComparerR2.UnityLib.Classic
             }
 
             Wz_Node table = new Wz_Node("Item");
-            ClassicWzBridge.AppendEntryContents(table, source, itemKey);
+            TryAppendEntryContents(table, source, itemKey);
 
             List<Wz_Node> itemNodes = new List<Wz_Node>(table.Nodes);
             foreach (Wz_Node itemNode in itemNodes)
@@ -179,7 +201,7 @@ namespace WzComparerR2.UnityLib.Classic
                 if (string.Equals(category, "Eqp", StringComparison.Ordinal))
                 {
                     // Eqp.img は「分類 / サブ分類 / id」の 3 階層が必要です。
-                    AddEqpEntry(imgNode, itemNode, id);
+                    AddEqpEntry(imgNode, itemNode, id, equipTypes);
                 }
                 else if (string.Equals(category, "Etc", StringComparison.Ordinal))
                 {
@@ -233,7 +255,7 @@ namespace WzComparerR2.UnityLib.Classic
         /// </summary>
         private static void BuildEqpImage(
             Wz_Node root, Dictionary<string, Wz_Node> categories,
-            ClassicWzSource source, string prefix)
+            ClassicWzSource source, string prefix, Dictionary<int, string> equipTypes)
         {
             string eqpKey = prefix + "Eqp";
             if (!source.Catalog.Entries.ContainsKey(eqpKey))
@@ -242,14 +264,14 @@ namespace WzComparerR2.UnityLib.Classic
             }
 
             Wz_Node table = new Wz_Node("Eqp");
-            ClassicWzBridge.AppendEntryContents(table, source, eqpKey);
+            TryAppendEntryContents(table, source, eqpKey);
             Wz_Node eqpImg = GetOrCreateCategory(root, categories, "Eqp");
             foreach (Wz_Node node in new List<Wz_Node>(table.Nodes))
             {
                 int id;
                 if (int.TryParse(node.Text, NumberStyles.None, CultureInfo.InvariantCulture, out id))
                 {
-                    AddEqpEntry(eqpImg, node, id);
+                    AddEqpEntry(eqpImg, node, id, equipTypes);
                 }
             }
         }
@@ -269,7 +291,7 @@ namespace WzComparerR2.UnityLib.Classic
             }
 
             Wz_Node table = new Wz_Node("Map");
-            ClassicWzBridge.AppendEntryContents(table, source, mapKey);
+            TryAppendEntryContents(table, source, mapKey);
             Wz_Node mapImg = GetOrCreateCategory(root, categories, "Map");
             foreach (Wz_Node node in new List<Wz_Node>(table.Nodes))
             {
@@ -283,18 +305,44 @@ namespace WzComparerR2.UnityLib.Classic
             }
         }
 
-        private static void AddEqpEntry(Wz_Node eqpImg, Wz_Node entry, int id)
+        private static void AddEqpEntry(
+            Wz_Node eqpImg, Wz_Node entry, int id, Dictionary<int, string> equipTypes)
         {
+            // StringLinker が 3 階層（分類 / サブ分類 / id）を期待するため、従来の形も維持します。
             Wz_Node group = GetOrAddChild(
                 eqpImg, (id / 10000).ToString(CultureInfo.InvariantCulture));
             Wz_Node slot = GetOrAddChild(group, "0");
             slot.Nodes.Add(entry);
+
+            // WZ と同じ「Eqp.img/Eqp/<分類名>/<id>」の形も用意します（DB2 などが参照）。
+            string typeName;
+            if (equipTypes == null || !equipTypes.TryGetValue(id, out typeName))
+            {
+                return;
+            }
+            Wz_Node eqpRoot = GetOrAddChild(eqpImg, "Eqp");
+            GetOrAddChild(eqpRoot, typeName).Nodes.Add(CloneNode(entry));
+            if (string.Equals(typeName, "TamingMob", StringComparison.Ordinal))
+            {
+                // WZ 側の分類名は "Taming" です。
+                GetOrAddChild(eqpRoot, "Taming").Nodes.Add(CloneNode(entry));
+            }
+        }
+
+        private static Wz_Node CloneNode(Wz_Node node)
+        {
+            Wz_Node copy = new Wz_Node(node.Text);
+            copy.Value = node.Value;
+            foreach (Wz_Node child in node.Nodes)
+            {
+                copy.Nodes.Add(CloneNode(child));
+            }
+            return copy;
         }
 
         /// <summary>
-        /// 把 StringLinker 會用到的 <c>Etc/&lt;region&gt;/*</c>
-        /// （SetItemInfo、worldArchive、Achievement/AchievementData）鏡射成
-        /// Etc.wz 的節點形狀；葉節點加上 <c>.img</c>。
+        /// <c>Etc/&lt;region&gt;/*</c> を Etc.wz の節点形状へ鏡射します。葉節点には <c>.img</c> を付けます
+        /// （<c>Etc/SetItemInfo.img</c>、<c>Etc/CashPackage.img</c>、<c>Etc/Achievement/AchievementData/&lt;id&gt;.img</c> など）。
         /// </summary>
         private static Wz_Node BuildEtcNode(ClassicWzSource source)
         {
@@ -307,7 +355,7 @@ namespace WzComparerR2.UnityLib.Classic
                     continue;
                 }
                 string rest = entry.Key.Substring(prefix.Length);
-                if (rest.Length == 0 || !IsStringLinkerEtcPath(rest))
+                if (rest.Length == 0)
                 {
                     continue;
                 }
@@ -321,7 +369,7 @@ namespace WzComparerR2.UnityLib.Classic
                     Wz_Node next = GetOrAddChild(current, name);
                     if (isLeaf)
                     {
-                        ClassicWzBridge.AppendEntryContents(next, source, entry.Key);
+                        TryAppendEntryContents(next, source, entry.Key);
                     }
                     current = next;
                 }
@@ -329,11 +377,32 @@ namespace WzComparerR2.UnityLib.Classic
             return root;
         }
 
-        private static bool IsStringLinkerEtcPath(string rest)
+        /// <summary>
+        /// <c>Character/&lt;type&gt;/&lt;id&gt;</c>（例: <c>Character/Cap/01002000</c>）から
+        /// 装備 id → 分類名の対応を作ります。WZ の <c>String.wz/Eqp.img/Eqp/Cap/…</c> を組み立てるために使います。
+        /// </summary>
+        private static Dictionary<int, string> BuildEquipTypeMap(ClassicWzSource source)
         {
-            return string.Equals(rest, "SetItemInfo", StringComparison.Ordinal)
-                || string.Equals(rest, "worldArchive", StringComparison.Ordinal)
-                || rest.StartsWith("Achievement/AchievementData/", StringComparison.Ordinal);
+            Dictionary<int, string> types = new Dictionary<int, string>();
+            foreach (string key in source.Catalog.Entries.Keys)
+            {
+                if (!key.StartsWith("Character/", StringComparison.Ordinal))
+                {
+                    continue;
+                }
+                string[] parts = key.Split('/');
+                if (parts.Length != 3)
+                {
+                    continue;
+                }
+                int id;
+                if (!int.TryParse(parts[2], NumberStyles.None, CultureInfo.InvariantCulture, out id))
+                {
+                    continue;
+                }
+                types[id] = parts[1];
+            }
+            return types;
         }
 
         /// <summary>
@@ -353,7 +422,7 @@ namespace WzComparerR2.UnityLib.Classic
             }
 
             Wz_Node table = new Wz_Node("QuestData");
-            ClassicWzBridge.AppendEntryContents(table, source, key);
+            TryAppendEntryContents(table, source, key);
 
             Wz_Node root = new Wz_Node("Quest");
             Wz_Node dataNode = root.Nodes.Add("QuestData");

@@ -1771,7 +1771,7 @@ namespace WzComparerR2
                 string stringTableError = null;
                 try
                 {
-                    stringTables = ClassicStringLinkerTables.Build(unitySource);
+                    stringTables = unitySource.StringTables;
                 }
                 catch (Exception ex)
                 {
@@ -2266,24 +2266,34 @@ namespace WzComparerR2
         {
             if (e.Node == null || e.Button != MouseButtons.Left)
                 return;
+            this.ShowNodeDetail(e.Node);
+        }
+
+        /// <summary>
+        /// 指定ノードを 3 番目のツリービュー（ノード詳細）に展開表示します。
+        /// advTree2 のダブルクリックと、DB2 などからのノード選択で共用します。
+        /// </summary>
+        private void ShowNodeDetail(Node parentNode)
+        {
             historyNodeList.Clear();
             advTree3.Nodes.Clear();
 
-            var selectedNode = e.Node.AsWzNode();
-            if (selectedNode != null)
+            if (parentNode == null || parentNode.AsWzNode() == null)
             {
-                advTree3.BeginUpdate();
-                try
-                {
-                    var node = createNodeDetail(e.Node);
-                    node.ExpandAll();
-                    advTree3.Nodes.Add(node);
-                    advTree3.SelectedNode = node;
-                }
-                finally
-                {
-                    advTree3.EndUpdate();
-                }
+                return;
+            }
+
+            advTree3.BeginUpdate();
+            try
+            {
+                var node = createNodeDetail(parentNode);
+                node.ExpandAll();
+                advTree3.Nodes.Add(node);
+                advTree3.SelectedNode = node;
+            }
+            finally
+            {
+                advTree3.EndUpdate();
             }
         }
 
@@ -2924,7 +2934,23 @@ namespace WzComparerR2
 
             targetNode.EnsureVisible();
             advTree2.SelectedNode = targetNode;
+            this.ShowNodeDetail(targetNode);
             return true;
+        }
+
+        /// <summary>
+        /// ノードを生成した Unity データセットを返します（上位チェーンを辿って img から判定）。
+        /// </summary>
+        private static ClassicWzSource GetUnityNodeSource(Wz_Node node)
+        {
+            for (Wz_Node current = node; current != null; current = current.ParentNode)
+            {
+                if (current.GetValue<Wz_Image>() is UnityAssetImage image)
+                {
+                    return image.Source;
+                }
+            }
+            return null;
         }
 
         private static Node findUnityTreeNode(Node parent, string[] segments)
@@ -2946,12 +2972,24 @@ namespace WzComparerR2
                         next = child;
                         break;
                     }
-                    // id ノードのゼロ埋め桁数が異なる場合があります（02000000 / 2000000）。
-                    long childNumber;
-                    if (segmentIsNumber && long.TryParse(child.Text, out childNumber)
-                        && childNumber == segmentNumber)
+                }
+                if (next == null)
+                {
+                    // img ノードは .img 付きで、パスの側は .img 無しの場合があります（例: 01002000 / 01002000.img）。
+                    foreach (Node child in node.Nodes)
                     {
-                        next = child;
+                        if (string.Equals(StripImgSuffix(child.Text), StripImgSuffix(segment), StringComparison.OrdinalIgnoreCase))
+                        {
+                            next = child;
+                            break;
+                        }
+                        // id ノードのゼロ埋め桁数が異なる場合があります（02000000 / 2000000）。
+                        long childNumber;
+                        if (segmentIsNumber && long.TryParse(StripImgSuffix(child.Text), out childNumber)
+                            && childNumber == segmentNumber)
+                        {
+                            next = child;
+                        }
                     }
                 }
                 if (next == null)
@@ -2963,15 +3001,23 @@ namespace WzComparerR2
             return node;
         }
 
+        private static string StripImgSuffix(string name)
+        {
+            return name != null && name.EndsWith(".img", StringComparison.OrdinalIgnoreCase)
+                ? name.Substring(0, name.Length - 4)
+                : name;
+        }
+
         private bool OnSelectedWzNode(Wz_Node wzNode)
         {
             Wz_File wzFile = wzNode.GetNodeWzFile();
-            string[] path = wzNode.FullPathToFile.Split('\\');
             if (wzFile == null)
             {
-                return false;
+                // Unity データセットのノードは Wz_File を持たないため、アセットツリーを辿って選択します。
+                return this.SelectUnityWzNode(wzNode);
             }
 
+            string[] path = wzNode.FullPathToFile.Split('\\');
             Node treeNode = findWzFileTreeNode(wzFile);
             if (treeNode == null)
             {
@@ -3012,7 +3058,101 @@ namespace WzComparerR2
                 }
             }
 
+            treeNode.EnsureVisible();
             advTree2.SelectedNode = treeNode;
+            this.ShowNodeDetail(treeNode);
+            return true;
+        }
+
+        /// <summary>
+        /// Unity データセットのノードを選択します。img 相当のノードを advTree1 で選び、
+        /// 残りのパスを advTree2 で辿ってから 3 番目のツリービューを展開します。
+        /// </summary>
+        private bool SelectUnityWzNode(Wz_Node wzNode)
+        {
+            if (this.openedUnitySources == null || this.openedUnitySources.Count == 0)
+            {
+                return false;
+            }
+
+            string[] segments = wzNode.FullPathToFile.Split(new[] { '\\' }, StringSplitOptions.RemoveEmptyEntries);
+            if (segments.Length == 0)
+            {
+                return false;
+            }
+
+            // 複数の Unity クライアントを開いている場合に備え、このノードを生成したデータセットを優先します。
+            ClassicWzSource ownerSource = GetUnityNodeSource(wzNode);
+            List<UnityAssetDocument> documents = this.openedUnitySources.Values.ToList();
+            if (ownerSource != null)
+            {
+                documents = documents.OrderBy(d => ReferenceEquals(d.Source, ownerSource) ? 0 : 1).ToList();
+            }
+
+            // まずカタログキー形式（Item/Consume/0200/02000000/info/icon）で選択を試します。
+            string catalogPath = string.Join("/", segments.Select(StripImgSuffix));
+            foreach (UnityAssetDocument document in documents)
+            {
+                if (this.SelectUnityNode(document, catalogPath))
+                {
+                    return true;
+                }
+            }
+
+            // カタログに無いパス（合成ディレクトリなど）は .img ノードを直接辿ります。
+            int imageIndex = segments.Length - 1;
+            while (imageIndex > 0 && !segments[imageIndex].EndsWith(".img", StringComparison.OrdinalIgnoreCase))
+            {
+                imageIndex--;
+            }
+            if (imageIndex < 0 || !segments[imageIndex].EndsWith(".img", StringComparison.OrdinalIgnoreCase))
+            {
+                return false;
+            }
+
+            Node imageTreeNode = null;
+            foreach (UnityAssetDocument document in documents)
+            {
+                // コンテンツツリーのルート名（データセット名など）は環境によって異なるため、
+                // 先頭セグメントを落としながら一致を試します。
+                for (int start = 0; start <= imageIndex && imageTreeNode == null; start++)
+                {
+                    string[] imageSegments = new string[imageIndex + 1 - start];
+                    Array.Copy(segments, start, imageSegments, 0, imageSegments.Length);
+                    imageTreeNode = findUnityTreeNode(document.TreeNode, imageSegments);
+                }
+                if (imageTreeNode != null)
+                {
+                    break;
+                }
+            }
+            if (imageTreeNode == null)
+            {
+                return false;
+            }
+
+            advTree1.SelectedNode = imageTreeNode;
+            imageTreeNode.EnsureVisible();
+            if (advTree2.Nodes.Count == 0)
+            {
+                return false;
+            }
+
+            Node targetNode = advTree2.Nodes[0];
+            if (imageIndex + 1 < segments.Length)
+            {
+                string[] innerSegments = new string[segments.Length - imageIndex - 1];
+                Array.Copy(segments, imageIndex + 1, innerSegments, 0, innerSegments.Length);
+                targetNode = findUnityTreeNode(targetNode, innerSegments);
+                if (targetNode == null)
+                {
+                    return false;
+                }
+            }
+
+            targetNode.EnsureVisible();
+            advTree2.SelectedNode = targetNode;
+            this.ShowNodeDetail(targetNode);
             return true;
         }
 
