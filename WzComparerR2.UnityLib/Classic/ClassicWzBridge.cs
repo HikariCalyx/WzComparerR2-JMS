@@ -184,14 +184,14 @@ namespace WzComparerR2.UnityLib.Classic
     /// 画像が必要になった時点でデコードします。
     /// </para>
     /// </summary>
-    public sealed class UnityWzImage : UnityAssetImage
+    public class UnityWzImage : UnityAssetImage
     {
         public UnityWzImage(ClassicWzSource source, string name)
             : base(source, name)
         {
         }
 
-        public WzjsNode Root
+        public virtual WzjsNode Root
         {
             get { return this.Source.GetTree(this.Name); }
         }
@@ -217,6 +217,29 @@ namespace WzComparerR2.UnityLib.Classic
                 this.Node.Nodes.Add(ClassicWzBridge.ConvertNode(
                     child, this.Name, this.Source));
             }
+        }
+    }
+
+    /// <summary>
+    /// WZ では 1 つの img（例: <c>Map.wz/MapHelper.img</c>）として提供されるディレクトリを、
+    /// Unity データセットの個別 sprite の集まりから 1 つの img として組み立てます。
+    /// </summary>
+    public sealed class UnityDirectoryImage : UnityWzImage
+    {
+        public UnityDirectoryImage(ClassicWzSource source, string directoryPath)
+            : base(source, directoryPath)
+        {
+        }
+
+        /// <summary>WZJS の実体がないため <see cref="UnityWzImage.Root"/> は使えません。</summary>
+        public override WzjsNode Root
+        {
+            get { return null; }
+        }
+
+        protected override void PopulateContent()
+        {
+            ClassicWzBridge.BuildDirectoryNodes(this.Source, this.Node, this.Name);
         }
     }
 
@@ -274,12 +297,56 @@ namespace WzComparerR2.UnityLib.Classic
             }
 
             Wz_Node root = new Wz_Node(rootName);
+            BuildEntryNodes(source, root, string.Empty, includeTrees, includeImages);
+            CollapseWzImagedDirectories(root, source);
+            return root;
+        }
+
+        /// <summary>
+        /// WZ では 1 つの img として提供されるディレクトリ（例: <c>Map.wz/MapHelper.img</c>）です。
+        /// Unity データセットでは単体 sprite のディレクトリとして索引されるため、img としてまとめます。
+        /// </summary>
+        internal static readonly string[] WzImagedDirectories = { "Map/MapHelper" };
+
+        /// <summary><paramref name="key"/> が img としてまとめるディレクトリかどうか。</summary>
+        public static bool IsWzImagedDirectory(string key)
+        {
+            if (string.IsNullOrEmpty(key))
+            {
+                return false;
+            }
+            foreach (string directory in WzImagedDirectories)
+            {
+                if (string.Equals(key, directory, StringComparison.Ordinal))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// <paramref name="directoryPath"/> 配下の catalog エントリを <paramref name="root"/> の下に
+        /// WZ 形式のノードとして構築します（<see cref="UnityDirectoryImage"/> の内容）。
+        /// </summary>
+        internal static void BuildDirectoryNodes(ClassicWzSource source, Wz_Node root, string directoryPath)
+        {
+            BuildEntryNodes(source, root, directoryPath + "/", false, false);
+        }
+
+        private static void BuildEntryNodes(
+            ClassicWzSource source, Wz_Node root, string prefix, bool includeTrees, bool includeImages)
+        {
             Dictionary<string, Wz_Node> nodes = new Dictionary<string, Wz_Node>(StringComparer.Ordinal);
             nodes[string.Empty] = root;
 
             foreach (KeyValuePair<string, UnityEntryLocation> entry in source.Catalog.Entries)
             {
-                string[] segments = entry.Key.Split('/');
+                if (!entry.Key.StartsWith(prefix, StringComparison.Ordinal))
+                {
+                    continue;
+                }
+                string[] segments = entry.Key.Substring(prefix.Length).Split('/');
                 string currentPath = string.Empty;
                 Wz_Node current = root;
                 for (int i = 0; i < segments.Length; i++)
@@ -356,7 +423,33 @@ namespace WzComparerR2.UnityLib.Classic
                         break;
                 }
             }
-            return root;
+        }
+
+        /// <summary>
+        /// <see cref="WzImagedDirectories"/> のディレクトリを 1 つの img ノードへまとめます。
+        /// 同じキーの実体（WZJS）が存在するデータセットでは何もしません。
+        /// </summary>
+        private static void CollapseWzImagedDirectories(Wz_Node root, ClassicWzSource source)
+        {
+            foreach (string directoryPath in WzImagedDirectories)
+            {
+                Wz_Node node = root;
+                foreach (string segment in directoryPath.Split('/'))
+                {
+                    node = node?.Nodes[segment];
+                    if (node == null)
+                    {
+                        break;
+                    }
+                }
+                if (node == null || node.Value != null || node.Nodes.Count == 0)
+                {
+                    continue;
+                }
+                node.Nodes.Clear();
+                node.Text = node.Text + ".img";
+                node.Value = source.GetDirectoryImage(directoryPath);
+            }
         }
 
         /// <summary>

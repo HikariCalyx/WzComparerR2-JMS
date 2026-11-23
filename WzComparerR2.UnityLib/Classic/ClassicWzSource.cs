@@ -701,7 +701,9 @@ namespace WzComparerR2.UnityLib.Classic
             if (!this.Catalog.Entries.TryGetValue(imageKey, out location)
                 || location.ClassId != UnityClassIds.MonoBehaviour)
             {
-                return null;
+                // WZ では img として提供されるディレクトリ（例: Map/MapHelper.img）は、
+                // 個別 sprite の索引から img を組み立てます。
+                return ClassicWzBridge.IsWzImagedDirectory(imageKey) ? this.GetDirectoryImage(imageKey) : null;
             }
 
             UnityWzImage image = new UnityWzImage(this, imageKey);
@@ -713,6 +715,38 @@ namespace WzComparerR2.UnityLib.Classic
                     return existing;
                 }
                 this.imageCache[imageKey] = image;
+            }
+            return image;
+        }
+
+        /// <summary>
+        /// WZ では 1 つの img として提供されるディレクトリ（例: <c>Map/MapHelper</c>）を
+        /// 1 つの img として返します（内部キャッシュ）。
+        /// </summary>
+        public UnityDirectoryImage GetDirectoryImage(string directoryPath)
+        {
+            if (!ClassicWzBridge.IsWzImagedDirectory(directoryPath)
+                || this.Catalog.Entries.ContainsKey(directoryPath))
+            {
+                // 同じキーの実体（WZJS の img）があるデータセットでは使いません。
+                return null;
+            }
+
+            UnityWzImage cached;
+            if (this.imageCache.TryGetValue(directoryPath, out cached))
+            {
+                return cached as UnityDirectoryImage;
+            }
+
+            UnityDirectoryImage image = new UnityDirectoryImage(this, directoryPath);
+            lock (this.imageCache)
+            {
+                UnityWzImage existing;
+                if (this.imageCache.TryGetValue(directoryPath, out existing))
+                {
+                    return existing as UnityDirectoryImage;
+                }
+                this.imageCache[directoryPath] = image;
             }
             return image;
         }
@@ -780,6 +814,12 @@ namespace WzComparerR2.UnityLib.Classic
             string imageKey, inner;
             if (!this.Catalog.TrySplitImagePrefix(normalized, out imageKey, out inner))
             {
+                // WZ では img として提供されるディレクトリ（Map/MapHelper.img など）の中を解決します。
+                WzLib.Wz_Node directoryNode = this.FindDirectoryImageNode(normalized);
+                if (directoryNode != null)
+                {
+                    return directoryNode;
+                }
                 // ディレクトリ構成が WZ と異なるため（例: Character/<id>、Item/<type>/<group>/<id>）:
                 // 代わりに id から catalog のパス候補を生成します。
                 return this.FindNodeByCandidates(normalized);
@@ -840,6 +880,45 @@ namespace WzComparerR2.UnityLib.Classic
             }
             image.GetRootedNode(); // 冪等: 上位チェーンが補済みならそのまま返る
             return node;
+        }
+
+        /// <summary>
+        /// WZ では 1 つの img として提供されるディレクトリ（例: <c>Map/MapHelper</c>）の中を解決します。
+        /// 見つからない場合は null。
+        /// </summary>
+        private WzLib.Wz_Node FindDirectoryImageNode(string normalized)
+        {
+            foreach (string directoryPath in ClassicWzBridge.WzImagedDirectories)
+            {
+                if (!string.Equals(normalized, directoryPath, StringComparison.Ordinal)
+                    && !normalized.StartsWith(directoryPath + "/", StringComparison.Ordinal))
+                {
+                    continue;
+                }
+                UnityDirectoryImage image = this.GetDirectoryImage(directoryPath);
+                if (image == null)
+                {
+                    return null;
+                }
+                WzLib.Wz_Node node = image.AsWzNode();
+                if (normalized.Length > directoryPath.Length)
+                {
+                    foreach (string segment in normalized.Substring(directoryPath.Length + 1).Split('/'))
+                    {
+                        if (segment.Length == 0)
+                        {
+                            continue;
+                        }
+                        node = FindChildByName(node, segment);
+                        if (node == null)
+                        {
+                            return null;
+                        }
+                    }
+                }
+                return RootAssetNode(node, image);
+            }
+            return null;
         }
 
         private WzLib.Wz_Node FindSoundNode(WzLib.Wz_Node root, string inner)
