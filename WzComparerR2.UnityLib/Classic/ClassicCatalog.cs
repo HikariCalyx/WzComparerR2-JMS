@@ -165,24 +165,31 @@ namespace WzComparerR2.UnityLib.Classic
             }
 
             List<string> candidates = new List<string>();
-            string aaDirectory = Path.Combine(rootDirectory, "StreamingAssets", "aa");
-            string buildTarget = ReadBuildTarget(Path.Combine(aaDirectory, "settings.json"));
+            // クライアント直下・StreamingAssets・aa のいずれを選んでも開けるようにします。
+            List<string> aaDirectories = new List<string>();
+            aaDirectories.Add(rootDirectory);
+            aaDirectories.Add(Path.Combine(rootDirectory, "StreamingAssets", "aa"));
+            aaDirectories.Add(Path.Combine(rootDirectory, "aa"));
+            aaDirectories.Add(Path.Combine(rootDirectory, "StreamingAssets"));
 
-            // Addressables の 2 つの配置（リモートカタログ w / ローカル StandaloneWindows64）。
-            candidates.Add(Path.Combine(aaDirectory, "w"));
-            if (buildTarget != null)
+            foreach (string aaDirectory in aaDirectories)
             {
-                candidates.Add(Path.Combine(aaDirectory, buildTarget));
-                candidates.Add(Path.Combine(rootDirectory, buildTarget));
-            }
-            candidates.Add(Path.Combine(aaDirectory, "StandaloneWindows64"));
-            candidates.Add(Path.Combine(rootDirectory, "w"));
-            candidates.Add(Path.Combine(rootDirectory, "StandaloneWindows64"));
+                // Addressables の 2 つの配置（リモートカタログ w / ローカル StandaloneWindows64）。
+                candidates.Add(Path.Combine(aaDirectory, "w"));
+                string buildTarget = ReadBuildTarget(Path.Combine(aaDirectory, "settings.json"));
+                if (buildTarget != null)
+                {
+                    candidates.Add(Path.Combine(aaDirectory, buildTarget));
+                }
+                candidates.Add(Path.Combine(aaDirectory, "StandaloneWindows64"));
 
-            // aa 直下・クライアント直下のサブディレクトリも順に確認します。
-            candidates.AddRange(SafeGetDirectories(aaDirectory));
+                // aa 直下のサブディレクトリも順に確認します。
+                candidates.AddRange(SafeGetDirectories(aaDirectory));
+                candidates.Add(aaDirectory);
+            }
+
+            // クライアント直下のサブディレクトリも確認します。
             candidates.AddRange(SafeGetDirectories(rootDirectory));
-            candidates.Add(aaDirectory);
 
             foreach (string candidate in candidates)
             {
