@@ -494,6 +494,22 @@ namespace WzComparerR2.UnityLib.Classic
                 string fullPath = innerPath.Length == 0 ? imageKey : imageKey + "/" + innerPath;
                 return new UnityCanvas(imageSource, fullPath);
             }
+
+            // Classic では spriteset に入っている画像（例: Map/MapHelper/worldMap/mapImage）が、
+            // WZJS 側では値も子も持たない葉ノードとして現れます。
+            // catalog の sprite 索引に同じパスがあれば Canvas として扱い、WZ と同じ形にします。
+            if (node.Value.Kind == WzjsValueKind.SubTree && node.Children.Count == 0
+                && imageSource != null && innerPath.Length > 0)
+            {
+                string spritePath = imageKey + "/" + innerPath;
+                UnityEntryLocation location;
+                if (imageSource.Catalog.Entries.TryGetValue(spritePath, out location)
+                    && location.ClassId == UnityClassIds.Sprite)
+                {
+                    return new UnityCanvas(imageSource, spritePath);
+                }
+            }
+
             return ConvertValue(node.Value);
         }
     }
