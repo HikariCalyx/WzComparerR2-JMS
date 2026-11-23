@@ -344,7 +344,7 @@ namespace WzComparerR2.Comparer
                         }
                     }
                 }
-                if (OutputItemTooltip || OutputGearTooltip) // Check commodity differences
+                if (OutputItemTooltip || OutputGearTooltip || OutputCashTooltip) // Check commodity differences
                 {
                     StateInfo = "ポイントアイテム整理中";
                     CharaSimLoader.ClearAll();

@@ -6175,6 +6175,12 @@ namespace WzComparerR2
                 return;
             }
 
+            if (category == UnityStringCategory.Item || category == UnityStringCategory.Equip)
+            {
+                // WZ のプレビューと同じ補助データ（セットアイテム、ポイントアイテムなど）を先に読み込みます。
+                this.ensureUnityTooltipData();
+            }
+
             if (category == UnityStringCategory.Skill)
             {
                 // スキルは img 内の skill/<id> ノードです（例: Skill/100/skill/1001002）。
@@ -6293,6 +6299,24 @@ namespace WzComparerR2
             this.applyUnityStringToTooltip(sr, null, null);
             this.showUnityTooltip(
                 item, "item_" + item.ItemID + "_" + RemoveInvalidFileNameChars(sr.Name) + ".png");
+        }
+
+        /// <summary>
+        /// Unity のクイックプレビューで tooltip を描く前に、WZ のプレビューと同じ補助データ
+        /// （セットアイテム、セット効果のオプション、ポイントアイテムなど）を読み込みます。
+        /// </summary>
+        private void ensureUnityTooltipData()
+        {
+            CharaSimLoader.LoadSetItemsIfEmpty();
+            CharaSimLoader.LoadAstraSubWeaponsIfEmpty();
+            CharaSimLoader.LoadExclusiveEquipsIfEmpty();
+            CharaSimLoader.LoadCommoditiesIfEmpty();
+            CharaSimLoader.LoadMsnMintableItemListIfEmpty();
+            CharaSimLoader.LoadGmsTucBlacklistItemsIfEmpty();
+            if (CharaSimConfig.Default.Misc.LocatePetEquip)
+            {
+                CharaSimLoader.LoadPetEquipInfoIfEmpty();
+            }
         }
 
         /// <summary>
