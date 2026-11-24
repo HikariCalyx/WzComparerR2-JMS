@@ -224,7 +224,8 @@ namespace WzComparerR2.UnityLib.Unity
             reader.Skip(4); // m_Extrude
             reader.U8(); // m_IsPolygon
             reader.Align4();
-            reader.Skip(24); // m_RenderDataKey: GUID(16) + SInt64(8)
+            byte[] renderDataKeyGuid = reader.Take(16); // m_RenderDataKey.guid
+            long renderDataKeyFileId = reader.I64(); // m_RenderDataKey.fileID
             int tagCount = reader.I32();
             if (tagCount < 0 || tagCount > 4096)
             {
@@ -235,9 +236,11 @@ namespace WzComparerR2.UnityLib.Unity
             {
                 reader.AlignedString();
             }
-            ReadPPtr(reader); // m_SpriteAtlas
+            UnityPPtr spriteAtlas = ReadPPtr(reader); // m_SpriteAtlas
             UnityPPtr texture = ReadPPtr(reader); // m_RD.texture
-            return new UnitySpriteInfo(name, new UnityRectF(rectX, rectY, rectWidth, rectHeight), texture, pivotX, pivotY);
+            return new UnitySpriteInfo(
+                name, new UnityRectF(rectX, rectY, rectWidth, rectHeight), texture, pivotX, pivotY,
+                spriteAtlas, renderDataKeyGuid, renderDataKeyFileId);
         }
 
         // ── MonoBehaviour(114) ─────────────────────────────────────────
@@ -434,12 +437,22 @@ namespace WzComparerR2.UnityLib.Unity
     public sealed class UnitySpriteInfo
     {
         internal UnitySpriteInfo(string name, UnityRectF rect, UnityPPtr texture, float pivotX, float pivotY)
+            : this(name, rect, texture, pivotX, pivotY, default(UnityPPtr), null, 0)
+        {
+        }
+
+        internal UnitySpriteInfo(
+            string name, UnityRectF rect, UnityPPtr texture, float pivotX, float pivotY,
+            UnityPPtr spriteAtlas, byte[] renderDataKeyGuid, long renderDataKeyFileId)
         {
             this.Name = name;
             this.Rect = rect;
             this.Texture = texture;
             this.PivotX = pivotX;
             this.PivotY = pivotY;
+            this.SpriteAtlas = spriteAtlas;
+            this.RenderDataKeyGuid = renderDataKeyGuid;
+            this.RenderDataKeyFileId = renderDataKeyFileId;
         }
 
         public string Name { get; private set; }
@@ -447,8 +460,17 @@ namespace WzComparerR2.UnityLib.Unity
         /// <summary>m_Rect: (x, y, width, height)。</summary>
         public UnityRectF Rect { get; private set; }
 
-        /// <summary>m_RD.texture（像素所在的 Texture2D）。</summary>
+        /// <summary>m_RD.texture（像素所在的 Texture2D）。atlas 詰めの sprite では 0（<see cref="SpriteAtlas"/> 側を参照）。</summary>
         public UnityPPtr Texture { get; private set; }
+
+        /// <summary>m_SpriteAtlas。atlas 詰めの sprite のみ非 0 になります。</summary>
+        public UnityPPtr SpriteAtlas { get; private set; }
+
+        /// <summary>m_RenderDataKey.guid（<see cref="SpriteAtlas"/> 内のレンダーデータを引くキー）。</summary>
+        public byte[] RenderDataKeyGuid { get; private set; }
+
+        /// <summary>m_RenderDataKey.fileID。</summary>
+        public long RenderDataKeyFileId { get; private set; }
 
         /// <summary>m_Pivot.X（0 = 画像の左端、1 = 右端）。</summary>
         public float PivotX { get; private set; }
@@ -462,8 +484,115 @@ namespace WzComparerR2.UnityLib.Unity
         /// </summary>
         public void GetWzOrigin(out int x, out int y)
         {
-            x = (int)Math.Round(this.Rect.Width * this.PivotX, MidpointRounding.AwayFromZero);
-            y = (int)Math.Round(this.Rect.Height * (1 - this.PivotY), MidpointRounding.AwayFromZero);
+            GetWzOrigin(this.Rect, out x, out y);
+        }
+
+        /// <summary>指定した矩形（atlas 詰めの切り出し矩形など）に対する WZ の <c>origin</c> を取得します。</summary>
+        public void GetWzOrigin(UnityRectF rect, out int x, out int y)
+        {
+            x = (int)Math.Round(rect.Width * this.PivotX, MidpointRounding.AwayFromZero);
+            y = (int)Math.Round(rect.Height * (1 - this.PivotY), MidpointRounding.AwayFromZero);
+        }
+    }
+
+    /// <summary>
+    /// SpriteAtlas(687078895)。atlas に詰められた Sprite は <c>m_RD.texture</c> を持たず、
+    /// ここから実テクスチャと切り出し矩形を引きます。
+    /// </summary>
+    public sealed class UnitySpriteAtlasInfo
+    {
+        private const int RenderDataOffset = 24;   // m_RenderDataKey(guid 16 + fileID 8) の直後
+        private const int TextureRectOffset = 48;  // texture PPtr(12) + alphaTexture PPtr(12) の直後
+
+        private readonly byte[] data;
+        private readonly bool littleEndian;
+
+        private UnitySpriteAtlasInfo(string name, byte[] data, bool littleEndian)
+        {
+            this.Name = name;
+            this.data = data;
+            this.littleEndian = littleEndian;
+        }
+
+        public string Name { get; private set; }
+
+        /// <summary>
+        /// atlas オブジェクトの bytes から名前だけを読み取ります（レンダーデータは遅延検索）。
+        /// </summary>
+        public static UnitySpriteAtlasInfo Parse(byte[] data, bool littleEndian)
+        {
+            if (data == null || data.Length < 4)
+            {
+                return null;
+            }
+            UnityByteReader reader = new UnityByteReader(data, littleEndian);
+            string name;
+            try
+            {
+                name = reader.AlignedString();
+            }
+            catch (UnityException)
+            {
+                name = null;
+            }
+            return new UnitySpriteAtlasInfo(name, data, littleEndian);
+        }
+
+        /// <summary>
+        /// sprite の <c>m_RenderDataKey.guid</c> から、atlas テクスチャと切り出し矩形を取得します。
+        /// レンダーデータは [guid 16][key 8][texture 12][alphaTexture 12][rect 16]… の並びです。
+        /// </summary>
+        public bool TryGetRenderData(byte[] guid, out UnityPPtr texture, out UnityRectF textureRect)
+        {
+            texture = default(UnityPPtr);
+            textureRect = default(UnityRectF);
+            if (guid == null || guid.Length != 16 || this.data == null)
+            {
+                return false;
+            }
+
+            int index = IndexOf(this.data, guid);
+            while (index >= 0)
+            {
+                int start = index + RenderDataOffset;
+                if (start + TextureRectOffset + 16 <= this.data.Length)
+                {
+                    UnityByteReader reader = new UnityByteReader(
+                        this.data, start, this.data.Length - start, this.littleEndian);
+                    UnityPPtr candidate = new UnityPPtr(reader.I32(), reader.I64());
+                    reader.Skip(12); // m_RD.alphaTexture
+                    float x = reader.F32();
+                    float y = reader.F32();
+                    float width = reader.F32();
+                    float height = reader.F32();
+                    if (candidate.PathId != 0 && width > 0 && height > 0)
+                    {
+                        texture = candidate;
+                        textureRect = new UnityRectF(x, y, width, height);
+                        return true;
+                    }
+                }
+                index = index + 1 < this.data.Length ? IndexOf(this.data, guid, index + 1) : -1;
+            }
+            return false;
+        }
+
+        private static int IndexOf(byte[] haystack, byte[] needle, int startIndex = 0)
+        {
+            int last = haystack.Length - needle.Length;
+            for (int i = startIndex; i <= last; i++)
+            {
+                int j = 0;
+                while (j < needle.Length && haystack[i + j] == needle[j])
+                {
+                    j++;
+                }
+                if (j == needle.Length)
+                {
+                    return i;
+                }
+            }
+            return -1;
         }
     }
 
