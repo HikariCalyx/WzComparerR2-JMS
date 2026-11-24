@@ -7259,6 +7259,139 @@ namespace WzComparerR2
             frmWorldArchiveBrowser.Show();
         }
 
+        private void btnMonsterBookBrowser_Click(object sender, EventArgs e)
+        {
+            int clientCount = this.openedWz.Count
+                + (this.openedUnitySources == null ? 0 : this.openedUnitySources.Count);
+            if (clientCount == 0)
+            {
+                ToastNotification.Show(this, "エラー: クライアントのデータが開かれていません。", null, 2000, eToastGlowColor.Red, eToastPosition.TopCenter);
+                return;
+            }
+            if (clientCount > 1)
+            {
+                ToastNotification.Show(this, "エラー: この機能を使用する前に、クライアントを1つだけ開いてください。", null, 4000, eToastGlowColor.Red, eToastPosition.TopCenter);
+                return;
+            }
+
+            Wz_Node monsterBookNode = this.FindMonsterBookNode();
+            if (monsterBookNode == null)
+            {
+                ToastNotification.Show(this, "エラー: モンスターブックはこのクライアントには実装されていません。", null, 3000, eToastGlowColor.Red, eToastPosition.TopCenter);
+                return;
+            }
+            Wz_Node monsterBookStringNode = this.FindMonsterBookStringNode();
+            if (!this.stringLinker.HasValues)
+            {
+                this.LoadStringLinker();
+            }
+            foreach (Form form in Application.OpenForms)
+            {
+                if (form is FrmMonsterBookBrowser && !form.IsDisposed)
+                {
+                    FrmMonsterBookBrowser openedForm = (FrmMonsterBookBrowser)form;
+                    openedForm.stringLinker = this.stringLinker;
+                    openedForm.MonsterBookNode = monsterBookNode;
+                    openedForm.MonsterBookStringNode = monsterBookStringNode;
+                    openedForm._mainForm = this;
+                    form.Show();
+                    form.BringToFront();
+                    openedForm.BeginLoadMobList();
+                    return;
+                }
+            }
+            FrmMonsterBookBrowser frmMonsterBookBrowser = new FrmMonsterBookBrowser();
+            frmMonsterBookBrowser.stringLinker = this.stringLinker;
+            frmMonsterBookBrowser.MonsterBookNode = monsterBookNode;
+            frmMonsterBookBrowser.MonsterBookStringNode = monsterBookStringNode;
+            frmMonsterBookBrowser._mainForm = this;
+            frmMonsterBookBrowser.Show();
+            frmMonsterBookBrowser.BeginLoadMobList();
+        }
+
+        /// <summary>
+        /// MonsterBook の内容ノードを探します。モンスター ID はこのノードの子として並びます。
+        /// Unity クライアントデータ（<c>/MonsterBook</c>）を優先し、WZ の
+        /// <c>String.wz/MonsterBook.img</c>、または単体で開いた <c>MonsterBook.img</c> にも対応します。
+        /// </summary>
+        private Wz_Node FindMonsterBookNode()
+        {
+            foreach (UnityAssetDocument document in this.openedUnitySources.Values)
+            {
+                UnityWzImage unityImage = document.Source.GetWzImage("MonsterBook");
+                if (unityImage != null && unityImage.TryExtract())
+                {
+                    return unityImage.Node;
+                }
+            }
+
+            // WZ では展開済みの内容ノードが返るため、img ノードかどうかを確認します。
+            Wz_Node wzBookNode = PluginManager.FindWz(@"String\MonsterBook.img");
+            if (wzBookNode != null && !(wzBookNode.Value is Wz_Image))
+            {
+                return wzBookNode;
+            }
+
+            foreach (Wz_Structure wzs in this.openedWz)
+            {
+                Wz_Image image = FindMonsterBookImage(wzs.WzNode, 3);
+                if (image != null && image.TryExtract())
+                {
+                    return image.Node;
+                }
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Unity データセットの文字列テーブル（<c>String/&lt;region&gt;/MonsterBook</c>）を返します。
+        /// 子ノード名がモンスター ID で、ノード値が説明文です（MonsterBook アセット側の
+        /// <c>episode</c> は話数の番号のみのため、説明文はこちらから取得します）。
+        /// </summary>
+        private Wz_Node FindMonsterBookStringNode()
+        {
+            if (this.openedUnitySources == null)
+            {
+                return null;
+            }
+
+            foreach (UnityAssetDocument document in this.openedUnitySources.Values)
+            {
+                Wz_Node node = document.StringTables?.StringNode?.FindNodeByPath("MonsterBook.img");
+                if (node != null && node.Nodes.Count > 0)
+                {
+                    return node;
+                }
+            }
+            return null;
+        }
+
+        /// <summary>開いている WZ から <c>MonsterBook.img</c> のイメージノードを探します。</summary>
+        private static Wz_Image FindMonsterBookImage(Wz_Node node, int depth)
+        {
+            if (node == null || depth < 0)
+            {
+                return null;
+            }
+
+            if (string.Equals(node.Text, "MonsterBook.img", StringComparison.OrdinalIgnoreCase)
+                && node.Value is Wz_Image image)
+            {
+                return image;
+            }
+
+            foreach (Wz_Node child in node.Nodes)
+            {
+                Wz_Image found = FindMonsterBookImage(child, depth - 1);
+                if (found != null)
+                {
+                    return found;
+                }
+            }
+            return null;
+        }
+
         public void RedirectToNode(Wz_Node node)
         {
             if (OnSelectedWzNode(node))
