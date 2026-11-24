@@ -73,6 +73,7 @@ namespace WzComparerR2.UnityLib.Classic
             this.Entries = new SortedDictionary<string, UnityEntryLocation>(StringComparer.Ordinal);
             this.Image = new UnityImageIndex();
             this.spritesetEntryKeys = new HashSet<string>(StringComparer.Ordinal);
+            this.atlasEntryKeys = new HashSet<string>(StringComparer.Ordinal);
             this.SpritesetOrigins = new Dictionary<string, UnitySpriteOrigin>(StringComparer.Ordinal);
             this.SoundEntries = new SortedDictionary<string, UnityEntryLocation>(StringComparer.Ordinal);
             this.SoundKeysByImage = new SortedDictionary<string, List<string>>(StringComparer.Ordinal);
@@ -99,6 +100,9 @@ namespace WzComparerR2.UnityLib.Classic
 
         /// <summary><see cref="RebuildSpritesetEntries"/> で追加された索引キー（ロケール切り替え時にまとめて取り消せます）。</summary>
         private readonly HashSet<string> spritesetEntryKeys;
+
+        /// <summary><see cref="AddAtlasEntries"/> で追加された索引キー（ロケールに依存しないので再構築は 1 回だけ）。</summary>
+        private readonly HashSet<string> atlasEntryKeys;
 
         /// <summary>
         /// spriteset スプライトの邏輯路徑 → WZ の <c>origin</c>。
@@ -405,6 +409,29 @@ namespace WzComparerR2.UnityLib.Classic
                 this.AddSpritesetEntries(locale);
             }
             this.AddSpritesetEntries("Common");
+            this.AddAtlasEntries();
+        }
+
+        /// <summary>
+        /// SpriteAtlas（<c>Assets/WzAssets/Atlas/&lt;name&gt;.spriteatlasv2</c>）を <c>UI/&lt;atlas 名&gt;.img</c> として索引します。
+        /// 現在のロケールの spriteset に無い sprite もここから辿れます（atlas はロケール固定なので再構築は 1 回だけ）。
+        /// </summary>
+        private void AddAtlasEntries()
+        {
+            foreach (KeyValuePair<string, Dictionary<string, UnitySetSpriteEntry>> asset in this.Image.AtlasAssets)
+            {
+                foreach (KeyValuePair<string, UnitySetSpriteEntry> sprite in asset.Value)
+                {
+                    string path = asset.Key + "/" + sprite.Key;
+                    if (this.Entries.ContainsKey(path) && !this.atlasEntryKeys.Contains(path))
+                    {
+                        continue; // WZJS / JSON / spriteset 側の定義を優先
+                    }
+                    this.Entries[path] = sprite.Value.SpriteLocation;
+                    this.SpritesetOrigins[path] = sprite.Value.Origin;
+                    this.atlasEntryKeys.Add(path);
+                }
+            }
         }
 
         private void AddSpritesetEntries(string region)
