@@ -435,6 +435,7 @@ namespace WzComparerR2.UnityLib.Classic
                     case UnityClassIds.Sprite:
                         // spriteset（SpriteSet/<region>/UI/…）の単一 sprite: デコード時にロケールに応じて画像を取得します。
                         current.Value = new UnityCanvas(source, entry.Key);
+                        ClassicWzSource.AttachSpriteOrigin(current, source, entry.Key);
                         break;
                 }
             }

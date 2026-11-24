@@ -797,6 +797,7 @@ namespace WzComparerR2.UnityLib.Classic
             string[] segments = key.Split('/');
             WzLib.Wz_Node sprite = new WzLib.Wz_Node(segments[segments.Length - 1]);
             sprite.Value = new UnityCanvas(this, key);
+            AttachSpriteOrigin(sprite, this, key);
 
             // 祖先ディレクトリを補い、Wz_Node.FullPathToFile から WZ 形式のパスで引き直せるようにします
             // （MapRender など PluginManager.FindWz 経由でテクスチャを取得するコードのため）。
@@ -808,6 +809,30 @@ namespace WzComparerR2.UnityLib.Classic
                 node = parent;
             }
             return sprite;
+        }
+
+        /// <summary>
+        /// spriteset の sprite ノードに WZ の <c>origin</c> 子ノードを付与します。
+        /// MapRender などはフレームの基準点をこの子ノードから取得します。
+        /// </summary>
+        public static void AttachSpriteOrigin(WzLib.Wz_Node node, ClassicWzSource source, string key)
+        {
+            if (node == null || source == null || string.IsNullOrEmpty(key))
+            {
+                return;
+            }
+            UnitySpriteOrigin origin;
+            if (!source.Catalog.SpritesetOrigins.TryGetValue(key, out origin))
+            {
+                return;
+            }
+            if (node.Nodes["origin"] != null)
+            {
+                return;
+            }
+            WzLib.Wz_Node originNode = new WzLib.Wz_Node("origin");
+            originNode.Value = new WzLib.Wz_Vector(origin.X, origin.Y);
+            node.Nodes.Add(originNode);
         }
 
         private static string GetLeafName(string path)

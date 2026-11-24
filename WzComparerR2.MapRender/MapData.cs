@@ -952,8 +952,8 @@ namespace WzComparerR2.MapRender
                 }
             }
 
-            // Classic（Unity）データセットには MapHelper.img/portal の画像が含まれていません。
-            // その場合は描画側（GetMeshPortal）が代替マーカーを表示します。
+            // Classic（Unity）データセットでも MapHelper.img/portal の画像は spriteset として
+            // 収録されています。画像が無いデータセットでは描画側（GetMeshPortal）が代替マーカーを表示します。
 
             portal.View = view;
         }

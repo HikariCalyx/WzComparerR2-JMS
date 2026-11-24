@@ -6,8 +6,8 @@ using WzComparerR2.Animation;
 namespace WzComparerR2.MapRender
 {
     /// <summary>
-    /// Classic World（Unity）クライアントには <c>Map/MapHelper.img/portal</c> の画像が含まれていないため、
-    /// ポータルの位置に表示する代替マーカーを生成します。
+    /// ポータル画像が見つからないデータセット向けの代替マーカー（青い光の柱）を生成します。
+    /// 設定 <c>showPortalMarker</c> が有効なときだけ描画されます。
     /// </summary>
     internal static class PortalMarker
     {

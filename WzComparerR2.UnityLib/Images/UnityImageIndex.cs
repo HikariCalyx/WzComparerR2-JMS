@@ -23,17 +23,34 @@ namespace WzComparerR2.UnityLib.Images
         public List<KeyValuePair<int, UnityEntryLocation>> AtlasPages { get; private set; }
     }
 
-    /// <summary>spriteset 的一個 sprite：Sprite 物件位置 + 其 Texture2D 物件位置。</summary>
+    /// <summary>WZ の <c>origin</c> に相当する、画像左上から見た基準点。</summary>
+    public struct UnitySpriteOrigin
+    {
+        public UnitySpriteOrigin(int x, int y)
+        {
+            this.X = x;
+            this.Y = y;
+        }
+
+        public int X { get; private set; }
+        public int Y { get; private set; }
+    }
+
+    /// <summary>spriteset 的一個 sprite：Sprite 物件位置 + 其 Texture2D 物件位置 + origin。</summary>
     public sealed class UnitySetSpriteEntry
     {
-        public UnitySetSpriteEntry(UnityEntryLocation spriteLocation, UnityEntryLocation textureLocation)
+        public UnitySetSpriteEntry(UnityEntryLocation spriteLocation, UnityEntryLocation textureLocation, UnitySpriteOrigin origin)
         {
             this.SpriteLocation = spriteLocation;
             this.TextureLocation = textureLocation;
+            this.Origin = origin;
         }
 
         public UnityEntryLocation SpriteLocation { get; private set; }
         public UnityEntryLocation TextureLocation { get; private set; }
+
+        /// <summary>Sprite の m_Pivot から求めた WZ 互換の origin。</summary>
+        public UnitySpriteOrigin Origin { get; private set; }
     }
 
     /// <summary>
@@ -274,7 +291,12 @@ namespace WzComparerR2.UnityLib.Images
                 }
                 foreach (KeyValuePair<string, long> item in ParseSetAssetPayload(payload))
                 {
-                    sprites[item.Key] = item.Value;
+                    // 名前なしフレーム一覧は全エントリの名前が空になるため、pid を仮キーにして
+                    // 上書きで消えないようにします（最終的な名前はスプライト側から補います）。
+                    string entryKey = string.IsNullOrEmpty(item.Key)
+                        ? UnnamedEntryKeyPrefix + item.Value.ToString()
+                        : item.Key;
+                    sprites[entryKey] = item.Value;
                 }
             }
 
@@ -318,7 +340,25 @@ namespace WzComparerR2.UnityLib.Images
                     {
                         continue;
                     }
-                    output[item.Key] = new UnitySetSpriteEntry(spriteLocation, textureLocation);
+
+                    // 名前なしフレーム一覧（portal など）はスプライト名（"0"、"1"…）で補います。
+                    string spriteName = item.Key;
+                    if (string.IsNullOrEmpty(spriteName) || spriteName.StartsWith(UnnamedEntryKeyPrefix, StringComparison.Ordinal))
+                    {
+                        spriteName = sprite.Name;
+                    }
+                    if (string.IsNullOrEmpty(spriteName))
+                    {
+                        spriteName = output.Count.ToString();
+                    }
+                    if (output.ContainsKey(spriteName))
+                    {
+                        spriteName = spriteName + "_" + output.Count.ToString();
+                    }
+                    int originX, originY;
+                    sprite.GetWzOrigin(out originX, out originY);
+                    output[spriteName] = new UnitySetSpriteEntry(
+                        spriteLocation, textureLocation, new UnitySpriteOrigin(originX, originY));
                 }
                 if (output.Count > 0)
                 {
@@ -415,6 +455,16 @@ namespace WzComparerR2.UnityLib.Images
         internal static List<KeyValuePair<string, long>> ParseSetAssetPayload(byte[] payload)
         {
             List<KeyValuePair<string, long>> output = new List<KeyValuePair<string, long>>();
+
+            // 新しいフレーム一覧（例: Map/MapHelper/portal/game/pv）は
+            // [名前数 i64 = 0][件数 i64][(pathId i64 + 16 バイト) × 件数] の配置です。
+            // 名前を持たないため、スプライト側の名前は CollectSet で補います。
+            List<KeyValuePair<string, long>> framedEntries;
+            if (TryParseFramedEntries(payload, out framedEntries))
+            {
+                return framedEntries;
+            }
+
             uint count = U32At(payload, 0);
             if (count > 100000)
             {
@@ -460,6 +510,58 @@ namespace WzComparerR2.UnityLib.Images
             }
             return output;
         }
+
+        /// <summary>
+        /// 名前なしフレーム一覧の配置（<c>[名前数 i64 = 0][件数 i64][(pathId i64 + 16 バイト) × 件数]</c>）を読みます。
+        /// 該当しない場合（従来の PPTR 連排・名前付きエントリ）は false を返します。
+        /// </summary>
+        private static bool TryParseFramedEntries(byte[] payload, out List<KeyValuePair<string, long>> entries)
+        {
+            entries = null;
+            if (payload == null || payload.Length < FramedHeaderLength + FramedEntryStride)
+            {
+                return false;
+            }
+            if (I64At(payload, 0) != 0)
+            {
+                return false; // 名前付きエントリは別形式
+            }
+            long count = I64At(payload, 8);
+            if (count <= 0 || count > 100000)
+            {
+                return false;
+            }
+            if (FramedHeaderLength + count * FramedEntryStride != payload.Length)
+            {
+                return false;
+            }
+
+            List<KeyValuePair<string, long>> output = new List<KeyValuePair<string, long>>((int)count);
+            for (int i = 0; i < count; i++)
+            {
+                long pathId = I64At(payload, FramedHeaderLength + i * FramedEntryStride);
+                if (pathId == 0)
+                {
+                    continue;
+                }
+                output.Add(new KeyValuePair<string, long>(string.Empty, pathId));
+            }
+            if (output.Count == 0)
+            {
+                return false;
+            }
+            entries = output;
+            return true;
+        }
+
+        /// <summary>名前付きエントリのヘッダ長（名前数 i64 + 件数 i64）。</summary>
+        private const int FramedHeaderLength = 16;
+
+        /// <summary>名前なしエントリの仮キーの接頭辞（<see cref="CollectSet"/> 内でのみ使用）。</summary>
+        private const string UnnamedEntryKeyPrefix = "#pid:";
+
+        /// <summary>名前なしフレーム一覧の 1 エントリ長（pathId i64 + 付加情報 16 バイト）。</summary>
+        private const int FramedEntryStride = 24;
 
         /// <summary>payload が「名前長 + 名前」形式のエントリかどうか。</summary>
         private static bool IsNamedEntries(byte[] payload)

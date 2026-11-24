@@ -218,7 +218,10 @@ namespace WzComparerR2.UnityLib.Unity
             float rectHeight = reader.F32();
             reader.Skip(8); // m_Offset Vector2f
             reader.Skip(16); // m_Border Vector4f
-            reader.Skip(4 + 8 + 4); // m_PixelsToUnits + m_Pivot + m_Extrude
+            reader.Skip(4); // m_PixelsToUnits
+            float pivotX = reader.F32();
+            float pivotY = reader.F32();
+            reader.Skip(4); // m_Extrude
             reader.U8(); // m_IsPolygon
             reader.Align4();
             reader.Skip(24); // m_RenderDataKey: GUID(16) + SInt64(8)
@@ -234,7 +237,7 @@ namespace WzComparerR2.UnityLib.Unity
             }
             ReadPPtr(reader); // m_SpriteAtlas
             UnityPPtr texture = ReadPPtr(reader); // m_RD.texture
-            return new UnitySpriteInfo(name, new UnityRectF(rectX, rectY, rectWidth, rectHeight), texture);
+            return new UnitySpriteInfo(name, new UnityRectF(rectX, rectY, rectWidth, rectHeight), texture, pivotX, pivotY);
         }
 
         // ── MonoBehaviour(114) ─────────────────────────────────────────
@@ -430,11 +433,13 @@ namespace WzComparerR2.UnityLib.Unity
 
     public sealed class UnitySpriteInfo
     {
-        internal UnitySpriteInfo(string name, UnityRectF rect, UnityPPtr texture)
+        internal UnitySpriteInfo(string name, UnityRectF rect, UnityPPtr texture, float pivotX, float pivotY)
         {
             this.Name = name;
             this.Rect = rect;
             this.Texture = texture;
+            this.PivotX = pivotX;
+            this.PivotY = pivotY;
         }
 
         public string Name { get; private set; }
@@ -444,6 +449,22 @@ namespace WzComparerR2.UnityLib.Unity
 
         /// <summary>m_RD.texture（像素所在的 Texture2D）。</summary>
         public UnityPPtr Texture { get; private set; }
+
+        /// <summary>m_Pivot.X（0 = 画像の左端、1 = 右端）。</summary>
+        public float PivotX { get; private set; }
+
+        /// <summary>m_Pivot.Y（0 = 画像の下端、1 = 上端）。</summary>
+        public float PivotY { get; private set; }
+
+        /// <summary>
+        /// WZ の <c>origin</c>（画像左上から見た基準点）に相当する座標を取得します。
+        /// Unity の pivot は左下原点なので Y を反転します。
+        /// </summary>
+        public void GetWzOrigin(out int x, out int y)
+        {
+            x = (int)Math.Round(this.Rect.Width * this.PivotX, MidpointRounding.AwayFromZero);
+            y = (int)Math.Round(this.Rect.Height * (1 - this.PivotY), MidpointRounding.AwayFromZero);
+        }
     }
 
     public sealed class UnityMonoBehaviourInfo

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -73,6 +73,7 @@ namespace WzComparerR2.UnityLib.Classic
             this.Entries = new SortedDictionary<string, UnityEntryLocation>(StringComparer.Ordinal);
             this.Image = new UnityImageIndex();
             this.spritesetEntryKeys = new HashSet<string>(StringComparer.Ordinal);
+            this.SpritesetOrigins = new Dictionary<string, UnitySpriteOrigin>(StringComparer.Ordinal);
             this.SoundEntries = new SortedDictionary<string, UnityEntryLocation>(StringComparer.Ordinal);
             this.SoundKeysByImage = new SortedDictionary<string, List<string>>(StringComparer.Ordinal);
         }
@@ -98,6 +99,12 @@ namespace WzComparerR2.UnityLib.Classic
 
         /// <summary><see cref="RebuildSpritesetEntries"/> で追加された索引キー（ロケール切り替え時にまとめて取り消せます）。</summary>
         private readonly HashSet<string> spritesetEntryKeys;
+
+        /// <summary>
+        /// spriteset スプライトの邏輯路徑 → WZ の <c>origin</c>。
+        /// sprite の m_Pivot から求めた値で、アニメーションの基準点合わせに使います。
+        /// </summary>
+        public Dictionary<string, UnitySpriteOrigin> SpritesetOrigins { get; private set; }
 
         /// <summary>掃描目錄下所有 .bundle，用每個 AssetBundle 物件的 m_Container 建索引。</summary>
         /// <param name="rootDirectory">
@@ -322,6 +329,7 @@ namespace WzComparerR2.UnityLib.Classic
             foreach (string key in this.spritesetEntryKeys)
             {
                 this.Entries.Remove(key);
+                this.SpritesetOrigins.Remove(key);
             }
             this.spritesetEntryKeys.Clear();
 
@@ -357,6 +365,7 @@ namespace WzComparerR2.UnityLib.Classic
                         continue; // WZJS / JSON アセットを優先
                     }
                     this.Entries[path] = sprite.Value.SpriteLocation;
+                    this.SpritesetOrigins[path] = sprite.Value.Origin;
                     this.spritesetEntryKeys.Add(path);
                 }
             }
@@ -816,3 +825,4 @@ namespace WzComparerR2.UnityLib.Classic
         }
     }
 }
+

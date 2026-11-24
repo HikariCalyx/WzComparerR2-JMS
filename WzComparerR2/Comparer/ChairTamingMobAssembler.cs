@@ -67,6 +67,8 @@ namespace WzComparerR2.Comparer
             string chairExamplePath = Path.Combine(outputDir, ChairExampleFolderName);
             Directory.CreateDirectory(chairExamplePath);
 
+            // 椅子・アバターの各画像は「新しいバージョン」のデータセットから解決します。
+            SetUnityResolveSlot(0);
             var config = ImageHandlerConfig.Default;
             var stringLinker = this.CreateChairStringLinker();
             var log = new StringBuilder();
@@ -128,6 +130,8 @@ namespace WzComparerR2.Comparer
             string tamingMobExamplePath = Path.Combine(outputDir, TamingMobExampleFolderName);
             Directory.CreateDirectory(tamingMobExamplePath);
 
+            // テイミングモブ・アバターの各画像は「新しいバージョン」のデータセットから解決します。
+            SetUnityResolveSlot(0);
             var config = ImageHandlerConfig.Default;
             var stringLinker = this.CreateChairStringLinker();
             var log = new StringBuilder();
