@@ -317,6 +317,9 @@ namespace WzComparerR2
             tooltipQuickView.GearRender.CosmeticHairColor = Setting.Item.CosmeticHairColor;
             tooltipQuickView.GearRender.CosmeticFaceColor = Setting.Item.CosmeticFaceColor;
             tooltipQuickView.GearRender.ShowApplicablePet = Setting.Misc.LocatePetEquip;
+            tooltipQuickView.GearRenderLegacy.ShowObjectID = Setting.Gear.ShowID;
+            tooltipQuickView.GearRenderLegacy.ShowSoldPrice = Setting.Gear.ShowSoldPrice;
+            tooltipQuickView.GearRenderLegacy.ShowCashPurchasePrice = Setting.Gear.ShowCashPurchasePrice;
             tooltipQuickView.GearRender3.ShowObjectID = Setting.Gear.ShowID;
             tooltipQuickView.GearRender3.ShowSpeed = Setting.Gear.ShowWeaponSpeed;
             tooltipQuickView.GearRender3.ShowLevelOrSealed = Setting.Gear.ShowLevelOrSealed;
@@ -371,6 +374,7 @@ namespace WzComparerR2
             tooltipQuickView.FamiliarRender.AllowOutOfBounds = Setting.Familiar.AllowOutOfBounds;
             tooltipQuickView.FamiliarRender2.AllowOutOfBounds = Setting.Familiar.AllowOutOfBounds;
             tooltipQuickView.EnableAssembleTooltip = Setting.Item.UseAssembleUI;
+            tooltipQuickView.EnableLegacyUnityUI = Setting.Misc.EnableLegacyUnityUI;
             tooltipQuickView.MapRender.ShowMiniMap = Setting.Map.ShowMiniMap;
             tooltipQuickView.MapRender.ShowObjectID = Setting.Map.ShowMapObjectID;
             tooltipQuickView.MapRender.ShowMobNpcObjectID = Setting.Map.ShowMobNpcObjectID;
@@ -6007,6 +6011,7 @@ namespace WzComparerR2
             }
             tooltipQuickView.TargetItem = obj;
             tooltipQuickView.ImageFileName = fileName;
+            tooltipQuickView.IsUnityClient = false;
             tooltipQuickView.Refresh();
             tooltipQuickView.HideOnHover = false;
             if (tooltipQuickView.TargetItem != null) tooltipQuickView.Show();
@@ -6423,6 +6428,7 @@ namespace WzComparerR2
         {
             tooltipQuickView.TargetItem = obj;
             tooltipQuickView.ImageFileName = fileName;
+            tooltipQuickView.IsUnityClient = true;
             tooltipQuickView.Refresh();
             tooltipQuickView.HideOnHover = false;
             tooltipQuickView.Show();
@@ -7825,6 +7831,7 @@ namespace WzComparerR2
                     comparer.SkipGodChangseopDuplicatedNodes = chkSkipGodChangseopDuplicatedNodes.Checked;
                     comparer.PostChangesToDiscord = chkPostChangesToDiscord.Checked;
                     comparer.Enable22AniStyle = GearGraphics.is22aniStyle;
+                    comparer.EnableLegacyUnityUI = CharaSimConfig.Default.Misc.EnableLegacyUnityUI;
                     comparer.EnableAssembleTooltip = CharaSimConfig.Default.Item.UseAssembleUI;
                     comparer.ShowDamageSkin = CharaSimConfig.Default.DamageSkin.ShowDamageSkin;
                     comparer.UseMiniSizeDamageSkin = CharaSimConfig.Default.DamageSkin.UseMiniSize;
