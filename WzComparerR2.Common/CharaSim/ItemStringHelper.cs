@@ -1758,8 +1758,8 @@ namespace WzComparerR2.CharaSim
                 case 18000: return "シア・アステル";
                 case 18001: return "エリル・ライト";
                 case 18002: return "アイエル";
-                case 18003:
-                case 18004: return "シャイン";
+                case 18003: return "ノア・ブレイド";
+                case 18004: return "シャイン海賊";
                 case 18100: return "エリル・ライト(1次)";
                 case 18110: return "エリル・ライト(2次)";
                 case 18111: return "エリル・ライト(3次)";
@@ -1775,11 +1775,11 @@ namespace WzComparerR2.CharaSim
                 case 18311: return "アイエル(3次)";
                 case 18312: return "アイエル(4次)";
                 case 18314: return "アイエル(6次)";
-                case 18400: return "シャイン盗賊(1次)";
-                case 18410: return "シャイン盗賊(2次)";
-                case 18411: return "シャイン盗賊(3次)";
-                case 18412: return "シャイン盗賊(4次)";
-                case 18414: return "シャイン盗賊(6次)";
+                case 18400: return "ノア・ブレイド(1次)";
+                case 18410: return "ノア・ブレイド(2次)";
+                case 18411: return "ノア・ブレイド(3次)";
+                case 18412: return "ノア・ブレイド(4次)";
+                case 18414: return "ノア・ブレイド(6次)";
                 case 18500: return "シャイン海賊(1次)";
                 case 18510: return "シャイン海賊(2次)";
                 case 18511: return "シャイン海賊(3次)";
