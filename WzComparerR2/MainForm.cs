@@ -1693,7 +1693,7 @@ namespace WzComparerR2
         {
             using (FolderBrowserDialog dlg = new FolderBrowserDialog())
             {
-                dlg.Description = "MapleStory Classic World のクライアントフォルダー、または *.bundle を含むフォルダー（StreamingAssets/aa など）を選択してください。";
+                dlg.Description = "フォルダ「Maplestory_Classic_Data」、または *.bundle を含むフォルダー（StreamingAssets/aa など）を選択してください。";
                 dlg.ShowNewFolderButton = false;
                 if (dlg.ShowDialog() == DialogResult.OK)
                 {
